@@ -54,13 +54,17 @@ export const numberToArabic = (num) => {
 };
 
 export const formatWalletRequired = (balance, limit, currency) => {
-  if (limit === 0) return "غير محدد";
+  if (limit === 0) return { status: "غير محدد", number: null, text: null };
   
   const required = limit - balance;
-  if (required <= 0) return "لا يحتاج";
+  if (required <= 0) return { status: "لا يحتاج", number: null, text: null };
   
   const arabicNum = numberToArabic(required);
   const currencyName = currency === 'IQD' ? 'دينار' : 'دولار';
   
-  return `${arabicNum} ${currencyName}`;
+  return {
+    status: null,
+    number: required.toLocaleString(),
+    text: `${arabicNum} ${currencyName}`
+  };
 };
