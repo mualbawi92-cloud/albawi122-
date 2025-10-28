@@ -108,12 +108,12 @@ const AgentsListPage = () => {
                 data-testid="search-agent-input"
               />
 
-              <Select value={governorateFilter} onValueChange={setGovernorateFilter}>
+              <Select value={governorateFilter || "all"} onValueChange={(v) => setGovernorateFilter(v === "all" ? "" : v)}>
                 <SelectTrigger className="w-48 h-12" data-testid="governorate-filter">
                   <SelectValue placeholder="كل المحافظات" />
                 </SelectTrigger>
                 <SelectContent className="max-h-80">
-                  <SelectItem value="">كل المحافظات</SelectItem>
+                  <SelectItem value="all">كل المحافظات</SelectItem>
                   {IRAQI_GOVERNORATES.map((gov) => (
                     <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
                   ))}
