@@ -265,29 +265,51 @@ const AgentStatementPage = () => {
                     {filteredTransfers.map((transfer) => {
                       const isSent = transfer.from_agent_id === statement.agent_id;
                       const isCompleted = transfer.status === 'completed';
+                      const isReversal = transfer.is_reversal;
                       const amount = transfer.amount || 0;
-                      const bgColor = isCompleted 
-                        ? (isSent ? 'bg-red-50 hover:bg-red-100' : 'bg-green-50 hover:bg-green-100')
-                        : 'bg-gray-50 hover:bg-gray-100';
+                      
+                      // Color coding
+                      let bgColor;
+                      if (isReversal) {
+                        bgColor = 'bg-purple-50 hover:bg-purple-100 border-l-4 border-l-purple-500';
+                      } else if (isCompleted) {
+                        bgColor = isSent ? 'bg-red-50 hover:bg-red-100' : 'bg-green-50 hover:bg-green-100';
+                      } else {
+                        bgColor = 'bg-gray-50 hover:bg-gray-100';
+                      }
                       
                       return (
                         <tr 
-                          key={transfer.id}
+                          key={`${transfer.id}-${isReversal ? 'reversal' : 'normal'}`}
                           className={`border-b cursor-pointer transition-colors ${bgColor}`}
                           onClick={() => navigate(`/transfers/${transfer.id}`)}
                         >
                           <td className="p-3 text-sm">
                             <div className="font-semibold text-gray-900">
-                              {new Date(transfer.created_at).toLocaleDateString('ar-IQ')}
+                              {new Date(transfer.cancelled_at || transfer.created_at).toLocaleDateString('ar-IQ')}
                             </div>
                             <div className="text-xs text-gray-500">
-                              {new Date(transfer.created_at).toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' })}
+                              {new Date(transfer.cancelled_at || transfer.created_at).toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' })}
                             </div>
                           </td>
                           <td className="p-3">
-                            <div className="font-bold text-primary text-sm">{transfer.transfer_code}</div>
+                            <div className="font-bold text-primary text-sm">
+                              {transfer.transfer_code}
+                              {isReversal && (
+                                <span className="mr-2 text-xs bg-purple-200 text-purple-800 px-2 py-1 rounded">
+                                  🔄 قيد عكسي
+                                </span>
+                              )}
+                            </div>
                             <div className="text-xs text-gray-600">
-                              {isSent ? `إلى: ${transfer.receiver_name}` : `من: ${transfer.sender_name}`}
+                              {isReversal ? (
+                                <span className="text-purple-700 font-semibold">
+                                  ❌ حوالة ملغاة - إرجاع المبلغ
+                                </span>
+                              ) : (
+                                isSent ? `إلى: ${transfer.receiver_name}` : `من: ${transfer.sender_name}`
+                              )}
+                            </div>
                             </div>
                             <div className="text-xs">
                               {transfer.status === 'completed' ? (
