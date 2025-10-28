@@ -4,7 +4,8 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
 
@@ -17,6 +18,9 @@ const AgentStatementPage = () => {
   const { user } = useAuth();
   const [statement, setStatement] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
   useEffect(() => {
     fetchStatement();
@@ -24,7 +28,7 @@ const AgentStatementPage = () => {
 
   const fetchStatement = async () => {
     try {
-      const id = agentId || user.id; // If no agentId in URL, use current user
+      const id = agentId || user.id;
       const response = await axios.get(`${API}/agents/${id}/statement`);
       setStatement(response.data);
       setLoading(false);
@@ -35,19 +39,53 @@ const AgentStatementPage = () => {
     }
   };
 
-  const getStatusBadge = (status) => {
-    const statusMap = {
-      pending: { label: 'قيد الانتظار', className: 'bg-yellow-100 text-yellow-800' },
-      completed: { label: 'مكتمل', className: 'bg-green-100 text-green-800' },
-      cancelled: { label: 'ملغى', className: 'bg-red-100 text-red-800' }
-    };
-    const config = statusMap[status] || { label: status, className: '' };
-    return <Badge className={config.className}>{config.label}</Badge>;
+  const calculateRunningBalance = (transfers) => {
+    let balance = 0;
+    return transfers.map(transfer => {
+      const isSent = transfer.from_agent_id === statement.agent_id;
+      const amount = transfer.amount || 0;
+      
+      if (transfer.status === 'completed') {
+        if (isSent) {
+          balance -= amount; // مدين (خارج)
+        } else {
+          balance += amount; // دائن (داخل)
+        }
+      }
+      
+      return {
+        ...transfer,
+        running_balance: balance
+      };
+    });
+  };
+
+  const filterTransfers = (transfers) => {
+    let filtered = transfers;
+    
+    // Search filter
+    if (searchQuery) {
+      filtered = filtered.filter(t => 
+        t.transfer_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.sender_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.receiver_name?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    // Date filter
+    if (dateFrom) {
+      filtered = filtered.filter(t => new Date(t.created_at) >= new Date(dateFrom));
+    }
+    if (dateTo) {
+      filtered = filtered.filter(t => new Date(t.created_at) <= new Date(dateTo));
+    }
+    
+    return filtered;
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#F8F9FB]">
         <Navbar />
         <div className="container mx-auto p-6 flex items-center justify-center min-h-[50vh]">
           <div className="text-2xl text-primary">جاري التحميل...</div>
@@ -56,132 +94,248 @@ const AgentStatementPage = () => {
     );
   }
 
+  const transfersWithBalance = calculateRunningBalance(statement.transfers);
+  const filteredTransfers = filterTransfers(transfersWithBalance);
+  
+  // Calculate totals for completed transfers only
+  const totalCredit = statement.total_received; // الدائن (الداخل)
+  const totalDebit = statement.total_sent; // المدين (الخارج)
+  const netBalance = totalCredit - totalDebit; // الرصيد الصافي
+
   return (
-    <div className="min-h-screen bg-background" data-testid="agent-statement-page">
+    <div className="min-h-screen bg-[#F8F9FB]" data-testid="agent-statement-page">
       <Navbar />
       <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
-        {/* Header */}
-        <Card className="bg-gradient-to-l from-primary to-primary/80 text-white shadow-xl">
-          <CardHeader className="p-4 sm:p-6">
-            <CardTitle className="text-2xl sm:text-3xl">كشف حساب الصيرفة</CardTitle>
-            <CardDescription className="text-white/80 text-sm sm:text-base">
-              {statement.agent_name} - {statement.governorate}
-            </CardDescription>
+        
+        {/* Header Section */}
+        <Card className="shadow-lg border-0">
+          <CardHeader className="p-6 bg-white">
+            <div className="space-y-3">
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                💰 كشف حساب الزبون
+              </h1>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-600 font-semibold">اسم الزبون:</p>
+                  <p className="text-lg font-bold text-gray-900">{statement.agent_name}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 font-semibold">المحافظة:</p>
+                  <p className="text-lg font-bold text-gray-900">{statement.governorate}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 font-semibold">رصيد البداية:</p>
+                  <p className="text-lg font-bold text-gray-900">0 د.ع</p>
+                </div>
+              </div>
+            </div>
           </CardHeader>
         </Card>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Total Sent */}
-          <Card className="border-r-4 border-r-red-500 shadow-lg">
-            <CardHeader className="p-4 sm:p-6">
-              <CardDescription className="text-sm sm:text-base">إجمالي المُرسل (باع)</CardDescription>
-              <CardTitle className="text-2xl sm:text-4xl font-bold text-red-600">
-                {statement.total_sent.toLocaleString()}
-              </CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                عدد الحوالات: {statement.total_sent_count}
-              </CardDescription>
-              <div className="mt-2 text-xs">
-                <p>IQD: {statement.iqd_sent.toLocaleString()}</p>
-                <p>USD: {statement.usd_sent.toLocaleString()}</p>
+        {/* Summary Cards - 3 Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Credit Card - الدائن */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-green-700">💵 الدائن (المبالغ الداخلة)</p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {totalCredit.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-green-600">عدد: {statement.total_received_count}</p>
+                </div>
+                <div className="text-5xl text-green-500/30">⬇️</div>
               </div>
-            </CardHeader>
+            </CardContent>
           </Card>
 
-          {/* Total Received */}
-          <Card className="border-r-4 border-r-green-500 shadow-lg">
-            <CardHeader className="p-4 sm:p-6">
-              <CardDescription className="text-sm sm:text-base">إجمالي المُستلم (حول)</CardDescription>
-              <CardTitle className="text-2xl sm:text-4xl font-bold text-green-600">
-                {statement.total_received.toLocaleString()}
-              </CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                عدد الحوالات: {statement.total_received_count}
-              </CardDescription>
-              <div className="mt-2 text-xs">
-                <p>IQD: {statement.iqd_received.toLocaleString()}</p>
-                <p>USD: {statement.usd_received.toLocaleString()}</p>
+          {/* Debit Card - المدين */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-red-100">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-red-700">💸 المدين (المبالغ الخارجة)</p>
+                  <p className="text-3xl font-bold text-red-600">
+                    {totalDebit.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-red-600">عدد: {statement.total_sent_count}</p>
+                </div>
+                <div className="text-5xl text-red-500/30">⬆️</div>
               </div>
-            </CardHeader>
+            </CardContent>
           </Card>
 
-          {/* Total Commission */}
-          <Card className="border-r-4 border-r-secondary shadow-lg">
-            <CardHeader className="p-4 sm:p-6">
-              <CardDescription className="text-sm sm:text-base">إجمالي الأرباح (عمولة)</CardDescription>
-              <CardTitle className="text-2xl sm:text-4xl font-bold text-secondary">
-                {statement.total_commission.toLocaleString()}
-              </CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                من الحوالات المستلمة
-              </CardDescription>
-            </CardHeader>
+          {/* Net Balance - الرصيد الصافي */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-blue-700">⚖️ الرصيد الصافي</p>
+                  <p className="text-3xl font-bold text-blue-600">
+                    {netBalance.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-blue-600">د.ع</p>
+                </div>
+                <div className="text-5xl text-blue-500/30">💰</div>
+              </div>
+            </CardContent>
           </Card>
         </div>
 
-        {/* Transfers List */}
-        <Card className="shadow-lg">
-          <CardHeader className="p-4 sm:p-6">
-            <CardTitle className="text-xl sm:text-2xl">تفاصيل جميع الحوالات</CardTitle>
-            <CardDescription className="text-sm sm:text-base">
-              إجمالي: {statement.transfers.length} حوالة
-            </CardDescription>
+        {/* Filter Bar */}
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1">
+                <Input
+                  type="text"
+                  placeholder="🔎 بحث برقم الحوالة أو الاسم..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-10"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="h-10"
+                  placeholder="من تاريخ"
+                />
+                <Input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="h-10"
+                  placeholder="إلى تاريخ"
+                />
+              </div>
+              <Button
+                onClick={fetchStatement}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                🔄 تحديث
+              </Button>
+              <Button
+                variant="outline"
+                className="border-2 border-gray-300"
+              >
+                ⬇️ تحميل PDF
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Transactions Table */}
+        <Card className="border-0 shadow-lg">
+          <CardHeader className="bg-white border-b">
+            <CardTitle className="text-xl">📅 جدول الحركات</CardTitle>
+            <CardDescription>إجمالي: {filteredTransfers.length} حركة</CardDescription>
           </CardHeader>
-          <CardContent className="p-4 sm:p-6">
-            {statement.transfers.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">لا توجد حوالات</p>
+          <CardContent className="p-0">
+            {filteredTransfers.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">لا توجد حركات</p>
             ) : (
-              <div className="space-y-3 sm:space-y-4">
-                {statement.transfers.map((transfer) => {
-                  const isSent = transfer.from_agent_id === statement.agent_id;
-                  return (
-                    <div
-                      key={transfer.id}
-                      className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-accent/50 transition-colors ${
-                        isSent ? 'border-r-4 border-r-red-500' : 'border-r-4 border-r-green-500'
-                      }`}
-                      onClick={() => navigate(`/transfers/${transfer.id}`)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <div className="flex-1 space-y-1 mb-2 sm:mb-0">
-                        <div className="flex items-center gap-2">
-                          <p className="text-base sm:text-lg font-bold text-primary">
-                            {transfer.transfer_code}
-                          </p>
-                          {getStatusBadge(transfer.status)}
-                          <Badge className={isSent ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
-                            {isSent ? '📤 مُرسل' : '📥 مُستلم'}
-                          </Badge>
-                        </div>
-                        <p className="text-xs sm:text-sm text-muted-foreground">
-                          من: {transfer.sender_name} → إلى: {transfer.receiver_name}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(transfer.created_at).toLocaleDateString('ar-IQ', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </p>
-                      </div>
-                      <div className="text-left sm:text-right">
-                        <p className="text-xl sm:text-2xl font-bold text-secondary">
-                          {transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}
-                        </p>
-                        {!isSent && transfer.commission && (
-                          <p className="text-xs text-green-600">
-                            عمولة: +{transfer.commission.toFixed(2)}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-100 border-b-2">
+                    <tr>
+                      <th className="text-right p-3 text-sm font-bold text-gray-700">التاريخ</th>
+                      <th className="text-right p-3 text-sm font-bold text-gray-700">الوصف</th>
+                      <th className="text-right p-3 text-sm font-bold text-green-700">دائن ⬇️</th>
+                      <th className="text-right p-3 text-sm font-bold text-red-700">مدين ⬆️</th>
+                      <th className="text-right p-3 text-sm font-bold text-blue-700">الرصيد بعد الحركة</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredTransfers.map((transfer) => {
+                      const isSent = transfer.from_agent_id === statement.agent_id;
+                      const isCompleted = transfer.status === 'completed';
+                      const amount = transfer.amount || 0;
+                      const bgColor = isCompleted 
+                        ? (isSent ? 'bg-red-50 hover:bg-red-100' : 'bg-green-50 hover:bg-green-100')
+                        : 'bg-gray-50 hover:bg-gray-100';
+                      
+                      return (
+                        <tr 
+                          key={transfer.id}
+                          className={`border-b cursor-pointer transition-colors ${bgColor}`}
+                          onClick={() => navigate(`/transfers/${transfer.id}`)}
+                        >
+                          <td className="p-3 text-sm">
+                            <div className="font-semibold text-gray-900">
+                              {new Date(transfer.created_at).toLocaleDateString('ar-IQ')}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {new Date(transfer.created_at).toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                          </td>
+                          <td className="p-3">
+                            <div className="font-bold text-primary text-sm">{transfer.transfer_code}</div>
+                            <div className="text-xs text-gray-600">
+                              {isSent ? `إلى: ${transfer.receiver_name}` : `من: ${transfer.sender_name}`}
+                            </div>
+                            <div className="text-xs">
+                              {transfer.status === 'completed' ? (
+                                <span className="text-green-600">✅ مكتمل</span>
+                              ) : (
+                                <span className="text-yellow-600">⏳ قيد الانتظار</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="p-3">
+                            {!isSent && isCompleted ? (
+                              <span className="text-lg font-bold text-green-600">
+                                +{amount.toLocaleString()}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                          <td className="p-3">
+                            {isSent && isCompleted ? (
+                              <span className="text-lg font-bold text-red-600">
+                                -{amount.toLocaleString()}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                          <td className="p-3">
+                            <span className="text-lg font-bold text-blue-600">
+                              {transfer.running_balance.toLocaleString()}
+                            </span>
+                            <span className="text-xs text-gray-500 mr-1">د.ع</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Summary Footer */}
+        <Card className="border-0 shadow-lg bg-gradient-to-l from-gray-50 to-white">
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">✅ إجمالي الدائن</p>
+                <p className="text-2xl font-bold text-green-600">{totalCredit.toLocaleString()} د.ع</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 mb-1">🚫 إجمالي المدين</p>
+                <p className="text-2xl font-bold text-red-600">{totalDebit.toLocaleString()} د.ع</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 mb-1">⚖️ الرصيد النهائي</p>
+                <p className="text-3xl font-bold text-blue-600">{netBalance.toLocaleString()} د.ع</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -190,7 +344,7 @@ const AgentStatementPage = () => {
           <Button
             onClick={() => navigate('/dashboard')}
             variant="outline"
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto border-2"
           >
             العودة للرئيسية
           </Button>
