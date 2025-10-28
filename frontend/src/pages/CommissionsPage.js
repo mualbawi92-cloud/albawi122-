@@ -154,7 +154,7 @@ const CommissionsPage = () => {
                         </p>
                         <div className="bg-green-100 px-2 py-1 rounded">
                           <p className="text-xs sm:text-sm font-bold text-green-700">
-                            عمولة: {transfer.commission.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {transfer.currency}
+                            عمولة: {transfer.commission.toFixed(2)} {transfer.currency}
                           </p>
                         </div>
                       </div>
