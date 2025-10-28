@@ -424,7 +424,7 @@ async def get_agent_statement(agent_id: str, current_user: dict = Depends(get_cu
     
     transfers = await transfers_cursor.to_list(10000)
     
-    # Calculate totals
+    # Calculate totals (all transfers are completed now)
     total_sent = 0.0
     total_sent_count = 0
     total_received = 0.0
@@ -440,28 +440,25 @@ async def get_agent_statement(agent_id: str, current_user: dict = Depends(get_cu
         amount = t.get('amount', 0)
         currency = t.get('currency', 'IQD')
         commission = t.get('commission', 0)
-        status = t.get('status', '')
         
-        # Only count completed transfers
-        if status == 'completed':
-            if t.get('from_agent_id') == agent_id:
-                # Sent transfers
-                total_sent += amount
-                total_sent_count += 1
-                if currency == 'IQD':
-                    iqd_sent += amount
-                else:
-                    usd_sent += amount
-            
-            if t.get('to_agent_id') == agent_id:
-                # Received transfers
-                total_received += amount
-                total_received_count += 1
-                total_commission += commission
-                if currency == 'IQD':
-                    iqd_received += amount
-                else:
-                    usd_received += amount
+        if t.get('from_agent_id') == agent_id:
+            # Sent transfers
+            total_sent += amount
+            total_sent_count += 1
+            if currency == 'IQD':
+                iqd_sent += amount
+            else:
+                usd_sent += amount
+        
+        if t.get('to_agent_id') == agent_id:
+            # Received transfers
+            total_received += amount
+            total_received_count += 1
+            total_commission += commission
+            if currency == 'IQD':
+                iqd_received += amount
+            else:
+                usd_received += amount
     
     return {
         'agent_id': agent_id,
