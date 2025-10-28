@@ -186,7 +186,7 @@ const CreateTransferPage = () => {
           <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="sender_name" className="text-base font-bold">اسم المرسل *</Label>
+                <Label htmlFor="sender_name" className="text-base font-bold">اسم المرسل الثلاثي *</Label>
                 <Input
                   id="sender_name"
                   data-testid="sender-name-input"
@@ -196,6 +196,20 @@ const CreateTransferPage = () => {
                   maxLength={100}
                   className="text-base h-12"
                   placeholder="أدخل اسم المرسل الثلاثي"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="receiver_name" className="text-base font-bold">اسم المستلم الثلاثي *</Label>
+                <Input
+                  id="receiver_name"
+                  data-testid="receiver-name-input"
+                  value={formData.receiver_name}
+                  onChange={(e) => setFormData({ ...formData, receiver_name: e.target.value })}
+                  required
+                  maxLength={100}
+                  className="text-base h-12"
+                  placeholder="أدخل اسم المستلم الثلاثي"
                 />
               </div>
 
