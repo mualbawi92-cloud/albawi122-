@@ -132,7 +132,7 @@ const TransfersListPage = () => {
                       </p>
                     </div>
                     <div className="text-left space-y-2">
-                      <p className="text-2xl font-bold text-secondary">{transfer.amount.toLocaleString()} IQD</p>
+                      <p className="text-2xl font-bold text-secondary">{transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}</p>
                       {getStatusBadge(transfer.status)}
                     </div>
                   </div>
