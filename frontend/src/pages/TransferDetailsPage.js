@@ -25,6 +25,17 @@ const TransferDetailsPage = () => {
   const [pinData, setPinData] = useState(null);
   const [loadingPin, setLoadingPin] = useState(false);
   
+  // Edit and Cancel states
+  const [showEdit, setShowEdit] = useState(false);
+  const [editData, setEditData] = useState({
+    sender_name: '',
+    receiver_name: '',
+    amount: '',
+    note: ''
+  });
+  const [loadingCancel, setLoadingCancel] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(false);
+  
   // Receive form states
   const [pin, setPin] = useState('');
   const [receiverFullname, setReceiverFullname] = useState('');
