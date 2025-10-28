@@ -421,6 +421,26 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     await db.transfers.insert_one(transfer_doc)
     await log_audit(transfer_id, current_user['id'], 'transfer_created', {'transfer_code': transfer_code})
     
+    # Update sender's wallet (decrease balance)
+    wallet_field = f'wallet_balance_{transfer_data.currency.lower()}'
+    await db.users.update_one(
+        {'id': current_user['id']},
+        {'$inc': {wallet_field: -transfer_data.amount}}
+    )
+    
+    # Log wallet transaction
+    await db.wallet_transactions.insert_one({
+        'id': str(uuid.uuid4()),
+        'user_id': current_user['id'],
+        'user_display_name': current_user['display_name'],
+        'amount': -transfer_data.amount,
+        'currency': transfer_data.currency,
+        'transaction_type': 'transfer_sent',
+        'reference_id': transfer_id,
+        'note': f'حوالة مرسلة: {transfer_code}',
+        'created_at': datetime.now(timezone.utc).isoformat()
+    })
+    
     # Notify receiving agents via WebSocket
     await sio.emit('new_transfer', {
         'transfer_id': transfer_id,
