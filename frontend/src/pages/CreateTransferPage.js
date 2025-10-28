@@ -13,9 +13,25 @@ import Navbar from '../components/Navbar';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const GOVERNORATES = [
-  'BG', 'BS', 'BB', 'DY', 'AN', 'AR', 'SD', 'NA', 'QA', 'WS',
-  'SA', 'NJ', 'MI', 'DQ', 'KR', 'SU', 'MU', 'TH'
+const IRAQI_GOVERNORATES = [
+  { code: 'BG', name: 'بغداد' },
+  { code: 'BS', name: 'البصرة' },
+  { code: 'NJ', name: 'النجف' },
+  { code: 'KR', name: 'كربلاء' },
+  { code: 'BB', name: 'بابل' },
+  { code: 'AN', name: 'الأنبار' },
+  { code: 'DY', name: 'ديالى' },
+  { code: 'WS', name: 'واسط' },
+  { code: 'SA', name: 'صلاح الدين' },
+  { code: 'NI', name: 'نينوى' },
+  { code: 'DQ', name: 'ذي قار' },
+  { code: 'QA', name: 'القادسية' },
+  { code: 'MY', name: 'المثنى' },
+  { code: 'MI', name: 'ميسان' },
+  { code: 'KI', name: 'كركوك' },
+  { code: 'ER', name: 'أربيل' },
+  { code: 'SU', name: 'السليمانية' },
+  { code: 'DH', name: 'دهوك' }
 ];
 
 const CreateTransferPage = () => {
