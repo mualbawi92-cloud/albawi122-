@@ -208,6 +208,68 @@ const TransferDetailsPage = () => {
               )}
             </div>
 
+            {/* Show PIN Button for Sender */}
+            {user && transfer.from_agent_id === user.id && !showPin && (
+              <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-yellow-800">
+                      🔐 الرقم السري للحوالة
+                    </p>
+                    <p className="text-xs text-yellow-700">
+                      اضغط لعرض الرقم السري الخاص بهذه الحوالة
+                    </p>
+                  </div>
+                  <Button
+                    onClick={fetchPin}
+                    disabled={loadingPin}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white"
+                  >
+                    {loadingPin ? 'جاري التحميل...' : '👁️ عرض الرقم السري'}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* PIN Display */}
+            {showPin && pinData && (
+              <Card className="border-4 border-secondary bg-gradient-to-r from-secondary/10 to-secondary/5">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-secondary">🔐 معلومات الحوالة</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground">رقم الحوالة</Label>
+                      <p className="text-2xl font-bold text-primary">{pinData.transfer_code}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground">الرقم السري</Label>
+                      <p className="text-4xl font-bold text-secondary">{pinData.pin}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground">اسم المستلم</Label>
+                      <p className="text-lg font-bold">{pinData.receiver_name}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm text-muted-foreground">المبلغ</Label>
+                      <p className="text-lg font-bold">{pinData.amount.toLocaleString()} {pinData.currency}</p>
+                    </div>
+                  </div>
+                  <div className="bg-yellow-50 border border-yellow-300 rounded p-3 text-sm text-yellow-800">
+                    ⚠️ <strong>تنبيه:</strong> يمكنك مشاركة رقم الحوالة والرقم السري مع المستلم لإتمام عملية الاستلام
+                  </div>
+                  <Button
+                    onClick={() => setShowPin(false)}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    إخفاء الرقم السري
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Actions */}
             {transfer.status === 'pending' && !showReceive && (
               <div className="flex gap-4 pt-4">
