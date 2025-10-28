@@ -693,11 +693,18 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
     result = await db.transfers.aggregate(pipeline).to_list(1)
     total_amount = result[0]['total'] if result else 0.0
     
+    # Get wallet balances
+    user_data = await db.users.find_one({'id': current_user['id']})
+    wallet_balance_iqd = user_data.get('wallet_balance_iqd', 0.0) if user_data else 0.0
+    wallet_balance_usd = user_data.get('wallet_balance_usd', 0.0) if user_data else 0.0
+    
     return {
         'pending_incoming': pending_incoming,
         'pending_outgoing': pending_outgoing,
         'completed_today': completed_today,
-        'total_amount_today': total_amount
+        'total_amount_today': total_amount,
+        'wallet_balance_iqd': wallet_balance_iqd,
+        'wallet_balance_usd': wallet_balance_usd
     }
 
 @api_router.get("/audit-logs")
