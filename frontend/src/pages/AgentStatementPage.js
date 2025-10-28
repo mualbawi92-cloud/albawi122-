@@ -312,7 +312,9 @@ const AgentStatementPage = () => {
                             </div>
                             </div>
                             <div className="text-xs">
-                              {transfer.status === 'completed' ? (
+                              {isReversal ? (
+                                <span className="text-purple-600">🔄 قيد عكسي</span>
+                              ) : transfer.status === 'completed' ? (
                                 <span className="text-green-600">✅ مكتمل</span>
                               ) : (
                                 <span className="text-yellow-600">⏳ قيد الانتظار</span>
@@ -320,7 +322,7 @@ const AgentStatementPage = () => {
                             </div>
                           </td>
                           <td className="p-3">
-                            {!isSent && isCompleted ? (
+                            {(isReversal || (!isSent && isCompleted)) ? (
                               <span className="text-lg font-bold text-green-600">
                                 +{amount.toLocaleString()}
                               </span>
@@ -329,7 +331,7 @@ const AgentStatementPage = () => {
                             )}
                           </td>
                           <td className="p-3">
-                            {isSent && isCompleted ? (
+                            {(!isReversal && isSent && isCompleted) ? (
                               <span className="text-lg font-bold text-red-600">
                                 -{amount.toLocaleString()}
                               </span>
