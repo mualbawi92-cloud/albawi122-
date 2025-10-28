@@ -210,6 +210,7 @@ const AdminDashboardPage = () => {
                     <th className="text-right p-4 text-sm font-bold text-gray-700">اسم الصيرفة</th>
                     <th className="text-right p-4 text-sm font-bold text-gray-700">اسم المالك</th>
                     <th className="text-right p-4 text-sm font-bold text-gray-700">الرصيد الحالي</th>
+                    <th className="text-right p-4 text-sm font-bold text-gray-700">المطلوب من المحفظة</th>
                     <th className="text-right p-4 text-sm font-bold text-gray-700">عدد العمليات</th>
                     <th className="text-right p-4 text-sm font-bold text-gray-700">آخر حركة</th>
                     <th className="text-center p-4 text-sm font-bold text-gray-700">كشف الحساب</th>
@@ -220,6 +221,12 @@ const AdminDashboardPage = () => {
                     const statement = statements[agent.id] || {};
                     const netBalance = (statement.total_received || 0) - (statement.total_sent || 0);
                     const operationsCount = (statement.total_received_count || 0) + (statement.total_sent_count || 0);
+                    
+                    // Calculate wallet required
+                    const walletBalanceIqd = agent.wallet_balance_iqd || 0;
+                    const walletBalanceUsd = agent.wallet_balance_usd || 0;
+                    const walletLimitIqd = agent.wallet_limit_iqd || 0;
+                    const walletLimitUsd = agent.wallet_limit_usd || 0;
                     
                     return (
                       <tr
@@ -239,9 +246,29 @@ const AdminDashboardPage = () => {
                           <p className="text-gray-700">{agent.username}</p>
                         </td>
                         <td className="p-4">
-                          <p className={`text-lg font-bold ${netBalance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            {netBalance.toLocaleString()} د.ع
-                          </p>
+                          <div>
+                            <p className={`text-lg font-bold ${netBalance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                              {netBalance.toLocaleString()} د.ع
+                            </p>
+                            <div className="text-xs text-gray-600 mt-1">
+                              <p>💰 IQD: {walletBalanceIqd.toLocaleString()}</p>
+                              <p>💵 USD: {walletBalanceUsd.toLocaleString()}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="space-y-1">
+                            <div className="bg-yellow-50 border border-yellow-300 rounded px-2 py-1">
+                              <p className="text-xs font-semibold text-yellow-800">
+                                💰 {formatWalletRequired(walletBalanceIqd, walletLimitIqd, 'IQD')}
+                              </p>
+                            </div>
+                            <div className="bg-green-50 border border-green-300 rounded px-2 py-1">
+                              <p className="text-xs font-semibold text-green-800">
+                                💵 {formatWalletRequired(walletBalanceUsd, walletLimitUsd, 'USD')}
+                              </p>
+                            </div>
+                          </div>
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
