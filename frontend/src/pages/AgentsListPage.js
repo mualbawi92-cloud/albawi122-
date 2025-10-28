@@ -181,6 +181,21 @@ const AgentsListPage = () => {
                           ) : (
                             <Badge className="bg-red-100 text-red-800">❌ معلق</Badge>
                           )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col gap-2 pt-3">
+                          <Button
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/statement/${agent.id}`);
+                            }}
+                            className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                            data-testid={`statement-${agent.username}`}
+                          >
+                            📊 كشف الحساب
+                          </Button>
                           
                           {user?.role === 'admin' && (
                             <div className="flex gap-2">
@@ -191,7 +206,7 @@ const AgentsListPage = () => {
                                   e.stopPropagation();
                                   navigate(`/agents/edit/${agent.id}`);
                                 }}
-                                className="text-xs"
+                                className="text-xs flex-1"
                                 data-testid={`edit-${agent.username}`}
                               >
                                 ✏️ تعديل
@@ -203,7 +218,7 @@ const AgentsListPage = () => {
                                   e.stopPropagation();
                                   handleToggleStatus(agent.id, agent.is_active);
                                 }}
-                                className="text-xs"
+                                className="text-xs flex-1"
                                 data-testid={`toggle-status-${agent.username}`}
                               >
                                 {agent.is_active ? '🔴 تعطيل' : '✅ تفعيل'}
