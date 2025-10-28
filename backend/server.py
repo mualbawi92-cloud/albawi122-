@@ -242,10 +242,23 @@ class DashboardStats(BaseModel):
 @api_router.post("/register", response_model=User)
 async def register_user(user_data: UserCreate, current_user: dict = Depends(require_admin)):
     """Register new agent (admin only)"""
+    # Validate username
+    if not user_data.username or len(user_data.username) < 3:
+        raise HTTPException(status_code=400, detail="اسم المستخدم يجب أن يكون 3 أحرف على الأقل")
+    
+    if not user_data.password or len(user_data.password) < 6:
+        raise HTTPException(status_code=400, detail="كلمة المرور يجب أن تكون 6 أحرف على الأقل")
+    
+    if not user_data.display_name:
+        raise HTTPException(status_code=400, detail="اسم الصيرفة مطلوب")
+    
+    if not user_data.phone:
+        raise HTTPException(status_code=400, detail="رقم الهاتف مطلوب")
+    
     # Check if username exists
     existing = await db.users.find_one({'username': user_data.username})
     if existing:
-        raise HTTPException(status_code=400, detail="Username already exists")
+        raise HTTPException(status_code=400, detail=f"اسم المستخدم '{user_data.username}' موجود مسبقاً")
     
     user_id = str(uuid.uuid4())
     password_hash = bcrypt.hashpw(user_data.password.encode(), bcrypt.gensalt()).decode()
