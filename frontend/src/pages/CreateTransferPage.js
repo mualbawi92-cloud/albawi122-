@@ -175,13 +175,13 @@ const CreateTransferPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto p-6 max-w-2xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-2xl">
         <Card className="shadow-xl" data-testid="create-transfer-form">
-          <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5">
-            <CardTitle className="text-3xl text-primary">إنشاء حوالة جديدة</CardTitle>
-            <CardDescription className="text-base">املأ بيانات الحوالة بعناية</CardDescription>
+          <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5 p-4 sm:p-6">
+            <CardTitle className="text-2xl sm:text-3xl text-primary">إنشاء حوالة جديدة</CardTitle>
+            <CardDescription className="text-sm sm:text-base">املأ بيانات الحوالة بعناية</CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="sender_name" className="text-base font-bold">اسم المرسل *</Label>
