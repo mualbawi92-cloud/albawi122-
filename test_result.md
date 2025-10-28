@@ -243,6 +243,24 @@ frontend:
           - Mobile responsive design
           - Transaction badges for different types (deposit, transfer_sent, transfer_received)
 
+  - task: "Add receiver_name field to transfer forms and displays"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/CreateTransferPage.js, TransferDetailsPage.js, TransfersListPage.js, AllTransfersAdminPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ CRITICAL FEATURE: Added receiver_name field to all relevant pages
+          - CreateTransferPage: Added input field for "اسم المستلم الثلاثي" (required)
+          - TransferDetailsPage: Display receiver_name prominently
+          - TransfersListPage: Show both sender and receiver names
+          - AllTransfersAdminPage: Include receiver_name in display and search filter
+          - Form validation ensures receiver_name is not empty
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
