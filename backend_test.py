@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """
 Backend API Testing for Cash Transfer System
+CRITICAL FEATURE TEST: receiver_name field validation
+
 Tests the newly implemented features:
-1. Enhanced error messages for transfer reception
-2. Wallet system (balance, deposit, transactions)
-3. Dashboard stats with wallet balances
+1. receiver_name field in transfer creation and validation
+2. Enhanced error messages for transfer reception
+3. Wallet system (balance, deposit, transactions)
+4. Dashboard stats with wallet balances
 """
 
 import requests
@@ -15,7 +18,8 @@ from typing import Dict, Any, Optional
 # Configuration
 BASE_URL = "https://cashport-2.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
-AGENT_CREDENTIALS = {"username": "agent_baghdad", "password": "agent123"}
+AGENT_BAGHDAD_CREDENTIALS = {"username": "agent_baghdad", "password": "agent123"}
+AGENT_BASRA_CREDENTIALS = {"username": "agent_basra", "password": "agent123"}
 
 class APITester:
     def __init__(self):
