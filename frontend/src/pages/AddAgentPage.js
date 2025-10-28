@@ -196,6 +196,43 @@ const AddAgentPage = () => {
                 </Select>
               </div>
 
+              {/* Wallet Limits */}
+              <div className="space-y-2">
+                <Label htmlFor="wallet_limit_iqd" className="text-base font-bold">
+                  الحد الأقصى للمحفظة بالدينار (IQD)
+                </Label>
+                <Input
+                  id="wallet_limit_iqd"
+                  type="number"
+                  value={formData.wallet_limit_iqd}
+                  onChange={(e) => setFormData({ ...formData, wallet_limit_iqd: e.target.value })}
+                  className="text-base h-12"
+                  placeholder="مثال: 20000000"
+                  min="0"
+                />
+                <p className="text-xs text-gray-600">
+                  الحد الأقصى الذي يمكن للصيرفة طلبه من المحفظة بالدينار
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="wallet_limit_usd" className="text-base font-bold">
+                  الحد الأقصى للمحفظة بالدولار (USD)
+                </Label>
+                <Input
+                  id="wallet_limit_usd"
+                  type="number"
+                  value={formData.wallet_limit_usd}
+                  onChange={(e) => setFormData({ ...formData, wallet_limit_usd: e.target.value })}
+                  className="text-base h-12"
+                  placeholder="مثال: 50000"
+                  min="0"
+                />
+                <p className="text-xs text-gray-600">
+                  الحد الأقصى الذي يمكن للصيرفة طلبه من المحفظة بالدولار
+                </p>
+              </div>
+
               <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
                 <p className="text-sm text-blue-800">
                   ℹ️ <strong>ملاحظة:</strong> سيتم إنشاء حساب صراف جديد بالمعلومات المدخلة. 
