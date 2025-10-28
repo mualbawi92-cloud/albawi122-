@@ -148,6 +148,7 @@ const AdminDashboardPage = () => {
   }
 
   const totals = calculateTotals();
+  const transferStats = calculateTransferStats();
 
   return (
     <div className="min-h-screen bg-[#F5F7FA]" data-testid="admin-dashboard-page">
@@ -168,6 +169,77 @@ const AdminDashboardPage = () => {
               <p className="text-lg font-bold text-gray-900">{user?.display_name}</p>
             </div>
           </div>
+        </div>
+
+        {/* Transfer Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Completed Today */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold text-blue-700">
+                    📅 الحوالات المكتملة اليوم
+                  </p>
+                  <p className="text-4xl font-bold text-blue-600">
+                    {transferStats.completedToday}
+                  </p>
+                </div>
+                <div className="text-5xl text-blue-500/30">✅</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Cancelled */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-red-100 rounded-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold text-red-700">
+                    🚫 الحوالات الملغية
+                  </p>
+                  <p className="text-4xl font-bold text-red-600">
+                    {transferStats.cancelled}
+                  </p>
+                </div>
+                <div className="text-5xl text-red-500/30">❌</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Pending */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold text-yellow-700">
+                    ⏳ الحوالات قيد الانتظار
+                  </p>
+                  <p className="text-4xl font-bold text-yellow-600">
+                    {transferStats.pending}
+                  </p>
+                </div>
+                <div className="text-5xl text-yellow-500/30">⌛</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Total Completed */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold text-green-700">
+                    💯 إجمالي المكتملة
+                  </p>
+                  <p className="text-4xl font-bold text-green-600">
+                    {transferStats.totalCompleted}
+                  </p>
+                </div>
+                <div className="text-5xl text-green-500/30">📊</div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Statistics Cards */}
