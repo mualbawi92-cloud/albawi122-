@@ -145,6 +145,27 @@ const EditAgentPage = () => {
           <CardHeader className="bg-gradient-to-l from-secondary/20 to-secondary/10 p-4 sm:p-6">
             <CardTitle className="text-2xl sm:text-3xl text-primary">✏️ تعديل معلومات الصراف</CardTitle>
             <CardDescription className="text-sm sm:text-base">تعديل معلومات: {agent?.display_name}</CardDescription>
+            
+            {/* Wallet Balance Display */}
+            {agent && (
+              <div className="mt-4 bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border-2 border-yellow-300">
+                <p className="text-sm font-bold text-yellow-900 mb-3">💰 رصيد المحفظة الحالي:</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white p-3 rounded-lg">
+                    <p className="text-xs text-gray-600 mb-1">دينار عراقي</p>
+                    <p className="text-2xl font-bold text-yellow-700">
+                      {(agent.wallet_balance_iqd || 0).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg">
+                    <p className="text-xs text-gray-600 mb-1">دولار أمريكي</p>
+                    <p className="text-2xl font-bold text-yellow-700">
+                      {(agent.wallet_balance_usd || 0).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </CardHeader>
           <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
