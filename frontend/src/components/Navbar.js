@@ -144,6 +144,19 @@ const Navbar = () => {
             >
               👥 الصرافين
             </Button>
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/commissions');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-commissions"
+              >
+                💰 العمولات
+              </Button>
+            )}
             <Button
               onClick={() => {
                 navigate('/settings');
