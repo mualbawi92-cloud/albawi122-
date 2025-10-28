@@ -16,6 +16,7 @@ import CommissionsPage from './pages/CommissionsPage';
 import AllTransfersAdminPage from './pages/AllTransfersAdminPage';
 import WalletPage from './pages/WalletPage';
 import WalletManagementPage from './pages/WalletManagementPage';
+import AgentStatementPage from './pages/AgentStatementPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
