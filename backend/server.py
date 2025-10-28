@@ -413,11 +413,13 @@ async def get_agent_statement(agent_id: str, current_user: dict = Depends(get_cu
         raise HTTPException(status_code=404, detail="الصراف غير موجود")
     
     # Get all transfers for this agent (sent and received)
+    # Only get completed transfers for the statement
     transfers_cursor = db.transfers.find({
         '$or': [
             {'from_agent_id': agent_id},
             {'to_agent_id': agent_id}
-        ]
+        ],
+        'status': 'completed'  # Only completed transfers in statement
     }, {'_id': 0, 'pin_hash': 0}).sort('created_at', -1)
     
     transfers = await transfers_cursor.to_list(10000)
