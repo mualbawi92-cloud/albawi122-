@@ -487,16 +487,34 @@ async def get_agent_statement(agent_id: str, current_user: dict = Depends(get_cu
         raise HTTPException(status_code=404, detail="الصراف غير موجود")
     
     # Get all transfers for this agent (sent and received)
-    # Only get completed transfers for the statement
+    # Get completed transfers AND cancelled transfers (for reversal entries)
     transfers_cursor = db.transfers.find({
         '$or': [
             {'from_agent_id': agent_id},
             {'to_agent_id': agent_id}
         ],
-        'status': 'completed'  # Only completed transfers in statement
+        'status': {'$in': ['completed', 'cancelled']}  # Include cancelled for reversal entries
     }, {'_id': 0, 'pin_hash': 0}).sort('created_at', -1)
     
-    transfers = await transfers_cursor.to_list(10000)
+    transfers_list = await transfers_cursor.to_list(10000)
+    
+    # Process transfers to include reversal entries for cancelled
+    final_transfers = []
+    for transfer in transfers_list:
+        if transfer['status'] == 'completed':
+            final_transfers.append(transfer)
+        elif transfer['status'] == 'cancelled' and transfer.get('from_agent_id') == agent_id:
+            # Add reversal entry for cancelled sent transfer
+            reversal = transfer.copy()
+            reversal['is_reversal'] = True
+            reversal['original_status'] = 'cancelled'
+            reversal['note'] = f"قيد عكسي - حوالة ملغاة ({transfer.get('transfer_code')})"
+            final_transfers.append(reversal)
+    
+    # Sort by created_at (or cancelled_at for reversals)
+    final_transfers.sort(key=lambda x: x.get('cancelled_at') or x.get('created_at'), reverse=True)
+    
+    transfers = final_transfers
     
     # Calculate totals (all transfers are completed now)
     total_sent = 0.0
