@@ -150,7 +150,7 @@ const EditAgentPage = () => {
             {agent && (
               <div className="mt-4 bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border-2 border-yellow-300">
                 <p className="text-sm font-bold text-yellow-900 mb-3">💰 رصيد المحفظة الحالي:</p>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
                   <div className="bg-white p-3 rounded-lg">
                     <p className="text-xs text-gray-600 mb-1">دينار عراقي</p>
                     <p className="text-2xl font-bold text-yellow-700">
