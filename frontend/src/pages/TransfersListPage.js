@@ -26,8 +26,8 @@ const TransfersListPage = () => {
   const fetchTransfers = async () => {
     try {
       const params = new URLSearchParams();
-      if (filter.status) params.append('status', filter.status);
-      if (filter.direction) params.append('direction', filter.direction);
+      if (filter.status && filter.status.trim()) params.append('status', filter.status.trim());
+      if (filter.direction && filter.direction.trim()) params.append('direction', filter.direction.trim());
 
       const response = await axios.get(`${API}/transfers?${params}`);
       setTransfers(response.data);
