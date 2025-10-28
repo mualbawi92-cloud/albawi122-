@@ -293,32 +293,33 @@ const AgentStatementPage = () => {
                             </div>
                           </td>
                           <td className="p-3">
-                            <div className="font-bold text-primary text-sm">
-                              {transfer.transfer_code}
-                              {isReversal && (
-                                <span className="mr-2 text-xs bg-purple-200 text-purple-800 px-2 py-1 rounded">
-                                  🔄 قيد عكسي
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-xs text-gray-600">
-                              {isReversal ? (
-                                <span className="text-purple-700 font-semibold">
-                                  ❌ حوالة ملغاة - إرجاع المبلغ
-                                </span>
-                              ) : (
-                                isSent ? `إلى: ${transfer.receiver_name}` : `من: ${transfer.sender_name}`
-                              )}
-                            </div>
-                            </div>
-                            <div className="text-xs">
-                              {isReversal ? (
-                                <span className="text-purple-600">🔄 قيد عكسي</span>
-                              ) : transfer.status === 'completed' ? (
-                                <span className="text-green-600">✅ مكتمل</span>
-                              ) : (
-                                <span className="text-yellow-600">⏳ قيد الانتظار</span>
-                              )}
+                            <div>
+                              <div className="font-bold text-primary text-sm">
+                                {transfer.transfer_code}
+                                {isReversal && (
+                                  <span className="mr-2 text-xs bg-purple-200 text-purple-800 px-2 py-1 rounded">
+                                    🔄 قيد عكسي
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-xs text-gray-600">
+                                {isReversal ? (
+                                  <span className="text-purple-700 font-semibold">
+                                    ❌ حوالة ملغاة - إرجاع المبلغ
+                                  </span>
+                                ) : (
+                                  isSent ? `إلى: ${transfer.receiver_name}` : `من: ${transfer.sender_name}`
+                                )}
+                              </div>
+                              <div className="text-xs">
+                                {isReversal ? (
+                                  <span className="text-purple-600">🔄 قيد عكسي</span>
+                                ) : transfer.status === 'completed' ? (
+                                  <span className="text-green-600">✅ مكتمل</span>
+                                ) : (
+                                  <span className="text-yellow-600">⏳ قيد الانتظار</span>
+                                )}
+                              </div>
                             </div>
                           </td>
                           <td className="p-3">
