@@ -152,6 +152,9 @@ const AgentStatementPage = () => {
                     {totalCredit.toLocaleString()}
                   </p>
                   <p className="text-xs text-green-600">عدد: {statement.total_received_count}</p>
+                  <p className="text-xs text-green-700 italic mt-1">
+                    {formatAmountInWords(totalCredit, 'IQD')}
+                  </p>
                 </div>
                 <div className="text-5xl text-green-500/30">⬇️</div>
               </div>
@@ -168,6 +171,9 @@ const AgentStatementPage = () => {
                     {totalDebit.toLocaleString()}
                   </p>
                   <p className="text-xs text-red-600">عدد: {statement.total_sent_count}</p>
+                  <p className="text-xs text-red-700 italic mt-1">
+                    {formatAmountInWords(totalDebit, 'IQD')}
+                  </p>
                 </div>
                 <div className="text-5xl text-red-500/30">⬆️</div>
               </div>
@@ -184,6 +190,9 @@ const AgentStatementPage = () => {
                     {netBalance.toLocaleString()}
                   </p>
                   <p className="text-xs text-blue-600">د.ع</p>
+                  <p className="text-xs text-blue-700 italic mt-1">
+                    {formatAmountInWords(Math.abs(netBalance), 'IQD')}
+                  </p>
                 </div>
                 <div className="text-5xl text-blue-500/30">💰</div>
               </div>
