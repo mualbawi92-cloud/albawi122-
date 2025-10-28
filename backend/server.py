@@ -542,7 +542,9 @@ async def receive_transfer(
     
     # Verify receiver full name matches the one registered in the transfer
     expected_receiver_name = transfer.get('receiver_name', '')
-    if receiver_fullname.strip() != expected_receiver_name.strip():
+    
+    # If no receiver_name in old transfers, skip name validation
+    if expected_receiver_name and receiver_fullname.strip() != expected_receiver_name.strip():
         # Log failed attempt for incorrect name
         await db.pin_attempts.insert_one({
             'id': str(uuid.uuid4()),
