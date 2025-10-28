@@ -41,14 +41,20 @@ const AgentStatementPage = () => {
 
   const calculateRunningBalance = (transfers) => {
     let balance = 0;
-    // Filter only completed transfers for the statement
-    const completedTransfers = transfers.filter(t => t.status === 'completed');
+    // Include completed and cancelled (reversal) transfers
+    const statementTransfers = transfers.filter(t => 
+      t.status === 'completed' || t.is_reversal
+    );
     
-    return completedTransfers.map(transfer => {
+    return statementTransfers.map(transfer => {
       const isSent = transfer.from_agent_id === statement.agent_id;
       const amount = transfer.amount || 0;
+      const isReversal = transfer.is_reversal;
       
-      if (isSent) {
+      if (isReversal) {
+        // Reversal: add back the amount (cancelled sent transfer)
+        balance += amount;
+      } else if (isSent) {
         balance -= amount; // مدين (خارج)
       } else {
         balance += amount; // دائن (داخل)
