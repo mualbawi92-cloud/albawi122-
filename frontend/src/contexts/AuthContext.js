@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
@@ -14,8 +15,25 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      // Could verify token here
+      
+      // Add response interceptor to handle token expiration
+      const interceptor = axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+          if (error.response?.status === 401) {
+            // Token expired or invalid
+            logout();
+            window.location.href = '/login';
+          }
+          return Promise.reject(error);
+        }
+      );
+
       setLoading(false);
+
+      return () => {
+        axios.interceptors.response.eject(interceptor);
+      };
     } else {
       setLoading(false);
     }
