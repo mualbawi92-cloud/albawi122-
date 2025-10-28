@@ -183,6 +183,10 @@ const AllTransfersAdminPage = () => {
                             <h4 className="font-bold text-primary border-b pb-1">📥 معلومات المستلم</h4>
                             <div className="space-y-1 text-sm">
                               <div className="flex justify-between">
+                                <span className="text-muted-foreground">الاسم الثلاثي:</span>
+                                <span className="font-bold">{transfer.receiver_name}</span>
+                              </div>
+                              <div className="flex justify-between">
                                 <span className="text-muted-foreground">إلى محافظة:</span>
                                 <span className="font-bold">{transfer.to_governorate}</span>
                               </div>
