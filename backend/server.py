@@ -638,11 +638,99 @@ async def update_user_status(user_id: str, is_active: bool, current_user: dict =
     )
     
     if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
     
     await log_audit(None, current_user['id'], 'user_status_changed', {'target_user_id': user_id, 'is_active': is_active})
     
     return {'success': True}
+
+@api_router.put("/profile")
+async def update_profile(user_data: UserUpdate, current_user: dict = Depends(get_current_user)):
+    """Update current user profile"""
+    update_fields = {}
+    
+    if user_data.display_name:
+        if len(user_data.display_name) < 3:
+            raise HTTPException(status_code=400, detail="اسم العرض يجب أن يكون 3 أحرف على الأقل")
+        update_fields['display_name'] = user_data.display_name
+    
+    if user_data.phone:
+        update_fields['phone'] = user_data.phone
+    
+    if user_data.governorate:
+        update_fields['governorate'] = user_data.governorate
+    
+    # Password change
+    if user_data.new_password:
+        if not user_data.current_password:
+            raise HTTPException(status_code=400, detail="كلمة المرور الحالية مطلوبة لتغيير كلمة المرور")
+        
+        # Verify current password
+        user = await db.users.find_one({'id': current_user['id']})
+        if not bcrypt.checkpw(user_data.current_password.encode(), user['password_hash'].encode()):
+            raise HTTPException(status_code=400, detail="كلمة المرور الحالية غير صحيحة")
+        
+        if len(user_data.new_password) < 6:
+            raise HTTPException(status_code=400, detail="كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل")
+        
+        update_fields['password_hash'] = bcrypt.hashpw(user_data.new_password.encode(), bcrypt.gensalt()).decode()
+    
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="لا توجد بيانات للتحديث")
+    
+    result = await db.users.update_one(
+        {'id': current_user['id']},
+        {'$set': update_fields}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    await log_audit(None, current_user['id'], 'profile_updated', {'fields': list(update_fields.keys())})
+    
+    # Return updated user
+    updated_user = await db.users.find_one({'id': current_user['id']}, {'_id': 0, 'password_hash': 0})
+    return updated_user
+
+@api_router.put("/users/{user_id}")
+async def update_user_by_admin(user_id: str, user_data: UserUpdate, current_user: dict = Depends(require_admin)):
+    """Update user by admin"""
+    update_fields = {}
+    
+    if user_data.display_name:
+        if len(user_data.display_name) < 3:
+            raise HTTPException(status_code=400, detail="اسم العرض يجب أن يكون 3 أحرف على الأقل")
+        update_fields['display_name'] = user_data.display_name
+    
+    if user_data.phone:
+        update_fields['phone'] = user_data.phone
+    
+    if user_data.governorate:
+        update_fields['governorate'] = user_data.governorate
+    
+    # Admin can set new password without current password
+    if user_data.new_password:
+        if len(user_data.new_password) < 6:
+            raise HTTPException(status_code=400, detail="كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل")
+        
+        update_fields['password_hash'] = bcrypt.hashpw(user_data.new_password.encode(), bcrypt.gensalt()).decode()
+    
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="لا توجد بيانات للتحديث")
+    
+    result = await db.users.update_one(
+        {'id': user_id},
+        {'$set': update_fields}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    await log_audit(None, current_user['id'], 'user_updated_by_admin', {'target_user_id': user_id, 'fields': list(update_fields.keys())})
+    
+    # Return updated user
+    updated_user = await db.users.find_one({'id': user_id}, {'_id': 0, 'password_hash': 0})
+    return updated_user
 
 # ============ WebSocket Events ============
 
