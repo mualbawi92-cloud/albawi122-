@@ -41,16 +41,17 @@ const AgentStatementPage = () => {
 
   const calculateRunningBalance = (transfers) => {
     let balance = 0;
-    return transfers.map(transfer => {
+    // Filter only completed transfers for the statement
+    const completedTransfers = transfers.filter(t => t.status === 'completed');
+    
+    return completedTransfers.map(transfer => {
       const isSent = transfer.from_agent_id === statement.agent_id;
       const amount = transfer.amount || 0;
       
-      if (transfer.status === 'completed') {
-        if (isSent) {
-          balance -= amount; // مدين (خارج)
-        } else {
-          balance += amount; // دائن (داخل)
-        }
+      if (isSent) {
+        balance -= amount; // مدين (خارج)
+      } else {
+        balance += amount; // دائن (داخل)
       }
       
       return {
