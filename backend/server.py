@@ -247,6 +247,28 @@ class DashboardStats(BaseModel):
     pending_outgoing: int
     completed_today: int
     total_amount_today: float
+    wallet_balance_iqd: float = 0.0
+    wallet_balance_usd: float = 0.0
+
+class WalletTransaction(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    user_id: str
+    user_display_name: str
+    amount: float
+    currency: str
+    transaction_type: str  # 'deposit', 'transfer_sent', 'transfer_received'
+    reference_id: Optional[str] = None  # transfer_id for transfers
+    added_by_admin_id: Optional[str] = None
+    added_by_admin_name: Optional[str] = None
+    note: Optional[str] = None
+    created_at: str
+
+class WalletDeposit(BaseModel):
+    user_id: str
+    amount: float
+    currency: str  # IQD or USD
+    note: Optional[str] = None
 
 # ============ API Routes ============
 
