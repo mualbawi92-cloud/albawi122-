@@ -76,6 +76,47 @@ const TransferDetailsPage = () => {
     }
   };
 
+  const handleCancelTransfer = async () => {
+    if (!window.confirm('هل أنت متأكد من إلغاء هذه الحوالة؟')) {
+      return;
+    }
+
+    setLoadingCancel(true);
+    try {
+      await axios.patch(`${API}/transfers/${id}/cancel`);
+      toast.success('تم إلغاء الحوالة بنجاح. المبلغ تم إرجاعه للمحفظة.');
+      fetchTransfer(); // Refresh transfer data
+    } catch (error) {
+      console.error('Error cancelling transfer:', error);
+      toast.error(error.response?.data?.detail || 'خطأ في إلغاء الحوالة');
+    } finally {
+      setLoadingCancel(false);
+    }
+  };
+
+  const handleEditTransfer = async (e) => {
+    e.preventDefault();
+    setLoadingEdit(true);
+
+    try {
+      const updateData = {};
+      if (editData.sender_name) updateData.sender_name = editData.sender_name;
+      if (editData.receiver_name) updateData.receiver_name = editData.receiver_name;
+      if (editData.amount) updateData.amount = parseFloat(editData.amount);
+      if (editData.note) updateData.note = editData.note;
+
+      await axios.patch(`${API}/transfers/${id}/update`, updateData);
+      toast.success('تم تعديل الحوالة بنجاح');
+      setShowEdit(false);
+      fetchTransfer(); // Refresh transfer data
+    } catch (error) {
+      console.error('Error updating transfer:', error);
+      toast.error(error.response?.data?.detail || 'خطأ في تعديل الحوالة');
+    } finally {
+      setLoadingEdit(false);
+    }
+  };
+
   const captureImage = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     setCapturedImage(imageSrc);
