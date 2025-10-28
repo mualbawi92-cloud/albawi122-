@@ -323,7 +323,41 @@ const TransferDetailsPage = () => {
             )}
 
             {/* Actions */}
-            {transfer.status === 'pending' && !showReceive && (
+            {transfer.status === 'pending' && !showReceive && user && transfer.from_agent_id === user.id && (
+              <div className="space-y-4">
+                {/* Edit and Cancel Buttons for Sender */}
+                <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
+                  <p className="text-sm font-semibold text-yellow-800 mb-3">
+                    ⚠️ أنت مُرسل هذه الحوالة - يمكنك التعديل أو الإلغاء
+                  </p>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => {
+                        setEditData({
+                          sender_name: transfer.sender_name,
+                          receiver_name: transfer.receiver_name,
+                          amount: transfer.amount,
+                          note: transfer.note || ''
+                        });
+                        setShowEdit(true);
+                      }}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      ✏️ تعديل الحوالة
+                    </Button>
+                    <Button
+                      onClick={handleCancelTransfer}
+                      disabled={loadingCancel}
+                      className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      {loadingCancel ? 'جاري الإلغاء...' : '❌ إلغاء الحوالة'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {transfer.status === 'pending' && !showReceive && user && transfer.from_agent_id !== user.id && (
               <div className="flex gap-4 pt-4">
                 <Button
                   onClick={() => setShowReceive(true)}
