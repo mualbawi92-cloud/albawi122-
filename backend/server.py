@@ -660,6 +660,31 @@ async def get_transfer_pin(transfer_id: str, current_user: dict = Depends(get_cu
         logging.error(f"PIN decryption error: {e}")
         raise HTTPException(status_code=500, detail="خطأ في فك تشفير الرقم السري")
 
+@api_router.get("/transfers/search/{transfer_code}")
+async def search_transfer_by_code(transfer_code: str, current_user: dict = Depends(get_current_user)):
+    """Search transfer by transfer_code (for receiving step 1)"""
+    transfer = await db.transfers.find_one({'transfer_code': transfer_code}, {'_id': 0, 'pin_hash': 0, 'pin_encrypted': 0})
+    
+    if not transfer:
+        raise HTTPException(status_code=404, detail="رقم الحوالة غير صحيح")
+    
+    # Check if transfer is pending
+    if transfer['status'] != 'pending':
+        raise HTTPException(status_code=400, detail=f"هذه الحوالة {transfer['status']} بالفعل")
+    
+    # Return basic info for verification
+    return {
+        'id': transfer['id'],
+        'transfer_code': transfer['transfer_code'],
+        'sender_name': transfer.get('sender_name'),
+        'receiver_name': transfer.get('receiver_name'),
+        'amount': transfer.get('amount'),
+        'currency': transfer.get('currency', 'IQD'),
+        'from_agent_name': transfer.get('from_agent_name'),
+        'to_governorate': transfer.get('to_governorate'),
+        'created_at': transfer.get('created_at')
+    }
+
 @api_router.post("/transfers/{transfer_id}/receive")
 async def receive_transfer(
     transfer_id: str,
