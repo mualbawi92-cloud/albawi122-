@@ -540,10 +540,8 @@ async def receive_transfer(
     if not check_rate_limit(rate_limit_key, pin_attempts_cache, MAX_PIN_ATTEMPTS, LOCKOUT_DURATION):
         raise HTTPException(status_code=429, detail="Too many PIN attempts. Try again later.")
     
-    # Verify receiver full name first
-    # Note: For now, we'll use sender_name as the expected receiver name for validation
-    # This should be updated to have a proper receiver_name field in the transfer
-    expected_receiver_name = transfer.get('receiver_name', transfer.get('sender_name', ''))
+    # Verify receiver full name matches the one registered in the transfer
+    expected_receiver_name = transfer.get('receiver_name', '')
     if receiver_fullname.strip() != expected_receiver_name.strip():
         # Log failed attempt for incorrect name
         await db.pin_attempts.insert_one({
