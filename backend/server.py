@@ -601,6 +601,26 @@ async def receive_transfer(
         }}
     )
     
+    # Update receiver's wallet (increase balance)
+    wallet_field = f'wallet_balance_{transfer["currency"].lower()}'
+    await db.users.update_one(
+        {'id': current_user['id']},
+        {'$inc': {wallet_field: transfer['amount']}}
+    )
+    
+    # Log wallet transaction for receiver
+    await db.wallet_transactions.insert_one({
+        'id': str(uuid.uuid4()),
+        'user_id': current_user['id'],
+        'user_display_name': current_user['display_name'],
+        'amount': transfer['amount'],
+        'currency': transfer['currency'],
+        'transaction_type': 'transfer_received',
+        'reference_id': transfer_id,
+        'note': f'حوالة مستلمة: {transfer["transfer_code"]}',
+        'created_at': datetime.now(timezone.utc).isoformat()
+    })
+    
     # Log successful PIN attempt
     await db.pin_attempts.insert_one({
         'id': str(uuid.uuid4()),
