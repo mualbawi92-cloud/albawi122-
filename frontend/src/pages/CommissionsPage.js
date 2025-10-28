@@ -85,7 +85,7 @@ const CommissionsPage = () => {
                 <CardHeader className="p-4">
                   <CardDescription className="text-xs sm:text-sm">إجمالي الأرباح (العمولات)</CardDescription>
                   <CardTitle className="text-2xl sm:text-3xl font-bold text-green-600">
-                    {report?.total_commission?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || 0}
+                    {(report?.total_commission || 0).toFixed(2)}
                   </CardTitle>
                 </CardHeader>
               </Card>
