@@ -192,6 +192,8 @@ class UserCreate(BaseModel):
     governorate: str
     phone: str
     role: str = "agent"
+    wallet_limit_iqd: float = 0.0  # حد أقصى للسحب بالدينار
+    wallet_limit_usd: float = 0.0  # حد أقصى للسحب بالدولار
 
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -204,6 +206,8 @@ class User(BaseModel):
     is_active: bool = True
     wallet_balance_iqd: float = 0.0
     wallet_balance_usd: float = 0.0
+    wallet_limit_iqd: float = 0.0
+    wallet_limit_usd: float = 0.0
     created_at: str
 
 class LoginRequest(BaseModel):
