@@ -114,7 +114,7 @@ const CommissionsPage = () => {
                         <div className="flex justify-between items-center bg-green-100 p-2 rounded">
                           <span className="text-green-800 font-bold">الأرباح:</span>
                           <span className="font-bold text-green-600 text-lg">
-                            {data.total_commission.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currency}
+                            {data.total_commission.toFixed(2)} {currency}
                           </span>
                         </div>
                       </CardContent>
