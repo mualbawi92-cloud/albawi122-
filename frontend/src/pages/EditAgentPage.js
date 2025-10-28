@@ -201,6 +201,64 @@ const EditAgentPage = () => {
                 </Select>
               </div>
 
+              {/* Wallet Limits Section */}
+              <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg space-y-4">
+                <h3 className="text-lg font-bold text-blue-900">💰 حدود المحفظة</h3>
+                <p className="text-sm text-blue-800">
+                  حدد الحد الأقصى الذي يمكن للصيرفة طلبه من المحفظة
+                </p>
+
+                <div className="space-y-2">
+                  <Label htmlFor="wallet_limit_iqd" className="text-base font-bold">
+                    الحد الأقصى بالدينار (IQD)
+                  </Label>
+                  <Input
+                    id="wallet_limit_iqd"
+                    type="number"
+                    value={formData.wallet_limit_iqd}
+                    onChange={(e) => setFormData({ ...formData, wallet_limit_iqd: e.target.value })}
+                    className="text-base h-12"
+                    placeholder="مثال: 20000000"
+                    min="0"
+                  />
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-blue-700">
+                      الرصيد الحالي: {agent?.wallet_balance_iqd?.toLocaleString() || 0} IQD
+                    </span>
+                    {formData.wallet_limit_iqd > 0 && agent?.wallet_balance_iqd < formData.wallet_limit_iqd && (
+                      <span className="text-red-700 font-bold">
+                        المطلوب: {(formData.wallet_limit_iqd - (agent?.wallet_balance_iqd || 0)).toLocaleString()} IQD
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="wallet_limit_usd" className="text-base font-bold">
+                    الحد الأقصى بالدولار (USD)
+                  </Label>
+                  <Input
+                    id="wallet_limit_usd"
+                    type="number"
+                    value={formData.wallet_limit_usd}
+                    onChange={(e) => setFormData({ ...formData, wallet_limit_usd: e.target.value })}
+                    className="text-base h-12"
+                    placeholder="مثال: 50000"
+                    min="0"
+                  />
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-blue-700">
+                      الرصيد الحالي: {agent?.wallet_balance_usd?.toLocaleString() || 0} USD
+                    </span>
+                    {formData.wallet_limit_usd > 0 && agent?.wallet_balance_usd < formData.wallet_limit_usd && (
+                      <span className="text-red-700 font-bold">
+                        المطلوب: {(formData.wallet_limit_usd - (agent?.wallet_balance_usd || 0)).toLocaleString()} USD
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {/* Password Change Section */}
               <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg space-y-4">
                 <h3 className="text-lg font-bold text-yellow-900">تغيير كلمة المرور (اختياري)</h3>
