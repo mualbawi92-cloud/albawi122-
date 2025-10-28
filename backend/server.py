@@ -219,6 +219,8 @@ class Transfer(BaseModel):
     sender_name: str
     amount: float
     currency: str = "IQD"
+    commission: float = 0.0  # Admin commission
+    commission_percentage: float = 0.13
     status: str
     note: Optional[str] = None
     created_at: str
