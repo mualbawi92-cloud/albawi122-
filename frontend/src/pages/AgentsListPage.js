@@ -1,25 +1,47 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const GOVERNORATES = [
-  'BG', 'BS', 'BB', 'DY', 'AN', 'AR', 'SD', 'NA', 'QA', 'WS',
-  'SA', 'NJ', 'MI', 'DQ', 'KR', 'SU', 'MU', 'TH'
+const IRAQI_GOVERNORATES = [
+  { code: 'BG', name: 'بغداد' },
+  { code: 'BS', name: 'البصرة' },
+  { code: 'NJ', name: 'النجف' },
+  { code: 'KR', name: 'كربلاء' },
+  { code: 'BB', name: 'بابل' },
+  { code: 'AN', name: 'الأنبار' },
+  { code: 'DY', name: 'ديالى' },
+  { code: 'WS', name: 'واسط' },
+  { code: 'SA', name: 'صلاح الدين' },
+  { code: 'NI', name: 'نينوى' },
+  { code: 'DQ', name: 'ذي قار' },
+  { code: 'QA', name: 'القادسية' },
+  { code: 'MY', name: 'المثنى' },
+  { code: 'MI', name: 'ميسان' },
+  { code: 'KI', name: 'كركوك' },
+  { code: 'ER', name: 'أربيل' },
+  { code: 'SU', name: 'السليمانية' },
+  { code: 'DH', name: 'دهوك' }
 ];
 
 const AgentsListPage = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [governorateFilter, setGovernorateFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('active');
 
   useEffect(() => {
     fetchAgents();
