@@ -17,6 +17,7 @@ import AllTransfersAdminPage from './pages/AllTransfersAdminPage';
 import WalletPage from './pages/WalletPage';
 import WalletManagementPage from './pages/WalletManagementPage';
 import AgentStatementPage from './pages/AgentStatementPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
