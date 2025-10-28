@@ -162,24 +162,40 @@ const AgentsListPage = () => {
                           <CardTitle className="text-xl text-primary">{agent.display_name}</CardTitle>
                           <CardDescription>@{agent.username}</CardDescription>
                         </div>
-                        <Badge className="bg-secondary text-primary">{agent.governorate}</Badge>
+                        <Badge className="bg-secondary text-primary">
+                          {IRAQI_GOVERNORATES.find(g => g.code === agent.governorate)?.name || agent.governorate}
+                        </Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <div className="flex items-center gap-2 text-sm">
                           <span className="text-muted-foreground">📞</span>
-                          <span className="font-medium">{agent.phone || 'غير متوفر'}</span>
+                          <span className="font-medium" dir="ltr">{agent.phone || 'غير متوفر'}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <span className="text-muted-foreground">📋</span>
                           <span>{agent.role === 'admin' ? 'مدير' : 'صراف'}</span>
                         </div>
-                        {agent.is_active ? (
-                          <Badge className="bg-green-100 text-green-800">✅ نشط</Badge>
-                        ) : (
-                          <Badge className="bg-red-100 text-red-800">❌ معلق</Badge>
-                        )}
+                        <div className="flex items-center justify-between pt-2">
+                          {agent.is_active ? (
+                            <Badge className="bg-green-100 text-green-800">✅ نشط</Badge>
+                          ) : (
+                            <Badge className="bg-red-100 text-red-800">❌ معلق</Badge>
+                          )}
+                          
+                          {user?.role === 'admin' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleToggleStatus(agent.id, agent.is_active)}
+                              className="text-xs"
+                              data-testid={`toggle-status-${agent.username}`}
+                            >
+                              {agent.is_active ? '🔴 تعطيل' : '✅ تفعيل'}
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
