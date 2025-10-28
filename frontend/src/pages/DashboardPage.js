@@ -76,31 +76,52 @@ const DashboardPage = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-          <Card className="border-r-4 border-r-secondary hover:shadow-lg transition-all" data-testid="stat-pending-incoming">
+          <Card 
+            className="border-r-4 border-r-secondary hover:shadow-lg transition-all cursor-pointer" 
+            data-testid="stat-pending-incoming"
+            onClick={() => navigate('/transfers?direction=incoming&status=pending')}
+          >
             <CardHeader className="p-3 sm:p-6">
               <CardDescription className="text-xs sm:text-sm">واردة قيد الانتظار</CardDescription>
               <CardTitle className="text-3xl sm:text-5xl font-bold text-secondary">{stats?.pending_incoming || 0}</CardTitle>
             </CardHeader>
           </Card>
 
-          <Card className="border-r-4 border-r-primary hover:shadow-lg transition-all" data-testid="stat-pending-outgoing">
+          <Card 
+            className="border-r-4 border-r-primary hover:shadow-lg transition-all cursor-pointer" 
+            data-testid="stat-pending-outgoing"
+            onClick={() => navigate('/transfers?direction=outgoing&status=pending')}
+          >
             <CardHeader className="p-3 sm:p-6">
               <CardDescription className="text-xs sm:text-sm">صادرة قيد الانتظار</CardDescription>
               <CardTitle className="text-3xl sm:text-5xl font-bold text-primary">{stats?.pending_outgoing || 0}</CardTitle>
             </CardHeader>
           </Card>
 
-          <Card className="border-r-4 border-r-green-500 hover:shadow-lg transition-all" data-testid="stat-completed-today">
+          <Card 
+            className="border-r-4 border-r-green-500 hover:shadow-lg transition-all cursor-pointer" 
+            data-testid="stat-completed-today"
+            onClick={() => navigate('/transfers?status=completed')}
+          >
             <CardHeader className="p-3 sm:p-6">
               <CardDescription className="text-xs sm:text-sm">مكتملة اليوم</CardDescription>
               <CardTitle className="text-3xl sm:text-5xl font-bold text-green-600">{stats?.completed_today || 0}</CardTitle>
             </CardHeader>
           </Card>
 
-          <Card className="border-r-4 border-r-secondary hover:shadow-lg transition-all" data-testid="stat-total-amount">
+          <Card 
+            className="border-r-4 border-r-secondary hover:shadow-lg transition-all cursor-pointer" 
+            data-testid="stat-wallet-balance"
+            onClick={() => navigate('/wallet')}
+          >
             <CardHeader className="p-3 sm:p-6">
-              <CardDescription className="text-xs sm:text-sm">إجمالي المبالغ اليوم</CardDescription>
-              <CardTitle className="text-xl sm:text-3xl font-bold text-secondary">{stats?.total_amount_today?.toLocaleString() || 0} IQD</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">الرصيد المتاح</CardDescription>
+              <CardTitle className="text-lg sm:text-2xl font-bold text-secondary">
+                {stats?.wallet_balance_iqd?.toLocaleString() || 0} IQD
+              </CardTitle>
+              <CardDescription className="text-xs mt-1">
+                {stats?.wallet_balance_usd?.toLocaleString() || 0} USD
+              </CardDescription>
             </CardHeader>
           </Card>
         </div>
