@@ -232,8 +232,13 @@ const AgentStatementPage = () => {
         {/* Transactions Table */}
         <Card className="border-0 shadow-lg">
           <CardHeader className="bg-white border-b">
-            <CardTitle className="text-xl">📅 جدول الحركات</CardTitle>
-            <CardDescription>إجمالي: {filteredTransfers.length} حركة</CardDescription>
+            <CardTitle className="text-xl">📅 جدول الحركات المكتملة</CardTitle>
+            <CardDescription>
+              إجمالي: {filteredTransfers.length} حركة مكتملة فقط
+              <span className="text-xs text-yellow-600 mr-2">
+                (الحوالات قيد الانتظار لا تظهر في كشف الحساب)
+              </span>
+            </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             {filteredTransfers.length === 0 ? (
