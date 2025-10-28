@@ -290,6 +290,12 @@ class TransferCreate(BaseModel):
     to_agent_id: Optional[str] = None
     note: Optional[str] = None
 
+class TransferUpdate(BaseModel):
+    sender_name: Optional[str] = None
+    receiver_name: Optional[str] = None
+    amount: Optional[float] = None
+    note: Optional[str] = None
+
 class Transfer(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str
