@@ -40,6 +40,7 @@ const CreateTransferPage = () => {
   const [formData, setFormData] = useState({
     sender_name: '',
     amount: '',
+    currency: 'IQD',
     to_governorate: '',
     to_agent_id: '',
     note: ''
