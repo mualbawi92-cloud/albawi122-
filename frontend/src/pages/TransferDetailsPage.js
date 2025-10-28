@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import { Button } from '../components/ui/button';
@@ -16,9 +17,13 @@ const API = `${BACKEND_URL}/api`;
 const TransferDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [transfer, setTransfer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showReceive, setShowReceive] = useState(false);
+  const [showPin, setShowPin] = useState(false);
+  const [pinData, setPinData] = useState(null);
+  const [loadingPin, setLoadingPin] = useState(false);
   
   // Receive form states
   const [pin, setPin] = useState('');
@@ -42,6 +47,21 @@ const TransferDetailsPage = () => {
       console.error('Error fetching transfer:', error);
       toast.error('خطأ في تحميل تفاصيل الحوالة');
       navigate('/transfers');
+    }
+  };
+
+  const fetchPin = async () => {
+    setLoadingPin(true);
+    try {
+      const response = await axios.get(`${API}/transfers/${id}/pin`);
+      setPinData(response.data);
+      setShowPin(true);
+      toast.success('تم عرض الرقم السري');
+    } catch (error) {
+      console.error('Error fetching PIN:', error);
+      toast.error(error.response?.data?.detail || 'خطأ في عرض الرقم السري');
+    } finally {
+      setLoadingPin(false);
     }
   };
 
