@@ -377,6 +377,9 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     if not transfer_data.sender_name or len(transfer_data.sender_name) < 3:
         raise HTTPException(status_code=400, detail="اسم المرسل يجب أن يكون 3 أحرف على الأقل")
     
+    if not transfer_data.receiver_name or len(transfer_data.receiver_name) < 3:
+        raise HTTPException(status_code=400, detail="اسم المستلم الثلاثي مطلوب (3 أحرف على الأقل)")
+    
     if transfer_data.amount <= 0:
         raise HTTPException(status_code=400, detail="المبلغ يجب أن يكون أكبر من صفر")
     
@@ -411,6 +414,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'to_agent_id': transfer_data.to_agent_id,
         'to_agent_name': to_agent_name,
         'sender_name': transfer_data.sender_name,
+        'receiver_name': transfer_data.receiver_name,
         'amount': transfer_data.amount,
         'currency': transfer_data.currency,
         'commission': commission,
