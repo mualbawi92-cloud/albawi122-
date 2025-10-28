@@ -30,7 +30,7 @@ db = client[os.environ['DB_NAME']]
 # JWT Config
 JWT_SECRET = os.environ.get('JWT_SECRET', 'secret')
 JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 60))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 480))  # 8 hours
 
 # Security Config
 MAX_LOGIN_ATTEMPTS = int(os.environ.get('MAX_LOGIN_ATTEMPTS', 5))
