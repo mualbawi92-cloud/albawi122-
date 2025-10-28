@@ -225,7 +225,12 @@ const TransferDetailsPage = () => {
               </div>
               <div className="space-y-2">
                 <Label className="text-muted-foreground">المبلغ</Label>
-                <p className="text-3xl font-bold text-secondary" data-testid="amount">{transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}</p>
+                <p className="text-3xl font-bold text-secondary" data-testid="amount">
+                  {transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}
+                </p>
+                <p className="text-sm text-gray-600 italic bg-gray-50 p-2 rounded border border-gray-200">
+                  💬 {formatAmountInWords(transfer.amount, transfer.currency || 'IQD')}
+                </p>
               </div>
               <div className="space-y-2">
                 <Label className="text-muted-foreground">من صراف</Label>
