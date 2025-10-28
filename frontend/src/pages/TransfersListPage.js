@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -14,10 +14,23 @@ const API = `${BACKEND_URL}/api`;
 
 const TransfersListPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState({ status: ' ', direction: ' ' });
+  
+  // Initialize filters from URL query params
+  const [filter, setFilter] = useState({ 
+    status: searchParams.get('status') || '', 
+    direction: searchParams.get('direction') || '' 
+  });
   const [searchCode, setSearchCode] = useState('');
+
+  useEffect(() => {
+    // Update filters if URL params change
+    const statusParam = searchParams.get('status') || '';
+    const directionParam = searchParams.get('direction') || '';
+    setFilter({ status: statusParam, direction: directionParam });
+  }, [searchParams]);
 
   useEffect(() => {
     fetchTransfers();
