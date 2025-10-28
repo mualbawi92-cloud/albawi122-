@@ -67,6 +67,16 @@ const Navbar = () => {
             </Button>
             {user?.role === 'admin' && (
               <Button
+                onClick={() => navigate('/admin/dashboard')}
+                variant="ghost"
+                className="text-white hover:bg-white/10 font-bold text-sm"
+                data-testid="nav-admin-dashboard"
+              >
+                🏦 لوحة المدير
+              </Button>
+            )}
+            {user?.role === 'admin' && (
+              <Button
                 onClick={() => navigate('/admin/all-transfers')}
                 variant="ghost"
                 className="text-white hover:bg-white/10 font-bold text-sm"
