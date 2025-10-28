@@ -183,15 +183,32 @@ const AgentsListPage = () => {
                           )}
                           
                           {user?.role === 'admin' && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleToggleStatus(agent.id, agent.is_active)}
-                              className="text-xs"
-                              data-testid={`toggle-status-${agent.username}`}
-                            >
-                              {agent.is_active ? '🔴 تعطيل' : '✅ تفعيل'}
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/agents/edit/${agent.id}`);
+                                }}
+                                className="text-xs"
+                                data-testid={`edit-${agent.username}`}
+                              >
+                                ✏️ تعديل
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleToggleStatus(agent.id, agent.is_active);
+                                }}
+                                className="text-xs"
+                                data-testid={`toggle-status-${agent.username}`}
+                              >
+                                {agent.is_active ? '🔴 تعطيل' : '✅ تفعيل'}
+                              </Button>
+                            </div>
                           )}
                         </div>
                       </div>
