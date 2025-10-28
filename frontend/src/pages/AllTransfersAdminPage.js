@@ -65,6 +65,7 @@ const AllTransfersAdminPage = () => {
       return (
         transfer.transfer_code.toLowerCase().includes(query) ||
         transfer.sender_name.toLowerCase().includes(query) ||
+        transfer.receiver_name?.toLowerCase().includes(query) ||
         transfer.from_agent_name?.toLowerCase().includes(query) ||
         transfer.to_agent_name?.toLowerCase().includes(query)
       );
