@@ -218,6 +218,7 @@ class Transfer(BaseModel):
     to_agent_name: Optional[str] = None
     sender_name: str
     amount: float
+    currency: str = "IQD"
     status: str
     note: Optional[str] = None
     created_at: str
