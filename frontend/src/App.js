@@ -43,6 +43,7 @@ function AppRoutes() {
       <Route path="/agents/add" element={<ProtectedRoute><AddAgentPage /></ProtectedRoute>} />
       <Route path="/agents/edit/:id" element={<ProtectedRoute><EditAgentPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+      <Route path="/commissions" element={<ProtectedRoute><CommissionsPage /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
