@@ -39,6 +39,7 @@ const CreateTransferPage = () => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     sender_name: '',
+    receiver_name: '',
     amount: '',
     currency: 'IQD',
     to_governorate: '',
@@ -68,6 +69,7 @@ const CreateTransferPage = () => {
     try {
       const submitData = {
         sender_name: formData.sender_name,
+        receiver_name: formData.receiver_name,
         amount: parseFloat(formData.amount),
         currency: formData.currency,
         to_governorate: formData.to_governorate,
