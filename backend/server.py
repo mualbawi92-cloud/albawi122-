@@ -535,7 +535,10 @@ async def receive_transfer(
         raise HTTPException(status_code=429, detail="Too many PIN attempts. Try again later.")
     
     # Verify receiver full name first
-    if receiver_fullname.strip() != transfer['receiver_name'].strip():
+    # Note: For now, we'll use sender_name as the expected receiver name for validation
+    # This should be updated to have a proper receiver_name field in the transfer
+    expected_receiver_name = transfer.get('receiver_name', transfer.get('sender_name', ''))
+    if receiver_fullname.strip() != expected_receiver_name.strip():
         # Log failed attempt for incorrect name
         await db.pin_attempts.insert_one({
             'id': str(uuid.uuid4()),
