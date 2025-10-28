@@ -16,7 +16,7 @@ const TransfersListPage = () => {
   const navigate = useNavigate();
   const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState({ status: '', direction: '' });
+  const [filter, setFilter] = useState({ status: ' ', direction: ' ' });
   const [searchCode, setSearchCode] = useState('');
 
   useEffect(() => {
