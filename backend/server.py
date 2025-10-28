@@ -530,6 +530,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'commission': commission,
         'commission_percentage': commission_percentage,
         'pin_hash': pin_hash_str,
+        'pin_encrypted': encrypt_pin(pin),  # Store encrypted PIN for later retrieval
         'status': 'pending',
         'note': transfer_data.note,
         'created_at': datetime.now(timezone.utc).isoformat(),
