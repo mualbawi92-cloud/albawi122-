@@ -640,13 +640,25 @@ async def get_transfer_pin(transfer_id: str, current_user: dict = Depends(get_cu
     if current_user['role'] != 'admin' and transfer['from_agent_id'] != current_user['id']:
         raise HTTPException(status_code=403, detail="فقط المُرسل أو الأدمن يمكنه رؤية الرقم السري")
     
-    # Get stored PIN from database (we need to store it)
-    # For now, return the pin_hash (we'll need to modify creation to store plain PIN)
-    return {
-        'transfer_id': transfer_id,
-        'transfer_code': transfer['transfer_code'],
-        'message': 'الرقم السري محفوظ بشكل آمن. تم إرساله عند الإنشاء.'
-    }
+    # Decrypt and return PIN
+    pin_encrypted = transfer.get('pin_encrypted')
+    if not pin_encrypted:
+        raise HTTPException(status_code=404, detail="الرقم السري غير متوفر لهذه الحوالة")
+    
+    try:
+        pin = decrypt_pin(pin_encrypted)
+        return {
+            'transfer_id': transfer_id,
+            'transfer_code': transfer['transfer_code'],
+            'pin': pin,
+            'sender_name': transfer.get('sender_name'),
+            'receiver_name': transfer.get('receiver_name'),
+            'amount': transfer.get('amount'),
+            'currency': transfer.get('currency', 'IQD')
+        }
+    except Exception as e:
+        logging.error(f"PIN decryption error: {e}")
+        raise HTTPException(status_code=500, detail="خطأ في فك تشفير الرقم السري")
 
 @api_router.post("/transfers/{transfer_id}/receive")
 async def receive_transfer(
