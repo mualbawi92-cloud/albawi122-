@@ -24,9 +24,11 @@ AGENT_BASRA_CREDENTIALS = {"username": "agent_basra", "password": "agent123"}
 class APITester:
     def __init__(self):
         self.admin_token = None
-        self.agent_token = None
+        self.agent_baghdad_token = None
+        self.agent_basra_token = None
         self.admin_user_id = None
-        self.agent_user_id = None
+        self.agent_baghdad_user_id = None
+        self.agent_basra_user_id = None
         self.test_results = []
         
     def log_result(self, test_name: str, success: bool, message: str, details: Any = None):
