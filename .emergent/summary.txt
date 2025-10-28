@@ -1,81 +1,99 @@
 <analysis>
-The AI engineer successfully built a full-stack cash transfer application, iteratively responding to detailed user requirements and implementing features in phases. Initial setup involved adapting from a PostgreSQL schema to MongoDB, configuring a FastAPI backend with a React frontend, and integrating Cloudinary for image uploads. Key architectural decisions included using Shadcn UI for components, Tailwind CSS for styling, and ensuring full Arabic (RTL) localization. The development process systematically covered authentication, transfer creation, reception, agent management, currency handling, mobile responsiveness, detailed error messaging, user/agent profile editing, admin commissions, and a comprehensive admin overview of transfers. The engineer demonstrated proficiency in debugging, addressing issues like API key misconfigurations, UI rendering bugs, and token expiration. The project is currently at a stage where the core functionalities are implemented, and the AI engineer is about to tackle user requests for more granular error messages during transfer reception and enhanced dashboard navigation. The trajectory showcases a robust, iterative development cycle with continuous user feedback integration.
+The AI engineer successfully developed a full-stack cash transfer application, iteratively enhancing it based on detailed user feedback. Initially, the project involved migrating to MongoDB, configuring a FastAPI backend with a React frontend, and integrating Cloudinary for image uploads. Key architectural decisions included using Shadcn UI, Tailwind CSS, and ensuring full Arabic (RTL) localization. The development trajectory systematically covered authentication, transfer creation, reception (with specific error messages), agent/admin management, a comprehensive wallet system with real-time balance updates and financial statements, transfer cancellation/editing capabilities, and an admin dashboard with overview and detailed agency statements. The engineer demonstrated strong debugging skills, addressing issues like Pydantic validation errors for new fields and ensuring data consistency with migration scripts. The work is currently focused on enabling administrators to edit agent-specific wallet limits.
 </analysis>
-<product_requirements>
-The user requested a local cash transfer system between agents. Each transfer needs a unique  and an . Recipients must enter a 4-6 digit PIN and upload an ID image with their full name. All actions require immutable audit logging.
 
-Key functional requirements include:
-1.  **Agent Management**: User registration (display name, username, password, governorate, phone, active status, role: agent/admin). Admin can add, activate/deactivate, and edit agents.
-2.  **Transfer Creation**: Registered agents initiate transfers, specifying sender name, amount, and recipient governorate (or specific agent). The system generates a  and a one-time display PIN for the sender.
-3.  **Real-time Notifications**: Push/in-app notifications (via WebSockets) for receiving agents.
-4.  **Transfer Reception**: Recipient agent views transfer, requests PIN, uploads receiver's ID photo (JPEG/PNG, max 5MB), and enters full name. Upon successful verification, the transfer status becomes 'completed'.
-5.  **Audit Logs**: Comprehensive logging of all actions, including IPs, ID images, and failed PIN attempts.
-6.  **Admin Features**: Manage agent accounts, retrieve logs, export reports, manage notifications, block IPs, view all transfers with detailed information (sender, receiver, amount, currency, commission), and view commission reports.
-7.  **Currency Support**: Transfers can be in Iraqi Dinar (IQD) or US Dollar (USD).
-8.  **Profit Sharing**: Admin receives 0.13% commission on each completed transfer.
-9.  **UI/UX**: Full Arabic (RTL) interface with a dark blue, gold, and light gray color palette. Fonts: Cairo or Noto Kufi Arabic. Mobile responsiveness is required. Detailed and specific error messages for user inputs (e.g., incorrect PIN, invalid username).
+<product_requirements>
+The application is a local cash transfer system where agents manage transfers, and recipients prove identity. It requires unique s and s, PIN entry, and ID photo uploads for reception. All actions must be audit-logged.
+
+**Key Features Implemented/Requested:**
+1.  **Agent Management:** User registration with roles (agent/admin). Admins can add, edit (including financial limits), activate/deactivate agents.
+2.  **Transfer Creation:** Agents initiate transfers (sender name, amount, recipient details). PIN is generated and stored encrypted.
+3.  **Transfer Reception:** Recipient agent views transfer (after entering ), requests PIN, uploads ID photo, enters full name. System validates PIN and full name with specific error messages. Sender cannot receive their own transfer.
+4.  **Transfer Lifecycle:** Sending agent can cancel or edit pending transfers. Cancelled/edited transfers are logged and visible to administrators.
+5.  **Financials:**
+    *   Currency: IQD/USD.
+    *   Commissions: Admin receives 0.13% on completed transfers.
+    *   Wallet System: Each agent has a wallet (IQD/USD). Balances update automatically on transfer creation/reception. Admins can manually add funds and set / for agents.
+    *   Account Statements: Detailed statements for agents (credits, debits, running balance, totals, filters). Only completed transfers count; cancelled transfers appear as reverse entries.
+    *   Admin Dashboard: Overview of all agencies, including their required wallet amounts (numeric and Arabic text), with links to detailed statements.
+6.  **UI/UX:** Full Arabic (RTL) interface with specific color palette (dark blue, gold, light gray) and fonts (Cairo/Noto Kufi). Mobile responsiveness, detailed error messages, and interactive dashboard cards (linking to filtered transfer lists).
 </product_requirements>
+
 <key_technical_concepts>
--   **Full-stack**: FastAPI (Backend), React (Frontend), MongoDB (Database).
--   **Styling**: Tailwind CSS for utility-first styling, Shadcn UI for modern components.
--   **Authentication**: JWT for API authorization, bcrypt for password hashing.
--   **Image Storage**: Cloudinary for secure ID image uploads.
--   **Real-time**: WebSockets for immediate notifications.
--   **Data Validation**: Pydantic for FastAPI models.
--   **Language Support**: Full Arabic (RTL) for UI.
--   **Database Interactions**:  (async MongoDB driver).
+-   **Full-stack:** FastAPI (Backend), React (Frontend), MongoDB (Database).
+-   **Styling:** Tailwind CSS, Shadcn UI.
+-   **Authentication:** JWT, bcrypt.
+-   **Image Storage:** Cloudinary.
+-   **Real-time:** WebSockets.
+-   **Data Validation:** Pydantic.
+-   **Cryptography:** For PIN encryption/decryption.
+-   **Localization:** Full Arabic (RTL).
 </key_technical_concepts>
+
 <code_architecture>
-The application follows a standard full-stack architecture with a FastAPI backend and a React frontend, orchestrated within an  directory.
+The application employs a standard full-stack architecture, featuring a FastAPI backend and a React frontend within the  directory.
 
 
 
 **Key Files and Changes Summary:**
 
 -   **/app/backend/server.py**:
-    -   **Importance**: The core of the backend, defines all API endpoints, MongoDB interactions, and business logic.
-    -   **Changes**: Implemented user authentication, agent CRUD, transfer creation, reception (with Cloudinary integration for ID image upload), commission calculation, profile updates, and comprehensive audit logging. Added currency field (, ) to transfers. Enhanced error handling for specific messages.
--   **/app/backend/.env**:
-    -   **Importance**: Stores environment-specific variables like  and Cloudinary API credentials.
-    -   **Changes**: Updated with actual Cloudinary , ,  and increased JWT token expiry duration.
+    -   **Importance**: Defines all API endpoints, MongoDB interactions, and core business logic.
+    -   **Changes**: Extended  and  models with wallet balances, limits, and encrypted PINs. Implemented comprehensive wallet operations (add balance, statement generation). Added endpoints for , , , , . Enhanced  with specific error messages, sender-self-receipt prevention, and wallet updates. Modified  for wallet deduction and encrypted PIN storage. Added Arabic number conversion and PIN encryption/decryption utilities.
 -   **/app/frontend/src/App.js**:
-    -   **Importance**: Central routing and context provider setup for the React application.
-    -   **Changes**: Added routes for , , , , and .
+    -   **Importance**: Manages application-wide routing.
+    -   **Changes**: Added routes for , , , , .
 -   **/app/frontend/src/components/Navbar.js**:
-    -   **Importance**: Provides navigation throughout the application.
-    -   **Changes**: Added new navigation links for admin (Add Agent, Commissions, All Transfers) and for all users (Settings), with conditional rendering based on user role. Enhanced mobile responsiveness.
--   **/app/frontend/src/pages/\*.js**:
-    -   **Importance**: Defines the various user interface screens of the application.
-    -   **Changes**:
-        -   : Added filters for governorate and active status, and an Add Agent button for admins. Implemented agent editing links.
-        -   : Created for admin to add new agents with detailed fields and specific error handling.
-        -   : Updated to include currency selection and dynamically load recipient agents based on selected governorate.
-        -   , , , : Enhanced for mobile responsiveness and currency display.
-        -   : Created for users/agents to view and update their profile and change passwords.
-        -   : Created for admins to edit details of specific agents.
-        -   : Created for admins to view commission reports, filterable by currency and showing recent transfers. Includes bug fixes for data display.
-        -   : Created for admins to view all transfers with comprehensive details and filters, designed responsively.
--   **/app/frontend/src/contexts/AuthContext.js**:
-    -   **Importance**: Manages user authentication state and JWT tokens.
-    -   **Changes**: Improved token refresh logic and logout handling to prevent Token expired errors.
--   **/app/frontend/tailwind.config.js & src/index.css**:
-    -   **Importance**: Define the visual style, including colors, fonts, and Tailwind CSS configuration.
-    -   **Changes**: Configured Cairo font, implemented specified color palette (dark blue, gold, light gray), and ensured RTL support.
-
-The  directory contains Shadcn UI components, which are used consistently across the frontend for a modern and accessible UI.
+    -   **Importance**: Provides navigation links.
+    -   **Changes**: Added new navigation links for ,  (admin), ,  (admin), and  (admin) for both desktop and mobile views.
+-   **/app/frontend/src/pages/DashboardPage.js**:
+    -   **Importance**: Displays a user's activity summary.
+    -   **Changes**: Made summary cards interactive to filter ; displays user's wallet balance.
+-   **/app/frontend/src/pages/TransfersListPage.js**:
+    -   **Importance**: Lists transfers.
+    -   **Changes**: Supports URL query parameters for filtering; displays .
+-   **/app/frontend/src/pages/CreateTransferPage.js**:
+    -   **Importance**: Form for creating new transfers.
+    -   **Changes**: Added input field for .
+-   **/app/frontend/src/pages/TransferDetailsPage.js**:
+    -   **Importance**: Displays specific transfer details.
+    -   **Changes**: Displays ; added View PIN button, Cancel Transfer and Edit Transfer buttons with an inline edit form for the sender.
+-   **/app/frontend/src/pages/AgentStatementPage.js**:
+    -   **Importance**: Displays an agent's account statement.
+    -   **Changes**: Implemented detailed UI for statement (summary cards, filterable table, footer totals); filters for  transfers only and displays  transfers as reverse entries.
+-   **/app/frontend/src/pages/AllTransfersAdminPage.js**:
+    -   **Importance**: Admin view of all transfers.
+    -   **Changes**: Displays .
+-   **/app/frontend/src/pages/AddAgentPage.js**:
+    -   **Importance**: Admin page to add new agents.
+    -   **Changes**: Added input fields for  and .
+-   **/app/frontend/src/pages/EditAgentPage.js**:
+    -   **Importance**: Admin page to edit existing agent details.
+    -   **Changes**: Currently being updated to include input fields for  and .
+-   **/app/frontend/src/pages/AdminDashboardPage.js**:
+    -   **Importance**: New admin overview page.
+    -   **Changes**: Implemented detailed UI with total stats, table of agencies (including current balance, required from wallet in Arabic text, and a link to their statement). Added a quick action button for cancelled/edited transfers.
+-   **/app/frontend/src/pages/CancelledTransfersPage.js**:
+    -   **Importance**: New page for admin to view cancelled/edited transfers.
+    -   **Changes**: Page created; content implementation is pending.
+-   **/app/frontend/src/utils/arabicNumbers.js**:
+    -   **Importance**: New utility for formatting numbers into Arabic text.
+    -   **Changes**: Contains , , and  functions.
+-   **/app/scripts/*.py**:
+    -   **Importance**: Migration scripts to update existing MongoDB documents.
+    -   **Changes**: Created  (add wallet balances),  (add receiver name), and  (add wallet limits) for existing users/transfers.
 </code_architecture>
-<pending_tasks>
--   **Receive Transfer Error Messages**: Provide specific error messages for incorrect full name or PIN during transfer reception.
--   **Dashboard Navigation**: Make dashboard summary cards (e.g., Outgoing, Pending, Funds) clickable to filter the  accordingly.
-</pending_tasks>
-<current_work>
-Immediately prior to this summary request, the AI engineer successfully implemented a comprehensive All Transfers page for administrators. This page allows admins to view every transfer in the system, providing detailed information such as the , date, amount, currency, sender's full name, originating agent, recipient governorate, receiving agent, sequence number, and commission amount. The page also includes filtering capabilities for search, transfer status, and displays the total count of transfers. It was confirmed to be mobile-responsive.
 
-The user's most recent request (Chat Message 293) highlighted two new areas for improvement:
-1.  **Enhanced Error Feedback**: When a receiving agent attempts to complete a transfer, the user wants specific error messages if the entered  or  is incorrect, instead of generic errors.
-2.  **Interactive Dashboard Cards**: The user wishes for the dashboard's summary cards (e.g., Outgoing, Pending, Funds) to be interactive. Clicking on them should navigate the user to the , pre-filtered according to the selected card's category (e.g., clicking Pending should show only pending transfers).
-The AI engineer acknowledged these requests and is currently preparing to implement them, starting with reviewing the provided screenshot to understand the dashboard UI context.
+<pending_tasks>
+-   Complete the frontend implementation for editing agent wallet limits on the .
+-   Populate the  with data and UI to display cancelled and edited transfers for administrators.
+-   Refine the  to fully reflect the amount required from wallet using the new numeric and Arabic text formatting.
+</pending_tasks>
+
+<current_work>
+Immediately prior to this summary, the AI engineer was working on enabling administrators to modify the financial limits ( and ) for existing agents. This involves updating the  component in the frontend to include input fields for these new limits. Concurrently, the backend  endpoint in  needs to be adapted to accept and persist these  and  values when an agent's profile is updated by an administrator. The related Pydantic  model also needs to be extended to properly validate these new fields. This work directly addresses the user's request to allow admins to define financial exposure limits for each agency.
 </current_work>
+
 <optional_next_step>
-I will implement specific error messages for incorrect receiver full name or PIN during transfer reception, as requested.
+Update the  Pydantic model in  to include  and  fields.
 </optional_next_step>

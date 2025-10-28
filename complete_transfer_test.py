@@ -9,7 +9,7 @@ import time
 from io import BytesIO
 
 # Configuration
-BASE_URL = "https://cashport-2.preview.emergentagent.com/api"
+BASE_URL = "https://transfer-wallet.preview.emergentagent.com/api"
 AGENT_CREDENTIALS = {"username": "agent_baghdad", "password": "agent123"}
 
 def test_complete_transfer_flow():
