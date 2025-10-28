@@ -146,7 +146,9 @@ const TransferDetailsPage = () => {
               </div>
               <div className="space-y-2">
                 <Label className="text-muted-foreground">اسم المستلم</Label>
-                <p className="text-xl font-bold text-primary" data-testid="receiver-name">{transfer.receiver_name}</p>
+                <p className="text-xl font-bold text-primary" data-testid="receiver-name">
+                  {transfer.receiver_name || 'غير محدد'}
+                </p>
               </div>
               <div className="space-y-2">
                 <Label className="text-muted-foreground">المبلغ</Label>
