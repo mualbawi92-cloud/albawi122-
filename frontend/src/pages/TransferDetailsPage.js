@@ -312,6 +312,9 @@ const TransferDetailsPage = () => {
                     <div className="space-y-2">
                       <Label className="text-sm text-muted-foreground">المبلغ</Label>
                       <p className="text-lg font-bold">{pinData.amount.toLocaleString()} {pinData.currency}</p>
+                      <p className="text-xs text-gray-600 italic bg-gray-50 p-2 rounded">
+                        💬 {formatAmountInWords(pinData.amount, pinData.currency)}
+                      </p>
                     </div>
                   </div>
                   <div className="bg-yellow-50 border border-yellow-300 rounded p-3 text-sm text-yellow-800">
