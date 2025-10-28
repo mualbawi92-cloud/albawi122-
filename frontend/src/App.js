@@ -1,51 +1,56 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { WebSocketProvider } from './contexts/WebSocketContext';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import CreateTransferPage from './pages/CreateTransferPage';
+import TransfersListPage from './pages/TransfersListPage';
+import TransferDetailsPage from './pages/TransferDetailsPage';
+import AgentsListPage from './pages/AgentsListPage';
+import './App.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-2xl text-primary font-bold">جاري التحميل...</div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+function AppRoutes() {
+  const { isAuthenticated } = useAuth();
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} />
+      <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+      <Route path="/transfers" element={<ProtectedRoute><TransfersListPage /></ProtectedRoute>} />
+      <Route path="/transfers/create" element={<ProtectedRoute><CreateTransferPage /></ProtectedRoute>} />
+      <Route path="/transfers/:id" element={<ProtectedRoute><TransferDetailsPage /></ProtectedRoute>} />
+      <Route path="/agents" element={<ProtectedRoute><AgentsListPage /></ProtectedRoute>} />
+      <Route path="/" element={<Navigate to="/dashboard" />} />
+    </Routes>
   );
-};
+}
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <AuthProvider>
+          <WebSocketProvider>
+            <AppRoutes />
+            <Toaster position="top-center" richColors />
+          </WebSocketProvider>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );
