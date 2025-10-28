@@ -134,9 +134,16 @@ const TransfersListPage = () => {
                       <p className="text-sm text-muted-foreground">
                         من: {transfer.sender_name}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        إلى: {transfer.receiver_name} ({transfer.to_governorate})
-                      </p>
+                      {transfer.receiver_name && (
+                        <p className="text-sm text-muted-foreground">
+                          إلى: {transfer.receiver_name} ({transfer.to_governorate})
+                        </p>
+                      )}
+                      {!transfer.receiver_name && (
+                        <p className="text-sm text-muted-foreground">
+                          إلى: {transfer.to_governorate}
+                        </p>
+                      )}
                       <p className="text-xs text-muted-foreground">
                         {new Date(transfer.created_at).toLocaleDateString('ar-IQ', {
                           year: 'numeric',
