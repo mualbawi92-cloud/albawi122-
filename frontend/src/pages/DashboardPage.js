@@ -67,53 +67,53 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen bg-background" data-testid="dashboard-page">
       <Navbar />
-      <div className="container mx-auto p-6 space-y-8">
+      <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-8">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-l from-primary to-primary/80 rounded-2xl p-8 text-white shadow-xl">
-          <h1 className="text-4xl font-bold mb-2">مرحباً {user?.display_name}</h1>
-          <p className="text-xl opacity-90">{user?.governorate} - {user?.role === 'admin' ? 'مدير' : 'صراف'}</p>
+        <div className="bg-gradient-to-l from-primary to-primary/80 rounded-xl sm:rounded-2xl p-4 sm:p-8 text-white shadow-xl">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">مرحباً {user?.display_name}</h1>
+          <p className="text-base sm:text-xl opacity-90">{user?.governorate} - {user?.role === 'admin' ? 'مدير' : 'صراف'}</p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           <Card className="border-r-4 border-r-secondary hover:shadow-lg transition-all" data-testid="stat-pending-incoming">
-            <CardHeader>
-              <CardDescription>واردة قيد الانتظار</CardDescription>
-              <CardTitle className="text-5xl font-bold text-secondary">{stats?.pending_incoming || 0}</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <CardDescription className="text-xs sm:text-sm">واردة قيد الانتظار</CardDescription>
+              <CardTitle className="text-3xl sm:text-5xl font-bold text-secondary">{stats?.pending_incoming || 0}</CardTitle>
             </CardHeader>
           </Card>
 
           <Card className="border-r-4 border-r-primary hover:shadow-lg transition-all" data-testid="stat-pending-outgoing">
-            <CardHeader>
-              <CardDescription>صادرة قيد الانتظار</CardDescription>
-              <CardTitle className="text-5xl font-bold text-primary">{stats?.pending_outgoing || 0}</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <CardDescription className="text-xs sm:text-sm">صادرة قيد الانتظار</CardDescription>
+              <CardTitle className="text-3xl sm:text-5xl font-bold text-primary">{stats?.pending_outgoing || 0}</CardTitle>
             </CardHeader>
           </Card>
 
           <Card className="border-r-4 border-r-green-500 hover:shadow-lg transition-all" data-testid="stat-completed-today">
-            <CardHeader>
-              <CardDescription>مكتملة اليوم</CardDescription>
-              <CardTitle className="text-5xl font-bold text-green-600">{stats?.completed_today || 0}</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <CardDescription className="text-xs sm:text-sm">مكتملة اليوم</CardDescription>
+              <CardTitle className="text-3xl sm:text-5xl font-bold text-green-600">{stats?.completed_today || 0}</CardTitle>
             </CardHeader>
           </Card>
 
           <Card className="border-r-4 border-r-secondary hover:shadow-lg transition-all" data-testid="stat-total-amount">
-            <CardHeader>
-              <CardDescription>إجمالي المبالغ اليوم</CardDescription>
-              <CardTitle className="text-3xl font-bold text-secondary">{stats?.total_amount_today?.toLocaleString() || 0} IQD</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <CardDescription className="text-xs sm:text-sm">إجمالي المبالغ اليوم</CardDescription>
+              <CardTitle className="text-xl sm:text-3xl font-bold text-secondary">{stats?.total_amount_today?.toLocaleString() || 0} IQD</CardTitle>
             </CardHeader>
           </Card>
         </div>
 
         {/* Quick Actions */}
         <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">عمليات سريعة</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-xl sm:text-2xl">عمليات سريعة</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-wrap gap-4">
+          <CardContent className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 p-4 sm:p-6">
             <Button 
               onClick={() => navigate('/transfers/create')} 
-              className="bg-secondary hover:bg-secondary/90 text-primary font-bold text-lg px-8 py-6"
+              className="w-full sm:w-auto bg-secondary hover:bg-secondary/90 text-primary font-bold text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6"
               data-testid="create-transfer-btn"
             >
               ➕ إنشاء حوالة جديدة
@@ -121,7 +121,7 @@ const DashboardPage = () => {
             <Button 
               onClick={() => navigate('/transfers')} 
               variant="outline"
-              className="font-bold text-lg px-8 py-6 border-2 border-primary hover:bg-primary hover:text-white"
+              className="w-full sm:w-auto font-bold text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-2 border-primary hover:bg-primary hover:text-white"
               data-testid="view-transfers-btn"
             >
               📋 عرض جميع الحوالات
@@ -129,7 +129,7 @@ const DashboardPage = () => {
             <Button 
               onClick={() => navigate('/agents')} 
               variant="outline"
-              className="font-bold text-lg px-8 py-6 border-2 border-secondary hover:bg-secondary hover:text-primary"
+              className="w-full sm:w-auto font-bold text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-2 border-secondary hover:bg-secondary hover:text-primary"
               data-testid="view-agents-btn"
             >
               👥 قائمة الصرافين
@@ -139,31 +139,31 @@ const DashboardPage = () => {
 
         {/* Recent Transfers */}
         <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">آخر الحوالات</CardTitle>
-            <CardDescription>آخر 10 حوالات</CardDescription>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-xl sm:text-2xl">آخر الحوالات</CardTitle>
+            <CardDescription className="text-sm sm:text-base">آخر 10 حوالات</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             {transfers.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">لا توجد حوالات</p>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {transfers.map((transfer) => (
                   <div
                     key={transfer.id}
                     data-testid={`transfer-${transfer.transfer_code}`}
-                    className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:shadow-md transition-all cursor-pointer"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 bg-muted/30 rounded-lg hover:shadow-md transition-all cursor-pointer gap-2 sm:gap-0"
                     onClick={() => navigate(`/transfers/${transfer.id}`)}
                   >
-                    <div className="space-y-1">
-                      <p className="font-bold text-lg text-primary">{transfer.transfer_code}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="space-y-1 w-full sm:w-auto">
+                      <p className="font-bold text-base sm:text-lg text-primary">{transfer.transfer_code}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {transfer.sender_name} → {transfer.to_governorate}
                       </p>
                     </div>
-                    <div className="text-left space-y-2">
-                      <p className="text-xl font-bold text-secondary">{transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}</p>
-                      {getStatusBadge(transfer.status)}
+                    <div className="flex items-center justify-between w-full sm:w-auto sm:text-left space-y-1 sm:space-y-2">
+                      <p className="text-lg sm:text-xl font-bold text-secondary">{transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}</p>
+                      <div className="sm:mr-4">{getStatusBadge(transfer.status)}</div>
                     </div>
                   </div>
                 ))}
