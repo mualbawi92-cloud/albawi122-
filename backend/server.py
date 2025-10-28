@@ -348,6 +348,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'to_agent_name': to_agent_name,
         'sender_name': transfer_data.sender_name,
         'amount': transfer_data.amount,
+        'currency': transfer_data.currency,
         'pin_hash': pin_hash_str,
         'status': 'pending',
         'note': transfer_data.note,
