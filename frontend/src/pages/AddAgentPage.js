@@ -45,7 +45,9 @@ const AddAgentPage = () => {
     display_name: '',
     owner_name: '',
     phone: '',
-    governorate: ''
+    governorate: '',
+    wallet_limit_iqd: '',
+    wallet_limit_usd: ''
   });
 
   // Check if user is admin
