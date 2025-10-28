@@ -780,6 +780,82 @@ async def get_commissions_report(
         'transfers': transfers[:100]  # Return last 100 for display
     }
 
+@api_router.post("/wallet/deposit")
+async def add_wallet_deposit(deposit: WalletDeposit, current_user: dict = Depends(require_admin)):
+    """Add funds to user's wallet (admin only)"""
+    # Validate amount
+    if deposit.amount <= 0:
+        raise HTTPException(status_code=400, detail="المبلغ يجب أن يكون أكبر من صفر")
+    
+    # Validate currency
+    if deposit.currency not in ['IQD', 'USD']:
+        raise HTTPException(status_code=400, detail="العملة غير صحيحة")
+    
+    # Get user
+    user = await db.users.find_one({'id': deposit.user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    # Update wallet balance
+    wallet_field = f'wallet_balance_{deposit.currency.lower()}'
+    await db.users.update_one(
+        {'id': deposit.user_id},
+        {'$inc': {wallet_field: deposit.amount}}
+    )
+    
+    # Log wallet transaction
+    transaction_id = str(uuid.uuid4())
+    await db.wallet_transactions.insert_one({
+        'id': transaction_id,
+        'user_id': deposit.user_id,
+        'user_display_name': user['display_name'],
+        'amount': deposit.amount,
+        'currency': deposit.currency,
+        'transaction_type': 'deposit',
+        'added_by_admin_id': current_user['id'],
+        'added_by_admin_name': current_user['display_name'],
+        'note': deposit.note or 'إضافة رصيد من قبل الإدارة',
+        'created_at': datetime.now(timezone.utc).isoformat()
+    })
+    
+    await log_audit(None, current_user['id'], 'wallet_deposit', {
+        'user_id': deposit.user_id,
+        'amount': deposit.amount,
+        'currency': deposit.currency
+    })
+    
+    return {'success': True, 'transaction_id': transaction_id}
+
+@api_router.get("/wallet/transactions", response_model=List[WalletTransaction])
+async def get_wallet_transactions(
+    user_id: Optional[str] = None,
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get wallet transactions"""
+    # If not admin, can only see own transactions
+    if current_user['role'] != 'admin':
+        user_id = current_user['id']
+    
+    query = {}
+    if user_id:
+        query['user_id'] = user_id
+    
+    transactions = await db.wallet_transactions.find(query, {'_id': 0}).sort('created_at', -1).limit(limit).to_list(limit)
+    return transactions
+
+@api_router.get("/wallet/balance")
+async def get_wallet_balance(current_user: dict = Depends(get_current_user)):
+    """Get current user's wallet balance"""
+    user = await db.users.find_one({'id': current_user['id']})
+    if not user:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    return {
+        'wallet_balance_iqd': user.get('wallet_balance_iqd', 0.0),
+        'wallet_balance_usd': user.get('wallet_balance_usd', 0.0)
+    }
+
 @api_router.patch("/users/{user_id}/status")
 async def update_user_status(user_id: str, is_active: bool, current_user: dict = Depends(require_admin)):
     """Activate/suspend user (admin only)"""
