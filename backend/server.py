@@ -202,6 +202,7 @@ class LoginResponse(BaseModel):
 
 class TransferCreate(BaseModel):
     sender_name: str
+    receiver_name: str  # اسم المستلم الثلاثي
     amount: float
     currency: str = "IQD"  # IQD or USD
     to_governorate: str
@@ -219,6 +220,7 @@ class Transfer(BaseModel):
     to_agent_id: Optional[str] = None
     to_agent_name: Optional[str] = None
     sender_name: str
+    receiver_name: str  # اسم المستلم الثلاثي
     amount: float
     currency: str = "IQD"
     commission: float = 0.0  # Admin commission
