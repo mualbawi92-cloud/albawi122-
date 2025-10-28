@@ -145,6 +145,10 @@ const TransferDetailsPage = () => {
                 <p className="text-xl font-bold" data-testid="sender-name">{transfer.sender_name}</p>
               </div>
               <div className="space-y-2">
+                <Label className="text-muted-foreground">اسم المستلم</Label>
+                <p className="text-xl font-bold text-primary" data-testid="receiver-name">{transfer.receiver_name}</p>
+              </div>
+              <div className="space-y-2">
                 <Label className="text-muted-foreground">المبلغ</Label>
                 <p className="text-3xl font-bold text-secondary" data-testid="amount">{transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}</p>
               </div>
