@@ -217,9 +217,9 @@ const CreateTransferPage = () => {
                   <SelectTrigger data-testid="governorate-select" className="h-12 text-base">
                     <SelectValue placeholder="اختر المحافظة" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {GOVERNORATES.map((gov) => (
-                      <SelectItem key={gov} value={gov}>{gov}</SelectItem>
+                  <SelectContent className="max-h-80">
+                    {IRAQI_GOVERNORATES.map((gov) => (
+                      <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
