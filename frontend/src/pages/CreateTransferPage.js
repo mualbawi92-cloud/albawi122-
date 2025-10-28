@@ -125,7 +125,7 @@ const CreateTransferPage = () => {
                 </div>
                 <div>
                   <Label className="text-muted-foreground">المبلغ</Label>
-                  <p className="font-bold text-secondary text-2xl">{result.amount.toLocaleString()} IQD</p>
+                  <p className="font-bold text-secondary text-2xl">{result.amount.toLocaleString()} {result.currency}</p>
                 </div>
                 <div>
                   <Label className="text-muted-foreground">إلى محافظة</Label>
