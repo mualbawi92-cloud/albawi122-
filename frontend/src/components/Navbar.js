@@ -185,6 +185,19 @@ const Navbar = () => {
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
+                  navigate('/admin/dashboard');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-admin-dashboard"
+              >
+                🏦 لوحة المدير
+              </Button>
+            )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
                   navigate('/admin/all-transfers');
                   setMobileMenuOpen(false);
                 }}
