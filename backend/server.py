@@ -902,6 +902,10 @@ async def receive_transfer(
     if transfer['status'] != 'pending':
         raise HTTPException(status_code=400, detail="Transfer already processed")
     
+    # Prevent sender from receiving their own transfer
+    if transfer['from_agent_id'] == current_user['id']:
+        raise HTTPException(status_code=403, detail="لا يمكن للمُرسل استلام حوالته الخاصة")
+    
     # Check rate limit for PIN attempts
     rate_limit_key = f"{transfer_id}_{current_user['id']}"
     if not check_rate_limit(rate_limit_key, pin_attempts_cache, MAX_PIN_ATTEMPTS, LOCKOUT_DURATION):
