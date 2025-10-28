@@ -66,6 +66,14 @@ const Navbar = () => {
               👥 الصرافين
             </Button>
             <Button
+              onClick={() => navigate('/settings')}
+              variant="ghost"
+              className="text-white hover:bg-white/10 font-bold text-sm"
+              data-testid="nav-settings"
+            >
+              ⚙️ الإعدادات
+            </Button>
+            <Button
               onClick={handleLogout}
               className="bg-secondary hover:bg-secondary/90 text-primary font-bold text-sm"
               data-testid="logout-btn"
