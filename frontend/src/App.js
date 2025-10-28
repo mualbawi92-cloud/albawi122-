@@ -54,6 +54,7 @@ function AppRoutes() {
       <Route path="/wallet/manage" element={<ProtectedRoute><WalletManagementPage /></ProtectedRoute>} />
       <Route path="/statement" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
       <Route path="/statement/:agentId" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
+      <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
