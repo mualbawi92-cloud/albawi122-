@@ -197,20 +197,35 @@ const CreateTransferPage = () => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="amount" className="text-base font-bold">المبلغ (IQD) *</Label>
-                <Input
-                  id="amount"
-                  data-testid="amount-input"
-                  type="number"
-                  value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  required
-                  min="0"
-                  step="0.01"
-                  className="text-base h-12"
-                  placeholder="0.00"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="amount" className="text-base font-bold">المبلغ *</Label>
+                  <Input
+                    id="amount"
+                    data-testid="amount-input"
+                    type="number"
+                    value={formData.amount}
+                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    required
+                    min="0"
+                    step="0.01"
+                    className="text-base h-12"
+                    placeholder="0.00"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="currency" className="text-base font-bold">العملة *</Label>
+                  <Select value={formData.currency} onValueChange={(value) => setFormData({ ...formData, currency: value })}>
+                    <SelectTrigger data-testid="currency-select" className="h-12 text-base">
+                      <SelectValue placeholder="اختر العملة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="IQD">دينار عراقي (IQD)</SelectItem>
+                      <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -229,13 +244,16 @@ const CreateTransferPage = () => {
 
               {agents.length > 0 && (
                 <div className="space-y-2">
-                  <Label htmlFor="to_agent_id" className="text-base font-bold">صراف محدد (اختياري)</Label>
-                  <Select value={formData.to_agent_id} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value })}>
+                  <Label htmlFor="to_agent_id" className="text-base font-bold">اختر صراف محدد (اختياري)</Label>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    {agents.length} صراف متوفر في {IRAQI_GOVERNORATES.find(g => g.code === formData.to_governorate)?.name}
+                  </p>
+                  <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
                     <SelectTrigger data-testid="agent-select" className="h-12 text-base">
                       <SelectValue placeholder="إرسال لكل الصرافين" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">لا تحديد (لكل صرافي المحافظة)</SelectItem>
+                    <SelectContent className="max-h-60">
+                      <SelectItem value="all">🌐 إرسال لكل صرافي المحافظة</SelectItem>
                       {agents.map((agent) => (
                         <SelectItem key={agent.id} value={agent.id}>
                           {agent.display_name} - {agent.phone}
@@ -243,6 +261,14 @@ const CreateTransferPage = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+              )}
+
+              {formData.to_governorate && agents.length === 0 && (
+                <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg">
+                  <p className="text-sm text-yellow-800">
+                    ⚠️ لا يوجد صرافين نشطين في {IRAQI_GOVERNORATES.find(g => g.code === formData.to_governorate)?.name}
+                  </p>
                 </div>
               )}
 
