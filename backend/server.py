@@ -117,6 +117,68 @@ def decrypt_pin(encrypted_pin: str) -> str:
     """Decrypt PIN"""
     return cipher.decrypt(encrypted_pin.encode()).decode()
 
+def number_to_arabic(num: float) -> str:
+    """Convert number to Arabic words"""
+    if num == 0:
+        return "صفر"
+    
+    ones = ["", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة"]
+    tens = ["", "عشرة", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"]
+    hundreds = ["", "مئة", "مئتان", "ثلاثمئة", "أربعمئة", "خمسمئة", "ستمئة", "سبعمئة", "ثمانمئة", "تسعمئة"]
+    
+    num = int(num)
+    
+    if num < 0:
+        return "سالب " + number_to_arabic(-num)
+    
+    if num < 10:
+        return ones[num]
+    elif num < 20:
+        if num == 10:
+            return "عشرة"
+        elif num == 11:
+            return "أحد عشر"
+        elif num == 12:
+            return "اثنا عشر"
+        else:
+            return ones[num - 10] + " عشر"
+    elif num < 100:
+        return tens[num // 10] + (" و" + ones[num % 10] if num % 10 != 0 else "")
+    elif num < 1000:
+        return hundreds[num // 100] + (" و" + number_to_arabic(num % 100) if num % 100 != 0 else "")
+    elif num < 1000000:
+        thousands = num // 1000
+        remainder = num % 1000
+        if thousands == 1:
+            result = "ألف"
+        elif thousands == 2:
+            result = "ألفان"
+        elif thousands <= 10:
+            result = number_to_arabic(thousands) + " آلاف"
+        else:
+            result = number_to_arabic(thousands) + " ألف"
+        
+        if remainder != 0:
+            result += " و" + number_to_arabic(remainder)
+        return result
+    elif num < 1000000000:
+        millions = num // 1000000
+        remainder = num % 1000000
+        if millions == 1:
+            result = "مليون"
+        elif millions == 2:
+            result = "مليونان"
+        elif millions <= 10:
+            result = number_to_arabic(millions) + " ملايين"
+        else:
+            result = number_to_arabic(millions) + " مليون"
+        
+        if remainder != 0:
+            result += " و" + number_to_arabic(remainder)
+        return result
+    else:
+        return str(num)  # For very large numbers, just return the number
+
 def create_access_token(data: dict) -> str:
     """Create JWT access token"""
     to_encode = data.copy()
