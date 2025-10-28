@@ -362,6 +362,10 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     
     transfer_id = str(uuid.uuid4())
     
+    # Calculate commission (0.13%)
+    commission_percentage = 0.13
+    commission = (transfer_data.amount * commission_percentage) / 100
+    
     # Get to_agent name if specified
     to_agent_name = None
     if transfer_data.to_agent_id:
@@ -381,6 +385,8 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'sender_name': transfer_data.sender_name,
         'amount': transfer_data.amount,
         'currency': transfer_data.currency,
+        'commission': commission,
+        'commission_percentage': commission_percentage,
         'pin_hash': pin_hash_str,
         'status': 'pending',
         'note': transfer_data.note,
