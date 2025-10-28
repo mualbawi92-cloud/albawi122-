@@ -114,13 +114,34 @@ const AgentsListPage = () => {
                 <SelectTrigger className="w-48 h-12" data-testid="governorate-filter">
                   <SelectValue placeholder="كل المحافظات" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-80">
                   <SelectItem value="">كل المحافظات</SelectItem>
-                  {GOVERNORATES.map((gov) => (
-                    <SelectItem key={gov} value={gov}>{gov}</SelectItem>
+                  {IRAQI_GOVERNORATES.map((gov) => (
+                    <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-48 h-12" data-testid="status-filter">
+                  <SelectValue placeholder="الحالة" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">الكل</SelectItem>
+                  <SelectItem value="active">نشط</SelectItem>
+                  <SelectItem value="inactive">غير نشط</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {user?.role === 'admin' && (
+                <Button
+                  onClick={() => navigate('/agents/add')}
+                  className="bg-secondary hover:bg-secondary/90 text-primary font-bold mr-auto h-12"
+                  data-testid="add-agent-btn"
+                >
+                  ➕ إضافة صراف جديد
+                </Button>
+              )}
             </div>
 
             {loading ? (
