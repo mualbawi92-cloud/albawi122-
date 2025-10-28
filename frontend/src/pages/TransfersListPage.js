@@ -132,7 +132,10 @@ const TransfersListPage = () => {
                     <div className="space-y-2">
                       <p className="text-xl font-bold text-primary">{transfer.transfer_code}</p>
                       <p className="text-sm text-muted-foreground">
-                        {transfer.sender_name} → {transfer.to_governorate}
+                        من: {transfer.sender_name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        إلى: {transfer.receiver_name} ({transfer.to_governorate})
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(transfer.created_at).toLocaleDateString('ar-IQ', {
