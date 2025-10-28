@@ -187,6 +187,8 @@ class User(BaseModel):
     governorate: Optional[str] = None
     phone: Optional[str] = None
     is_active: bool = True
+    wallet_balance_iqd: float = 0.0
+    wallet_balance_usd: float = 0.0
     created_at: str
 
 class LoginRequest(BaseModel):
