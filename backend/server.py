@@ -385,6 +385,83 @@ async def get_agents(governorate: Optional[str] = None, search: Optional[str] = 
     agents = await db.users.find(query, {'_id': 0, 'password_hash': 0}).to_list(1000)
     return agents
 
+@api_router.get("/agents/{agent_id}/statement", response_model=AgentStatement)
+async def get_agent_statement(agent_id: str, current_user: dict = Depends(get_current_user)):
+    """Get agent statement (كشف حساب) with all transactions and totals"""
+    # Check permissions: admin or the agent themselves
+    if current_user['role'] != 'admin' and current_user['id'] != agent_id:
+        raise HTTPException(status_code=403, detail="غير مصرح لك بعرض هذا الكشف")
+    
+    # Get agent info
+    agent = await db.users.find_one({'id': agent_id})
+    if not agent:
+        raise HTTPException(status_code=404, detail="الصراف غير موجود")
+    
+    # Get all transfers for this agent (sent and received)
+    transfers_cursor = db.transfers.find({
+        '$or': [
+            {'from_agent_id': agent_id},
+            {'to_agent_id': agent_id}
+        ]
+    }, {'_id': 0, 'pin_hash': 0}).sort('created_at', -1)
+    
+    transfers = await transfers_cursor.to_list(10000)
+    
+    # Calculate totals
+    total_sent = 0.0
+    total_sent_count = 0
+    total_received = 0.0
+    total_received_count = 0
+    total_commission = 0.0
+    
+    iqd_sent = 0.0
+    iqd_received = 0.0
+    usd_sent = 0.0
+    usd_received = 0.0
+    
+    for t in transfers:
+        amount = t.get('amount', 0)
+        currency = t.get('currency', 'IQD')
+        commission = t.get('commission', 0)
+        status = t.get('status', '')
+        
+        # Only count completed transfers
+        if status == 'completed':
+            if t.get('from_agent_id') == agent_id:
+                # Sent transfers
+                total_sent += amount
+                total_sent_count += 1
+                if currency == 'IQD':
+                    iqd_sent += amount
+                else:
+                    usd_sent += amount
+            
+            if t.get('to_agent_id') == agent_id:
+                # Received transfers
+                total_received += amount
+                total_received_count += 1
+                total_commission += commission
+                if currency == 'IQD':
+                    iqd_received += amount
+                else:
+                    usd_received += amount
+    
+    return {
+        'agent_id': agent_id,
+        'agent_name': agent.get('display_name', ''),
+        'governorate': agent.get('governorate', ''),
+        'total_sent': total_sent,
+        'total_sent_count': total_sent_count,
+        'total_received': total_received,
+        'total_received_count': total_received_count,
+        'total_commission': total_commission,
+        'iqd_sent': iqd_sent,
+        'iqd_received': iqd_received,
+        'usd_sent': usd_sent,
+        'usd_received': usd_received,
+        'transfers': transfers
+    }
+
 @api_router.post("/transfers", response_model=TransferWithPin)
 async def create_transfer(transfer_data: TransferCreate, current_user: dict = Depends(get_current_user)):
     """Create new transfer"""
