@@ -180,15 +180,15 @@ const AgentsListPage = () => {
                         {user?.role === 'admin' && (
                           <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-3 rounded-lg border border-yellow-200">
                             <p className="text-xs font-semibold text-yellow-800 mb-2">💰 رصيد المحفظة:</p>
-                            <div className="grid grid-cols-2 gap-2">
-                              <div>
+                            <div className="space-y-2">
+                              <div className="bg-white p-2 rounded">
                                 <p className="text-xs text-gray-600">دينار عراقي</p>
                                 <p className="text-lg font-bold text-yellow-700">
                                   {(agent.wallet_balance_iqd || 0).toLocaleString()}
                                 </p>
                               </div>
-                              <div>
-                                <p className="text-xs text-gray-600">دولار</p>
+                              <div className="bg-white p-2 rounded">
+                                <p className="text-xs text-gray-600">دولار أمريكي</p>
                                 <p className="text-lg font-bold text-yellow-700">
                                   {(agent.wallet_balance_usd || 0).toLocaleString()}
                                 </p>
