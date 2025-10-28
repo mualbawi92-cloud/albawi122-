@@ -305,6 +305,8 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
         'governorate': user_data.governorate,
         'phone': user_data.phone,
         'is_active': True,
+        'wallet_balance_iqd': 0.0,
+        'wallet_balance_usd': 0.0,
         'created_at': datetime.now(timezone.utc).isoformat()
     }
     
