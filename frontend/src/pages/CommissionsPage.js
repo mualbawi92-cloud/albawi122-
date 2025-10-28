@@ -76,7 +76,7 @@ const CommissionsPage = () => {
                 <CardHeader className="p-4">
                   <CardDescription className="text-xs sm:text-sm">إجمالي المبالغ</CardDescription>
                   <CardTitle className="text-2xl sm:text-3xl font-bold text-secondary">
-                    {report?.total_amount?.toLocaleString() || 0}
+                    {(report?.total_amount || 0).toLocaleString()}
                   </CardTitle>
                 </CardHeader>
               </Card>
