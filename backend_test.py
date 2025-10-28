@@ -81,19 +81,34 @@ class APITester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
         
-        # Test agent login
+        # Test agent_baghdad login
         try:
-            response = self.make_request('POST', '/login', json=AGENT_CREDENTIALS)
+            response = self.make_request('POST', '/login', json=AGENT_BAGHDAD_CREDENTIALS)
             if response.status_code == 200:
                 data = response.json()
-                self.agent_token = data['access_token']
-                self.agent_user_id = data['user']['id']
-                self.log_result("Agent Login", True, f"Agent authenticated successfully")
+                self.agent_baghdad_token = data['access_token']
+                self.agent_baghdad_user_id = data['user']['id']
+                self.log_result("Agent Baghdad Login", True, f"Agent Baghdad authenticated successfully")
             else:
-                self.log_result("Agent Login", False, f"Agent login failed: {response.status_code}", response.text)
+                self.log_result("Agent Baghdad Login", False, f"Agent Baghdad login failed: {response.status_code}", response.text)
                 return False
         except Exception as e:
-            self.log_result("Agent Login", False, f"Agent login error: {str(e)}")
+            self.log_result("Agent Baghdad Login", False, f"Agent Baghdad login error: {str(e)}")
+            return False
+        
+        # Test agent_basra login
+        try:
+            response = self.make_request('POST', '/login', json=AGENT_BASRA_CREDENTIALS)
+            if response.status_code == 200:
+                data = response.json()
+                self.agent_basra_token = data['access_token']
+                self.agent_basra_user_id = data['user']['id']
+                self.log_result("Agent Basra Login", True, f"Agent Basra authenticated successfully")
+            else:
+                self.log_result("Agent Basra Login", False, f"Agent Basra login failed: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Agent Basra Login", False, f"Agent Basra login error: {str(e)}")
             return False
         
         return True
