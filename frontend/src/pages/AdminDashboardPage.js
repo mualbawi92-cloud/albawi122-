@@ -80,6 +80,36 @@ const AdminDashboardPage = () => {
     };
   };
 
+  // Calculate transfer statistics
+  const calculateTransferStats = () => {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const completedToday = allTransfers.filter(t => 
+      t.status === 'completed' && new Date(t.completed_at) >= todayStart
+    ).length;
+    
+    const cancelled = allTransfers.filter(t => 
+      t.status === 'cancelled'
+    ).length;
+    
+    const pending = allTransfers.filter(t => 
+      t.status === 'pending'
+    ).length;
+    
+    const totalCompleted = allTransfers.filter(t => 
+      t.status === 'completed'
+    ).length;
+    
+    return {
+      completedToday,
+      cancelled,
+      pending,
+      totalCompleted,
+      total: allTransfers.length
+    };
+  };
+
   const getLastActivity = (agentId) => {
     const statement = statements[agentId];
     if (!statement || !statement.transfers || statement.transfers.length === 0) {
