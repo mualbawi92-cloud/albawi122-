@@ -72,6 +72,8 @@ const EditAgentPage = () => {
           display_name: foundAgent.display_name,
           phone: foundAgent.phone,
           governorate: foundAgent.governorate,
+          wallet_limit_iqd: foundAgent.wallet_limit_iqd || 0,
+          wallet_limit_usd: foundAgent.wallet_limit_usd || 0,
           new_password: '',
           confirm_password: ''
         });
