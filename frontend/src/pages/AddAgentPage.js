@@ -77,9 +77,20 @@ const AddAgentPage = () => {
       navigate('/agents');
     } catch (error) {
       console.error('Error creating agent:', error);
-      toast.error('خطأ في إضافة الصراف', {
-        description: error.response?.data?.detail || 'حدث خطأ غير متوقع'
-      });
+      
+      // Handle specific errors
+      if (error.response?.status === 401) {
+        toast.error('انتهت صلاحية الجلسة', {
+          description: 'يرجى تسجيل الدخول مرة أخرى'
+        });
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+      } else {
+        toast.error('خطأ في إضافة الصراف', {
+          description: error.response?.data?.detail || 'حدث خطأ غير متوقع'
+        });
+      }
     }
 
     setLoading(false);
