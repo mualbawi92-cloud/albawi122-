@@ -344,7 +344,7 @@ const AdminDashboardPage = () => {
         </Card>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Button
             onClick={() => navigate('/agents/add')}
             className="bg-green-600 hover:bg-green-700 text-white h-16 text-lg rounded-xl"
@@ -365,6 +365,13 @@ const AdminDashboardPage = () => {
             style={{ borderRadius: '12px' }}
           >
             📊 جميع الحوالات
+          </Button>
+          <Button
+            onClick={() => navigate('/admin/cancelled-transfers')}
+            className="bg-red-600 hover:bg-red-700 text-white h-16 text-lg rounded-xl"
+            style={{ borderRadius: '12px' }}
+          >
+            🚫 الحوالات الملغية
           </Button>
         </div>
       </div>
