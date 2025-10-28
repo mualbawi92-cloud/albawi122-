@@ -175,6 +175,28 @@ const AgentsListPage = () => {
                           <span className="text-muted-foreground">📋</span>
                           <span>{agent.role === 'admin' ? 'مدير' : 'صراف'}</span>
                         </div>
+                        
+                        {/* Wallet Balance - Admin Only */}
+                        {user?.role === 'admin' && (
+                          <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-3 rounded-lg border border-yellow-200">
+                            <p className="text-xs font-semibold text-yellow-800 mb-2">💰 رصيد المحفظة:</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <p className="text-xs text-gray-600">دينار عراقي</p>
+                                <p className="text-lg font-bold text-yellow-700">
+                                  {(agent.wallet_balance_iqd || 0).toLocaleString()}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-600">دولار</p>
+                                <p className="text-lg font-bold text-yellow-700">
+                                  {(agent.wallet_balance_usd || 0).toLocaleString()}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
                         <div className="flex items-center justify-between pt-2">
                           {agent.is_active ? (
                             <Badge className="bg-green-100 text-green-800">✅ نشط</Badge>
