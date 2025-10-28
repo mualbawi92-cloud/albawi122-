@@ -12,6 +12,7 @@ import AgentsListPage from './pages/AgentsListPage';
 import AddAgentPage from './pages/AddAgentPage';
 import EditAgentPage from './pages/EditAgentPage';
 import SettingsPage from './pages/SettingsPage';
+import CommissionsPage from './pages/CommissionsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
