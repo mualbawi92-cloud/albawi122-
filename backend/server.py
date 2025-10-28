@@ -272,6 +272,24 @@ class WalletDeposit(BaseModel):
     currency: str  # IQD or USD
     note: Optional[str] = None
 
+class AgentStatement(BaseModel):
+    agent_id: str
+    agent_name: str
+    governorate: str
+    # Summary
+    total_sent: float
+    total_sent_count: int
+    total_received: float
+    total_received_count: int
+    total_commission: float
+    # Breakdown by currency
+    iqd_sent: float
+    iqd_received: float
+    usd_sent: float
+    usd_received: float
+    # Transfers
+    transfers: List[Transfer]
+
 # ============ API Routes ============
 
 @api_router.post("/register", response_model=User)
