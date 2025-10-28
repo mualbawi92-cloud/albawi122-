@@ -733,6 +733,132 @@ async def get_transfer_pin(transfer_id: str, current_user: dict = Depends(get_cu
         logging.error(f"PIN decryption error: {e}")
         raise HTTPException(status_code=500, detail="خطأ في فك تشفير الرقم السري")
 
+@api_router.patch("/transfers/{transfer_id}/cancel")
+async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_current_user)):
+    """Cancel a transfer (only sender can cancel pending transfers)"""
+    transfer = await db.transfers.find_one({'id': transfer_id})
+    
+    if not transfer:
+        raise HTTPException(status_code=404, detail="الحوالة غير موجودة")
+    
+    # Only sender can cancel
+    if transfer['from_agent_id'] != current_user['id']:
+        raise HTTPException(status_code=403, detail="فقط المُرسل يمكنه إلغاء الحوالة")
+    
+    # Can only cancel pending transfers
+    if transfer['status'] != 'pending':
+        raise HTTPException(status_code=400, detail="لا يمكن إلغاء حوالة مكتملة")
+    
+    # Update status to cancelled
+    await db.transfers.update_one(
+        {'id': transfer_id},
+        {'$set': {
+            'status': 'cancelled',
+            'cancelled_at': datetime.now(timezone.utc).isoformat(),
+            'cancelled_by': current_user['id'],
+            'cancelled_by_name': current_user['display_name'],
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    # Return money to sender's wallet
+    wallet_field = f'wallet_balance_{transfer["currency"].lower()}'
+    await db.users.update_one(
+        {'id': current_user['id']},
+        {'$inc': {wallet_field: transfer['amount']}}
+    )
+    
+    # Log wallet transaction
+    await db.wallet_transactions.insert_one({
+        'id': str(uuid.uuid4()),
+        'user_id': current_user['id'],
+        'user_display_name': current_user['display_name'],
+        'amount': transfer['amount'],
+        'currency': transfer['currency'],
+        'transaction_type': 'transfer_cancelled',
+        'reference_id': transfer_id,
+        'note': f'إلغاء حوالة: {transfer["transfer_code"]}',
+        'created_at': datetime.now(timezone.utc).isoformat()
+    })
+    
+    await log_audit(transfer_id, current_user['id'], 'transfer_cancelled', {})
+    
+    return {'success': True, 'message': 'تم إلغاء الحوالة بنجاح'}
+
+@api_router.patch("/transfers/{transfer_id}/update")
+async def update_transfer(
+    transfer_id: str, 
+    update_data: TransferUpdate, 
+    current_user: dict = Depends(get_current_user)
+):
+    """Update a transfer (only sender can update pending transfers)"""
+    transfer = await db.transfers.find_one({'id': transfer_id})
+    
+    if not transfer:
+        raise HTTPException(status_code=404, detail="الحوالة غير موجودة")
+    
+    # Only sender can update
+    if transfer['from_agent_id'] != current_user['id']:
+        raise HTTPException(status_code=403, detail="فقط المُرسل يمكنه تعديل الحوالة")
+    
+    # Can only update pending transfers
+    if transfer['status'] != 'pending':
+        raise HTTPException(status_code=400, detail="لا يمكن تعديل حوالة مكتملة")
+    
+    # Store old values for audit
+    old_values = {
+        'sender_name': transfer.get('sender_name'),
+        'receiver_name': transfer.get('receiver_name'),
+        'amount': transfer.get('amount'),
+        'note': transfer.get('note')
+    }
+    
+    # Handle amount change (need to update wallet)
+    if update_data.amount is not None and update_data.amount != transfer['amount']:
+        amount_diff = update_data.amount - transfer['amount']
+        wallet_field = f'wallet_balance_{transfer["currency"].lower()}'
+        
+        # Decrease or increase wallet balance
+        await db.users.update_one(
+            {'id': current_user['id']},
+            {'$inc': {wallet_field: -amount_diff}}
+        )
+        
+        # Recalculate commission
+        commission = (update_data.amount * 0.13) / 100
+    else:
+        commission = transfer.get('commission')
+    
+    # Build update document
+    update_doc = {
+        'updated_at': datetime.now(timezone.utc).isoformat(),
+        'last_modified_by': current_user['id'],
+        'last_modified_by_name': current_user['display_name']
+    }
+    
+    if update_data.sender_name is not None:
+        update_doc['sender_name'] = update_data.sender_name
+    if update_data.receiver_name is not None:
+        update_doc['receiver_name'] = update_data.receiver_name
+    if update_data.amount is not None:
+        update_doc['amount'] = update_data.amount
+        update_doc['commission'] = commission
+    if update_data.note is not None:
+        update_doc['note'] = update_data.note
+    
+    # Update transfer
+    await db.transfers.update_one(
+        {'id': transfer_id},
+        {'$set': update_doc}
+    )
+    
+    await log_audit(transfer_id, current_user['id'], 'transfer_updated', {
+        'old_values': old_values,
+        'new_values': update_doc
+    })
+    
+    return {'success': True, 'message': 'تم تعديل الحوالة بنجاح'}
+
 @api_router.get("/transfers/search/{transfer_code}")
 async def search_transfer_by_code(transfer_code: str, current_user: dict = Depends(get_current_user)):
     """Search transfer by transfer_code (for receiving step 1)"""
