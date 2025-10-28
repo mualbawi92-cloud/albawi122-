@@ -71,24 +71,24 @@ const TransfersListPage = () => {
                 data-testid="search-transfer-input"
               />
               
-              <Select value={filter.status} onValueChange={(value) => setFilter({ ...filter, status: value })}>
+              <Select value={filter.status || ""} onValueChange={(value) => setFilter({ ...filter, status: value || "" })}>
                 <SelectTrigger className="w-48 h-12" data-testid="status-filter">
                   <SelectValue placeholder="الحالة" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">كل الحالات</SelectItem>
+                  <SelectItem value=" ">كل الحالات</SelectItem>
                   <SelectItem value="pending">قيد الانتظار</SelectItem>
                   <SelectItem value="completed">مكتمل</SelectItem>
                   <SelectItem value="cancelled">ملغى</SelectItem>
                 </SelectContent>
               </Select>
 
-              <Select value={filter.direction} onValueChange={(value) => setFilter({ ...filter, direction: value })}>
+              <Select value={filter.direction || ""} onValueChange={(value) => setFilter({ ...filter, direction: value || "" })}>
                 <SelectTrigger className="w-48 h-12" data-testid="direction-filter">
                   <SelectValue placeholder="الاتجاه" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">كل الحوالات</SelectItem>
+                  <SelectItem value=" ">كل الحوالات</SelectItem>
                   <SelectItem value="incoming">واردة</SelectItem>
                   <SelectItem value="outgoing">صادرة</SelectItem>
                 </SelectContent>
