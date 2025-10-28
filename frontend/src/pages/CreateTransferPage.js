@@ -154,7 +154,9 @@ const CreateTransferPage = () => {
                     setResult(null);
                     setFormData({
                       sender_name: '',
+                      receiver_name: '',
                       amount: '',
+                      currency: 'IQD',
                       to_governorate: '',
                       to_agent_id: '',
                       note: ''
