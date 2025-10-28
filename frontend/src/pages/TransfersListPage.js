@@ -56,18 +56,18 @@ const TransfersListPage = () => {
   return (
     <div className="min-h-screen bg-background" data-testid="transfers-list-page">
       <Navbar />
-      <div className="container mx-auto p-6">
-        <Card className="shadow-xl mb-6">
-          <CardHeader>
-            <CardTitle className="text-3xl text-primary">جميع الحوالات</CardTitle>
+      <div className="container mx-auto p-3 sm:p-6">
+        <Card className="shadow-xl mb-4 sm:mb-6">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-2xl sm:text-3xl text-primary">جميع الحوالات</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-4 mb-6">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-6">
               <Input
                 placeholder="بحث برمز الحوالة..."
                 value={searchCode}
                 onChange={(e) => setSearchCode(e.target.value)}
-                className="max-w-xs h-12"
+                className="w-full sm:max-w-xs h-10 sm:h-12 text-sm sm:text-base"
                 data-testid="search-transfer-input"
               />
               
