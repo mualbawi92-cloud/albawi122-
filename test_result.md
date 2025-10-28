@@ -128,7 +128,7 @@ backend:
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
@@ -138,6 +138,7 @@ backend:
           - "الرقم السري غير صحيح" when PIN is incorrect
           - Added verification of receiver_fullname before PIN check
           - Enhanced logging for failed attempts with failure_reason field
+          - UPDATED: Now validates against receiver_name field instead of sender_name
       - working: true
         agent: "testing"
         comment: |
@@ -147,6 +148,25 @@ backend:
           - Fixed minor bug: transfer['receiver_name'] was undefined, now uses sender_name as fallback
           - Error message validation and status codes working as expected
           - Authentication and rate limiting working properly
+
+  - task: "Add receiver_name field to transfer system"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ CRITICAL FEATURE: Added receiver_name (اسم المستلم الثلاثي)
+          - Added receiver_name to TransferCreate model (required field)
+          - Added receiver_name to Transfer model
+          - Validation: receiver_name must be at least 3 characters
+          - Storage: receiver_name stored in database for each transfer
+          - Verification: receive_transfer validates against receiver_name
+          - This ensures proper identification of the person who should receive money
 
   - task: "Wallet system backend"
     implemented: true
