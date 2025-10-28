@@ -488,6 +488,24 @@ async def receive_transfer(
     if not check_rate_limit(rate_limit_key, pin_attempts_cache, MAX_PIN_ATTEMPTS, LOCKOUT_DURATION):
         raise HTTPException(status_code=429, detail="Too many PIN attempts. Try again later.")
     
+    # Verify receiver full name first
+    if receiver_fullname.strip() != transfer['receiver_name'].strip():
+        # Log failed attempt for incorrect name
+        await db.pin_attempts.insert_one({
+            'id': str(uuid.uuid4()),
+            'transfer_id': transfer_id,
+            'attempted_by_agent': current_user['id'],
+            'attempt_ip': request.client.host if request else None,
+            'success': False,
+            'failure_reason': 'incorrect_name',
+            'created_at': datetime.now(timezone.utc).isoformat()
+        })
+        await log_audit(transfer_id, current_user['id'], 'name_failed', {
+            'ip': request.client.host if request else None,
+            'attempted_name': receiver_fullname
+        })
+        raise HTTPException(status_code=400, detail="الاسم الثلاثي غير صحيح")
+    
     # Verify PIN
     if not verify_pin(pin, transfer['pin_hash']):
         # Log failed attempt
@@ -497,10 +515,11 @@ async def receive_transfer(
             'attempted_by_agent': current_user['id'],
             'attempt_ip': request.client.host if request else None,
             'success': False,
+            'failure_reason': 'incorrect_pin',
             'created_at': datetime.now(timezone.utc).isoformat()
         })
         await log_audit(transfer_id, current_user['id'], 'pin_failed', {'ip': request.client.host if request else None})
-        raise HTTPException(status_code=401, detail="Invalid PIN")
+        raise HTTPException(status_code=401, detail="الرقم السري غير صحيح")
     
     # Upload ID image to Cloudinary
     try:
