@@ -334,7 +334,17 @@ async def get_agents(governorate: Optional[str] = None, search: Optional[str] = 
 async def create_transfer(transfer_data: TransferCreate, current_user: dict = Depends(get_current_user)):
     """Create new transfer"""
     if current_user['role'] != 'agent':
-        raise HTTPException(status_code=403, detail="Only agents can create transfers")
+        raise HTTPException(status_code=403, detail="فقط الصرافين يمكنهم إنشاء حوالات")
+    
+    # Validate input
+    if not transfer_data.sender_name or len(transfer_data.sender_name) < 3:
+        raise HTTPException(status_code=400, detail="اسم المرسل يجب أن يكون 3 أحرف على الأقل")
+    
+    if transfer_data.amount <= 0:
+        raise HTTPException(status_code=400, detail="المبلغ يجب أن يكون أكبر من صفر")
+    
+    if not transfer_data.to_governorate:
+        raise HTTPException(status_code=400, detail="المحافظة المستلمة مطلوبة")
     
     # Generate transfer code and PIN
     transfer_code, seq_num = await generate_transfer_code(transfer_data.to_governorate)
