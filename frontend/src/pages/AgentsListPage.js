@@ -62,11 +62,34 @@ const AgentsListPage = () => {
     }
   };
 
-  const filteredAgents = agents.filter(agent =>
-    !searchQuery ||
-    agent.display_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    agent.username.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredAgents = agents.filter(agent => {
+    // Status filter
+    if (statusFilter === 'active' && !agent.is_active) return false;
+    if (statusFilter === 'inactive' && agent.is_active) return false;
+    
+    // Search filter
+    if (searchQuery && 
+        !agent.display_name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !agent.username.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    
+    return true;
+  });
+
+  const handleToggleStatus = async (agentId, currentStatus) => {
+    try {
+      await axios.patch(`${API}/users/${agentId}/status`, null, {
+        params: { is_active: !currentStatus }
+      });
+      
+      toast.success(currentStatus ? 'تم تعطيل الصراف' : 'تم تفعيل الصراف');
+      fetchAgents(); // Refresh list
+    } catch (error) {
+      console.error('Error toggling agent status:', error);
+      toast.error('خطأ في تغيير حالة الصراف');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background" data-testid="agents-list-page">
