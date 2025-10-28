@@ -10,6 +10,8 @@ import TransfersListPage from './pages/TransfersListPage';
 import TransferDetailsPage from './pages/TransferDetailsPage';
 import AgentsListPage from './pages/AgentsListPage';
 import AddAgentPage from './pages/AddAgentPage';
+import EditAgentPage from './pages/EditAgentPage';
+import SettingsPage from './pages/SettingsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
