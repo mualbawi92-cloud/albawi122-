@@ -231,6 +231,11 @@ const CreateTransferPage = () => {
                     className="text-base h-12"
                     placeholder="0.00"
                   />
+                  {formData.amount && parseFloat(formData.amount) > 0 && (
+                    <p className="text-xs text-gray-600 italic bg-gray-50 p-2 rounded border border-gray-200">
+                      💬 {formatAmountInWords(parseFloat(formData.amount), formData.currency)}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
