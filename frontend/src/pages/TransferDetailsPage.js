@@ -146,7 +146,7 @@ const TransferDetailsPage = () => {
               </div>
               <div className="space-y-2">
                 <Label className="text-muted-foreground">المبلغ</Label>
-                <p className="text-3xl font-bold text-secondary" data-testid="amount">{transfer.amount.toLocaleString()} IQD</p>
+                <p className="text-3xl font-bold text-secondary" data-testid="amount">{transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}</p>
               </div>
               <div className="space-y-2">
                 <Label className="text-muted-foreground">من صراف</Label>
