@@ -134,6 +134,17 @@ const Navbar = () => {
             >
               👥 الصرافين
             </Button>
+            <Button
+              onClick={() => {
+                navigate('/settings');
+                setMobileMenuOpen(false);
+              }}
+              variant="ghost"
+              className="w-full text-white hover:bg-white/10 font-bold justify-start"
+              data-testid="mobile-nav-settings"
+            >
+              ⚙️ الإعدادات
+            </Button>
             <div className="flex items-center justify-between px-4 py-2 text-white text-sm">
               <span>{user?.display_name}</span>
               {connected && (
