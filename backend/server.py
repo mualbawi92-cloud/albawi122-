@@ -220,7 +220,7 @@ class Transfer(BaseModel):
     to_agent_id: Optional[str] = None
     to_agent_name: Optional[str] = None
     sender_name: str
-    receiver_name: str  # اسم المستلم الثلاثي
+    receiver_name: Optional[str] = None  # اسم المستلم الثلاثي (Optional for old transfers)
     amount: float
     currency: str = "IQD"
     commission: float = 0.0  # Admin commission
