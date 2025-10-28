@@ -190,6 +190,19 @@ const Navbar = () => {
                 💰 العمولات
               </Button>
             )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/wallet/manage');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-wallet-manage"
+              >
+                💳 إدارة المحافظ
+              </Button>
+            )}
             <Button
               onClick={() => {
                 navigate('/settings');
