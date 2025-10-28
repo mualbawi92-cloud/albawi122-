@@ -68,3 +68,13 @@ export const formatWalletRequired = (balance, limit, currency) => {
     text: `${arabicNum} ${currencyName}`
   };
 };
+
+// تحويل المبلغ إلى نص عربي مع العملة
+export const formatAmountInWords = (amount, currency = 'IQD') => {
+  if (!amount || amount === 0) return "صفر";
+  
+  const arabicNum = numberToArabic(Math.floor(amount));
+  const currencyName = currency === 'IQD' ? 'دينار عراقي' : 'دولار أمريكي';
+  
+  return `${arabicNum} ${currencyName} فقط لا غير`;
+};
