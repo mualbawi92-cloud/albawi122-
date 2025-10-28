@@ -109,6 +109,14 @@ def verify_pin(pin: str, pin_hash: str) -> bool:
     """Verify PIN against hash"""
     return bcrypt.checkpw(pin.encode(), pin_hash.encode())
 
+def encrypt_pin(pin: str) -> str:
+    """Encrypt PIN for storage (reversible)"""
+    return cipher.encrypt(pin.encode()).decode()
+
+def decrypt_pin(encrypted_pin: str) -> str:
+    """Decrypt PIN"""
+    return cipher.decrypt(encrypted_pin.encode()).decode()
+
 def create_access_token(data: dict) -> str:
     """Create JWT access token"""
     to_encode = data.copy()
