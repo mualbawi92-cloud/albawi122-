@@ -14,6 +14,8 @@ import EditAgentPage from './pages/EditAgentPage';
 import SettingsPage from './pages/SettingsPage';
 import CommissionsPage from './pages/CommissionsPage';
 import AllTransfersAdminPage from './pages/AllTransfersAdminPage';
+import WalletPage from './pages/WalletPage';
+import WalletManagementPage from './pages/WalletManagementPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -46,6 +48,8 @@ function AppRoutes() {
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
       <Route path="/commissions" element={<ProtectedRoute><CommissionsPage /></ProtectedRoute>} />
       <Route path="/admin/all-transfers" element={<ProtectedRoute><AllTransfersAdminPage /></ProtectedRoute>} />
+      <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+      <Route path="/wallet/manage" element={<ProtectedRoute><WalletManagementPage /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
