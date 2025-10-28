@@ -637,6 +637,59 @@ async def get_audit_logs(
     logs = await db.audit_logs.find(query, {'_id': 0}).sort('created_at', -1).limit(limit).to_list(limit)
     return logs
 
+@api_router.get("/commissions/report")
+async def get_commissions_report(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    status: Optional[str] = "completed",
+    current_user: dict = Depends(require_admin)
+):
+    """Get commissions report (admin only)"""
+    query = {}
+    
+    # Filter by status (default: completed)
+    if status:
+        query['status'] = status
+    
+    # Date range filter
+    if start_date:
+        query['created_at'] = {'$gte': start_date}
+    if end_date:
+        if 'created_at' not in query:
+            query['created_at'] = {}
+        query['created_at']['$lte'] = end_date
+    
+    # Get all transfers matching criteria
+    transfers = await db.transfers.find(query, {'_id': 0}).sort('created_at', -1).to_list(10000)
+    
+    # Calculate totals
+    total_transfers = len(transfers)
+    total_amount = sum(t.get('amount', 0) for t in transfers)
+    total_commission = sum(t.get('commission', 0) for t in transfers)
+    
+    # Group by currency
+    by_currency = {}
+    for t in transfers:
+        currency = t.get('currency', 'IQD')
+        if currency not in by_currency:
+            by_currency[currency] = {
+                'count': 0,
+                'total_amount': 0,
+                'total_commission': 0
+            }
+        by_currency[currency]['count'] += 1
+        by_currency[currency]['total_amount'] += t.get('amount', 0)
+        by_currency[currency]['total_commission'] += t.get('commission', 0)
+    
+    return {
+        'total_transfers': total_transfers,
+        'total_amount': total_amount,
+        'total_commission': total_commission,
+        'by_currency': by_currency,
+        'commission_percentage': 0.13,
+        'transfers': transfers[:100]  # Return last 100 for display
+    }
+
 @api_router.patch("/users/{user_id}/status")
 async def update_user_status(user_id: str, is_active: bool, current_user: dict = Depends(require_admin)):
     """Activate/suspend user (admin only)"""
