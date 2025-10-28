@@ -85,6 +85,16 @@ const Navbar = () => {
                 💰 العمولات
               </Button>
             )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => navigate('/wallet/manage')}
+                variant="ghost"
+                className="text-white hover:bg-white/10 font-bold text-sm"
+                data-testid="nav-wallet-manage"
+              >
+                💳 إدارة المحافظ
+              </Button>
+            )}
             <Button
               onClick={() => navigate('/settings')}
               variant="ghost"
