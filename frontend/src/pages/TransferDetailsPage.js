@@ -388,6 +388,72 @@ const TransferDetailsPage = () => {
               </Button>
             )}
 
+            {/* Edit Form */}
+            {showEdit && transfer.status === 'pending' && (
+              <Card className="border-2 border-blue-500">
+                <CardHeader className="bg-blue-50">
+                  <CardTitle className="text-xl text-blue-900">✏️ تعديل الحوالة</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <form onSubmit={handleEditTransfer} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>اسم المرسل</Label>
+                      <Input
+                        value={editData.sender_name}
+                        onChange={(e) => setEditData({...editData, sender_name: e.target.value})}
+                        placeholder="اسم المرسل الثلاثي"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>اسم المستلم</Label>
+                      <Input
+                        value={editData.receiver_name}
+                        onChange={(e) => setEditData({...editData, receiver_name: e.target.value})}
+                        placeholder="اسم المستلم الثلاثي"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>المبلغ</Label>
+                      <Input
+                        type="number"
+                        value={editData.amount}
+                        onChange={(e) => setEditData({...editData, amount: e.target.value})}
+                        placeholder="المبلغ"
+                      />
+                      <p className="text-xs text-yellow-700">
+                        ⚠️ تعديل المبلغ سيؤثر على رصيد محفظتك
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>ملاحظة</Label>
+                      <Input
+                        value={editData.note}
+                        onChange={(e) => setEditData({...editData, note: e.target.value})}
+                        placeholder="ملاحظة"
+                      />
+                    </div>
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        type="submit"
+                        disabled={loadingEdit}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700"
+                      >
+                        {loadingEdit ? 'جاري التعديل...' : '💾 حفظ التعديلات'}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowEdit(false)}
+                        className="flex-1"
+                      >
+                        إلغاء
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Receive Form */}
             {showReceive && transfer.status === 'pending' && (
               <Card className="border-2 border-secondary" data-testid="receive-form">
