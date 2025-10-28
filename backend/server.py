@@ -408,6 +408,8 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
         'is_active': True,
         'wallet_balance_iqd': 0.0,
         'wallet_balance_usd': 0.0,
+        'wallet_limit_iqd': user_data.wallet_limit_iqd,
+        'wallet_limit_usd': user_data.wallet_limit_usd,
         'created_at': datetime.now(timezone.utc).isoformat()
     }
     
