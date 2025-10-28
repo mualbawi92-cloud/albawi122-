@@ -612,6 +612,26 @@ async def get_transfer_details(transfer_id: str, current_user: dict = Depends(ge
     
     return transfer
 
+@api_router.get("/transfers/{transfer_id}/pin")
+async def get_transfer_pin(transfer_id: str, current_user: dict = Depends(get_current_user)):
+    """Get transfer PIN (only for sender or admin)"""
+    transfer = await db.transfers.find_one({'id': transfer_id}, {'_id': 0})
+    
+    if not transfer:
+        raise HTTPException(status_code=404, detail="الحوالة غير موجودة")
+    
+    # Only sender or admin can view PIN
+    if current_user['role'] != 'admin' and transfer['from_agent_id'] != current_user['id']:
+        raise HTTPException(status_code=403, detail="فقط المُرسل أو الأدمن يمكنه رؤية الرقم السري")
+    
+    # Get stored PIN from database (we need to store it)
+    # For now, return the pin_hash (we'll need to modify creation to store plain PIN)
+    return {
+        'transfer_id': transfer_id,
+        'transfer_code': transfer['transfer_code'],
+        'message': 'الرقم السري محفوظ بشكل آمن. تم إرساله عند الإنشاء.'
+    }
+
 @api_router.post("/transfers/{transfer_id}/receive")
 async def receive_transfer(
     transfer_id: str,
