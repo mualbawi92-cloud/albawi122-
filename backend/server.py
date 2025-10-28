@@ -201,6 +201,7 @@ class LoginResponse(BaseModel):
 class TransferCreate(BaseModel):
     sender_name: str
     amount: float
+    currency: str = "IQD"  # IQD or USD
     to_governorate: str
     to_agent_id: Optional[str] = None
     note: Optional[str] = None
