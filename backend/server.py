@@ -231,6 +231,13 @@ class TransferReceive(BaseModel):
     pin: str
     receiver_fullname: str
 
+class UserUpdate(BaseModel):
+    display_name: Optional[str] = None
+    phone: Optional[str] = None
+    governorate: Optional[str] = None
+    current_password: Optional[str] = None
+    new_password: Optional[str] = None
+
 class DashboardStats(BaseModel):
     pending_incoming: int
     pending_outgoing: int
