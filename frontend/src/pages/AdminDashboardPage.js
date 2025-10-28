@@ -16,6 +16,7 @@ const AdminDashboardPage = () => {
   const { user } = useAuth();
   const [agents, setAgents] = useState([]);
   const [statements, setStatements] = useState({});
+  const [allTransfers, setAllTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,6 +34,10 @@ const AdminDashboardPage = () => {
       const agentsRes = await axios.get(`${API}/agents`);
       const agentsData = agentsRes.data;
       setAgents(agentsData);
+
+      // Get all transfers
+      const transfersRes = await axios.get(`${API}/transfers`);
+      setAllTransfers(transfersRes.data);
 
       // Get statement for each agent
       const statementsData = {};
