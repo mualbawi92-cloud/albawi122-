@@ -1,0 +1,149 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Badge } from '../components/ui/badge';
+import { toast } from 'sonner';
+import Navbar from '../components/Navbar';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+const TransfersListPage = () => {
+  const navigate = useNavigate();
+  const [transfers, setTransfers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState({ status: '', direction: '' });
+  const [searchCode, setSearchCode] = useState('');
+
+  useEffect(() => {
+    fetchTransfers();
+  }, [filter]);
+
+  const fetchTransfers = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (filter.status) params.append('status', filter.status);
+      if (filter.direction) params.append('direction', filter.direction);
+
+      const response = await axios.get(`${API}/transfers?${params}`);
+      setTransfers(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching transfers:', error);
+      toast.error('خطأ في تحميل الحوالات');
+      setLoading(false);
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const statusMap = {
+      pending: { label: 'قيد الانتظار', className: 'bg-yellow-100 text-yellow-800' },
+      completed: { label: 'مكتمل', className: 'bg-green-100 text-green-800' },
+      cancelled: { label: 'ملغى', className: 'bg-red-100 text-red-800' }
+    };
+    const config = statusMap[status] || { label: status, className: '' };
+    return <Badge className={config.className}>{config.label}</Badge>;
+  };
+
+  const filteredTransfers = transfers.filter(t => 
+    !searchCode || t.transfer_code.toLowerCase().includes(searchCode.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen bg-background" data-testid="transfers-list-page">
+      <Navbar />
+      <div className="container mx-auto p-6">
+        <Card className="shadow-xl mb-6">
+          <CardHeader>
+            <CardTitle className="text-3xl text-primary">جميع الحوالات</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4 mb-6">
+              <Input
+                placeholder="بحث برمز الحوالة..."
+                value={searchCode}
+                onChange={(e) => setSearchCode(e.target.value)}
+                className="max-w-xs h-12"
+                data-testid="search-transfer-input"
+              />
+              
+              <Select value={filter.status} onValueChange={(value) => setFilter({ ...filter, status: value })}>
+                <SelectTrigger className="w-48 h-12" data-testid="status-filter">
+                  <SelectValue placeholder="الحالة" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">كل الحالات</SelectItem>
+                  <SelectItem value="pending">قيد الانتظار</SelectItem>
+                  <SelectItem value="completed">مكتمل</SelectItem>
+                  <SelectItem value="cancelled">ملغى</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filter.direction} onValueChange={(value) => setFilter({ ...filter, direction: value })}>
+                <SelectTrigger className="w-48 h-12" data-testid="direction-filter">
+                  <SelectValue placeholder="الاتجاه" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">كل الحوالات</SelectItem>
+                  <SelectItem value="incoming">واردة</SelectItem>
+                  <SelectItem value="outgoing">صادرة</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button
+                onClick={() => navigate('/transfers/create')}
+                className="bg-secondary hover:bg-secondary/90 text-primary font-bold mr-auto"
+                data-testid="create-new-transfer-btn"
+              >
+                ➕ حوالة جديدة
+              </Button>
+            </div>
+
+            {loading ? (
+              <div className="text-center py-12 text-xl">جاري التحميل...</div>
+            ) : filteredTransfers.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">لا توجد حوالات</div>
+            ) : (
+              <div className="space-y-3">
+                {filteredTransfers.map((transfer) => (
+                  <div
+                    key={transfer.id}
+                    data-testid={`transfer-item-${transfer.transfer_code}`}
+                    className="flex items-center justify-between p-5 bg-muted/30 rounded-xl hover:shadow-lg transition-all cursor-pointer border-r-4 border-r-secondary"
+                    onClick={() => navigate(`/transfers/${transfer.id}`)}
+                  >
+                    <div className="space-y-2">
+                      <p className="text-xl font-bold text-primary">{transfer.transfer_code}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {transfer.sender_name} → {transfer.to_governorate}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(transfer.created_at).toLocaleDateString('ar-IQ', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                    <div className="text-left space-y-2">
+                      <p className="text-2xl font-bold text-secondary">{transfer.amount.toLocaleString()} IQD</p>
+                      {getStatusBadge(transfer.status)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default TransfersListPage;
