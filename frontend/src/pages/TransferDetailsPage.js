@@ -54,6 +54,32 @@ const TransferDetailsPage = () => {
   useEffect(() => {
     fetchTransfer();
   }, [id]);
+  
+  // Calculate expected commission when receive form is shown
+  useEffect(() => {
+    if (showReceive && transfer && user) {
+      fetchExpectedCommission();
+    }
+  }, [showReceive, transfer, user]);
+  
+  const fetchExpectedCommission = async () => {
+    setLoadingCommission(true);
+    try {
+      const response = await axios.get(`${API}/commission/calculate-preview`, {
+        params: {
+          amount: transfer.amount,
+          currency: transfer.currency,
+          to_governorate: transfer.to_governorate
+        }
+      });
+      setExpectedCommission(response.data);
+    } catch (error) {
+      console.error('Error calculating commission:', error);
+      setExpectedCommission(null);
+    } finally {
+      setLoadingCommission(false);
+    }
+  };
 
   const fetchTransfer = async () => {
     try {
