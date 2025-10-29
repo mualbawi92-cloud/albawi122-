@@ -1051,7 +1051,7 @@ class APITester:
         # Check ledger for account 2002 (Basra Agent)
         print("   Checking ledger for account 2002 (Basra Agent)...")
         try:
-            response = self.make_request('GET', '/accounting/ledger?account_code=2002', token=self.admin_token)
+            response = self.make_request('GET', '/accounting/ledger/2002', token=self.admin_token)
             if response.status_code == 200:
                 ledger_data = response.json()
                 entries = ledger_data.get('entries', [])
