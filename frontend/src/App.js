@@ -21,6 +21,7 @@ import AgentStatementPage from './pages/AgentStatementPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import CancelledTransfersPage from './pages/CancelledTransfersPage';
 import TransitAccountPage from './pages/TransitAccountPage';
+import AllCommissionsViewPage from './pages/AllCommissionsViewPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
