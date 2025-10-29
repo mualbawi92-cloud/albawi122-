@@ -430,6 +430,45 @@ const Navbar = () => {
                 📚 الدليل المحاسبي
               </Button>
             )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/manual-journal-entry');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-manual-journal"
+              >
+                📝 القيود اليدوية
+              </Button>
+            )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/journal');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-journal"
+              >
+                📖 دفتر اليومية
+              </Button>
+            )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/ledger');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-ledger"
+              >
+                📊 دفتر الأستاذ
+              </Button>
+            )}
             <Button
               onClick={() => {
                 navigate('/settings');
