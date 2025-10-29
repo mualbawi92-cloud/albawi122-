@@ -353,6 +353,71 @@ const CreateTransferPage = () => {
             </form>
           </CardContent>
         </Card>
+
+        {/* Confirmation Modal */}
+        <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-xl text-primary">تأكيد إنشاء الحوالة</DialogTitle>
+              <DialogDescription className="text-base">
+                يرجى مراجعة بيانات الحوالة قبل التأكيد
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <Label className="text-muted-foreground">المرسل</Label>
+                  <p className="font-bold">{formData.sender_name}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">المستلم</Label>
+                  <p className="font-bold">{formData.receiver_name}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">المبلغ</Label>
+                  <p className="font-bold text-secondary text-lg">
+                    {parseFloat(formData.amount || 0).toLocaleString()} {formData.currency}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">إلى محافظة</Label>
+                  <p className="font-bold">
+                    {IRAQI_GOVERNORATES.find(g => g.code === formData.to_governorate)?.name}
+                  </p>
+                </div>
+              </div>
+              
+              {formData.amount && parseFloat(formData.amount) > 0 && (
+                <div className="bg-gray-50 p-3 rounded border">
+                  <Label className="text-xs text-muted-foreground">المبلغ بالكلمات</Label>
+                  <p className="text-sm font-medium">
+                    {formatAmountInWords(parseFloat(formData.amount), formData.currency)}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowConfirmModal(false)}
+                className="flex-1"
+              >
+                تراجع
+              </Button>
+              <Button
+                type="button"
+                onClick={handleConfirmSubmit}
+                disabled={loading}
+                className="flex-1 bg-secondary hover:bg-secondary/90 text-primary"
+              >
+                {loading ? 'جاري الإنشاء...' : 'تأكيد الإنشاء'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
