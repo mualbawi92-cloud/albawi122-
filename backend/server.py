@@ -869,6 +869,42 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'created_at': datetime.now(timezone.utc).isoformat()
     })
     
+    # ============================================
+    # AI Monitoring: Analyze transfer for suspicious activity
+    # ============================================
+    try:
+        # Check for duplicate transfers today
+        duplicate_count = await check_duplicate_transfers_today(
+            transfer_data.sender_name,
+            transfer_data.receiver_name
+        )
+        
+        if duplicate_count > 2:
+            await create_notification(
+                title="⚠️ تكرار حوالة مشبوه",
+                message=f"تم إنشاء {duplicate_count} حوالات اليوم بين المرسل '{transfer_data.sender_name}' والمستلم '{transfer_data.receiver_name}'",
+                severity="medium",
+                related_transfer_id=transfer_id,
+                related_agent_id=current_user['id']
+            )
+        
+        # Check for large amount (1 billion or more)
+        if transfer_data.amount >= 1000000000:
+            await create_notification(
+                title="🚨 حوالة بمبلغ ضخم!",
+                message=f"حوالة بمبلغ {transfer_data.amount:,.0f} {transfer_data.currency} من '{current_user['display_name']}'",
+                severity="high",
+                related_transfer_id=transfer_id,
+                related_agent_id=current_user['id']
+            )
+        
+        # AI Analysis (async - don't wait for it)
+        import asyncio
+        asyncio.create_task(analyze_and_notify_if_suspicious(transfer_doc))
+        
+    except Exception as e:
+        print(f"Error in AI monitoring: {e}")
+    
     # Notify receiving agents via WebSocket
     await sio.emit('new_transfer', {
         'transfer_id': transfer_id,
