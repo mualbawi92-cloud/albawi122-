@@ -471,6 +471,18 @@ class APITester:
             if response.status_code == 200:
                 self.log_result("Commission Rate Creation", True, "Commission rate created successfully")
                 
+                # Debug: Check if the rate was actually stored
+                print("\n--- Debugging: Checking stored commission rates ---")
+                debug_response = self.make_request('GET', f'/commission-rates/agent/{self.agent_baghdad_user_id}', 
+                                                 token=self.agent_baghdad_token)
+                if debug_response.status_code == 200:
+                    rates = debug_response.json()
+                    print(f"Found {len(rates)} commission rates for agent")
+                    if rates:
+                        print(f"Rate details: {rates[0]}")
+                else:
+                    print(f"Failed to get commission rates: {debug_response.status_code}")
+                
                 # Now test the preview with the configured rate
                 print("\n--- Testing preview with configured rate (500,000 IQD) ---")
                 params = {
