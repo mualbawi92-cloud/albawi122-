@@ -406,6 +406,42 @@ frontend:
           - Returns full CommissionRate object after update
           
           **Ready for comprehensive testing of UPDATE functionality**
+      
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ COMPREHENSIVE TESTING COMPLETE: Commission Rate UPDATE Endpoint fully functional
+          
+          **Test Results Summary: 9/9 tests passed (100% success rate)**
+          
+          **1. Core UPDATE Functionality - FULLY WORKING:**
+          - PUT /api/commission-rates/{rate_id}: ✅ Successfully updates existing commission rates
+          - Field Updates: ✅ All fields updated correctly (date, tiers, percentages, amount ranges)
+          - Database Persistence: ✅ Updated data correctly persisted and retrievable
+          - Response Format: ✅ Returns complete updated CommissionRate object
+          
+          **2. Authentication & Authorization - FULLY WORKING:**
+          - Admin Authentication: ✅ Correctly requires admin access
+          - Agent Access Rejection: ✅ Properly rejects agent access (403 status)
+          - Token Validation: ✅ Proper JWT token validation implemented
+          
+          **3. Error Handling - EXCELLENT:**
+          - Rate Not Found: ✅ Returns 404 for non-existent commission rate IDs
+          - Data Validation: ✅ Returns 422 for invalid/missing required fields
+          - Proper HTTP Status Codes: ✅ All error responses use correct status codes
+          
+          **4. Data Integrity Testing:**
+          - Complex Updates: ✅ Successfully updated commission rate with 3 tiers
+          - Percentage Changes: ✅ Updated percentages from 0.25%/0.20% to 0.30%/0.25%/0.15%
+          - Amount Range Changes: ✅ Updated tier ranges and added new tier
+          - Date Updates: ✅ Successfully changed bulletin date from 2024-01-15 to 2024-01-20
+          
+          **5. Complete Test Flow Verified:**
+          - Create → Update → Verify → Cleanup: ✅ Full CRUD cycle working perfectly
+          - Database Verification: ✅ Confirmed updates persist correctly in MongoDB
+          - Real-world Data: ✅ Tested with realistic Arabic commission rate data
+          
+          **Production Readiness:** The Commission Rate UPDATE endpoint is fully functional and ready for production use. All requested features working correctly with proper error handling, authentication, and data integrity.
 
 metadata:
   created_by: "main_agent"
