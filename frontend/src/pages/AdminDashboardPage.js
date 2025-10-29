@@ -56,6 +56,16 @@ const AdminDashboardPage = () => {
         }
       }
       setStatements(statementsData);
+      
+      // Get transit account data
+      try {
+        const transitRes = await axios.get(`${API}/transit-account/balance`);
+        setTransitData(transitRes.data);
+      } catch (error) {
+        console.error('Error fetching transit data:', error);
+        setTransitData(null);
+      }
+      
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
