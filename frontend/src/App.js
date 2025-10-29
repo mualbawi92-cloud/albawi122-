@@ -28,6 +28,7 @@ import ChartOfAccountsPage from './pages/ChartOfAccountsPage';
 import ManualJournalEntryPage from './pages/ManualJournalEntryPage';
 import JournalPage from './pages/JournalPage';
 import LedgerPage from './pages/LedgerPage';
+import ExchangeOperationsPage from './pages/ExchangeOperationsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
