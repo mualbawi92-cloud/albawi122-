@@ -635,15 +635,43 @@ const CommissionsManagementPage = () => {
                               </div>
 
                               <div className="space-y-2">
-                                <Label>النسبة %</Label>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  value={tier.percentage}
-                                  onChange={(e) => updateTier(index, 'percentage', e.target.value)}
-                                  placeholder="0.25"
-                                />
+                                <Label>نوع العمولة</Label>
+                                <Select
+                                  value={tier.commission_type || 'percentage'}
+                                  onValueChange={(value) => updateTier(index, 'commission_type', value)}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="percentage">📊 نسبة مئوية (%)</SelectItem>
+                                    <SelectItem value="fixed_amount">💰 مبلغ ثابت</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
+
+                              {tier.commission_type === 'percentage' ? (
+                                <div className="space-y-2">
+                                  <Label>النسبة %</Label>
+                                  <Input
+                                    type="number"
+                                    step="0.01"
+                                    value={tier.percentage}
+                                    onChange={(e) => updateTier(index, 'percentage', e.target.value)}
+                                    placeholder="0.25"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="space-y-2">
+                                  <Label>المبلغ الثابت</Label>
+                                  <Input
+                                    type="number"
+                                    value={tier.fixed_amount || 0}
+                                    onChange={(e) => updateTier(index, 'fixed_amount', e.target.value)}
+                                    placeholder="1000"
+                                  />
+                                </div>
+                              )}
 
                               <div className="space-y-2">
                                 <Label>المدينة</Label>
