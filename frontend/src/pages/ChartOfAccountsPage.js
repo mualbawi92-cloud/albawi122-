@@ -433,6 +433,340 @@ const ChartOfAccountsPage = () => {
             )}
           </CardContent>
         </Card>
+          </>
+        )}
+
+        {/* Trial Balance Tab */}
+        {activeTab === 'trial-balance' && (
+          <div className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>من تاريخ</Label>
+                    <Input
+                      type="date"
+                      value={reportStartDate}
+                      onChange={(e) => setReportStartDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>إلى تاريخ</Label>
+                    <Input
+                      type="date"
+                      value={reportEndDate}
+                      onChange={(e) => setReportEndDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2 flex items-end">
+                    <Button onClick={fetchTrialBalance} disabled={loading} className="w-full">
+                      {loading ? 'جاري التحميل...' : '📊 عرض التقرير'}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {trialBalance && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>ميزان المراجعة</CardTitle>
+                  <CardDescription>
+                    {trialBalance.is_balanced ? (
+                      <span className="text-green-700 font-bold">✅ الميزان متوازن</span>
+                    ) : (
+                      <span className="text-red-700 font-bold">⚠️ الميزان غير متوازن</span>
+                    )}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-200">
+                        <tr>
+                          <th className="p-3 text-right">رمز الحساب</th>
+                          <th className="p-3 text-right">اسم الحساب</th>
+                          <th className="p-3 text-right">الفئة</th>
+                          <th className="p-3 text-center">مدين</th>
+                          <th className="p-3 text-center">دائن</th>
+                          <th className="p-3 text-center">الرصيد</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {trialBalance.accounts.map((acc) => (
+                          <tr key={acc.code} className="border-t hover:bg-gray-50">
+                            <td className="p-3">{acc.code}</td>
+                            <td className="p-3">{acc.name_ar}</td>
+                            <td className="p-3">{acc.category}</td>
+                            <td className="p-3 text-center font-bold text-blue-700">
+                              {acc.debit > 0 ? acc.debit.toLocaleString() : '-'}
+                            </td>
+                            <td className="p-3 text-center font-bold text-green-700">
+                              {acc.credit > 0 ? acc.credit.toLocaleString() : '-'}
+                            </td>
+                            <td className={`p-3 text-center font-bold ${
+                              acc.balance > 0 ? 'text-green-700' : acc.balance < 0 ? 'text-red-700' : ''
+                            }`}>
+                              {acc.balance.toLocaleString()}
+                            </td>
+                          </tr>
+                        ))}
+                        <tr className="border-t-2 bg-gray-100 font-bold">
+                          <td className="p-3" colSpan="3">المجموع</td>
+                          <td className="p-3 text-center text-blue-700">
+                            {trialBalance.total_debit.toLocaleString()}
+                          </td>
+                          <td className="p-3 text-center text-green-700">
+                            {trialBalance.total_credit.toLocaleString()}
+                          </td>
+                          <td className="p-3 text-center">-</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {/* Income Statement Tab */}
+        {activeTab === 'income-statement' && (
+          <div className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>من تاريخ</Label>
+                    <Input
+                      type="date"
+                      value={reportStartDate}
+                      onChange={(e) => setReportStartDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>إلى تاريخ</Label>
+                    <Input
+                      type="date"
+                      value={reportEndDate}
+                      onChange={(e) => setReportEndDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2 flex items-end">
+                    <Button onClick={fetchIncomeStatement} disabled={loading} className="w-full">
+                      {loading ? 'جاري التحميل...' : '📊 عرض التقرير'}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {incomeStatement && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="border-2 border-green-200 bg-green-50">
+                    <CardContent className="pt-6">
+                      <p className="text-sm text-muted-foreground">إجمالي الإيرادات</p>
+                      <p className="text-3xl font-bold text-green-700">
+                        {formatCurrency(incomeStatement.total_revenue)}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card className="border-2 border-red-200 bg-red-50">
+                    <CardContent className="pt-6">
+                      <p className="text-sm text-muted-foreground">إجمالي المصاريف</p>
+                      <p className="text-3xl font-bold text-red-700">
+                        {formatCurrency(incomeStatement.total_expenses)}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card className={`border-2 ${incomeStatement.net_profit >= 0 ? 'border-blue-200 bg-blue-50' : 'border-orange-200 bg-orange-50'}`}>
+                    <CardContent className="pt-6">
+                      <p className="text-sm text-muted-foreground">
+                        {incomeStatement.net_profit >= 0 ? 'صافي الربح' : 'صافي الخسارة'}
+                      </p>
+                      <p className={`text-3xl font-bold ${incomeStatement.net_profit >= 0 ? 'text-blue-700' : 'text-orange-700'}`}>
+                        {formatCurrency(Math.abs(incomeStatement.net_profit))}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-green-700">الإيرادات</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {incomeStatement.revenues.length === 0 ? (
+                        <p className="text-center py-4 text-muted-foreground">لا توجد إيرادات</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {incomeStatement.revenues.map((rev) => (
+                            <div key={rev.code} className="flex justify-between border-b pb-2">
+                              <span>{rev.name_ar}</span>
+                              <span className="font-bold">{formatCurrency(rev.amount)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-red-700">المصاريف</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {incomeStatement.expenses.length === 0 ? (
+                        <p className="text-center py-4 text-muted-foreground">لا توجد مصاريف</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {incomeStatement.expenses.map((exp) => (
+                            <div key={exp.code} className="flex justify-between border-b pb-2">
+                              <span>{exp.name_ar}</span>
+                              <span className="font-bold">{formatCurrency(exp.amount)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Balance Sheet Tab */}
+        {activeTab === 'balance-sheet' && (
+          <div className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>حتى تاريخ</Label>
+                    <Input
+                      type="date"
+                      value={reportEndDate}
+                      onChange={(e) => setReportEndDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2 flex items-end">
+                    <Button onClick={fetchBalanceSheet} disabled={loading} className="w-full">
+                      {loading ? 'جاري التحميل...' : '📊 عرض التقرير'}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {balanceSheet && (
+              <>
+                <Card className={`border-2 ${balanceSheet.is_balanced ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+                  <CardContent className="pt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">إجمالي الأصول</p>
+                        <p className="text-2xl font-bold text-blue-700">
+                          {formatCurrency(balanceSheet.total_assets)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">الالتزامات + حقوق الملكية</p>
+                        <p className="text-2xl font-bold text-purple-700">
+                          {formatCurrency(balanceSheet.total_liabilities_equity)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">الحالة</p>
+                        <p className={`text-xl font-bold ${balanceSheet.is_balanced ? 'text-green-700' : 'text-red-700'}`}>
+                          {balanceSheet.is_balanced ? '✅ متوازنة' : '⚠️ غير متوازنة'}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-blue-700">الأصول</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {balanceSheet.assets.length === 0 ? (
+                        <p className="text-center py-4 text-muted-foreground">لا توجد أصول</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {balanceSheet.assets.map((asset) => (
+                            <div key={asset.code} className="flex justify-between border-b pb-2">
+                              <span>{asset.name_ar}</span>
+                              <span className="font-bold">{formatCurrency(asset.amount)}</span>
+                            </div>
+                          ))}
+                          <div className="flex justify-between pt-2 font-bold text-lg">
+                            <span>المجموع</span>
+                            <span className="text-blue-700">{formatCurrency(balanceSheet.total_assets)}</span>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <div className="space-y-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-red-700">الالتزامات</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {balanceSheet.liabilities.length === 0 ? (
+                          <p className="text-center py-4 text-muted-foreground">لا توجد التزامات</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {balanceSheet.liabilities.map((liab) => (
+                              <div key={liab.code} className="flex justify-between border-b pb-2">
+                                <span>{liab.name_ar}</span>
+                                <span className="font-bold">{formatCurrency(liab.amount)}</span>
+                              </div>
+                            ))}
+                            <div className="flex justify-between pt-2 font-bold">
+                              <span>المجموع</span>
+                              <span className="text-red-700">{formatCurrency(balanceSheet.total_liabilities)}</span>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-purple-700">حقوق الملكية</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {balanceSheet.equity.length === 0 ? (
+                          <p className="text-center py-4 text-muted-foreground">لا توجد حقوق ملكية</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {balanceSheet.equity.map((eq) => (
+                              <div key={eq.code} className="flex justify-between border-b pb-2">
+                                <span>{eq.name_ar}</span>
+                                <span className="font-bold">{formatCurrency(eq.amount)}</span>
+                              </div>
+                            ))}
+                            <div className="flex justify-between pt-2 font-bold">
+                              <span>المجموع</span>
+                              <span className="text-purple-700">{formatCurrency(balanceSheet.total_equity)}</span>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Add Account Dialog */}
         <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
