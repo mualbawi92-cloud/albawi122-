@@ -23,6 +23,7 @@ import CancelledTransfersPage from './pages/CancelledTransfersPage';
 import TransitAccountPage from './pages/TransitAccountPage';
 import AllCommissionsViewPage from './pages/AllCommissionsViewPage';
 import NotificationsPage from './pages/NotificationsPage';
+import ReportsPage from './pages/ReportsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
