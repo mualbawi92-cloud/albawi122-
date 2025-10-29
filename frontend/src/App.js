@@ -68,6 +68,9 @@ function AppRoutes() {
       <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
       <Route path="/chart-of-accounts" element={<ProtectedRoute><ChartOfAccountsPage /></ProtectedRoute>} />
+      <Route path="/manual-journal-entry" element={<ProtectedRoute><ManualJournalEntryPage /></ProtectedRoute>} />
+      <Route path="/journal" element={<ProtectedRoute><JournalPage /></ProtectedRoute>} />
+      <Route path="/ledger" element={<ProtectedRoute><LedgerPage /></ProtectedRoute>} />
       <Route path="/statement" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
       <Route path="/statement/:agentId" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
       <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
