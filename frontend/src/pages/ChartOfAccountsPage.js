@@ -47,6 +47,16 @@ const ChartOfAccountsPage = () => {
   // Delete confirmation dialog
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
+  
+  // Tab state for reports
+  const [activeTab, setActiveTab] = useState('accounts'); // accounts, trial-balance, income-statement, balance-sheet
+  
+  // Reports state
+  const [reportStartDate, setReportStartDate] = useState('');
+  const [reportEndDate, setReportEndDate] = useState('');
+  const [trialBalance, setTrialBalance] = useState(null);
+  const [incomeStatement, setIncomeStatement] = useState(null);
+  const [balanceSheet, setBalanceSheet] = useState(null);
 
   useEffect(() => {
     if (user?.role !== 'admin') {
