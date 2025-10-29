@@ -1898,7 +1898,7 @@ async def receive_transfer(
         receiver_account = await db.accounts.find_one({'agent_id': current_user['id']})
         
         if receiver_account:
-            # Create journal entry for receiving transfer
+            # قيد 1: Create journal entry for receiving transfer
             # Transit = مدين
             # المكتب المُسلِّم (دفع نقدية للمستلم) = دائن
             journal_entry = {
@@ -1943,6 +1943,69 @@ async def receive_transfer(
             )
             
             logger.info(f"Created journal entry for receiving transfer {transfer['transfer_code']}")
+            
+            # قيد 2: العمولة المدفوعة (إذا وجدت)
+            if incoming_commission > 0:
+                # Get or create paid commission account
+                paid_commission_account = await db.accounts.find_one({'code': '5110'})
+                if not paid_commission_account:
+                    paid_commission_account = {
+                        'id': 'paid_commissions_transfer',
+                        'code': '5110',
+                        'name_ar': 'عمولات حوالات مدفوعة',
+                        'name_en': 'Transfer Commission Paid',
+                        'category': 'مصاريف',
+                        'parent_code': '5100',
+                        'is_active': True,
+                        'balance': 0,
+                        'currency': 'IQD',
+                        'created_at': datetime.now(timezone.utc).isoformat(),
+                        'updated_at': datetime.now(timezone.utc).isoformat()
+                    }
+                    await db.accounts.insert_one(paid_commission_account)
+                
+                journal_entry_commission = {
+                    'id': str(uuid.uuid4()),
+                    'entry_number': f"COM-PAID-{transfer['transfer_code']}",
+                    'date': datetime.now(timezone.utc).isoformat(),
+                    'description': f'عمولة مدفوعة على استلام حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
+                    'lines': [
+                        {
+                            'account_code': '5110',  # عمولات حوالات مدفوعة (مدين - مصروف)
+                            'debit': incoming_commission,
+                            'credit': 0
+                        },
+                        {
+                            'account_code': receiver_account['code'],  # حساب المستلم (دائن)
+                            'debit': 0,
+                            'credit': incoming_commission
+                        }
+                    ],
+                    'total_debit': incoming_commission,
+                    'total_credit': incoming_commission,
+                    'reference_type': 'commission_paid',
+                    'reference_id': transfer_id,
+                    'created_by': current_user['id'],
+                    'created_at': datetime.now(timezone.utc).isoformat(),
+                    'is_cancelled': False
+                }
+                
+                await db.journal_entries.insert_one(journal_entry_commission)
+                
+                # Update balances for commission
+                # عمولات مدفوعة (مصروف يزداد بالمدين)
+                await db.accounts.update_one(
+                    {'code': '5110'},
+                    {'$inc': {'balance': incoming_commission}}
+                )
+                
+                # حساب المستلم (يقل بالدائن - لأنه أصل)
+                await db.accounts.update_one(
+                    {'code': receiver_account['code']},
+                    {'$inc': {'balance': -incoming_commission}}
+                )
+                
+                logger.info(f"Created journal entry for paid commission on transfer {transfer['transfer_code']}")
     except Exception as e:
         logger.error(f"Error creating journal entry for receiving transfer: {str(e)}")
     # ============ END ACCOUNTING ENTRY ============
