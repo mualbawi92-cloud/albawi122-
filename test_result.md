@@ -111,32 +111,52 @@ user_problem_statement: |
   يرجى معالجة المشكلة لضمان تسجيل العمولات المدفوعة بشكل دقيق ضمن الحسابات المحاسبية.
 
 backend:
-  - task: "Enhanced error messages for transfer reception"
+  - task: "Commission paid accounting entry for incoming transfers"
     implemented: true
-    working: true
+    working: "NA"
     file: "backend/server.py"
     stuck_count: 0
-    priority: "high"
+    priority: "critical"
     needs_retesting: true
     status_history:
-      - working: true
+      - working: "NA"
         agent: "main"
         comment: |
-          ✅ Implemented specific error messages:
-          - "الاسم الثلاثي غير صحيح" when receiver_fullname doesn't match
-          - "الرقم السري غير صحيح" when PIN is incorrect
-          - Added verification of receiver_fullname before PIN check
-          - Enhanced logging for failed attempts with failure_reason field
-          - UPDATED: Now validates against receiver_name field instead of sender_name
-      - working: true
-        agent: "testing"
-        comment: |
-          ✅ TESTED SUCCESSFULLY: Enhanced error messages working correctly
-          - Tested incorrect receiver fullname: Returns "الاسم الثلاثي غير صحيح" (400 status)
-          - Tested incorrect PIN: Returns "الرقم السري غير صحيح" (401 status)
-          - Fixed minor bug: transfer['receiver_name'] was undefined, now uses sender_name as fallback
-          - Error message validation and status codes working as expected
-          - Authentication and rate limiting working properly
+          ✅ CRITICAL FIX: Added journal entry for paid commission on incoming transfers
+          
+          Problem Reported by User:
+          - When receiving an incoming transfer, the paid commission was not properly recorded
+          - The commission was not posted to the "عمولات مدفوعة" (Commission Paid) account in the ledger
+          
+          Root Cause:
+          - In receive_transfer endpoint, the incoming_commission was being added to the agent's wallet
+          - BUT no separate accounting journal entry was created for the paid commission
+          - Only the main transfer amount was being recorded in the journal
+          
+          Solution Implemented:
+          1. Added separate journal entry for paid commission (if incoming_commission > 0):
+             - Entry Number: COM-PAID-{transfer_code}
+             - Description: عمولة مدفوعة على استلام حوالة
+             - Debit: Account 5110 (عمولات حوالات مدفوعة - Expense increases)
+             - Credit: Receiver agent account (Cash decreases)
+          
+          2. Updated account balances:
+             - Account 5110 (Commission Paid): Balance increases by incoming_commission
+             - Receiver agent account: Balance decreases by incoming_commission
+          
+          3. This ensures:
+             - Paid commissions are properly tracked in the expenses account
+             - Journal entries reflect all financial transactions
+             - Ledger shows commission movements correctly
+          
+          Accounting Flow for Receiving Transfer:
+          - Entry 1: Transfer amount (Transit → Receiver Agent)
+          - Entry 2: Paid commission (Commission Paid Expense → Receiver Agent)
+          
+          Ready for comprehensive backend testing to verify:
+          1. Journal entries are created correctly
+          2. Account balances are updated properly
+          3. Ledger reflects commission paid transactions
 
   - task: "Add receiver_name field to transfer system"
     implemented: true
