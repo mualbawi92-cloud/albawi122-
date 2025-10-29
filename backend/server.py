@@ -1890,6 +1890,175 @@ async def calculate_commission_preview(
     }
 
 # ============================================
+# Reports Endpoints (التقارير)
+# ============================================
+
+@api_router.get("/reports/commissions")
+async def get_commissions_report(
+    report_type: str = "daily",  # daily, monthly, yearly
+    date: str = None,  # YYYY-MM-DD for daily, YYYY-MM for monthly, YYYY for yearly
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get commissions report
+    report_type: daily, monthly, yearly
+    date: specific date/month/year to filter
+    """
+    from datetime import datetime as dt, timedelta
+    
+    # Parse date parameter
+    if not date:
+        date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+    
+    # Build query based on report type
+    if report_type == "daily":
+        start_date = dt.strptime(date, '%Y-%m-%d')
+        end_date = start_date + timedelta(days=1)
+    elif report_type == "monthly":
+        start_date = dt.strptime(date + "-01", '%Y-%m-%d')
+        next_month = start_date.month + 1 if start_date.month < 12 else 1
+        next_year = start_date.year if start_date.month < 12 else start_date.year + 1
+        end_date = dt(next_year, next_month, 1)
+    elif report_type == "yearly":
+        start_date = dt.strptime(date + "-01-01", '%Y-%m-%d')
+        end_date = dt(start_date.year + 1, 1, 1)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid report_type")
+    
+    start_iso = start_date.isoformat()
+    end_iso = end_date.isoformat()
+    
+    # Get earned commissions (عمولات محققة)
+    earned_commissions = await db.admin_commissions.find({
+        'type': 'earned',
+        'created_at': {'$gte': start_iso, '$lt': end_iso}
+    }).to_list(length=None)
+    
+    # Get paid commissions (عمولات مدفوعة)
+    paid_commissions = await db.admin_commissions.find({
+        'type': 'paid',
+        'created_at': {'$gte': start_iso, '$lt': end_iso}
+    }).to_list(length=None)
+    
+    # Calculate totals by currency
+    totals = {
+        'IQD': {'earned': 0, 'paid': 0, 'net': 0},
+        'USD': {'earned': 0, 'paid': 0, 'net': 0}
+    }
+    
+    for comm in earned_commissions:
+        comm.pop('_id', None)
+        currency = comm.get('currency', 'IQD')
+        totals[currency]['earned'] += comm.get('amount', 0)
+    
+    for comm in paid_commissions:
+        comm.pop('_id', None)
+        currency = comm.get('currency', 'IQD')
+        totals[currency]['paid'] += comm.get('amount', 0)
+    
+    # Calculate net profit
+    for currency in totals:
+        totals[currency]['net'] = totals[currency]['earned'] - totals[currency]['paid']
+    
+    return {
+        "report_type": report_type,
+        "date": date,
+        "start_date": start_iso,
+        "end_date": end_iso,
+        "earned_commissions": earned_commissions,
+        "paid_commissions": paid_commissions,
+        "totals": totals,
+        "summary": {
+            "total_earned_iqd": totals['IQD']['earned'],
+            "total_paid_iqd": totals['IQD']['paid'],
+            "net_profit_iqd": totals['IQD']['net'],
+            "total_earned_usd": totals['USD']['earned'],
+            "total_paid_usd": totals['USD']['paid'],
+            "net_profit_usd": totals['USD']['net']
+        }
+    }
+
+@api_router.get("/reports/agents-profit")
+async def get_agents_profit_report(
+    report_type: str = "daily",
+    date: str = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get profit report per agent (صافي ربح كل صيرفة)
+    """
+    from datetime import datetime as dt, timedelta
+    
+    if not date:
+        date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+    
+    # Build date range
+    if report_type == "daily":
+        start_date = dt.strptime(date, '%Y-%m-%d')
+        end_date = start_date + timedelta(days=1)
+    elif report_type == "monthly":
+        start_date = dt.strptime(date + "-01", '%Y-%m-%d')
+        next_month = start_date.month + 1 if start_date.month < 12 else 1
+        next_year = start_date.year if start_date.month < 12 else start_date.year + 1
+        end_date = dt(next_year, next_month, 1)
+    elif report_type == "yearly":
+        start_date = dt.strptime(date + "-01-01", '%Y-%m-%d')
+        end_date = dt(start_date.year + 1, 1, 1)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid report_type")
+    
+    start_iso = start_date.isoformat()
+    end_iso = end_date.isoformat()
+    
+    # Get all commissions in date range
+    all_commissions = await db.admin_commissions.find({
+        'created_at': {'$gte': start_iso, '$lt': end_iso}
+    }).to_list(length=None)
+    
+    # Group by agent
+    agents_data = {}
+    
+    for comm in all_commissions:
+        agent_id = comm.get('agent_id')
+        agent_name = comm.get('agent_name', 'Unknown')
+        currency = comm.get('currency', 'IQD')
+        amount = comm.get('amount', 0)
+        comm_type = comm.get('type')
+        
+        if agent_id not in agents_data:
+            agents_data[agent_id] = {
+                'agent_id': agent_id,
+                'agent_name': agent_name,
+                'IQD': {'earned': 0, 'paid': 0, 'net': 0},
+                'USD': {'earned': 0, 'paid': 0, 'net': 0},
+                'earned_transactions': [],
+                'paid_transactions': []
+            }
+        
+        if comm_type == 'earned':
+            agents_data[agent_id][currency]['earned'] += amount
+            agents_data[agent_id]['earned_transactions'].append(comm)
+        elif comm_type == 'paid':
+            agents_data[agent_id][currency]['paid'] += amount
+            agents_data[agent_id]['paid_transactions'].append(comm)
+    
+    # Calculate net profit for each agent
+    for agent_id in agents_data:
+        for currency in ['IQD', 'USD']:
+            agents_data[agent_id][currency]['net'] = (
+                agents_data[agent_id][currency]['earned'] - 
+                agents_data[agent_id][currency]['paid']
+            )
+    
+    return {
+        "report_type": report_type,
+        "date": date,
+        "start_date": start_iso,
+        "end_date": end_iso,
+        "agents": list(agents_data.values())
+    }
+
+# ============================================
 # Transit Account Endpoints
 # ============================================
 
