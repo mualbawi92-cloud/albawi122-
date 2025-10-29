@@ -934,7 +934,7 @@ class APITester:
         
         # Look for existing COM-PAID entries to verify system capability
         try:
-            response = self.make_request('GET', '/accounting/journal', token=self.admin_token)
+            response = self.make_request('GET', '/accounting/journal-entries', token=self.admin_token)
             if response.status_code == 200:
                 journal_data = response.json()
                 entries = journal_data.get('entries', [])
