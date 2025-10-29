@@ -1894,7 +1894,7 @@ async def calculate_commission_preview(
 # ============================================
 
 @api_router.get("/reports/commissions")
-async def get_commissions_report(
+async def get_detailed_commissions_report(
     report_type: str = "daily",  # daily, monthly, yearly
     date: str = None,  # YYYY-MM-DD for daily, YYYY-MM for monthly, YYYY for yearly
     current_user: dict = Depends(require_admin)
