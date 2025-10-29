@@ -192,56 +192,84 @@ const Navbar = () => {
                 📊 التقارير
               </Button>
             )}
+            
+            {/* Accounting Dropdown Menu */}
             {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/chart-of-accounts')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-chart-of-accounts"
-              >
-                📚 الدليل المحاسبي
-              </Button>
+              <div className="relative">
+                <Button
+                  onClick={() => setAccountingMenuOpen(!accountingMenuOpen)}
+                  onBlur={() => setTimeout(() => setAccountingMenuOpen(false), 200)}
+                  variant="ghost"
+                  className="text-white hover:bg-white/10 font-bold text-sm"
+                  data-testid="nav-accounting-menu"
+                >
+                  📊 المحاسبة ▾
+                </Button>
+                
+                {accountingMenuOpen && (
+                  <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border-2 border-primary/20 min-w-[200px] z-50">
+                    <div className="py-2">
+                      <button
+                        onClick={() => {
+                          navigate('/chart-of-accounts');
+                          setAccountingMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        📚 الدليل المحاسبي
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/ledger');
+                          setAccountingMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        📊 دفتر الأستاذ
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/journal');
+                          setAccountingMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        📖 دفتر اليومية
+                      </button>
+                      <div className="border-t border-gray-200 my-1"></div>
+                      <button
+                        onClick={() => {
+                          navigate('/chart-of-accounts?tab=trial-balance');
+                          setAccountingMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        ⚖️ ميزان المراجعة
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/manual-journal-entry');
+                          setAccountingMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        📝 قيد التسوية
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/journal-transfer');
+                          setAccountingMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        🔄 القيد المزدوج
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/manual-journal-entry')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-manual-journal"
-              >
-                📝 القيود اليدوية
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/journal')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-journal"
-              >
-                📖 دفتر اليومية
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/journal-transfer')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-journal-transfer"
-              >
-                🔄 قيد مزدوج
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/ledger')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-ledger"
-              >
-                📊 دفتر الأستاذ
-              </Button>
-            )}
+            
             {user?.role === 'admin' && (
               <Button
                 onClick={() => navigate('/exchange')}
