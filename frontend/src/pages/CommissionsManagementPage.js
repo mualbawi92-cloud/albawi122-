@@ -513,8 +513,19 @@ const CommissionsManagementPage = () => {
                                 </div>
                                 
                                 <div className="bg-purple-50 p-2 rounded border border-purple-200">
-                                  <p className="text-xs text-purple-700">نسبة العمولة</p>
-                                  <p className="text-2xl font-bold text-purple-900">{tier.percentage}%</p>
+                                  {tier.commission_type === 'fixed_amount' ? (
+                                    <>
+                                      <p className="text-xs text-purple-700">💰 مبلغ ثابت</p>
+                                      <p className="text-2xl font-bold text-purple-900">
+                                        {tier.fixed_amount?.toLocaleString()} {rate.currency}
+                                      </p>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <p className="text-xs text-purple-700">📊 نسبة العمولة</p>
+                                      <p className="text-2xl font-bold text-purple-900">{tier.percentage}%</p>
+                                    </>
+                                  )}
                                 </div>
                                 
                                 <div className="flex gap-2 text-xs">
