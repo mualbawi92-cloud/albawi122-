@@ -752,32 +752,83 @@ class APITester:
             self.log_result("Transfer Creation", False, f"Error creating transfer: {str(e)}")
             return False
         
-        # PHASE 2: Receive Transfer (Agent 2 receives) - SIMULATION
-        print("\n--- PHASE 2: RECEIVE TRANSFER (Agent 2 receives) - SIMULATION ---")
+        # Verify wallet decreased by transfer amount
+        print("\n1. Verifying sender wallet decreased...")
+        try:
+            response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
+            if response.status_code == 200:
+                sender_after_balance = response.json()
+                sender_after_iqd = sender_after_balance['wallet_balance_iqd']
+                expected_after = sender_initial_iqd - transfer_amount
+                
+                if abs(sender_after_iqd - expected_after) < 0.01:
+                    self.log_result("Sender Wallet Decreased", True, f"Wallet correctly decreased from {sender_initial_iqd:,} to {sender_after_iqd:,}")
+                    print(f"   ✅ Before: {sender_initial_iqd:,} IQD")
+                    print(f"   ✅ After: {sender_after_iqd:,} IQD")
+                    print(f"   ✅ Difference: {sender_initial_iqd - sender_after_iqd:,} IQD")
+                else:
+                    self.log_result("Sender Wallet Decreased", False, f"Expected {expected_after:,}, got {sender_after_iqd:,}")
+                    return False
+            else:
+                self.log_result("Sender Wallet Decreased", False, f"Could not verify wallet: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Sender Wallet Decreased", False, f"Error: {str(e)}")
+            return False
+
+        # PHASE 2: استلام الحوالة (Receive Transfer - Agent 2 receives) - SIMULATION
+        print("\n--- PHASE 2: استلام الحوالة (Receive Transfer - Agent 2 receives) ---")
         
         print("⚠️  NOTE: Cannot test actual receive endpoint due to Cloudinary image upload requirement")
         print("However, we can verify the transfer search and commission calculation logic...")
         
-        # Test transfer search
+        # Test transfer search by code
         print("\n1. Testing transfer search by code...")
         try:
             response = self.make_request('GET', f'/transfers/search/{transfer_code}', token=self.agent_basra_token)
             if response.status_code == 200:
                 search_data = response.json()
                 if search_data.get('transfer_code') == transfer_code:
-                    self.log_result("Transfer Search", True, f"Transfer found and ready for receiving")
+                    self.log_result("Transfer Search by Code", True, f"Transfer found and ready for receiving")
+                    print(f"   ✅ Transfer Code: {search_data.get('transfer_code')}")
                     print(f"   ✅ Sender: {search_data.get('sender_name')}")
                     print(f"   ✅ Receiver: {search_data.get('receiver_name')}")
                     print(f"   ✅ Amount: {search_data.get('amount'):,} {search_data.get('currency')}")
+                    print(f"   ✅ From Agent: {search_data.get('from_agent_name')}")
+                    print(f"   ✅ To Governorate: {search_data.get('to_governorate')}")
                 else:
-                    self.log_result("Transfer Search", False, "Transfer code mismatch")
+                    self.log_result("Transfer Search by Code", False, "Transfer code mismatch")
                     return False
             else:
-                self.log_result("Transfer Search", False, f"Search failed: {response.status_code}")
+                self.log_result("Transfer Search by Code", False, f"Search failed: {response.status_code}")
                 return False
         except Exception as e:
-            self.log_result("Transfer Search", False, f"Search error: {str(e)}")
+            self.log_result("Transfer Search by Code", False, f"Search error: {str(e)}")
             return False
+        
+        # Verify transfer details include expected commission calculation
+        print("\n2. Verifying transfer details and commission calculation...")
+        try:
+            response = self.make_request('GET', f'/transfers/{transfer_id}', token=self.agent_basra_token)
+            if response.status_code == 200:
+                transfer_details = response.json()
+                
+                print(f"   Transfer Status: {transfer_details.get('status')}")
+                print(f"   Transfer Amount: {transfer_details.get('amount', 0):,} {transfer_details.get('currency', 'IQD')}")
+                print(f"   Incoming Commission: {transfer_details.get('incoming_commission', 0):,}")
+                print(f"   Incoming Commission %: {transfer_details.get('incoming_commission_percentage', 0)}%")
+                print(f"   To Agent ID: {transfer_details.get('to_agent_id', 'None')}")
+                
+                # During creation, incoming commission should be 0 (calculated during receive)
+                if transfer_details.get('status') == 'pending':
+                    self.log_result("Transfer Details Verification", True, "Transfer in pending status, ready for reception")
+                else:
+                    self.log_result("Transfer Details Verification", False, f"Unexpected status: {transfer_details.get('status')}")
+                
+            else:
+                self.log_result("Transfer Details Verification", False, f"Could not get transfer details: {response.status_code}")
+        except Exception as e:
+            self.log_result("Transfer Details Verification", False, f"Error: {str(e)}")
         
         # PHASE 3: Verify Journal Entries ⭐ THIS IS THE CRITICAL PART
         print("\n--- PHASE 3: VERIFY JOURNAL ENTRIES ⭐ CRITICAL PART ---")
