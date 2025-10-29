@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
 Backend API Testing for Cash Transfer System
-FOCUS: Commission Calculate Preview Endpoint
+FOCUS: Transit Account System Testing
 
-Tests the commission calculation preview endpoint:
-1. GET /api/commission/calculate-preview with valid parameters
-2. Test with different amounts and currencies (IQD, USD)
-3. Test with missing parameters
-4. Test with invalid amounts (0, negative)
-5. Test authentication requirements
+Tests the new Transit Account System:
+1. GET /api/transit-account/balance (Admin only)
+2. GET /api/transit-account/transactions (Admin only)  
+3. GET /api/transit-account/pending-transfers (Admin only)
+4. Transfer flow with transit account integration:
+   - Create transfer: Amount deducted from sender, added to transit
+   - Receive transfer: Amount deducted from transit, added to receiver
+   - Cancel transfer: Amount deducted from transit, returned to sender
 """
 
 import requests
