@@ -351,12 +351,14 @@ const TransferDetailsPage = () => {
             )}
 
             {/* Actions */}
-            {transfer.status === 'pending' && !showReceive && user && transfer.from_agent_id === user.id && (
+            {transfer.status === 'pending' && !showReceive && user && (transfer.from_agent_id === user.id || user.role === 'admin') && (
               <div className="space-y-4">
-                {/* Edit and Cancel Buttons for Sender */}
+                {/* Edit and Cancel Buttons for Sender or Admin */}
                 <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
                   <p className="text-sm font-semibold text-yellow-800 mb-3">
-                    ⚠️ أنت مُرسل هذه الحوالة - يمكنك التعديل أو الإلغاء
+                    {user.role === 'admin' 
+                      ? '🔒 صلاحيات الأدمن - يمكنك التعديل أو الإلغاء' 
+                      : '⚠️ أنت مُرسل هذه الحوالة - يمكنك التعديل أو الإلغاء'}
                   </p>
                   <div className="flex gap-3">
                     <Button
