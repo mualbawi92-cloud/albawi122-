@@ -1005,7 +1005,7 @@ async def update_transfer(
         'note': transfer.get('note')
     }
     
-    # Handle amount change (need to update wallet)
+    # Handle amount change (need to update wallet and transit)
     if update_data.amount is not None and update_data.amount != transfer['amount']:
         amount_diff = update_data.amount - transfer['amount']
         wallet_field = f'wallet_balance_{transfer["currency"].lower()}'
@@ -1015,6 +1015,26 @@ async def update_transfer(
             {'id': current_user['id']},
             {'$inc': {wallet_field: -amount_diff}}
         )
+        
+        # Update transit account accordingly
+        if amount_diff > 0:
+            # Amount increased - add difference to transit
+            await update_transit_balance(
+                amount=amount_diff,
+                currency=transfer['currency'],
+                operation='add',
+                reference_id=transfer_id,
+                note=f'زيادة مبلغ حوالة {transfer["transfer_code"]} - فرق: {amount_diff}'
+            )
+        else:
+            # Amount decreased - subtract difference from transit
+            await update_transit_balance(
+                amount=abs(amount_diff),
+                currency=transfer['currency'],
+                operation='subtract',
+                reference_id=transfer_id,
+                note=f'تقليل مبلغ حوالة {transfer["transfer_code"]} - فرق: {abs(amount_diff)}'
+            )
         
         # Recalculate commission
         commission = (update_data.amount * 0.13) / 100
