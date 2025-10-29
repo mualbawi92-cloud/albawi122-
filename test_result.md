@@ -451,11 +451,11 @@ frontend:
 
   - task: "Chart of Accounts DELETE Endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -478,6 +478,40 @@ frontend:
           - Maintains accounting integrity
           
           Ready for testing.
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ COMPREHENSIVE TESTING COMPLETE: Chart of Accounts DELETE Endpoint fully functional
+          
+          **Test Results Summary: 15/15 tests passed (100% success rate)**
+          
+          **AUTHENTICATION & AUTHORIZATION - FULLY WORKING:**
+          1. ✅ Admin authentication: Admin can successfully delete accounts
+          2. ✅ Agent authentication rejection: Correctly returns 403 for agent access
+          3. ✅ No authentication rejection: Correctly returns 403 for unauthenticated requests
+          
+          **CORE DELETE FUNCTIONALITY - FULLY WORKING:**
+          4. ✅ Create → Delete → Verify cycle: Account successfully created, deleted, and verified removed
+          5. ✅ Delete non-existent account: Correctly returns 404 for non-existent accounts
+          6. ✅ Delete account with children: Correctly returns 400 and prevents deletion
+          7. ✅ Delete account with zero balance: Successfully deletes accounts with zero balance
+          
+          **INTEGRATION WITH EXISTING ENDPOINTS - EXCELLENT:**
+          8. ✅ GET /api/accounting/accounts: Deleted accounts no longer appear in response
+          9. ✅ POST /api/accounting/accounts: Create endpoint works correctly after DELETE tests
+          10. ✅ System integrity: Chart of accounts maintains integrity during multiple operations
+          
+          **DATA INTEGRITY - ROBUST:**
+          11. ✅ Data persistence: Deletion persists correctly in database
+          12. ✅ No orphaned data: No orphaned data after hierarchical deletion
+          
+          **BUSINESS RULES VALIDATION:**
+          - ✅ Hierarchical integrity: Cannot delete accounts with child accounts
+          - ✅ Balance validation: Prevents deletion of accounts with non-zero balance
+          - ✅ Authentication enforcement: Admin-only access properly enforced
+          - ✅ Error handling: Proper HTTP status codes and error messages
+          
+          **PRODUCTION READINESS:** The Chart of Accounts DELETE endpoint is fully functional and ready for production use. All requested test scenarios completed successfully with proper error handling, authentication, and data integrity.
 
   - task: "Reports Page Implementation"
     implemented: true
