@@ -2941,6 +2941,341 @@ async def cancel_journal_entry(entry_id: str, current_user: dict = Depends(requi
     
     return {"message": "تم إلغاء القيد بنجاح", "entry_id": entry_id}
 
+# ============================================
+# Exchange Operations Endpoints (عمليات الصرافة)
+# ============================================
+
+@api_router.get("/exchange-rates")
+async def get_exchange_rates(current_user: dict = Depends(require_admin)):
+    """
+    Get current exchange rates (أسعار الصرف الحالية)
+    """
+    rates = await db.exchange_rates.find_one(sort=[('updated_at', -1)])
+    
+    if not rates:
+        # Create default rates if none exist
+        default_rates = {
+            'id': str(uuid.uuid4()),
+            'buy_rate': 1480.0,  # Default: 1480 IQD per 1 USD
+            'sell_rate': 1470.0,  # Default: 1470 IQD per 1 USD
+            'updated_by': current_user['id'],
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        await db.exchange_rates.insert_one(default_rates)
+        rates = default_rates
+    
+    rates.pop('_id', None)
+    return rates
+
+@api_router.post("/exchange-rates")
+async def update_exchange_rates(
+    rates_data: ExchangeRateUpdate,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Update exchange rates (تحديث أسعار الصرف)
+    """
+    if rates_data.buy_rate <= 0 or rates_data.sell_rate <= 0:
+        raise HTTPException(status_code=400, detail="الأسعار يجب أن تكون أكبر من صفر")
+    
+    if rates_data.buy_rate <= rates_data.sell_rate:
+        raise HTTPException(
+            status_code=400,
+            detail="سعر الشراء يجب أن يكون أكبر من سعر البيع لتحقيق ربح"
+        )
+    
+    new_rates = {
+        'id': str(uuid.uuid4()),
+        'buy_rate': rates_data.buy_rate,
+        'sell_rate': rates_data.sell_rate,
+        'updated_by': current_user['id'],
+        'updated_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.exchange_rates.insert_one(new_rates)
+    new_rates.pop('_id', None)
+    
+    return new_rates
+
+@api_router.post("/exchange/buy")
+async def buy_currency(
+    operation: ExchangeOperationCreate,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Buy USD (شراء دولار - دفع دينار واستلام دولار)
+    """
+    if operation.operation_type != "buy":
+        raise HTTPException(status_code=400, detail="نوع العملية يجب أن يكون 'buy'")
+    
+    if operation.amount_usd <= 0:
+        raise HTTPException(status_code=400, detail="المبلغ يجب أن يكون أكبر من صفر")
+    
+    # Calculate amounts
+    amount_iqd = operation.amount_usd * operation.exchange_rate
+    
+    # Get current rates to calculate profit
+    current_rates = await db.exchange_rates.find_one(sort=[('updated_at', -1)])
+    if not current_rates:
+        raise HTTPException(status_code=400, detail="لا توجد أسعار صرف محددة")
+    
+    # Profit = (buy_rate - actual_rate) * amount_usd
+    profit = (current_rates['buy_rate'] - operation.exchange_rate) * operation.amount_usd
+    
+    # Update admin wallet
+    admin = await db.users.find_one({'id': current_user['id']})
+    if not admin:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    current_iqd = admin.get('wallet_balance_iqd', 0)
+    current_usd = admin.get('wallet_balance_usd', 0)
+    
+    # Check if admin has enough IQD
+    if current_iqd < amount_iqd:
+        raise HTTPException(
+            status_code=400,
+            detail=f"رصيد الدينار غير كافٍ. الرصيد الحالي: {current_iqd:,.0f}"
+        )
+    
+    new_iqd = current_iqd - amount_iqd
+    new_usd = current_usd + operation.amount_usd
+    
+    await db.users.update_one(
+        {'id': current_user['id']},
+        {
+            '$set': {
+                'wallet_balance_iqd': new_iqd,
+                'wallet_balance_usd': new_usd,
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    # Create journal entry
+    journal_entry = {
+        'id': str(uuid.uuid4()),
+        'entry_number': f"EX-BUY-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}",
+        'date': datetime.now(timezone.utc).isoformat(),
+        'description': f"شراء دولار: {operation.amount_usd:,.2f} USD بسعر {operation.exchange_rate:,.2f}",
+        'lines': [
+            {'account_code': '1020', 'debit': amount_iqd, 'credit': 0},  # صندوق USD
+            {'account_code': '1010', 'debit': 0, 'credit': amount_iqd},  # صندوق IQD
+            {'account_code': '4010', 'debit': 0, 'credit': profit} if profit > 0 else {'account_code': '5010', 'debit': abs(profit), 'credit': 0}  # Profit/Loss
+        ],
+        'total_debit': amount_iqd + (abs(profit) if profit < 0 else 0),
+        'total_credit': amount_iqd + (profit if profit > 0 else 0),
+        'reference_type': 'exchange_buy',
+        'reference_id': None,
+        'created_by': current_user['id'],
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'is_cancelled': False
+    }
+    
+    await db.journal_entries.insert_one(journal_entry)
+    
+    # Create exchange operation record
+    exchange_op = {
+        'id': str(uuid.uuid4()),
+        'operation_type': 'buy',
+        'amount_usd': operation.amount_usd,
+        'amount_iqd': amount_iqd,
+        'exchange_rate': operation.exchange_rate,
+        'profit': profit,
+        'admin_id': current_user['id'],
+        'admin_name': current_user['display_name'],
+        'journal_entry_id': journal_entry['id'],
+        'notes': operation.notes,
+        'created_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.exchange_operations.insert_one(exchange_op)
+    exchange_op.pop('_id', None)
+    
+    return exchange_op
+
+@api_router.post("/exchange/sell")
+async def sell_currency(
+    operation: ExchangeOperationCreate,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Sell USD (بيع دولار - دفع دولار واستلام دينار)
+    """
+    if operation.operation_type != "sell":
+        raise HTTPException(status_code=400, detail="نوع العملية يجب أن يكون 'sell'")
+    
+    if operation.amount_usd <= 0:
+        raise HTTPException(status_code=400, detail="المبلغ يجب أن يكون أكبر من صفر")
+    
+    # Calculate amounts
+    amount_iqd = operation.amount_usd * operation.exchange_rate
+    
+    # Get current rates to calculate profit
+    current_rates = await db.exchange_rates.find_one(sort=[('updated_at', -1)])
+    if not current_rates:
+        raise HTTPException(status_code=400, detail="لا توجد أسعار صرف محددة")
+    
+    # Profit = (actual_rate - sell_rate) * amount_usd
+    profit = (operation.exchange_rate - current_rates['sell_rate']) * operation.amount_usd
+    
+    # Update admin wallet
+    admin = await db.users.find_one({'id': current_user['id']})
+    if not admin:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    current_iqd = admin.get('wallet_balance_iqd', 0)
+    current_usd = admin.get('wallet_balance_usd', 0)
+    
+    # Check if admin has enough USD
+    if current_usd < operation.amount_usd:
+        raise HTTPException(
+            status_code=400,
+            detail=f"رصيد الدولار غير كافٍ. الرصيد الحالي: {current_usd:,.2f}"
+        )
+    
+    new_iqd = current_iqd + amount_iqd
+    new_usd = current_usd - operation.amount_usd
+    
+    await db.users.update_one(
+        {'id': current_user['id']},
+        {
+            '$set': {
+                'wallet_balance_iqd': new_iqd,
+                'wallet_balance_usd': new_usd,
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    # Create journal entry
+    journal_entry = {
+        'id': str(uuid.uuid4()),
+        'entry_number': f"EX-SELL-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}",
+        'date': datetime.now(timezone.utc).isoformat(),
+        'description': f"بيع دولار: {operation.amount_usd:,.2f} USD بسعر {operation.exchange_rate:,.2f}",
+        'lines': [
+            {'account_code': '1010', 'debit': amount_iqd, 'credit': 0},  # صندوق IQD
+            {'account_code': '1020', 'debit': 0, 'credit': amount_iqd},  # صندوق USD
+            {'account_code': '4010', 'debit': 0, 'credit': profit} if profit > 0 else {'account_code': '5010', 'debit': abs(profit), 'credit': 0}  # Profit/Loss
+        ],
+        'total_debit': amount_iqd + (abs(profit) if profit < 0 else 0),
+        'total_credit': amount_iqd + (profit if profit > 0 else 0),
+        'reference_type': 'exchange_sell',
+        'reference_id': None,
+        'created_by': current_user['id'],
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'is_cancelled': False
+    }
+    
+    await db.journal_entries.insert_one(journal_entry)
+    
+    # Create exchange operation record
+    exchange_op = {
+        'id': str(uuid.uuid4()),
+        'operation_type': 'sell',
+        'amount_usd': operation.amount_usd,
+        'amount_iqd': amount_iqd,
+        'exchange_rate': operation.exchange_rate,
+        'profit': profit,
+        'admin_id': current_user['id'],
+        'admin_name': current_user['display_name'],
+        'journal_entry_id': journal_entry['id'],
+        'notes': operation.notes,
+        'created_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.exchange_operations.insert_one(exchange_op)
+    exchange_op.pop('_id', None)
+    
+    return exchange_op
+
+@api_router.get("/exchange/operations")
+async def get_exchange_operations(
+    start_date: str = None,
+    end_date: str = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get all exchange operations (سجل عمليات الصرف)
+    """
+    query = {}
+    
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query['$gte'] = start_date
+        if end_date:
+            date_query['$lte'] = end_date
+        query['created_at'] = date_query
+    
+    operations = await db.exchange_operations.find(query).sort('created_at', -1).to_list(length=None)
+    
+    for op in operations:
+        op.pop('_id', None)
+    
+    return {"operations": operations, "total": len(operations)}
+
+@api_router.get("/exchange/profit-report")
+async def get_exchange_profit_report(
+    report_type: str = "daily",  # daily, monthly, yearly
+    date: str = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get exchange profit report (تقرير أرباح فرق الصرف)
+    """
+    from datetime import datetime as dt, timedelta
+    
+    if not date:
+        date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+    
+    # Build date range
+    if report_type == "daily":
+        start_date = dt.strptime(date, '%Y-%m-%d')
+        end_date = start_date + timedelta(days=1)
+    elif report_type == "monthly":
+        start_date = dt.strptime(date + "-01", '%Y-%m-%d')
+        next_month = start_date.month + 1 if start_date.month < 12 else 1
+        next_year = start_date.year if start_date.month < 12 else start_date.year + 1
+        end_date = dt(next_year, next_month, 1)
+    elif report_type == "yearly":
+        start_date = dt.strptime(date + "-01-01", '%Y-%m-%d')
+        end_date = dt(start_date.year + 1, 1, 1)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid report_type")
+    
+    start_iso = start_date.isoformat()
+    end_iso = end_date.isoformat()
+    
+    # Get operations in date range
+    operations = await db.exchange_operations.find({
+        'created_at': {'$gte': start_iso, '$lt': end_iso}
+    }).to_list(length=None)
+    
+    # Calculate totals
+    buy_operations = [op for op in operations if op['operation_type'] == 'buy']
+    sell_operations = [op for op in operations if op['operation_type'] == 'sell']
+    
+    total_buy_usd = sum(op.get('amount_usd', 0) for op in buy_operations)
+    total_sell_usd = sum(op.get('amount_usd', 0) for op in sell_operations)
+    total_profit = sum(op.get('profit', 0) for op in operations)
+    
+    for op in operations:
+        op.pop('_id', None)
+    
+    return {
+        "report_type": report_type,
+        "date": date,
+        "start_date": start_iso,
+        "end_date": end_iso,
+        "buy_operations": buy_operations,
+        "sell_operations": sell_operations,
+        "total_buy_usd": total_buy_usd,
+        "total_sell_usd": total_sell_usd,
+        "total_profit": total_profit,
+        "operations_count": len(operations)
+    }
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
