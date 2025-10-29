@@ -412,3 +412,33 @@ agent_communication:
       - ✅ Shows in both main form and confirmation modal
       
       Ready for testing!
+  
+  - agent: "testing"
+    message: |
+      ✅ COMMISSION PREVIEW ENDPOINT TESTING COMPLETE
+      
+      **Test Focus:** GET /api/commission/calculate-preview endpoint
+      
+      **Test Results Summary:**
+      - 12/12 tests passed (100% success rate)
+      - All required functionality working correctly
+      - Proper error handling and validation implemented
+      - Authentication and authorization working as expected
+      
+      **Key Findings:**
+      1. **Endpoint Functionality:** ✅ WORKING
+         - Correctly calculates commission based on agent's configured rates
+         - Returns 0% commission when no rates configured (expected behavior)
+         - Proper response format with all required fields
+      
+      2. **Parameter Validation:** ✅ WORKING
+         - Handles missing parameters correctly (422 validation error)
+         - Handles invalid amounts (0, negative) appropriately
+         - Requires authentication (403 for unauthenticated requests)
+      
+      3. **Commission Rate Integration:** ✅ WORKING
+         - Successfully integrates with existing commission rate system
+         - Calculates accurate commission amounts based on configured tiers
+         - Tested with real commission rates: 0.25% for Baghdad agent
+      
+      **No Issues Found:** The commission calculate preview endpoint is fully functional and ready for production use.
