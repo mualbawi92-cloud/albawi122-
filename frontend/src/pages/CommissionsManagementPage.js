@@ -246,7 +246,8 @@ const CommissionsManagementPage = () => {
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="overflow-x-auto">
+              {/* Desktop Table View */}
+              <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-primary text-white">
                     <tr>
@@ -367,6 +368,126 @@ const CommissionsManagementPage = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="lg:hidden p-4 space-y-4">
+                {tiers.map((tier, index) => (
+                  <Card key={index} className="border-2 border-gray-200 shadow-md">
+                    <CardContent className="p-4 space-y-3">
+                      <div className="flex items-center justify-between mb-3 pb-3 border-b-2">
+                        <span className="text-lg font-bold text-primary">شريحة #{index + 1}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeTier(index)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          🗑️ حذف
+                        </Button>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold">البلد</Label>
+                        <Select 
+                          value={tier.country} 
+                          onValueChange={(value) => updateTier(index, 'country', value)}
+                        >
+                          <SelectTrigger className="h-11">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="(جميع البلدان)">(جميع البلدان)</SelectItem>
+                            <SelectItem value="العراق">العراق</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold">المدينة</Label>
+                        <Select 
+                          value={tier.city} 
+                          onValueChange={(value) => updateTier(index, 'city', value)}
+                        >
+                          <SelectTrigger className="h-11">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-60">
+                            <SelectItem value="(جميع المدن)">(جميع المدن)</SelectItem>
+                            {IRAQI_GOVERNORATES.map((gov) => (
+                              <SelectItem key={gov.code} value={gov.name}>
+                                {gov.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold">النوع</Label>
+                          <Select 
+                            value={tier.type} 
+                            onValueChange={(value) => updateTier(index, 'type', value)}
+                          >
+                            <SelectTrigger className="h-11">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="outgoing">صادر</SelectItem>
+                              <SelectItem value="incoming">وارد</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold">نوع العملة</Label>
+                          <Select 
+                            value={tier.currency_type} 
+                            onValueChange={(value) => updateTier(index, 'currency_type', value)}
+                          >
+                            <SelectTrigger className="h-11">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="normal">عادية</SelectItem>
+                              <SelectItem value="payable">علينا</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold">حتى مبلغ</Label>
+                          <Input
+                            type="number"
+                            value={tier.to_amount}
+                            onChange={(e) => updateTier(index, 'to_amount', e.target.value)}
+                            className="h-11"
+                            step="0.01"
+                            dir="ltr"
+                            placeholder="0"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold">نسبة %</Label>
+                          <Input
+                            type="number"
+                            value={tier.percentage}
+                            onChange={(e) => updateTier(index, 'percentage', e.target.value)}
+                            className="h-11"
+                            step="0.01"
+                            dir="ltr"
+                            placeholder="0.00"
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </CardContent>
           </Card>
