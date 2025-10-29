@@ -323,3 +323,39 @@ agent_communication:
       When receiving, the system verifies that the entered name matches receiver_name.
       
       Ready for comprehensive testing of this critical feature.
+  
+  - agent: "main"
+    message: |
+      ✅ NEW FEATURE: Added commission rate and amount display in CreateTransferPage
+      
+      User Request: Display commission percentage and amount on the transfer creation form
+      
+      Backend Changes:
+      1. Added new GET endpoint: /api/commission/calculate-preview
+         - Takes: amount, currency, to_governorate as query parameters
+         - Returns: commission_percentage, commission_amount, currency
+         - Uses current authenticated user's commission rates
+         - Calculates based on the same logic as transfer creation
+      
+      Frontend Changes (CreateTransferPage.js):
+      1. Added useEffect hook to automatically calculate commission when:
+         - Amount changes
+         - Currency changes
+         - Governorate changes
+      2. Added debouncing (500ms) to avoid excessive API calls
+      3. Added commission display section showing:
+         - نسبة العمولة (Commission percentage)
+         - مبلغ العمولة (Commission amount)
+         - Loading indicator during calculation
+         - Message when no commission rate is set (0%)
+      4. Added commission info to confirmation modal
+      5. Real-time updates as user types or changes form fields
+      
+      Features:
+      - ✅ Automatic calculation based on form inputs
+      - ✅ Shows both percentage and amount
+      - ✅ Displays "0" if no commission rate configured
+      - ✅ Responsive design with blue themed display box
+      - ✅ Shows in both main form and confirmation modal
+      
+      Ready for testing!
