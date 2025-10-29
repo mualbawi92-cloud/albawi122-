@@ -1,173 +1,129 @@
-# Iraqi ID Validation Component
-# التحقق من الهوية العراقية
+# Simple ID Validation - Name Matching Only
+# التحقق البسيط من مطابقة الاسم
 
-from fastapi import UploadFile
-from typing import Optional, Tuple
+from typing import Tuple
 import re
 
-# أنواع الهويات المقبولة
-ACCEPTED_ID_TYPES = {
-    'civil_id': 'البطاقة المدنية الموحدة',
-    'national_id': 'البطاقة الوطنية',
-    'drivers_license': 'إجازة السوق',
-    'passport': 'جواز السفر'
-}
+def normalize_name(name: str) -> str:
+    """
+    تطبيع الاسم للمقارنة (إزالة المسافات، التشكيل، توحيد الحروف)
+    """
+    if not name:
+        return ""
+    
+    # تحويل إلى lowercase
+    name = name.lower().strip()
+    
+    # إزالة التشكيل العربي
+    arabic_diacritics = re.compile("""
+        ّ    | # Tashdid
+        َ    | # Fatha
+        ً    | # Tanwin Fath
+        ُ    | # Damma
+        ٌ    | # Tanwin Damm
+        ِ    | # Kasra
+        ٍ    | # Tanwin Kasr
+        ْ    | # Sukun
+        ـ     # Tatwil/Kashida
+    """, re.VERBOSE)
+    name = re.sub(arabic_diacritics, '', name)
+    
+    # إزالة المسافات الزائدة
+    name = ' '.join(name.split())
+    
+    return name
 
-# أرقام البطاقة العراقية تبدأ عادة بـ
-IRAQI_ID_PATTERNS = [
-    r'^\d{12}$',  # 12 رقم (البطاقة الوطنية)
-    r'^[A-Z]\d{8}$',  # حرف + 8 أرقام (إجازة السوق)
-    r'^IQDL\d{8}$',  # IQDL + 8 أرقام (بطاقة مدنية)
-]
+def extract_first_name(full_name: str) -> str:
+    """
+    استخراج الاسم الأول من الاسم الكامل
+    """
+    if not full_name:
+        return ""
+    
+    normalized = normalize_name(full_name)
+    
+    # الاسم الأول هو أول كلمة
+    parts = normalized.split()
+    if parts:
+        return parts[0]
+    
+    return normalized
 
-# المحافظات العراقية
-IRAQI_GOVERNORATES = [
-    'بغداد', 'البصرة', 'النجف', 'كربلاء', 'بابل',
-    'الأنبار', 'ديالى', 'واسط', 'صلاح الدين', 'نينوى',
-    'ذي قار', 'القادسية', 'المثنى', 'ميسان', 'كركوك',
-    'أربيل', 'السليمانية', 'دهوك'
-]
-
-def extract_id_info_from_filename(filename: str) -> dict:
+def match_first_name(name1: str, name2: str) -> Tuple[bool, str, dict]:
     """
-    استخراج معلومات من اسم الملف
-    مثلاً: civil_id_199279789522.jpg
+    مطابقة الاسم الأول بين اسمين
+    
+    Args:
+        name1: الاسم الأول (مثلاً من الحوالة)
+        name2: الاسم الثاني (مثلاً من المستخدم)
+    
+    Returns:
+        (is_match, message, details)
     """
-    info = {
-        'id_type': None,
-        'id_number': None
-    }
+    # استخراج الأسماء الأولى
+    first_name1 = extract_first_name(name1)
+    first_name2 = extract_first_name(name2)
     
-    # محاولة استخراج نوع الهوية
-    filename_lower = filename.lower()
-    if 'civil' in filename_lower or 'مدنية' in filename_lower:
-        info['id_type'] = 'civil_id'
-    elif 'national' in filename_lower or 'وطنية' in filename_lower:
-        info['id_type'] = 'national_id'
-    elif 'driver' in filename_lower or 'سوق' in filename_lower or 'اجازة' in filename_lower:
-        info['id_type'] = 'drivers_license'
-    elif 'passport' in filename_lower or 'جواز' in filename_lower:
-        info['id_type'] = 'passport'
-    
-    # محاولة استخراج رقم الهوية
-    numbers = re.findall(r'\d+', filename)
-    if numbers:
-        # اختيار أطول رقم
-        info['id_number'] = max(numbers, key=len)
-    
-    return info
-
-def validate_iraqi_id_number(id_number: str) -> Tuple[bool, str]:
-    """
-    التحقق من صحة رقم الهوية العراقية
-    """
-    if not id_number:
-        return False, "رقم الهوية مطلوب"
-    
-    # إزالة المسافات والرموز
-    id_clean = re.sub(r'[^\w]', '', id_number)
-    
-    # التحقق من الأنماط المعروفة
-    for pattern in IRAQI_ID_PATTERNS:
-        if re.match(pattern, id_clean):
-            return True, "رقم هوية صحيح"
-    
-    return False, "رقم الهوية لا يتطابق مع الأنماط المعروفة"
-
-def validate_id_image(file: UploadFile, id_number: Optional[str] = None) -> Tuple[bool, str, dict]:
-    """
-    التحقق من صورة الهوية
-    Returns: (is_valid, message, extracted_info)
-    """
     result = {
-        'is_valid': False,
-        'message': '',
-        'id_type': None,
-        'id_number': None,
-        'warnings': []
+        'name1_first': first_name1,
+        'name2_first': first_name2,
+        'match': False,
+        'similarity': 0
     }
     
-    # 1. التحقق من نوع الملف
-    if not file.filename:
-        result['message'] = "اسم الملف مطلوب"
-        return False, result['message'], result
+    # التحقق من وجود أسماء
+    if not first_name1 or not first_name2:
+        return False, "الاسم الأول مطلوب", result
     
-    ext = '.' + file.filename.lower().split('.')[-1] if '.' in file.filename else ''
-    if ext not in ['.jpg', '.jpeg', '.png']:
-        result['message'] = "يجب أن تكون الصورة بصيغة JPG أو PNG"
-        return False, result['message'], result
+    # مطابقة كاملة
+    if first_name1 == first_name2:
+        result['match'] = True
+        result['similarity'] = 100
+        return True, "الاسم الأول متطابق تماماً", result
     
-    # 2. استخراج معلومات من اسم الملف
-    info = extract_id_info_from_filename(file.filename)
-    result['id_type'] = info['id_type']
-    result['id_number'] = info['id_number'] or id_number
+    # مطابقة جزئية (أول 3 أحرف)
+    min_length = min(len(first_name1), len(first_name2))
+    if min_length >= 3:
+        # حساب التشابه
+        matching_chars = sum(1 for a, b in zip(first_name1, first_name2) if a == b)
+        similarity = (matching_chars / max(len(first_name1), len(first_name2))) * 100
+        result['similarity'] = similarity
+        
+        # إذا كان التشابه أكثر من 70%
+        if similarity >= 70:
+            result['match'] = True
+            return True, f"الاسم الأول متشابه ({similarity:.0f}%)", result
+        
+        # إذا كانت أول 3 أحرف متطابقة
+        if first_name1[:3] == first_name2[:3]:
+            result['match'] = True
+            return True, "الاسم الأول متشابه (أول 3 أحرف متطابقة)", result
     
-    # 3. التحقق من رقم الهوية إذا كان موجوداً
-    if result['id_number']:
-        is_valid_number, number_message = validate_iraqi_id_number(result['id_number'])
-        if not is_valid_number:
-            result['warnings'].append(number_message)
-    
-    # 4. التحقق النهائي
-    result['is_valid'] = True
-    result['message'] = "صورة الهوية صالحة"
-    
-    if result['id_type']:
-        result['message'] += f" - نوع: {ACCEPTED_ID_TYPES.get(result['id_type'], 'غير محدد')}"
-    
-    return True, result['message'], result
+    # لا يوجد تطابق
+    return False, f"الاسم الأول غير متطابق: '{first_name1}' ≠ '{first_name2}'", result
 
-def get_id_upload_instructions() -> dict:
+def validate_receiver_name(transfer_receiver_name: str, entered_fullname: str) -> Tuple[bool, str]:
     """
-    تعليمات رفع صورة الهوية
+    التحقق من مطابقة اسم المستلم
+    
+    Args:
+        transfer_receiver_name: اسم المستلم في الحوالة
+        entered_fullname: الاسم الكامل الذي أدخله المستخدم
+    
+    Returns:
+        (is_valid, message)
     """
-    return {
-        'title': 'تعليمات رفع صورة الهوية',
-        'instructions': [
-            '✅ التقط صورة واضحة للهوية الأصلية',
-            '✅ تأكد من ظهور جميع المعلومات بوضوح',
-            '✅ لا تستخدم صور معدلة أو منسوخة',
-            '✅ الإضاءة جيدة بدون ظلال',
-            '✅ الصورة مستقيمة وليست مائلة',
-        ],
-        'accepted_ids': [
-            {
-                'name': 'البطاقة المدنية الموحدة',
-                'description': 'البطاقة التي تحتوي على IQDL متبوعة بأرقام',
-                'example': 'IQDL02341651',
-                'image_guidelines': [
-                    'صور الوجه الأمامي للبطاقة',
-                    'تأكد من ظهور الصورة الشخصية والأرقام',
-                    'الخلفية الوردية/البنفسجية'
-                ]
-            },
-            {
-                'name': 'البطاقة الوطنية',
-                'description': 'البطاقة التي تحتوي على 12 رقم',
-                'example': '199279789522',
-                'image_guidelines': [
-                    'صور الوجه الأمامي للبطاقة',
-                    'تأكد من ظهور الصورة الشخصية ورقم البطاقة',
-                    'الخلفية الزرقاء/الخضراء'
-                ]
-            },
-            {
-                'name': 'إجازة السوق',
-                'description': 'رخصة القيادة العراقية',
-                'example': 'A82259460',
-                'image_guidelines': [
-                    'صور الوجه الأمامي لإجازة السوق',
-                    'تأكد من ظهور الصورة الشخصية والرقم',
-                    'الختم الرسمي يجب أن يكون واضحاً'
-                ]
-            }
-        ],
-        'not_accepted': [
-            '❌ صور غير واضحة أو مشوشة',
-            '❌ صور معدلة بالفوتوشوب',
-            '❌ صور من الإنترنت',
-            '❌ هويات منتهية الصلاحية',
-            '❌ هويات تالفة أو ممزقة'
-        ],
-        'privacy_note': '🔒 جميع الصور تُحفظ بشكل آمن ومشفر ولن تُستخدم إلا للتحقق من الهوية'
-    }
+    is_match, message, details = match_first_name(
+        transfer_receiver_name,
+        entered_fullname
+    )
+    
+    if is_match:
+        return True, f"✅ تم التحقق من الاسم الأول: {details['name1_first']}"
+    else:
+        return False, f"❌ {message}"
+
+# مثال على الاستخدام:
+# is_valid, message = validate_receiver_name("محمد علي حسن", "محمد أحمد")
+# print(is_valid, message)  # True, "✅ تم التحقق من الاسم الأول: محمد"
+
