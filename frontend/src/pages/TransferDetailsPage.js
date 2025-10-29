@@ -120,13 +120,27 @@ const TransferDetailsPage = () => {
   };
 
   const captureImage = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setCapturedImage(imageSrc);
-    setUseCamera(false);
+    if (webcamRef.current) {
+      const imageSrc = webcamRef.current.getScreenshot();
+      if (imageSrc) {
+        setCapturedImage(imageSrc);
+        setUseCamera(false);
+      } else {
+        toast.error('فشل التقاط الصورة. يرجى المحاولة مرة أخرى.');
+      }
+    }
   };
 
   const switchCamera = () => {
     setFacingMode(prevMode => prevMode === 'user' ? 'environment' : 'user');
+  };
+
+  const handleCameraError = (error) => {
+    console.error('Camera error:', error);
+    toast.error('خطأ في الوصول إلى الكاميرا. يرجى التحقق من الأذونات.', {
+      description: 'تأكد من أن المتصفح لديه إذن الوصول إلى الكاميرا'
+    });
+    setUseCamera(false);
   };
 
   const handleFileUpload = (e) => {
