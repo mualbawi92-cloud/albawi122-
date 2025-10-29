@@ -4092,6 +4092,150 @@ async def get_exchange_profit_report(
         "operations_count": len(operations)
     }
 
+@api_router.get("/agent-ledger")
+async def get_agent_ledger(
+    date_from: str = None,
+    date_to: str = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get agent's own ledger with all transactions"""
+    
+    # Only agents can access
+    if current_user['role'] != 'agent':
+        raise HTTPException(status_code=403, detail="هذه الصفحة مخصصة للصرافين فقط")
+    
+    agent_id = current_user['id']
+    
+    # Parse dates
+    from datetime import datetime, timezone
+    if date_from:
+        date_from_dt = datetime.fromisoformat(date_from).replace(tzinfo=timezone.utc)
+    else:
+        # Default to 30 days ago
+        date_from_dt = datetime.now(timezone.utc) - timedelta(days=30)
+    
+    if date_to:
+        date_to_dt = datetime.fromisoformat(date_to).replace(hour=23, minute=59, second=59, tzinfo=timezone.utc)
+    else:
+        date_to_dt = datetime.now(timezone.utc)
+    
+    # Get agent info
+    agent = await db.users.find_one({'id': agent_id})
+    if not agent:
+        raise HTTPException(status_code=404, detail="الصراف غير موجود")
+    
+    # Get all transfers (outgoing and incoming)
+    outgoing_transfers = await db.transfers.find({
+        'from_agent_id': agent_id,
+        'created_at': {
+            '$gte': date_from_dt.isoformat(),
+            '$lte': date_to_dt.isoformat()
+        }
+    }).to_list(length=None)
+    
+    incoming_transfers = await db.transfers.find({
+        'to_agent_id': agent_id,
+        'status': 'completed',
+        'updated_at': {
+            '$gte': date_from_dt.isoformat(),
+            '$lte': date_to_dt.isoformat()
+        }
+    }).to_list(length=None)
+    
+    # Calculate totals
+    earned_commission_iqd = sum(t.get('commission', 0) for t in outgoing_transfers if t.get('currency') == 'IQD')
+    earned_commission_usd = sum(t.get('commission', 0) for t in outgoing_transfers if t.get('currency') == 'USD')
+    
+    paid_commission_iqd = sum(t.get('incoming_commission', 0) for t in incoming_transfers if t.get('currency') == 'IQD')
+    paid_commission_usd = sum(t.get('incoming_commission', 0) for t in incoming_transfers if t.get('currency') == 'USD')
+    
+    # Build transactions list
+    transactions = []
+    
+    # Add outgoing transfers
+    for transfer in outgoing_transfers:
+        transactions.append({
+            'date': transfer['created_at'],
+            'type': 'outgoing',
+            'description': f"حوالة صادرة - {transfer['transfer_code']} إلى {transfer.get('receiver_name', 'غير معروف')}",
+            'debit': transfer['amount'],
+            'credit': 0,
+            'balance': 0,  # Will calculate later
+            'currency': transfer['currency'],
+            'transfer_id': transfer['id'],
+            'transfer_code': transfer['transfer_code']
+        })
+        
+        # Add commission earned
+        if transfer.get('commission', 0) > 0:
+            transactions.append({
+                'date': transfer['created_at'],
+                'type': 'commission_earned',
+                'description': f"عمولة محققة - {transfer['transfer_code']}",
+                'debit': 0,
+                'credit': transfer['commission'],
+                'balance': 0,
+                'currency': transfer['currency'],
+                'transfer_id': transfer['id'],
+                'transfer_code': transfer['transfer_code']
+            })
+    
+    # Add incoming transfers
+    for transfer in incoming_transfers:
+        transactions.append({
+            'date': transfer.get('updated_at', transfer['created_at']),
+            'type': 'incoming',
+            'description': f"حوالة واردة - {transfer['transfer_code']} من {transfer.get('sender_name', 'غير معروف')}",
+            'debit': 0,
+            'credit': transfer['amount'],
+            'balance': 0,
+            'currency': transfer['currency'],
+            'transfer_id': transfer['id'],
+            'transfer_code': transfer['transfer_code']
+        })
+        
+        # Add commission paid
+        if transfer.get('incoming_commission', 0) > 0:
+            transactions.append({
+                'date': transfer.get('updated_at', transfer['created_at']),
+                'type': 'commission_paid',
+                'description': f"عمولة مدفوعة - {transfer['transfer_code']}",
+                'debit': 0,
+                'credit': transfer['incoming_commission'],
+                'balance': 0,
+                'currency': transfer['currency'],
+                'transfer_id': transfer['id'],
+                'transfer_code': transfer['transfer_code']
+            })
+    
+    # Sort by date
+    transactions.sort(key=lambda x: x['date'])
+    
+    # Calculate running balance (simplified - just show cumulative)
+    balance_iqd = agent.get('wallet_balance_iqd', 0)
+    balance_usd = agent.get('wallet_balance_usd', 0)
+    
+    for txn in transactions:
+        if txn['currency'] == 'IQD':
+            txn['balance'] = balance_iqd
+        else:
+            txn['balance'] = balance_usd
+    
+    return {
+        'agent_name': agent['display_name'],
+        'wallet_balance_iqd': agent.get('wallet_balance_iqd', 0),
+        'wallet_balance_usd': agent.get('wallet_balance_usd', 0),
+        'outgoing_transfers_count': len(outgoing_transfers),
+        'incoming_transfers_count': len(incoming_transfers),
+        'earned_commission_iqd': earned_commission_iqd,
+        'earned_commission_usd': earned_commission_usd,
+        'paid_commission_iqd': paid_commission_iqd,
+        'paid_commission_usd': paid_commission_usd,
+        'transactions': transactions,
+        'date_from': date_from_dt.isoformat(),
+        'date_to': date_to_dt.isoformat()
+    }
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
