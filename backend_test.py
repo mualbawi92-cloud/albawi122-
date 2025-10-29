@@ -432,7 +432,7 @@ class APITester:
     
     def run_all_tests(self):
         """Run all tests in sequence"""
-        print("🚀 Starting Backend API Tests for Cash Transfer System")
+        print("🚀 Starting Backend API Tests for Commission Calculate Preview Endpoint")
         print("=" * 60)
         
         # Step 1: Authentication
@@ -440,26 +440,8 @@ class APITester:
             print("❌ Authentication failed. Cannot proceed with other tests.")
             return
         
-        # Step 2: Test wallet balance endpoint
-        self.test_wallet_balance_endpoint()
-        
-        # Step 3: Test dashboard stats
-        self.test_dashboard_stats()
-        
-        # Step 4: Test admin deposit
-        deposit_success = self.test_admin_deposit()
-        
-        # Step 5: Test wallet transactions (should show the deposit)
-        if deposit_success:
-            time.sleep(1)  # Allow time for transaction to be recorded
-            self.test_wallet_transactions()
-        
-        # Step 6: Test transfer creation and wallet updates
-        transfer_info = self.test_transfer_creation_and_wallet_update()
-        
-        # Step 7: Test enhanced error messages
-        if transfer_info:
-            self.test_enhanced_error_messages(transfer_info)
+        # Step 2: Test commission calculate preview endpoint (MAIN FOCUS)
+        self.test_commission_calculate_preview()
         
         # Print summary
         self.print_summary()
