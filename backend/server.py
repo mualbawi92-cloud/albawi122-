@@ -1301,12 +1301,29 @@ async def receive_transfer(
         note=f'حوالة مُسلَّمة إلى {current_user["display_name"]} - {transfer["transfer_code"]}'
     )
     
-    # Update receiver's wallet (increase balance)
+    # Update receiver's wallet (increase balance + incoming commission)
     wallet_field = f'wallet_balance_{transfer["currency"].lower()}'
+    total_amount_to_add = transfer['amount'] + incoming_commission
     await db.users.update_one(
         {'id': current_user['id']},
-        {'$inc': {wallet_field: transfer['amount']}}
+        {'$inc': {wallet_field: total_amount_to_add}}
     )
+    
+    # Record paid commission for admin (عمولة مدفوعة للمستلم)
+    if incoming_commission > 0:
+        await db.admin_commissions.insert_one({
+            'id': str(uuid.uuid4()),
+            'type': 'paid',  # عمولة مدفوعة
+            'amount': incoming_commission,
+            'currency': transfer['currency'],
+            'transfer_id': transfer_id,
+            'transfer_code': transfer['transfer_code'],
+            'agent_id': current_user['id'],
+            'agent_name': current_user['display_name'],
+            'commission_percentage': incoming_commission_percentage,
+            'note': f'عمولة مدفوعة للمستلم على حوالة واردة',
+            'created_at': datetime.now(timezone.utc).isoformat()
+        })
     
     # Log wallet transaction for receiver
     await db.wallet_transactions.insert_one({
