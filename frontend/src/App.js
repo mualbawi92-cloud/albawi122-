@@ -32,6 +32,7 @@ import JournalTransferPage from './pages/JournalTransferPage';
 import ExchangeOperationsPage from './pages/ExchangeOperationsPage';
 import PaidCommissionsPage from './pages/PaidCommissionsPage';
 import AgentLedgerPage from './pages/AgentLedgerPage';
+import AgentCommissionsPage from './pages/AgentCommissionsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
