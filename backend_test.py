@@ -921,18 +921,21 @@ class APITester:
         return True
 
     def run_all_tests(self):
-        """Run all tests in sequence"""
-        print("🚀 Starting Backend API Tests for Commission Paid Accounting Entry")
-        print("=" * 70)
+        """Run the critical commission paid accounting entry test"""
+        print("🚨 CRITICAL TEST: Commission Paid Accounting Entry - Complete End-to-End Test")
+        print("=" * 80)
+        print("User Issue: Commission paid is NOT being recorded correctly in the ledger")
+        print("Expected Fix: TWO journal entries should be created when receiving transfer")
+        print("=" * 80)
         
         # Step 1: Authentication
         if not self.test_authentication():
-            print("❌ Authentication failed. Cannot proceed with other tests.")
+            print("❌ Authentication failed. Cannot proceed with critical test.")
             return
         
-        # Step 2: Test Commission Paid Accounting Entry (MAIN FOCUS)
-        print("\n💰 Testing Commission Paid Accounting Entry for Incoming Transfers")
-        self.test_commission_paid_accounting_entry()
+        # Step 2: Run Critical Test
+        print("\n🎯 Running Critical Commission Paid Accounting Entry Test...")
+        self.test_critical_commission_paid_flow()
         
         # Print summary
         self.print_summary()
