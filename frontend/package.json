@@ -65,7 +65,17 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test"
+    "test": "craco test",
+    "cap:sync": "cap sync",
+    "cap:sync:android": "cap sync android",
+    "cap:sync:ios": "cap sync ios",
+    "cap:open:android": "cap open android",
+    "cap:open:ios": "cap open ios",
+    "cap:run:android": "cap run android",
+    "cap:run:ios": "cap run ios",
+    "build:app": "yarn build && cap sync",
+    "build:android": "yarn build && cap sync android",
+    "build:ios": "yarn build && cap sync ios"
   },
   "browserslist": {
     "production": [
