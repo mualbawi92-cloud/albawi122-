@@ -524,13 +524,9 @@ class APITester:
     
     # Removed commission testing methods - focus is now on Transit Account System
     
-    def test_commission_rate_delete_endpoint(self):
-        """Test DELETE /api/commission-rates/{rate_id} - Commission Rate DELETE functionality"""
-        print("\n=== Testing Commission Rate DELETE Endpoint ===")
-        
-        if not self.agent_baghdad_user_id:
-            self.log_result("Commission Rate Delete", False, "Agent user ID not available")
-            return False
+    def test_chart_of_accounts_delete_endpoint(self):
+        """Test DELETE /api/accounting/accounts/{account_code} - Chart of Accounts DELETE functionality"""
+        print("\n=== Testing Chart of Accounts DELETE Endpoint ===")
         
         # Step 1: Login as admin (already done in authentication)
         print("\n--- Step 1: Admin authentication verified ---")
@@ -538,163 +534,227 @@ class APITester:
             self.log_result("Admin Authentication", False, "Admin token not available")
             return False
         
-        # Step 2: Get list of commission rates (GET /api/commission-rates)
-        print("\n--- Step 2: Getting list of commission rates ---")
-        initial_rates = []
+        # Step 2: Get list of accounts (GET /api/accounting/accounts)
+        print("\n--- Step 2: Getting list of accounts ---")
+        initial_accounts = []
         try:
-            response = self.make_request('GET', '/commission-rates', token=self.admin_token)
+            response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
             if response.status_code == 200:
-                initial_rates = response.json()
-                self.log_result("Get Commission Rates List", True, f"Retrieved {len(initial_rates)} commission rates")
+                data = response.json()
+                initial_accounts = data.get('accounts', [])
+                self.log_result("Get Accounts List", True, f"Retrieved {len(initial_accounts)} accounts")
                 
-                # Display existing rates
-                if initial_rates:
-                    print("Existing commission rates:")
-                    for rate in initial_rates[:3]:  # Show first 3
-                        print(f"  - ID: {rate.get('id')}, Agent: {rate.get('agent_name')}, Currency: {rate.get('currency')}")
+                # Display existing accounts
+                if initial_accounts:
+                    print("Existing accounts:")
+                    for acc in initial_accounts[:3]:  # Show first 3
+                        print(f"  - Code: {acc.get('code')}, Name: {acc.get('name_ar')}, Balance: {acc.get('balance', 0)}")
                 else:
-                    print("No existing commission rates found")
+                    print("No existing accounts found")
             else:
-                self.log_result("Get Commission Rates List", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Get Accounts List", False, f"Failed with status {response.status_code}", response.text)
                 return False
         except Exception as e:
-            self.log_result("Get Commission Rates List", False, f"Error: {str(e)}")
+            self.log_result("Get Accounts List", False, f"Error: {str(e)}")
             return False
         
-        # Step 3: Create a test commission rate to delete
-        print("\n--- Step 3: Creating test commission rate for deletion ---")
-        test_rate_data = {
-            "agent_id": self.agent_baghdad_user_id,
-            "currency": "IQD",
-            "bulletin_type": "transfers",
-            "date": "2024-01-15",
-            "tiers": [
-                {
-                    "from_amount": 0.0,
-                    "to_amount": 100000.0,
-                    "percentage": 0.25,
-                    "city": "بغداد",
-                    "country": "العراق",
-                    "currency_type": "normal",
-                    "type": "outgoing"
-                }
-            ]
+        # Step 3: Create test accounts for deletion testing
+        print("\n--- Step 3: Creating test accounts ---")
+        
+        # Create parent account
+        parent_account_data = {
+            "code": "9999",
+            "name_ar": "حساب اختبار رئيسي",
+            "name_en": "Test Parent Account",
+            "category": "أصول",
+            "currency": "IQD"
         }
         
-        created_rate_id = None
+        parent_account_code = None
         try:
-            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=test_rate_data)
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=parent_account_data)
             if response.status_code == 200:
                 data = response.json()
-                created_rate_id = data.get('id')
-                self.log_result("Test Rate Creation", True, f"Test rate created with ID: {created_rate_id}")
+                parent_account_code = data.get('code')
+                self.log_result("Parent Account Creation", True, f"Parent account created: {parent_account_code}")
             else:
-                self.log_result("Test Rate Creation", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Parent Account Creation", False, f"Failed with status {response.status_code}", response.text)
                 return False
         except Exception as e:
-            self.log_result("Test Rate Creation", False, f"Error: {str(e)}")
+            self.log_result("Parent Account Creation", False, f"Error: {str(e)}")
             return False
         
-        if not created_rate_id:
-            self.log_result("Commission Rate Delete Test", False, "Could not create test commission rate")
-            return False
+        # Create child account
+        child_account_data = {
+            "code": "9999001",
+            "name_ar": "حساب اختبار فرعي",
+            "name_en": "Test Child Account",
+            "category": "أصول",
+            "parent_code": parent_account_code,
+            "currency": "IQD"
+        }
         
-        # Step 4: Verify the rate exists before deletion
-        print("\n--- Step 4: Verifying rate exists before deletion ---")
+        child_account_code = None
         try:
-            response = self.make_request('GET', '/commission-rates', token=self.admin_token)
-            if response.status_code == 200:
-                rates_before = response.json()
-                rate_exists = any(rate.get('id') == created_rate_id for rate in rates_before)
-                if rate_exists:
-                    self.log_result("Rate Exists Before Delete", True, f"Rate {created_rate_id} found in list")
-                else:
-                    self.log_result("Rate Exists Before Delete", False, f"Rate {created_rate_id} not found in list")
-                    return False
-            else:
-                self.log_result("Rate Exists Before Delete", False, f"Failed to get rates: {response.status_code}")
-                return False
-        except Exception as e:
-            self.log_result("Rate Exists Before Delete", False, f"Error: {str(e)}")
-            return False
-        
-        # Step 5: Test DELETE endpoint with admin authentication
-        print("\n--- Step 5: Testing DELETE endpoint with admin authentication ---")
-        try:
-            response = self.make_request('DELETE', f'/commission-rates/{created_rate_id}', token=self.admin_token)
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=child_account_data)
             if response.status_code == 200:
                 data = response.json()
-                self.log_result("Commission Rate DELETE", True, f"Rate deleted successfully: {data.get('message', 'Success')}")
+                child_account_code = data.get('code')
+                self.log_result("Child Account Creation", True, f"Child account created: {child_account_code}")
             else:
-                self.log_result("Commission Rate DELETE", False, f"Delete failed with status {response.status_code}", response.text)
+                self.log_result("Child Account Creation", False, f"Failed with status {response.status_code}", response.text)
                 return False
         except Exception as e:
-            self.log_result("Commission Rate DELETE", False, f"Error: {str(e)}")
+            self.log_result("Child Account Creation", False, f"Error: {str(e)}")
             return False
         
-        # Step 6: Verify the rate was actually deleted
-        print("\n--- Step 6: Verifying rate was deleted ---")
-        try:
-            response = self.make_request('GET', '/commission-rates', token=self.admin_token)
-            if response.status_code == 200:
-                rates_after = response.json()
-                rate_still_exists = any(rate.get('id') == created_rate_id for rate in rates_after)
-                if not rate_still_exists:
-                    self.log_result("Rate Deletion Verified", True, f"Rate {created_rate_id} successfully removed from list")
-                else:
-                    self.log_result("Rate Deletion Verified", False, f"Rate {created_rate_id} still exists after deletion")
-            else:
-                self.log_result("Rate Deletion Verified", False, f"Failed to verify deletion: {response.status_code}")
-        except Exception as e:
-            self.log_result("Rate Deletion Verified", False, f"Error: {str(e)}")
+        # Create standalone account for successful deletion test
+        standalone_account_data = {
+            "code": "8888",
+            "name_ar": "حساب اختبار مستقل",
+            "name_en": "Test Standalone Account",
+            "category": "مصاريف",
+            "currency": "IQD"
+        }
         
-        # Step 7: Test authentication requirement (agent should not be able to delete)
-        print("\n--- Step 7: Testing authentication requirement ---")
-        
-        # First create another test rate
+        standalone_account_code = None
         try:
-            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=test_rate_data)
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=standalone_account_data)
             if response.status_code == 200:
                 data = response.json()
-                test_rate_id_2 = data.get('id')
-                
-                # Try to delete with agent token (should fail)
-                response = self.make_request('DELETE', f'/commission-rates/{test_rate_id_2}', token=self.agent_baghdad_token)
-                if response.status_code == 403:
-                    self.log_result("Agent Access Rejection", True, "Correctly rejected agent access (403)")
-                else:
-                    self.log_result("Agent Access Rejection", False, f"Expected 403, got {response.status_code}")
-                
-                # Clean up the second test rate
-                self.make_request('DELETE', f'/commission-rates/{test_rate_id_2}', token=self.admin_token)
+                standalone_account_code = data.get('code')
+                self.log_result("Standalone Account Creation", True, f"Standalone account created: {standalone_account_code}")
             else:
-                self.log_result("Second Test Rate Creation", False, "Could not create second test rate for auth testing")
+                self.log_result("Standalone Account Creation", False, f"Failed with status {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Standalone Account Creation", False, f"Error: {str(e)}")
+            return False
+        
+        # Step 4: Test successful deletion (standalone account with zero balance)
+        print("\n--- Step 4: Testing successful deletion ---")
+        try:
+            response = self.make_request('DELETE', f'/accounting/accounts/{standalone_account_code}', token=self.admin_token)
+            if response.status_code == 200:
+                data = response.json()
+                self.log_result("Successful Account DELETE", True, f"Account deleted successfully: {data.get('message', 'Success')}")
+            else:
+                self.log_result("Successful Account DELETE", False, f"Delete failed with status {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Successful Account DELETE", False, f"Error: {str(e)}")
+        
+        # Step 5: Verify deletion persists in database
+        print("\n--- Step 5: Verifying deletion persists ---")
+        try:
+            response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+            if response.status_code == 200:
+                data = response.json()
+                accounts_after = data.get('accounts', [])
+                account_still_exists = any(acc.get('code') == standalone_account_code for acc in accounts_after)
+                if not account_still_exists:
+                    self.log_result("Deletion Verification", True, f"Account {standalone_account_code} successfully removed from database")
+                else:
+                    self.log_result("Deletion Verification", False, f"Account {standalone_account_code} still exists after deletion")
+            else:
+                self.log_result("Deletion Verification", False, f"Failed to verify deletion: {response.status_code}")
+        except Exception as e:
+            self.log_result("Deletion Verification", False, f"Error: {str(e)}")
+        
+        # Step 6: Test deletion of account with child accounts (should fail)
+        print("\n--- Step 6: Testing deletion of account with children ---")
+        try:
+            response = self.make_request('DELETE', f'/accounting/accounts/{parent_account_code}', token=self.admin_token)
+            if response.status_code == 400:
+                self.log_result("Delete Account with Children", True, "Correctly rejected deletion of account with children (400)")
+            else:
+                self.log_result("Delete Account with Children", False, f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Delete Account with Children", False, f"Error: {str(e)}")
+        
+        # Step 7: Test authentication & authorization
+        print("\n--- Step 7: Testing authentication & authorization ---")
+        
+        # Test with agent token (should fail)
+        try:
+            response = self.make_request('DELETE', f'/accounting/accounts/{child_account_code}', token=self.agent_baghdad_token)
+            if response.status_code == 403:
+                self.log_result("Agent Access Rejection", True, "Correctly rejected agent access (403)")
+            else:
+                self.log_result("Agent Access Rejection", False, f"Expected 403, got {response.status_code}")
         except Exception as e:
             self.log_result("Agent Access Rejection", False, f"Error: {str(e)}")
         
-        # Step 8: Test error cases
-        print("\n--- Step 8: Testing error cases ---")
-        
-        # Test with non-existent rate ID
+        # Test without authentication
         try:
-            fake_rate_id = "non-existent-rate-id-12345"
-            response = self.make_request('DELETE', f'/commission-rates/{fake_rate_id}', token=self.admin_token)
-            if response.status_code == 404:
-                self.log_result("Rate Not Found Error", True, "Correctly returned 404 for non-existent rate")
-            else:
-                self.log_result("Rate Not Found Error", False, f"Expected 404, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Rate Not Found Error", False, f"Error: {str(e)}")
-        
-        # Test with no authentication
-        try:
-            response = self.make_request('DELETE', f'/commission-rates/{fake_rate_id}')  # No token
+            response = self.make_request('DELETE', f'/accounting/accounts/{child_account_code}')  # No token
             if response.status_code in [401, 403]:
                 self.log_result("No Auth Rejection", True, f"Correctly rejected unauthenticated request ({response.status_code})")
             else:
                 self.log_result("No Auth Rejection", False, f"Expected 401/403, got {response.status_code}")
         except Exception as e:
             self.log_result("No Auth Rejection", False, f"Error: {str(e)}")
+        
+        # Step 8: Test error cases
+        print("\n--- Step 8: Testing error cases ---")
+        
+        # Test with non-existent account code
+        try:
+            fake_account_code = "NONEXISTENT999"
+            response = self.make_request('DELETE', f'/accounting/accounts/{fake_account_code}', token=self.admin_token)
+            if response.status_code == 404:
+                self.log_result("Account Not Found Error", True, "Correctly returned 404 for non-existent account")
+            else:
+                self.log_result("Account Not Found Error", False, f"Expected 404, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Account Not Found Error", False, f"Error: {str(e)}")
+        
+        # Step 9: Test integration with existing endpoints
+        print("\n--- Step 9: Testing integration with existing endpoints ---")
+        
+        # Test POST endpoint still works
+        try:
+            new_account_data = {
+                "code": "7777",
+                "name_ar": "حساب اختبار جديد",
+                "name_en": "New Test Account",
+                "category": "إيرادات",
+                "currency": "USD"
+            }
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=new_account_data)
+            if response.status_code == 200:
+                self.log_result("POST Integration Test", True, "POST endpoint still working after DELETE tests")
+                
+                # Clean up the new account
+                self.make_request('DELETE', f'/accounting/accounts/7777', token=self.admin_token)
+            else:
+                self.log_result("POST Integration Test", False, f"POST failed with status {response.status_code}")
+        except Exception as e:
+            self.log_result("POST Integration Test", False, f"Error: {str(e)}")
+        
+        # Step 10: Clean up test accounts
+        print("\n--- Step 10: Cleaning up test accounts ---")
+        
+        # Delete child account first
+        if child_account_code:
+            try:
+                response = self.make_request('DELETE', f'/accounting/accounts/{child_account_code}', token=self.admin_token)
+                if response.status_code == 200:
+                    print(f"✓ Cleaned up child account: {child_account_code}")
+                else:
+                    print(f"⚠ Could not clean up child account: {response.status_code}")
+            except Exception as e:
+                print(f"⚠ Error cleaning up child account: {e}")
+        
+        # Delete parent account
+        if parent_account_code:
+            try:
+                response = self.make_request('DELETE', f'/accounting/accounts/{parent_account_code}', token=self.admin_token)
+                if response.status_code == 200:
+                    print(f"✓ Cleaned up parent account: {parent_account_code}")
+                else:
+                    print(f"⚠ Could not clean up parent account: {response.status_code}")
+            except Exception as e:
+                print(f"⚠ Error cleaning up parent account: {e}")
         
         return True
 
