@@ -336,6 +336,24 @@ const Navbar = () => {
                 🏦 حساب الترانزيت
               </Button>
             )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/notifications');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start relative"
+                data-testid="mobile-nav-notifications"
+              >
+                🔔 الإشعارات
+                {unreadCount > 0 && (
+                  <span className="mr-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+                    {unreadCount}
+                  </span>
+                )}
+              </Button>
+            )}
             <Button
               onClick={() => {
                 navigate('/settings');
