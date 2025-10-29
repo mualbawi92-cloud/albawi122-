@@ -1764,6 +1764,9 @@ async def calculate_commission_preview(
         # Get the latest rate
         rate = commission_rates[0]
         
+        # Convert governorate code to name for comparison
+        governorate_name = GOVERNORATE_CODE_TO_NAME.get(to_governorate, to_governorate)
+        
         # Find applicable tier for outgoing transfer
         for tier_data in rate.get('tiers', []):
             # Check if tier matches
@@ -1775,7 +1778,8 @@ async def calculate_commission_preview(
             country = tier_data.get('country')
             
             # If city/country specified, check if matches
-            if city and city != '(جميع المدن)' and city != to_governorate:
+            # Compare with both code and name for flexibility
+            if city and city != '(جميع المدن)' and city != to_governorate and city != governorate_name:
                 continue
             
             if country and country != '(جميع البلدان)':
