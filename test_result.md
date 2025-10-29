@@ -261,6 +261,31 @@ frontend:
           - AllTransfersAdminPage: Include receiver_name in display and search filter
           - Form validation ensures receiver_name is not empty
 
+  - task: "Commission rate display in CreateTransferPage"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py, frontend/src/pages/CreateTransferPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ NEW FEATURE: Real-time commission display on transfer creation
+          Backend:
+          - Added GET /api/commission/calculate-preview endpoint
+          - Calculates commission based on amount, currency, governorate
+          - Uses current user's commission rates
+          
+          Frontend:
+          - Added useEffect to auto-calculate commission
+          - Displays نسبة العمولة (percentage) and مبلغ العمولة (amount)
+          - Shows 0 if no commission rate configured by admin
+          - Updates automatically when amount/currency/governorate changes
+          - Includes commission info in confirmation modal
+          - Debounced API calls to avoid excessive requests
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
