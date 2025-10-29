@@ -2282,6 +2282,99 @@ async def create_notification(title: str, message: str, severity: str, related_t
     await db.notifications.insert_one(notification)
     return notification
 
+async def analyze_and_notify_if_suspicious(transfer_data: dict):
+    """
+    Analyze transfer with AI and create notification if suspicious
+    """
+    try:
+        analysis = await analyze_transfer_with_ai(transfer_data)
+        
+        if analysis.get('is_suspicious'):
+            severity_map = {'low': 'low', 'medium': 'medium', 'high': 'critical'}
+            severity = severity_map.get(analysis.get('risk_level', 'low'), 'medium')
+            
+            await create_notification(
+                title=f"🤖 حوالة مشبوهة اكتشفها الذكاء الاصطناعي",
+                message=f"**السبب:** {analysis.get('reason')}\n\n**التوصيات:** {analysis.get('recommendations')}",
+                severity=severity,
+                related_transfer_id=transfer_data.get('id'),
+                related_agent_id=transfer_data.get('from_agent_id')
+            )
+    except Exception as e:
+        print(f"Error in AI analysis task: {e}")
+
+# ============================================
+# Notifications Endpoints
+# ============================================
+
+@api_router.get("/notifications")
+async def get_notifications(
+    unread_only: bool = False,
+    limit: int = 50,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get notifications for admin
+    """
+    query = {}
+    if unread_only:
+        query['is_read'] = False
+    
+    notifications = await db.notifications.find(query).sort('created_at', -1).limit(limit).to_list(length=limit)
+    
+    for notif in notifications:
+        notif.pop('_id', None)
+    
+    return {
+        "notifications": notifications,
+        "unread_count": await db.notifications.count_documents({'is_read': False})
+    }
+
+@api_router.patch("/notifications/{notification_id}/mark-read")
+async def mark_notification_read(
+    notification_id: str,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Mark notification as read
+    """
+    result = await db.notifications.update_one(
+        {'id': notification_id},
+        {'$set': {'is_read': True}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    
+    return {"message": "Notification marked as read"}
+
+@api_router.post("/monitoring/check-delayed-transfers")
+async def manual_check_delayed_transfers(current_user: dict = Depends(require_admin)):
+    """
+    Manually trigger check for delayed transfers
+    """
+    delayed = await check_delayed_transfers()
+    
+    for transfer in delayed:
+        # Calculate delay in hours
+        created_at = datetime.fromisoformat(transfer['created_at'].replace('Z', '+00:00'))
+        now = datetime.now(timezone.utc)
+        delay_hours = (now - created_at).total_seconds() / 3600
+        
+        if delay_hours >= 24:
+            await create_notification(
+                title="⏰ حوالة متأخرة!",
+                message=f"الحوالة رقم {transfer['transfer_code']} معلقة منذ {delay_hours:.1f} ساعة. المرسل: {transfer['sender_name']}",
+                severity="medium" if delay_hours < 48 else "high",
+                related_transfer_id=transfer['id'],
+                related_agent_id=transfer.get('from_agent_id')
+            )
+    
+    return {
+        "message": f"تم فحص {len(delayed)} حوالة متأخرة",
+        "delayed_count": len(delayed)
+    }
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
