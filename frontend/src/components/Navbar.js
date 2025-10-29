@@ -479,6 +479,19 @@ const Navbar = () => {
                 📊 دفتر الأستاذ
               </Button>
             )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/exchange');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-exchange"
+              >
+                💱 عمليات الصرف
+              </Button>
+            )}
             <Button
               onClick={() => {
                 navigate('/settings');
