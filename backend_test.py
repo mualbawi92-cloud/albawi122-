@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 """
 Backend API Testing for Cash Transfer System
-FOCUS: Transit Account System Testing
+FOCUS: Commission Rate UPDATE Endpoint Testing
 
-Tests the new Transit Account System:
-1. GET /api/transit-account/balance (Admin only)
-2. GET /api/transit-account/transactions (Admin only)  
-3. GET /api/transit-account/pending-transfers (Admin only)
-4. Transfer flow with transit account integration:
-   - Create transfer: Amount deducted from sender, added to transit
-   - Receive transfer: Amount deducted from transit, added to receiver
-   - Cancel transfer: Amount deducted from transit, returned to sender
+Tests the Commission Rate UPDATE functionality:
+1. PUT /api/commission-rates/{rate_id} - Update existing commission rate
+2. Admin authentication requirement
+3. Field validation and updates
+4. Database persistence verification
+5. Error handling (rate not found, validation errors)
 """
 
 import requests
