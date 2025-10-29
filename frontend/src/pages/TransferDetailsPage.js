@@ -46,6 +46,10 @@ const TransferDetailsPage = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const webcamRef = useRef(null);
+  
+  // Commission calculation states
+  const [expectedCommission, setExpectedCommission] = useState(null);
+  const [loadingCommission, setLoadingCommission] = useState(false);
 
   useEffect(() => {
     fetchTransfer();
