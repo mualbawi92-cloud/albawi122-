@@ -391,6 +391,69 @@ frontend:
           
           **Frontend Investigation Needed:** The issue appears to be in the frontend implementation, not the backend API.
 
+  - task: "Chart of Accounts DELETE Endpoint"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ NEW FEATURE: DELETE endpoint for accounts in Chart of Accounts
+          
+          Implementation:
+          - DELETE /api/accounting/accounts/{account_code}
+          - Admin-only access (requires admin authentication)
+          - Validation checks:
+            * Account exists (404 if not found)
+            * No child accounts (400 if has children - must delete children first)
+            * Balance is zero (400 if non-zero balance)
+          - Returns success message with deleted account code
+          - Proper error handling with Arabic error messages
+          
+          Business Logic:
+          - Prevents deletion of accounts with child accounts (hierarchical integrity)
+          - Prevents deletion of accounts with transactions (balance ≠ 0)
+          - Maintains accounting integrity
+          
+          Ready for testing.
+
+  - task: "Reports Page Implementation"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/ReportsPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ ReportsPage.js already fully implemented! 
+          
+          Features included:
+          - Report type selection: Daily (يومي), Monthly (شهري), Yearly (سنوي)
+          - Date picker based on report type
+          - Two tabs: Summary (الملخص العام) and Agents (أرباح الصيرفات)
+          - Summary tab shows:
+            * Earned commissions by currency (IQD/USD)
+            * Paid commissions by currency
+            * Net profit calculation
+            * Detailed transaction tables
+          - Agents tab shows profit breakdown per agent
+          - Responsive design with Arabic RTL
+          - Currency formatting
+          - Admin-only access
+          
+          Backend endpoints used:
+          - GET /api/reports/commissions (already tested and working)
+          - GET /api/reports/agents-profit (already tested and working)
+          
+          Ready for frontend testing.
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
