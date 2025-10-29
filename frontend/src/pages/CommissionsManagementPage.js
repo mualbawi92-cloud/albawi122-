@@ -690,6 +690,153 @@ const CommissionsManagementPage = () => {
             )}
           </>
         )}
+        </div>
+        )}
+
+        {/* Tab Content: View All */}
+        {activeTab === 'view' && (
+          <div className="space-y-6">
+            {/* Search and Stats */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
+                  <Input
+                    placeholder="🔍 بحث بالاسم، العملة، أو النوع..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button onClick={fetchAllRates} variant="outline" disabled={loading}>
+                    {loading ? 'جاري التحديث...' : '🔄 تحديث'}
+                  </Button>
+                </div>
+
+                {/* Statistics */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-purple-50 p-4 rounded-lg border-2 border-purple-200">
+                    <p className="text-sm text-purple-700">إجمالي النشرات</p>
+                    <p className="text-3xl font-bold text-purple-900">{allRates.length}</p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                    <p className="text-sm text-green-700">نشرات IQD</p>
+                    <p className="text-3xl font-bold text-green-900">
+                      {allRates.filter(r => r.currency === 'IQD').length}
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                    <p className="text-sm text-blue-700">نشرات USD</p>
+                    <p className="text-3xl font-bold text-blue-900">
+                      {allRates.filter(r => r.currency === 'USD').length}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* All Rates Display */}
+            {filteredAllRates.length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center text-muted-foreground">
+                  {searchTerm ? 'لا توجد نتائج للبحث' : 'لا توجد نشرات محفوظة'}
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {filteredAllRates.map((rate) => (
+                  <Card key={rate.id} className="border-2 shadow-md">
+                    <CardHeader className="pb-3 bg-gradient-to-l from-gray-50 to-white">
+                      <div className="space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-lg font-bold">{rate.agent_display_name || 'صراف غير معروف'}</span>
+                              <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                                rate.currency === 'IQD' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                              }`}>
+                                {rate.currency}
+                              </span>
+                              <span className="font-bold">{rate.bulletin_type}</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              📅 التاريخ: {new Date(rate.date).toLocaleDateString('ar-IQ')}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                              onClick={() => {
+                                handleEditRate(rate);
+                                setActiveTab('manage');
+                              }}
+                            >
+                              ✏️ تعديل
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteRate(rate.id)}
+                              disabled={loading}
+                            >
+                              {loading ? '...' : '🗑️ حذف'}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <Label className="text-base font-bold">الشرائح:</Label>
+                        {rate.tiers?.map((tier, idx) => (
+                          <div key={idx} className="p-3 bg-gray-50 rounded-lg border-2 border-gray-200 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-gray-600">الشريحة {idx + 1}</span>
+                              <span className={`px-2 py-1 rounded text-xs font-bold ${
+                                tier.type === 'outgoing' 
+                                  ? 'bg-orange-100 text-orange-700' 
+                                  : 'bg-teal-100 text-teal-700'
+                              }`}>
+                                {tier.type === 'outgoing' ? '📤 صادرة' : '📥 واردة'}
+                              </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-2 text-sm">
+                              <div className="bg-white p-2 rounded border">
+                                <p className="text-xs text-gray-600">من مبلغ</p>
+                                <p className="font-bold">{tier.from_amount?.toLocaleString()}</p>
+                              </div>
+                              <div className="bg-white p-2 rounded border">
+                                <p className="text-xs text-gray-600">إلى مبلغ</p>
+                                <p className="font-bold">{tier.to_amount?.toLocaleString()}</p>
+                              </div>
+                            </div>
+                            
+                            <div className="bg-purple-50 p-2 rounded border border-purple-200">
+                              <p className="text-xs text-purple-700">نسبة العمولة</p>
+                              <p className="text-2xl font-bold text-purple-900">{tier.percentage}%</p>
+                            </div>
+                            
+                            <div className="flex gap-2 text-xs">
+                              <div className="flex-1 bg-white p-2 rounded border">
+                                <p className="text-gray-600">المدينة</p>
+                                <p className="font-medium">{tier.city || '(جميع المدن)'}</p>
+                              </div>
+                              <div className="flex-1 bg-white p-2 rounded border">
+                                <p className="text-gray-600">البلد</p>
+                                <p className="font-medium">{tier.country || '(جميع البلدان)'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
