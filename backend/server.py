@@ -301,6 +301,7 @@ class Transfer(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str
     transfer_code: str
+    transfer_number: Optional[str] = None  # رقم الحوالة 6 أرقام
     seq_number: int
     from_agent_id: Optional[str] = None
     from_agent_name: Optional[str] = None
@@ -308,6 +309,7 @@ class Transfer(BaseModel):
     to_agent_id: Optional[str] = None
     to_agent_name: Optional[str] = None
     sender_name: str
+    sender_phone: Optional[str] = None  # رقم تلفون المرسل
     receiver_name: Optional[str] = None  # اسم المستلم الثلاثي (Optional for old transfers)
     amount: float
     currency: str = "IQD"
