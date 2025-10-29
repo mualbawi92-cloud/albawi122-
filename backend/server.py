@@ -651,9 +651,49 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     
     transfer_id = str(uuid.uuid4())
     
-    # Calculate commission (0.13%)
-    commission_percentage = 0.13
-    commission = (transfer_data.amount * commission_percentage) / 100
+    # Calculate commission from commission rates (نشرة الأسعار)
+    commission_percentage = 0.0
+    commission = 0.0
+    
+    # Try to get commission rate for this agent
+    commission_rates = await db.commission_rates.find({
+        'agent_id': current_user['id'],
+        'currency': transfer_data.currency
+    }).to_list(length=None)
+    
+    if commission_rates:
+        # Get the latest rate
+        rate = commission_rates[0]
+        
+        # Find applicable tier for outgoing transfer
+        for tier_data in rate.get('tiers', []):
+            # Check if tier matches
+            if tier_data.get('type') != 'outgoing':
+                continue
+            
+            # Check city/country filters
+            city = tier_data.get('city')
+            country = tier_data.get('country')
+            
+            # If city/country specified, check if matches
+            if city and city != '(جميع المدن)' and city != transfer_data.to_governorate:
+                continue
+            
+            if country and country != '(جميع البلدان)':
+                # Could add country check here if needed
+                pass
+            
+            # Check amount range
+            from_amount = tier_data.get('from_amount', 0)
+            to_amount = tier_data.get('to_amount', float('inf'))
+            
+            if from_amount <= transfer_data.amount <= to_amount:
+                commission_percentage = tier_data.get('percentage', 0)
+                commission = (transfer_data.amount * commission_percentage) / 100
+                break
+    
+    # If no commission rate found, use 0% (not default 0.13%)
+    # Admin must set commission rates for each agent
     
     # Get to_agent name if specified
     to_agent_name = None
