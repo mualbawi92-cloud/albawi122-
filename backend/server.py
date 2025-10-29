@@ -1166,7 +1166,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             # Create journal entry for transfer
             # المكتب المُصدر (استلم نقدية من العميل) = مدين (المبلغ + العمولة)
             # Transit = دائن (المبلغ فقط)
-            # إيرادات عمولات = دائن (العمولة)
+            # عمولات محققة = دائن (العمولة المستحصلة من الصراف)
             
             commission_amount = transfer_doc.get('commission_amount', 0)
             total_received = transfer_data.amount + commission_amount  # ما استلمه الصراف من العميل
@@ -1187,7 +1187,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             # Add commission line if exists
             if commission_amount > 0:
                 lines.append({
-                    'account_code': '4010',  # إيرادات عمولات (دائن)
+                    'account_code': '4020',  # عمولات محققة (دائن) - العمولة المستحصلة من الصراف
                     'debit': 0,
                     'credit': commission_amount
                 })
@@ -1224,14 +1224,14 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             
             # Commission account increases if exists
             if commission_amount > 0:
-                # Get or create commission revenue account
-                commission_account = await db.accounts.find_one({'code': '4010'})
+                # Get or create earned commission account
+                commission_account = await db.accounts.find_one({'code': '4020'})
                 if not commission_account:
                     commission_account = {
-                        'id': 'commission_revenue',
-                        'code': '4010',
-                        'name_ar': 'إيرادات عمولات الحوالات',
-                        'name_en': 'Transfer Commission Revenue',
+                        'id': 'earned_commissions',
+                        'code': '4020',
+                        'name_ar': 'عمولات محققة',
+                        'name_en': 'Earned Commissions',
                         'category': 'إيرادات',
                         'parent_code': None,
                         'is_active': True,
@@ -1242,9 +1242,9 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                     }
                     await db.accounts.insert_one(commission_account)
                 
-                # Commission revenue increases (credit for revenue)
+                # Earned commission increases (credit for revenue)
                 await db.accounts.update_one(
-                    {'code': '4010'},
+                    {'code': '4020'},
                     {'$inc': {'balance': commission_amount}}
                 )
             
