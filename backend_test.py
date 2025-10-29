@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
 Backend API Testing for Cash Transfer System
-FOCUS: Chart of Accounts DELETE Endpoint Testing
+FOCUS: Commission Paid Accounting Entry for Incoming Transfers
 
-Tests the Chart of Accounts DELETE functionality:
-1. GET /api/accounting/accounts - Get list of accounts
-2. POST /api/accounting/accounts - Create test accounts
-3. DELETE /api/accounting/accounts/{account_code} - Delete account
-4. Admin authentication requirement
-5. Verification of deletion and business rules
-6. Error handling (account not found, has children, non-zero balance)
+Tests the commission paid accounting entry functionality:
+1. Setup test agents with commission rates
+2. Create transfer with outgoing commission
+3. Receive transfer with incoming commission
+4. Verify two journal entries are created (transfer + commission paid)
+5. Verify account balances are updated correctly
+6. Verify ledger reflects commission paid transactions
+7. Complete accounting cycle verification
 """
 
 import requests
