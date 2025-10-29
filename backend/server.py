@@ -1037,6 +1037,38 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     await db.transfers.insert_one(transfer_doc)
     await log_audit(transfer_id, current_user['id'], 'transfer_created', {'transfer_code': transfer_code})
     
+    # ============ AI MONITORING - Check for duplicates ============
+    try:
+        duplicate_check = await check_duplicate_transfers(
+            sender_name=transfer_data.sender_name,
+            receiver_name=transfer_data.receiver_name,
+            amount=transfer_data.amount,
+            currency=transfer_data.currency
+        )
+        
+        if duplicate_check['is_duplicate'] and duplicate_check['count'] > 1:  # More than just current transfer
+            # Get admin users
+            admin_users = await db.users.find({'role': 'admin'}).to_list(length=None)
+            
+            duplicate_details = "\n".join([
+                f"- {t['transfer_code']}: {t['sender_name']} → {t['receiver_name']} ({t['amount']} {t.get('currency', 'IQD')})"
+                for t in duplicate_check['transfers'][:3]  # Show first 3
+            ])
+            
+            for admin in admin_users:
+                await create_ai_notification(
+                    admin_id=admin['id'],
+                    notification_type='duplicate_transfer',
+                    title='⚠️ حوالات مكررة مشبوهة',
+                    message=f'تحذير: تم اكتشاف {duplicate_check["count"]} حوالة بنفس الاسم والمبلغ اليوم:\n{duplicate_details}',
+                    related_transfer_id=transfer_id
+                )
+            
+            logger.warning(f"Duplicate transfers detected: {duplicate_check['count']} transfers")
+    except Exception as e:
+        logger.error(f"Error in duplicate detection: {str(e)}")
+    # ============ END AI MONITORING ============
+    
     # Update sender's wallet (decrease balance)
     wallet_field = f'wallet_balance_{transfer_data.currency.lower()}'
     await db.users.update_one(
