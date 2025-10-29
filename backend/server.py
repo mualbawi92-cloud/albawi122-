@@ -1493,7 +1493,7 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-CXL-{transfer['transfer_code']}",
                 'date': datetime.now(timezone.utc).isoformat(),
-                'description': f'إلغاء حوالة: {transfer["transfer_code"]} - إرجاع إلى {current_user["display_name"]}',
+                'description': f'إلغاء حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
                 'lines': [
                     {
                         'account_code': '1030',  # Transit Account (مدين)
