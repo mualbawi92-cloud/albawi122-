@@ -804,10 +804,10 @@ class APITester:
         except Exception as e:
             self.log_result("Ledger Endpoint", False, f"Error accessing ledger: {str(e)}")
         
-        # Phase 5: Test Edge Cases
-        print("\n--- PHASE 5: EDGE CASE TESTING ---")
+        # Phase 6: Test Edge Cases
+        print("\n--- PHASE 6: EDGE CASE TESTING ---")
         
-        print("8. Testing zero commission scenario...")
+        print("6.1. Testing zero commission scenario...")
         
         # Create a commission rate with 0% for testing
         zero_commission_data = {
