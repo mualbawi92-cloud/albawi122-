@@ -39,6 +39,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 
 ENCRYPTION_KEY = base64.urlsafe_b64encode(JWT_SECRET.encode().ljust(32)[:32])
 cipher = Fernet(ENCRYPTION_KEY)
 
+# Transit Account ID (constant)
+TRANSIT_ACCOUNT_ID = "transit_account_main"
+
 # Security Config
 MAX_LOGIN_ATTEMPTS = int(os.environ.get('MAX_LOGIN_ATTEMPTS', 5))
 LOCKOUT_DURATION = int(os.environ.get('LOCKOUT_DURATION_MINUTES', 15))
