@@ -97,6 +97,29 @@ async def generate_transfer_code(governorate: str) -> tuple:
     
     return transfer_code, seq_num
 
+async def generate_unique_transfer_number() -> str:
+    """Generate unique 6-digit transfer number"""
+    max_attempts = 100
+    for _ in range(max_attempts):
+        # Generate random 6-digit number (100000 to 999999)
+        transfer_number = str(random.randint(100000, 999999))
+        
+        # Check if it already exists
+        existing = await db.transfers.find_one({'transfer_number': transfer_number})
+        if not existing:
+            return transfer_number
+    
+    # If all random attempts fail, use sequential with offset
+    counter_doc = await db.counters.find_one_and_update(
+        {'_id': 'transfer_number_seq'},
+        {'$inc': {'seq': 1}},
+        upsert=True,
+        return_document=True
+    )
+    seq_num = counter_doc.get('seq', 1) if counter_doc else 1
+    # Start from 100000 and increment
+    return str(100000 + (seq_num % 900000))
+
 def generate_pin() -> str:
     """Generate 4-digit PIN"""
     return str(random.randint(1000, 9999))
