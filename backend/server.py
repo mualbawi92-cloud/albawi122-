@@ -612,6 +612,7 @@ class User(BaseModel):
     role: str
     governorate: Optional[str] = None
     phone: Optional[str] = None
+    address: Optional[str] = None  # عنوان الصيرفة
     is_active: bool = True
     wallet_balance_iqd: float = 0.0
     wallet_balance_usd: float = 0.0
