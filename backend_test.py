@@ -709,8 +709,39 @@ class APITester:
         except Exception as e:
             self.log_result("Commission Calculation Verification", False, f"Error getting transfer details: {str(e)}")
         
-        # Phase 4: Verify Journal Entries (Check if logic exists)
-        print("\n--- PHASE 4: VERIFY ACCOUNTING SYSTEM READINESS ---")
+        # Phase 4: Test Commission Calculation Preview
+        print("\n--- PHASE 4: TEST COMMISSION CALCULATION PREVIEW ---")
+        
+        print("4.1. Testing commission calculation preview for receiver agent...")
+        try:
+            # Test the commission preview endpoint for the receiver agent
+            params = {
+                'amount': transfer_amount,
+                'currency': 'IQD',
+                'to_governorate': 'BS'
+            }
+            response = self.make_request('GET', '/commission/calculate-preview', token=self.agent_basra_token, params=params)
+            if response.status_code == 200:
+                preview_data = response.json()
+                commission_percentage = preview_data.get('commission_percentage', 0)
+                commission_amount = preview_data.get('commission_amount', 0)
+                
+                print(f"   Commission preview for receiver agent:")
+                print(f"   - Percentage: {commission_percentage}%")
+                print(f"   - Amount: {commission_amount:,} IQD")
+                
+                # This should show the incoming commission rate (2%)
+                if commission_percentage == 2.0 and abs(commission_amount - expected_commission) < 0.01:
+                    self.log_result("Commission Preview for Receiver", True, f"Receiver agent commission preview correct: {commission_percentage}% = {commission_amount:,} IQD")
+                else:
+                    self.log_result("Commission Preview for Receiver", False, f"Commission preview incorrect. Expected: 2% = {expected_commission:,}, Got: {commission_percentage}% = {commission_amount:,}")
+            else:
+                self.log_result("Commission Preview for Receiver", False, f"Commission preview failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Commission Preview for Receiver", False, f"Error testing commission preview: {str(e)}")
+        
+        # Phase 5: Verify Accounting System Readiness
+        print("\n--- PHASE 5: VERIFY ACCOUNTING SYSTEM READINESS ---")
         
         print("5. Checking if accounting system is ready for commission paid entries...")
         
