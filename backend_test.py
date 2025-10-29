@@ -683,6 +683,32 @@ class APITester:
         print("\n   NOTE: Cannot test actual receive endpoint due to Cloudinary image upload requirement")
         print("   However, we can verify the backend code has the commission paid logic...")
         
+        # Let's try to create a simulated receive scenario by checking what happens
+        # when we look at the transfer details and verify the commission calculation
+        print("\n   Verifying commission calculation in transfer...")
+        try:
+            response = self.make_request('GET', f'/transfers/{transfer_id}', token=self.agent_basra_token)
+            if response.status_code == 200:
+                transfer_details = response.json()
+                incoming_commission = transfer_details.get('incoming_commission', 0)
+                incoming_commission_percentage = transfer_details.get('incoming_commission_percentage', 0)
+                
+                print(f"   Transfer details:")
+                print(f"   - Amount: {transfer_details.get('amount', 0):,} {transfer_details.get('currency', 'IQD')}")
+                print(f"   - Incoming commission: {incoming_commission:,} {transfer_details.get('currency', 'IQD')}")
+                print(f"   - Incoming commission %: {incoming_commission_percentage}%")
+                
+                # Verify commission calculation
+                expected_commission = transfer_amount * 0.02  # 2%
+                if abs(incoming_commission - expected_commission) < 0.01:
+                    self.log_result("Commission Calculation Verification", True, f"Incoming commission correctly calculated: {incoming_commission:,} IQD")
+                else:
+                    self.log_result("Commission Calculation Verification", False, f"Commission mismatch. Expected: {expected_commission:,}, Got: {incoming_commission:,}")
+            else:
+                self.log_result("Commission Calculation Verification", False, f"Could not get transfer details: {response.status_code}")
+        except Exception as e:
+            self.log_result("Commission Calculation Verification", False, f"Error getting transfer details: {str(e)}")
+        
         # Phase 4: Verify Journal Entries (Check if logic exists)
         print("\n--- PHASE 4: VERIFY ACCOUNTING SYSTEM READINESS ---")
         
