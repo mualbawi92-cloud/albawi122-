@@ -202,6 +202,10 @@ const ChartOfAccountsPage = () => {
     }
   };
 
+  const formatCurrency = (amount, currency = 'IQD') => {
+    return `${amount.toLocaleString()} ${currency}`;
+  };
+
   const buildHierarchy = (accounts) => {
     // Group accounts by parent
     const accountMap = {};
