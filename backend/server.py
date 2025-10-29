@@ -1164,6 +1164,8 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 await db.accounts.insert_one(transit_account)
             
             # Create journal entry for transfer
+            # المكتب المُصدر (استلم نقدية من العميل) = مدين
+            # Transit = دائن
             journal_entry = {
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-{transfer_code}",
@@ -1171,12 +1173,12 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 'description': f'حوالة صادرة: {transfer_code} من {current_user["display_name"]}',
                 'lines': [
                     {
-                        'account_code': '1030',  # Transit Account (مدين)
+                        'account_code': sender_account['code'],  # Sender Account (مدين) - استلم نقدية
                         'debit': transfer_data.amount,
                         'credit': 0
                     },
                     {
-                        'account_code': sender_account['code'],  # Sender Account (دائن)
+                        'account_code': '1030',  # Transit Account (دائن)
                         'debit': 0,
                         'credit': transfer_data.amount
                     }
@@ -1193,15 +1195,15 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             await db.journal_entries.insert_one(journal_entry)
             
             # Update account balances
-            # Transit account increases (debit for assets)
+            # Sender account increases (debit for assets - استلم نقدية)
             await db.accounts.update_one(
-                {'code': '1030'},
+                {'code': sender_account['code']},
                 {'$inc': {'balance': transfer_data.amount}}
             )
             
-            # Sender account decreases (credit for assets)
+            # Transit account decreases (credit for assets)
             await db.accounts.update_one(
-                {'code': sender_account['code']},
+                {'code': '1030'},
                 {'$inc': {'balance': -transfer_data.amount}}
             )
             
