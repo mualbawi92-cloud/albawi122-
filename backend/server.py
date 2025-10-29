@@ -3579,10 +3579,12 @@ async def create_journal_entry(entry_data: JournalEntryCreate, current_user: dic
 async def get_journal_entries(
     start_date: str = None,
     end_date: str = None,
+    page: int = 1,
+    limit: int = 100,
     current_user: dict = Depends(require_admin)
 ):
     """
-    Get all journal entries (دفتر اليومية)
+    Get all journal entries (دفتر اليومية) with pagination
     Optional filters: start_date, end_date (ISO format)
     """
     query = {'is_cancelled': False}
@@ -3595,12 +3597,25 @@ async def get_journal_entries(
             date_query['$lte'] = end_date
         query['date'] = date_query
     
-    entries = await db.journal_entries.find(query).sort('date', -1).to_list(length=None)
+    # Calculate skip for pagination
+    skip = (page - 1) * limit
+    
+    # Get entries with pagination (using index on 'date')
+    entries = await db.journal_entries.find(query).sort('date', -1).skip(skip).limit(limit).to_list(limit)
+    
+    # Get total count for pagination info
+    total = await db.journal_entries.count_documents(query)
     
     for entry in entries:
         entry.pop('_id', None)
     
-    return {"entries": entries, "total": len(entries)}
+    return {
+        "entries": entries,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "total_pages": (total + limit - 1) // limit
+    }
 
 @api_router.get("/accounting/ledger/{account_code}")
 async def get_account_ledger(
