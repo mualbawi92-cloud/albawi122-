@@ -41,6 +41,7 @@ const TransferDetailsPage = () => {
   const [pin, setPin] = useState('');
   const [receiverFullname, setReceiverFullname] = useState('');
   const [useCamera, setUseCamera] = useState(false);
+  const [facingMode, setFacingMode] = useState('environment'); // 'user' for front, 'environment' for back
   const [capturedImage, setCapturedImage] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
