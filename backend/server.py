@@ -366,8 +366,10 @@ class Transfer(BaseModel):
     receiver_name: Optional[str] = None  # اسم المستلم الثلاثي (Optional for old transfers)
     amount: float
     currency: str = "IQD"
-    commission: float = 0.0  # Admin commission
-    commission_percentage: float = 0.13
+    commission: float = 0.0  # Outgoing commission (للمرسل)
+    commission_percentage: float = 0.0  # Changed default from 0.13 to 0.0
+    incoming_commission: Optional[float] = 0.0  # Incoming commission (للمستلم)
+    incoming_commission_percentage: Optional[float] = 0.0  # نسبة عمولة الاستلام
     status: str
     note: Optional[str] = None
     created_at: str
