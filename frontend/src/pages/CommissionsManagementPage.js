@@ -176,8 +176,9 @@ const CommissionsManagementPage = () => {
       };
 
       if (editingRate) {
-        // Update existing rate (if we had update endpoint)
-        toast.info('تعديل النشرات غير متاح حالياً');
+        // Update existing rate
+        await axios.put(`${API}/commission-rates/${editingRate.id}`, submitData);
+        toast.success('تم تحديث نشرة الأسعار بنجاح!');
       } else {
         // Create new rate
         await axios.post(`${API}/commission-rates`, submitData);
@@ -186,26 +187,11 @@ const CommissionsManagementPage = () => {
       
       // Refresh rates and reset form
       await fetchAgentCommissionRates(selectedAgent.id);
-      setShowAddForm(false);
-      setEditingRate(null);
-      setFormData({
-        currency: 'IQD',
-        bulletin_type: 'transfers',
-        date: new Date().toISOString().split('T')[0],
-      });
-      setTiers([{
-        from_amount: 0,
-        to_amount: 1000000000,
-        percentage: 0.25,
-        city: '(جميع المدن)',
-        country: '(جميع البلدان)',
-        currency_type: 'normal',
-        type: 'outgoing'
-      }]);
+      handleCancelEdit();
       
     } catch (error) {
       console.error('Error saving commission rate:', error);
-      toast.error('خطأ في حفظ نشرة الأسعار', {
+      toast.error(editingRate ? 'خطأ في تحديث نشرة الأسعار' : 'خطأ في حفظ نشرة الأسعار', {
         description: error.response?.data?.detail || 'حدث خطأ غير متوقع'
       });
     }
