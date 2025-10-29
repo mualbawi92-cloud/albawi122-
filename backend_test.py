@@ -431,6 +431,106 @@ class APITester:
         except Exception as e:
             self.log_result("Commission Preview - No Auth", False, f"Error: {str(e)}")
     
+    def test_commission_with_rates(self):
+        """Test commission calculation with configured rates"""
+        print("\n=== Testing Commission with Configured Rates ===")
+        
+        # First, create a commission rate for the agent
+        print("\n--- Setting up commission rate ---")
+        commission_rate_data = {
+            "agent_id": self.agent_baghdad_user_id,
+            "currency": "IQD",
+            "bulletin_type": "transfers",
+            "date": "2024-01-01",
+            "tiers": [
+                {
+                    "from_amount": 0,
+                    "to_amount": 1000000,
+                    "percentage": 1.5,
+                    "city": "(جميع المدن)",
+                    "country": "(جميع البلدان)",
+                    "currency_type": "normal",
+                    "type": "outgoing"
+                },
+                {
+                    "from_amount": 1000000,
+                    "to_amount": 10000000,
+                    "percentage": 1.0,
+                    "city": "(جميع المدن)",
+                    "country": "(جميع البلدان)",
+                    "currency_type": "normal",
+                    "type": "outgoing"
+                }
+            ]
+        }
+        
+        try:
+            response = self.make_request('POST', '/commission-rates', 
+                                       token=self.admin_token, json=commission_rate_data)
+            
+            if response.status_code == 200:
+                self.log_result("Commission Rate Creation", True, "Commission rate created successfully")
+                
+                # Now test the preview with the configured rate
+                print("\n--- Testing preview with configured rate (500,000 IQD) ---")
+                params = {
+                    'amount': 500000,
+                    'currency': 'IQD',
+                    'to_governorate': 'BG'
+                }
+                
+                response = self.make_request('GET', '/commission/calculate-preview', 
+                                           token=self.agent_baghdad_token, params=params)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    expected_percentage = 1.5
+                    expected_amount = 500000 * 1.5 / 100  # 7500
+                    
+                    if (abs(data['commission_percentage'] - expected_percentage) < 0.01 and 
+                        abs(data['commission_amount'] - expected_amount) < 0.01):
+                        self.log_result("Commission Preview - With Rate (500K)", True, 
+                                      f"Correct commission: {data['commission_percentage']}% = {data['commission_amount']} IQD")
+                    else:
+                        self.log_result("Commission Preview - With Rate (500K)", False, 
+                                      f"Wrong commission. Expected: {expected_percentage}% = {expected_amount}, Got: {data['commission_percentage']}% = {data['commission_amount']}")
+                else:
+                    self.log_result("Commission Preview - With Rate (500K)", False, 
+                                  f"Failed with status {response.status_code}", response.text)
+                
+                # Test with higher amount (different tier)
+                print("\n--- Testing preview with higher amount (2,000,000 IQD) ---")
+                params = {
+                    'amount': 2000000,
+                    'currency': 'IQD',
+                    'to_governorate': 'BG'
+                }
+                
+                response = self.make_request('GET', '/commission/calculate-preview', 
+                                           token=self.agent_baghdad_token, params=params)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    expected_percentage = 1.0  # Second tier
+                    expected_amount = 2000000 * 1.0 / 100  # 20000
+                    
+                    if (abs(data['commission_percentage'] - expected_percentage) < 0.01 and 
+                        abs(data['commission_amount'] - expected_amount) < 0.01):
+                        self.log_result("Commission Preview - With Rate (2M)", True, 
+                                      f"Correct commission: {data['commission_percentage']}% = {data['commission_amount']} IQD")
+                    else:
+                        self.log_result("Commission Preview - With Rate (2M)", False, 
+                                      f"Wrong commission. Expected: {expected_percentage}% = {expected_amount}, Got: {data['commission_percentage']}% = {data['commission_amount']}")
+                else:
+                    self.log_result("Commission Preview - With Rate (2M)", False, 
+                                  f"Failed with status {response.status_code}", response.text)
+                
+            else:
+                self.log_result("Commission Rate Creation", False, 
+                              f"Failed to create commission rate: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Commission Rate Creation", False, f"Error: {str(e)}")
+    
     def run_all_tests(self):
         """Run all tests in sequence"""
         print("🚀 Starting Backend API Tests for Commission Calculate Preview Endpoint")
