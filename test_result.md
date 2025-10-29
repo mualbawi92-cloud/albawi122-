@@ -384,6 +384,28 @@ frontend:
           - All database operations atomic and consistent
           
           **No Issues Found:** The Transit Account System is production-ready and fully integrated with the existing wallet and transfer systems.
+      
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ IMPLEMENTED: Commission Rate UPDATE endpoint (PUT /api/commission-rates/{rate_id})
+          
+          **New Functionality Added:**
+          - PUT /api/commission-rates/{rate_id}: Update existing commission rate
+          - Requires admin authentication
+          - Validates rate exists before updating
+          - Updates all fields: agent_id, currency, bulletin_type, date, tiers
+          - Returns updated commission rate object
+          - Proper error handling for not found (404) and update failures (400)
+          
+          **Implementation Details:**
+          - Located at line ~1699-1731 in backend/server.py
+          - Uses CommissionRateCreate model for input validation
+          - Updates updated_at timestamp automatically
+          - Preserves original created_at and id fields
+          - Returns full CommissionRate object after update
+          
+          **Ready for comprehensive testing of UPDATE functionality**
 
 metadata:
   created_by: "main_agent"
