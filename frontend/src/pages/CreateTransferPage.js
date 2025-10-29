@@ -67,11 +67,18 @@ const CreateTransferPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Show confirmation modal instead of submitting directly
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    setShowConfirmModal(false);
     setLoading(true);
 
     try {
       const submitData = {
         sender_name: formData.sender_name,
+        sender_phone: formData.sender_phone || null,
         receiver_name: formData.receiver_name,
         amount: parseFloat(formData.amount),
         currency: formData.currency,
