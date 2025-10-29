@@ -38,6 +38,9 @@ const CommissionsManagementPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   
+  // Tab state
+  const [activeTab, setActiveTab] = useState('manage'); // 'manage' or 'view'
+  
   // Filter states
   const [selectedGovernorate, setSelectedGovernorate] = useState('');
   const [agents, setAgents] = useState([]);
@@ -46,6 +49,10 @@ const CommissionsManagementPage = () => {
   // Selected agent and their commission rates
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [agentCommissionRates, setAgentCommissionRates] = useState([]);
+  
+  // All rates for view tab
+  const [allRates, setAllRates] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   
   // Form states
   const [loading, setLoading] = useState(false);
@@ -77,6 +84,7 @@ const CommissionsManagementPage = () => {
       return;
     }
     fetchAgents();
+    fetchAllRates();
   }, [user, navigate]);
 
   useEffect(() => {
@@ -119,6 +127,16 @@ const CommissionsManagementPage = () => {
     } catch (error) {
       console.error('Error fetching commission rates:', error);
       setAgentCommissionRates([]);
+    }
+  };
+
+  const fetchAllRates = async () => {
+    try {
+      const response = await axios.get(`${API}/commission-rates`);
+      setAllRates(response.data);
+    } catch (error) {
+      console.error('Error fetching all rates:', error);
+      toast.error('خطأ في تحميل النشرات');
     }
   };
 
