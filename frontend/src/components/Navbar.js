@@ -188,6 +188,16 @@ const Navbar = () => {
                 📊 التقارير
               </Button>
             )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => navigate('/chart-of-accounts')}
+                variant="ghost"
+                className="text-white hover:bg-white/10 font-bold text-sm"
+                data-testid="nav-chart-of-accounts"
+              >
+                📚 الدليل المحاسبي
+              </Button>
+            )}
             <Button
               onClick={() => navigate('/settings')}
               variant="ghost"
