@@ -488,7 +488,7 @@ class APITester:
                 params = {
                     'amount': 500000,
                     'currency': 'IQD',
-                    'to_governorate': 'BG'
+                    'to_governorate': 'بغداد'  # Use Arabic name to match existing rate
                 }
                 
                 response = self.make_request('GET', '/commission/calculate-preview', 
