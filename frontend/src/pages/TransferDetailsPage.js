@@ -512,18 +512,18 @@ const TransferDetailsPage = () => {
                       <div className="flex gap-4">
                         <Button
                           type="button"
-                          onClick={() => setUseCamera(!useCamera)}
+                          onClick={() => setUseCamera(true)}
                           variant="outline"
-                          className="flex-1"
+                          className="flex-1 h-12"
                           data-testid="camera-btn"
                         >
-                          📷 {useCamera ? 'إغلاق الكاميرا' : 'فتح الكاميرا'}
+                          📷 فتح الكاميرا
                         </Button>
                         <Button
                           type="button"
                           onClick={() => document.getElementById('file-upload').click()}
                           variant="outline"
-                          className="flex-1"
+                          className="flex-1 h-12"
                           data-testid="upload-btn"
                         >
                           📄 رفع ملف
@@ -537,28 +537,90 @@ const TransferDetailsPage = () => {
                         />
                       </div>
 
-                      {useCamera && (
-                        <div className="space-y-4">
-                          <Webcam
-                            ref={webcamRef}
-                            screenshotFormat="image/jpeg"
-                            className="w-full rounded-lg"
-                          />
-                          <Button
-                            type="button"
-                            onClick={captureImage}
-                            className="w-full bg-secondary hover:bg-secondary/90 text-primary"
-                            data-testid="capture-btn"
-                          >
-                            📸 التقاط الصورة
-                          </Button>
-                        </div>
-                      )}
+                      {/* Camera Modal */}
+                      <Dialog open={useCamera} onOpenChange={setUseCamera}>
+                        <DialogContent className="max-w-full h-screen p-0 m-0">
+                          <div className="relative w-full h-full bg-black flex flex-col">
+                            {/* Header */}
+                            <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-4">
+                              <div className="flex items-center justify-between text-white">
+                                <h3 className="text-xl font-bold">📷 التقاط صورة الهوية</h3>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setUseCamera(false)}
+                                  className="text-white hover:bg-white/20"
+                                >
+                                  ✕ إغلاق
+                                </Button>
+                              </div>
+                            </div>
+
+                            {/* Camera View */}
+                            <div className="flex-1 flex items-center justify-center">
+                              <Webcam
+                                ref={webcamRef}
+                                screenshotFormat="image/jpeg"
+                                videoConstraints={{
+                                  facingMode: facingMode,
+                                  width: { ideal: 1920 },
+                                  height: { ideal: 1080 }
+                                }}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+
+                            {/* Controls */}
+                            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 to-transparent p-6">
+                              <div className="flex items-center justify-center gap-4">
+                                {/* Switch Camera Button */}
+                                <Button
+                                  type="button"
+                                  onClick={switchCamera}
+                                  size="lg"
+                                  variant="outline"
+                                  className="h-14 w-14 rounded-full bg-white/20 text-white border-2 border-white hover:bg-white/30"
+                                >
+                                  🔄
+                                </Button>
+
+                                {/* Capture Button */}
+                                <Button
+                                  type="button"
+                                  onClick={captureImage}
+                                  size="lg"
+                                  className="h-20 w-20 rounded-full bg-white hover:bg-gray-200 text-primary border-4 border-secondary shadow-xl"
+                                  data-testid="capture-btn"
+                                >
+                                  <span className="text-3xl">📸</span>
+                                </Button>
+
+                                {/* Placeholder for symmetry */}
+                                <div className="h-14 w-14"></div>
+                              </div>
+                              
+                              <p className="text-center text-white text-sm mt-4">
+                                {facingMode === 'user' ? '📱 الكاميرا الأمامية' : '📷 الكاميرا الخلفية'}
+                              </p>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
 
                       {capturedImage && (
                         <div className="space-y-2">
                           <p className="text-sm text-green-600 font-bold">✔ تم التقاط الصورة</p>
                           <img src={capturedImage} alt="Captured" className="w-full rounded-lg border-2 border-green-500" />
+                          <Button
+                            type="button"
+                            onClick={() => setCapturedImage(null)}
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                          >
+                            🗑️ حذف الصورة
+                          </Button>
                         </div>
                       )}
 
