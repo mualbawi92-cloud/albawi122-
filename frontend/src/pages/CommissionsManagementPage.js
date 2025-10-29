@@ -349,48 +349,28 @@ const CommissionsManagementPage = () => {
                     لا توجد نشرات محفوظة لهذا الصراف
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <thead className="bg-gradient-to-l from-primary/20 to-primary/10">
-                        <tr>
-                          <th className="p-3 text-right border font-bold">العملة</th>
-                          <th className="p-3 text-right border font-bold">النوع</th>
-                          <th className="p-3 text-right border font-bold">التاريخ</th>
-                          <th className="p-3 text-right border font-bold">الشرائح</th>
-                          <th className="p-3 text-center border font-bold">الإجراءات</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {agentCommissionRates.map((rate) => (
-                          <tr key={rate.id} className="border-b hover:bg-gray-50">
-                            <td className="p-3 border">
-                              <span className={`px-3 py-1 rounded-full text-sm font-bold ${
-                                rate.currency === 'IQD' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                              }`}>
-                                {rate.currency}
-                              </span>
-                            </td>
-                            <td className="p-3 border font-medium">{rate.bulletin_type}</td>
-                            <td className="p-3 border text-sm">{new Date(rate.date).toLocaleDateString('ar-IQ')}</td>
-                            <td className="p-3 border">
-                              <div className="space-y-2 max-w-2xl">
-                                {rate.tiers?.map((tier, idx) => (
-                                  <div key={idx} className="flex items-center gap-2 text-sm bg-gray-50 p-2 rounded border">
-                                    <span className="font-bold text-purple-700">{tier.percentage}%</span>
-                                    <span className="text-gray-600">|</span>
-                                    <span>من {tier.from_amount?.toLocaleString()}</span>
-                                    <span>→</span>
-                                    <span>إلى {tier.to_amount?.toLocaleString()}</span>
-                                    <span className="text-gray-600">|</span>
-                                    <span className="text-xs">{tier.city || '(جميع المدن)'}</span>
-                                    <span className="text-gray-600">|</span>
-                                    <span className="text-xs">{tier.type === 'outgoing' ? '📤 صادرة' : '📥 واردة'}</span>
-                                  </div>
-                                ))}
+                  <div className="space-y-4">
+                    {agentCommissionRates.map((rate) => (
+                      <Card key={rate.id} className="border-2 shadow-md">
+                        <CardHeader className="pb-3 bg-gradient-to-l from-gray-50 to-white">
+                          <div className="space-y-3">
+                            {/* Header Info */}
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                                    rate.currency === 'IQD' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                                  }`}>
+                                    {rate.currency}
+                                  </span>
+                                  <span className="font-bold text-lg">{rate.bulletin_type}</span>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  📅 التاريخ: {new Date(rate.date).toLocaleDateString('ar-IQ')}
+                                </p>
                               </div>
-                            </td>
-                            <td className="p-3 border">
-                              <div className="flex gap-2 justify-center">
+                              {/* Action Buttons */}
+                              <div className="flex gap-2">
                                 <Button
                                   size="sm"
                                   variant="outline"
@@ -407,11 +387,58 @@ const CommissionsManagementPage = () => {
                                   🗑️ حذف
                                 </Button>
                               </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          {/* Tiers Display */}
+                          <div className="space-y-3">
+                            <Label className="text-base font-bold">الشرائح:</Label>
+                            {rate.tiers?.map((tier, idx) => (
+                              <div key={idx} className="p-3 bg-gray-50 rounded-lg border-2 border-gray-200 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-bold text-gray-600">الشريحة {idx + 1}</span>
+                                  <span className={`px-2 py-1 rounded text-xs font-bold ${
+                                    tier.type === 'outgoing' 
+                                      ? 'bg-orange-100 text-orange-700' 
+                                      : 'bg-teal-100 text-teal-700'
+                                  }`}>
+                                    {tier.type === 'outgoing' ? '📤 صادرة' : '📥 واردة'}
+                                  </span>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                  <div className="bg-white p-2 rounded border">
+                                    <p className="text-xs text-gray-600">من مبلغ</p>
+                                    <p className="font-bold">{tier.from_amount?.toLocaleString()}</p>
+                                  </div>
+                                  <div className="bg-white p-2 rounded border">
+                                    <p className="text-xs text-gray-600">إلى مبلغ</p>
+                                    <p className="font-bold">{tier.to_amount?.toLocaleString()}</p>
+                                  </div>
+                                </div>
+                                
+                                <div className="bg-purple-50 p-2 rounded border border-purple-200">
+                                  <p className="text-xs text-purple-700">نسبة العمولة</p>
+                                  <p className="text-2xl font-bold text-purple-900">{tier.percentage}%</p>
+                                </div>
+                                
+                                <div className="flex gap-2 text-xs">
+                                  <div className="flex-1 bg-white p-2 rounded border">
+                                    <p className="text-gray-600">المدينة</p>
+                                    <p className="font-medium">{tier.city || '(جميع المدن)'}</p>
+                                  </div>
+                                  <div className="flex-1 bg-white p-2 rounded border">
+                                    <p className="text-gray-600">البلد</p>
+                                    <p className="font-medium">{tier.country || '(جميع البلدان)'}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
                 )}
               </CardContent>
