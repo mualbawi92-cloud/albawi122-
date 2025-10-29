@@ -230,16 +230,6 @@ const Navbar = () => {
             )}
             {user?.role === 'admin' && (
               <Button
-                onClick(() => navigate('/ledger')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-ledger"
-              >
-                📊 دفتر الأستاذ
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
                 onClick={() => navigate('/exchange')}
                 variant="ghost"
                 className="text-white hover:bg-white/10 font-bold text-sm"
