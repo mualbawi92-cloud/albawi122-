@@ -225,6 +225,18 @@ const EditAgentPage = () => {
                 </Select>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-base font-bold">عنوان الصيرفة</Label>
+                <Input
+                  id="address"
+                  data-testid="address-input"
+                  value={formData.address}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  className="text-base h-12"
+                  placeholder="مثال: شارع الرشيد، قرب ساحة التحرير"
+                />
+              </div>
+
               {/* Wallet Limits Section */}
               <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg space-y-4">
                 <h3 className="text-lg font-bold text-blue-900">💰 حدود المحفظة</h3>
