@@ -2313,6 +2313,9 @@ async def update_user_by_admin(user_id: str, user_data: UserUpdate, current_user
     if user_data.governorate:
         update_fields['governorate'] = user_data.governorate
     
+    if user_data.address is not None:  # Allow empty string
+        update_fields['address'] = user_data.address
+    
     # Admin can set new password without current password
     if user_data.new_password:
         if len(user_data.new_password) < 6:
