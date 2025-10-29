@@ -285,6 +285,16 @@ const CommissionsManagementPage = () => {
     }]);
   };
 
+  const filteredAllRates = allRates.filter(rate => {
+    if (!searchTerm) return true;
+    const term = searchTerm.toLowerCase();
+    return (
+      rate.agent_display_name?.toLowerCase().includes(term) ||
+      rate.currency?.toLowerCase().includes(term) ||
+      rate.bulletin_type?.toLowerCase().includes(term)
+    );
+  });
+
   return (
     <div className="min-h-screen bg-[#F5F7FA]">
       <Navbar />
@@ -294,10 +304,38 @@ const CommissionsManagementPage = () => {
           <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5">
             <CardTitle className="text-2xl sm:text-3xl">💰 إدارة العمولات</CardTitle>
             <CardDescription className="text-base">
-              إدارة نشرات الأسعار والعمولات لجميع الصرافين
+              إدارة وعرض نشرات الأسعار والعمولات لجميع الصرافين
             </CardDescription>
           </CardHeader>
         </Card>
+
+        {/* Tabs */}
+        <div className="flex gap-2 border-b-2">
+          <button
+            onClick={() => setActiveTab('manage')}
+            className={`px-6 py-3 font-bold text-lg transition-all ${
+              activeTab === 'manage'
+                ? 'border-b-4 border-primary text-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-primary'
+            }`}
+          >
+            📝 إدارة العمولات
+          </button>
+          <button
+            onClick={() => setActiveTab('view')}
+            className={`px-6 py-3 font-bold text-lg transition-all ${
+              activeTab === 'view'
+                ? 'border-b-4 border-primary text-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-primary'
+            }`}
+          >
+            📊 عرض جميع النشرات ({allRates.length})
+          </button>
+        </div>
+
+        {/* Tab Content: Manage */}
+        {activeTab === 'manage' && (
+          <div className="space-y-6">
 
         {/* Step 1: Select Governorate */}
         <Card>
