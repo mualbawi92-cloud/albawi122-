@@ -1173,7 +1173,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-{transfer_code}",
                 'date': datetime.now(timezone.utc).isoformat(),
-                'description': f'حوالة صادرة: {transfer_code} من {current_user["display_name"]}',
+                'description': f'حوالة من {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {transfer_code}',
                 'lines': [
                     {
                         'account_code': sender_account['code'],
