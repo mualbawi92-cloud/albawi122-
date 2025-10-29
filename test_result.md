@@ -320,6 +320,14 @@ frontend:
     stuck_count: 0
     priority: "critical"
     needs_retesting: false
+  
+  - task: "Commission Rate UPDATE Endpoint"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
