@@ -743,7 +743,7 @@ class APITester:
         # Phase 5: Verify Accounting System Readiness
         print("\n--- PHASE 5: VERIFY ACCOUNTING SYSTEM READINESS ---")
         
-        print("5. Checking if accounting system is ready for commission paid entries...")
+        print("5.1. Checking if accounting system is ready for commission paid entries...")
         
         # Check if account 5110 exists or can be created
         try:
