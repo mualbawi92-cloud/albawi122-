@@ -655,6 +655,25 @@ const CreateTransferPage = () => {
                   </p>
                 </div>
               )}
+
+              {/* Commission Info in Modal */}
+              {formData.to_governorate && commissionData.percentage >= 0 && (
+                <div className="bg-blue-50 p-3 rounded border border-blue-200">
+                  <Label className="text-xs text-muted-foreground mb-2 block">معلومات العمولة</Label>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">نسبة العمولة:</span>
+                      <span className="font-bold text-blue-700 mr-2">{commissionData.percentage.toFixed(2)}%</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">مبلغ العمولة:</span>
+                      <span className="font-bold text-blue-700 mr-2">
+                        {commissionData.amount.toLocaleString()} {formData.currency}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <DialogFooter className="gap-2">
