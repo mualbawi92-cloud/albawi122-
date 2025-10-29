@@ -351,7 +351,9 @@ class CommissionTier(BaseModel):
     """Commission tier for specific amount range"""
     from_amount: float = 0.0  # من مبلغ
     to_amount: float  # حتى مبلغ
-    percentage: float  # نسبة من المبلغ
+    percentage: float = 0.0  # نسبة من المبلغ (للنسبة المئوية)
+    commission_type: str = "percentage"  # نوع العمولة: percentage (نسبة) أو fixed_amount (مبلغ ثابت)
+    fixed_amount: float = 0.0  # المبلغ الثابت (للعمولة الثابتة)
     city: Optional[str] = None  # المدينة (None = جميع المدن)
     country: Optional[str] = None  # البلد (None = جميع البلدان)
     currency_type: str = "normal"  # نوع العملة: normal, payable
