@@ -788,3 +788,55 @@ agent_communication:
       **CONCLUSION:** The backend DELETE endpoint is working perfectly. The issue reported from frontend is NOT related to backend authentication or the DELETE endpoint itself.
       
       **Recommendation:** The problem appears to be in the frontend implementation. Main agent should investigate frontend DELETE functionality, not backend.
+
+  - agent: "main"
+    message: |
+      ✅ NEW IMPLEMENTATION: Chart of Accounts Page & Reports Page
+      
+      User Request: 
+      1. صفحة الدليل المحاسبي: عرض دليل الحسابات الكامل، عرض رصيد كل حساب، إضافة حسابات جديدة، حذف الحسابات
+      2. صفحة التقارير: عرض التقارير اليومية/شهرية/سنوية، إحصائيات العمولات المحققة والمدفوعة، صافي الربح لكل صيرفة
+      
+      **Backend Changes:**
+      1. Added DELETE /api/accounting/accounts/{account_code} endpoint:
+         - Admin-only access with authentication
+         - Validation: no child accounts, balance must be zero
+         - Error handling with Arabic messages
+         - Safety checks for accounting integrity
+      
+      **Frontend Changes:**
+      1. Created ChartOfAccountsPage.js:
+         - Hierarchical account display (parent-child with indentation)
+         - Account details: code, name (AR/EN), category, balance, currency
+         - Search and category filter
+         - Add account dialog (with parent selection for sub-accounts)
+         - Delete with confirmation dialog
+         - Smart UI: delete button disabled for accounts with children
+         - Balance color coding (green/red)
+         - Admin-only access
+         - Mobile responsive
+      
+      2. ReportsPage.js (already fully implemented):
+         - Report type selector (daily/monthly/yearly)
+         - Date picker based on report type
+         - Two tabs: Summary and Agents profit
+         - Currency breakdown (IQD/USD)
+         - Earned vs Paid commissions
+         - Net profit calculations
+         - Detailed transaction tables
+         - Per-agent profit breakdown
+      
+      3. Navigation Updates:
+         - Added /chart-of-accounts route in App.js
+         - Added "📚 الدليل المحاسبي" button in Navbar (desktop & mobile)
+         - Admin-only visibility
+      
+      **Features Summary:**
+      ✅ Chart of Accounts: Full CRUD with hierarchical display
+      ✅ Reports: Daily/Monthly/Yearly with commission analytics
+      ✅ Admin-only access for both pages
+      ✅ Arabic RTL design
+      ✅ Mobile responsive
+      ✅ Proper error handling
+      
+      Ready for comprehensive backend and frontend testing!
