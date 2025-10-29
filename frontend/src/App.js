@@ -72,6 +72,7 @@ function AppRoutes() {
       <Route path="/chart-of-accounts" element={<ProtectedRoute><ChartOfAccountsPage /></ProtectedRoute>} />
       <Route path="/manual-journal-entry" element={<ProtectedRoute><ManualJournalEntryPage /></ProtectedRoute>} />
       <Route path="/journal" element={<ProtectedRoute><JournalPage /></ProtectedRoute>} />
+      <Route path="/journal-transfer" element={<ProtectedRoute><JournalTransferPage /></ProtectedRoute>} />
       <Route path="/ledger" element={<ProtectedRoute><LedgerPage /></ProtectedRoute>} />
       <Route path="/exchange" element={<ProtectedRoute><ExchangeOperationsPage /></ProtectedRoute>} />
       <Route path="/statement" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
