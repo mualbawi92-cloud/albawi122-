@@ -1210,6 +1210,15 @@ async def receive_transfer(
         }}
     )
     
+    # Subtract amount from transit account (الحوالات الواردة لم تُسلَّم)
+    await update_transit_balance(
+        amount=transfer['amount'],
+        currency=transfer['currency'],
+        operation='subtract',
+        reference_id=transfer_id,
+        note=f'حوالة مُسلَّمة إلى {current_user["display_name"]} - {transfer["transfer_code"]}'
+    )
+    
     # Update receiver's wallet (increase balance)
     wallet_field = f'wallet_balance_{transfer["currency"].lower()}'
     await db.users.update_one(
