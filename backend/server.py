@@ -4236,6 +4236,124 @@ async def get_agent_ledger(
         'date_to': date_to_dt.isoformat()
     }
 
+@api_router.get("/agent-commissions-report")
+async def get_agent_commissions_report(
+    report_type: str = 'daily',  # daily, monthly, yearly
+    date: str = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get agent's own commissions report"""
+    
+    # Only agents can access
+    if current_user['role'] != 'agent':
+        raise HTTPException(status_code=403, detail="هذه الصفحة مخصصة للصرافين فقط")
+    
+    agent_id = current_user['id']
+    
+    # Parse date and calculate range
+    from datetime import datetime, timezone, timedelta
+    
+    if not date:
+        date = datetime.now(timezone.utc).isoformat().split('T')[0]
+    
+    if report_type == 'daily':
+        date_from = datetime.fromisoformat(date).replace(hour=0, minute=0, second=0, tzinfo=timezone.utc)
+        date_to = datetime.fromisoformat(date).replace(hour=23, minute=59, second=59, tzinfo=timezone.utc)
+    elif report_type == 'monthly':
+        # date format: YYYY-MM
+        year, month = map(int, date.split('-'))
+        date_from = datetime(year, month, 1, tzinfo=timezone.utc)
+        if month == 12:
+            date_to = datetime(year + 1, 1, 1, tzinfo=timezone.utc) - timedelta(seconds=1)
+        else:
+            date_to = datetime(year, month + 1, 1, tzinfo=timezone.utc) - timedelta(seconds=1)
+    elif report_type == 'yearly':
+        # date format: YYYY
+        year = int(date)
+        date_from = datetime(year, 1, 1, tzinfo=timezone.utc)
+        date_to = datetime(year, 12, 31, 23, 59, 59, tzinfo=timezone.utc)
+    else:
+        raise HTTPException(status_code=400, detail="نوع التقرير غير صحيح")
+    
+    # Get earned commissions (from outgoing transfers)
+    earned_commissions_docs = await db.admin_commissions.find({
+        'agent_id': agent_id,
+        'type': 'earned',
+        'created_at': {
+            '$gte': date_from.isoformat(),
+            '$lte': date_to.isoformat()
+        }
+    }).to_list(length=None)
+    
+    # Get paid commissions (from incoming transfers)
+    paid_commissions_docs = await db.admin_commissions.find({
+        'agent_id': agent_id,
+        'type': 'paid',
+        'created_at': {
+            '$gte': date_from.isoformat(),
+            '$lte': date_to.isoformat()
+        }
+    }).to_list(length=None)
+    
+    # Enhance commission data with transfer details
+    earned_commissions = []
+    for comm in earned_commissions_docs:
+        transfer = await db.transfers.find_one({'id': comm['transfer_id']})
+        if transfer:
+            earned_commissions.append({
+                'id': comm['id'],
+                'transfer_id': comm['transfer_id'],
+                'transfer_code': comm['transfer_code'],
+                'transfer_amount': transfer['amount'],
+                'amount': comm['amount'],
+                'currency': comm['currency'],
+                'commission_percentage': comm.get('commission_percentage', 0),
+                'created_at': comm['created_at']
+            })
+    
+    paid_commissions = []
+    for comm in paid_commissions_docs:
+        transfer = await db.transfers.find_one({'id': comm['transfer_id']})
+        if transfer:
+            paid_commissions.append({
+                'id': comm['id'],
+                'transfer_id': comm['transfer_id'],
+                'transfer_code': comm['transfer_code'],
+                'transfer_amount': transfer['amount'],
+                'amount': comm['amount'],
+                'currency': comm['currency'],
+                'commission_percentage': comm.get('commission_percentage', 0),
+                'created_at': comm['created_at']
+            })
+    
+    # Calculate totals by currency
+    earned_iqd = sum(c['amount'] for c in earned_commissions if c['currency'] == 'IQD')
+    earned_usd = sum(c['amount'] for c in earned_commissions if c['currency'] == 'USD')
+    
+    paid_iqd = sum(c['amount'] for c in paid_commissions if c['currency'] == 'IQD')
+    paid_usd = sum(c['amount'] for c in paid_commissions if c['currency'] == 'USD')
+    
+    return {
+        'agent_name': current_user['display_name'],
+        'report_type': report_type,
+        'date_from': date_from.isoformat(),
+        'date_to': date_to.isoformat(),
+        'earned_commissions': earned_commissions,
+        'paid_commissions': paid_commissions,
+        'totals': {
+            'IQD': {
+                'earned': earned_iqd,
+                'paid': paid_iqd,
+                'net': earned_iqd - paid_iqd
+            },
+            'USD': {
+                'earned': earned_usd,
+                'paid': paid_usd,
+                'net': earned_usd - paid_usd
+            }
+        }
+    }
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
