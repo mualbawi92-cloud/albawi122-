@@ -544,6 +544,9 @@ class APITester:
         # Step 2: Test commission calculate preview endpoint (MAIN FOCUS)
         self.test_commission_calculate_preview()
         
+        # Step 3: Test commission calculation with configured rates
+        self.test_commission_with_rates()
+        
         # Print summary
         self.print_summary()
     
