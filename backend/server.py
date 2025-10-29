@@ -1486,6 +1486,38 @@ async def receive_transfer(
         logging.error(f"Cloudinary upload error: {e}")
         raise HTTPException(status_code=500, detail="Failed to upload ID image")
     
+    # ============ AI MONITORING ============
+    
+    # 1. Read ID card with AI and check if name matches
+    try:
+        ai_result = await read_id_card_with_ai(id_image_url)
+        
+        if ai_result.get('success'):
+            extracted_name = ai_result.get('extracted_name', '').strip()
+            input_name = receiver_fullname.strip()
+            
+            # Compare names (exact match)
+            if extracted_name != input_name:
+                # Get admin users
+                admin_users = await db.users.find({'role': 'admin'}).to_list(length=None)
+                
+                for admin in admin_users:
+                    await create_ai_notification(
+                        admin_id=admin['id'],
+                        notification_type='id_mismatch',
+                        title='⚠️ عدم تطابق الاسم مع الهوية',
+                        message=f'تحذير: الاسم المدخل "{input_name}" لا يطابق الاسم في الهوية "{extracted_name}" للحوالة {transfer["transfer_code"]}',
+                        related_transfer_id=transfer_id
+                    )
+                
+                logger.warning(f"ID name mismatch: input={input_name}, extracted={extracted_name}, transfer={transfer['transfer_code']}")
+        else:
+            logger.error(f"Failed to read ID card: {ai_result.get('error')}")
+    except Exception as e:
+        logger.error(f"Error in AI ID reading: {str(e)}")
+    
+    # ============ END AI MONITORING ============
+    
     # Create receipt
     receipt_doc = {
         'id': str(uuid.uuid4()),
