@@ -30,6 +30,7 @@ import JournalPage from './pages/JournalPage';
 import LedgerPage from './pages/LedgerPage';
 import JournalTransferPage from './pages/JournalTransferPage';
 import ExchangeOperationsPage from './pages/ExchangeOperationsPage';
+import PaidCommissionsPage from './pages/PaidCommissionsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
