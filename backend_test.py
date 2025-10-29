@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
 Backend API Testing for Cash Transfer System
-CRITICAL FEATURE TEST: receiver_name field validation
+FOCUS: Commission Calculate Preview Endpoint
 
-Tests the newly implemented features:
-1. receiver_name field in transfer creation and validation
-2. Enhanced error messages for transfer reception
-3. Wallet system (balance, deposit, transactions)
-4. Dashboard stats with wallet balances
+Tests the commission calculation preview endpoint:
+1. GET /api/commission/calculate-preview with valid parameters
+2. Test with different amounts and currencies (IQD, USD)
+3. Test with missing parameters
+4. Test with invalid amounts (0, negative)
+5. Test authentication requirements
 """
 
 import requests
