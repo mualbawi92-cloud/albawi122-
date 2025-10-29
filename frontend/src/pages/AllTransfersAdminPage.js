@@ -156,7 +156,11 @@ const AllTransfersAdminPage = () => {
                               {transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}
                             </p>
                             <p className="text-sm text-gray-600">
-                              نسبة العمولة: <span className="font-bold text-primary">{transfer.commission_percentage || 0.13}%</span>
+                              نسبة العمولة: <span className="font-bold text-primary">
+                                {transfer.commission_percentage !== undefined && transfer.commission_percentage !== null 
+                                  ? `${transfer.commission_percentage}%` 
+                                  : '0%'}
+                              </span>
                             </p>
                             {getStatusBadge(transfer.status)}
                           </div>
