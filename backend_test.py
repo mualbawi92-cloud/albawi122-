@@ -1,16 +1,32 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Cash Transfer System
-FOCUS: Commission Paid Accounting Entry for Incoming Transfers
+CRITICAL TEST: Commission Paid Accounting Entry - Complete End-to-End Test
 
-Tests the commission paid accounting entry functionality:
-1. Setup test agents with commission rates
-2. Create transfer with outgoing commission
-3. Receive transfer with incoming commission
-4. Verify two journal entries are created (transfer + commission paid)
-5. Verify account balances are updated correctly
-6. Verify ledger reflects commission paid transactions
-7. Complete accounting cycle verification
+**Context:**
+User reported that commission paid is NOT being recorded correctly in the ledger. 
+We just added test data. Now we need to verify the complete flow works.
+
+**Test Setup Complete:**
+- ✅ Account 5110 (عمولات حوالات مدفوعة) created
+- ✅ Account 4020 (عمولات محققة) created  
+- ✅ 2 test agents created with accounting entries
+- ✅ Incoming commission rates (2%) set for both agents
+
+**Test Agents:**
+- Agent 1: agent_baghdad / test123 (Account code: 2001)
+- Agent 2: agent_basra / test123 (Account code: 2002)
+
+**Complete Test Flow:**
+Phase 1: Create Transfer (Agent 1 sends)
+Phase 2: Receive Transfer (Agent 2 receives) 
+Phase 3: Verify Journal Entries ⭐ THIS IS THE CRITICAL PART
+Phase 4: Verify Account Balances
+Phase 5: Verify Ledger
+
+**CRITICAL CHECK:**
+Must verify TWO journal entries are created:
+1. Entry 1 (TR-RCV-{code}): Transfer received entry
+2. Entry 2 (COM-PAID-{code}): Commission paid entry ⭐ THIS IS THE FIX
 """
 
 import requests
@@ -21,8 +37,8 @@ from typing import Dict, Any, Optional
 # Configuration
 BASE_URL = "https://secure-remit-1.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
-AGENT_BAGHDAD_CREDENTIALS = {"username": "agent_baghdad", "password": "agent123"}
-AGENT_BASRA_CREDENTIALS = {"username": "agent_basra", "password": "agent123"}
+AGENT_BAGHDAD_CREDENTIALS = {"username": "agent_baghdad", "password": "test123"}
+AGENT_BASRA_CREDENTIALS = {"username": "agent_basra", "password": "test123"}
 
 class APITester:
     def __init__(self):
