@@ -507,6 +507,7 @@ class AccountCategory(str):
     EQUITY = "حقوق الملكية"  # Equity
     REVENUES = "إيرادات"  # Revenues
     EXPENSES = "مصاريف"  # Expenses
+    EXCHANGE_COMPANIES = "شركات الصرافة"  # Exchange Companies
 
 class Account(BaseModel):
     """Account in chart of accounts"""
