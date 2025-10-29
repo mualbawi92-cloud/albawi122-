@@ -283,6 +283,7 @@ class LoginResponse(BaseModel):
 
 class TransferCreate(BaseModel):
     sender_name: str
+    sender_phone: Optional[str] = None  # رقم تلفون المرسل
     receiver_name: str  # اسم المستلم الثلاثي
     amount: float
     currency: str = "IQD"  # IQD or USD
