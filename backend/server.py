@@ -270,6 +270,36 @@ def check_rate_limit(identifier: str, storage: dict, max_attempts: int, lockout_
 
 # ============ Models ============
 
+class CommissionTier(BaseModel):
+    """Commission tier for specific amount range"""
+    from_amount: float = 0.0  # من مبلغ
+    to_amount: float  # حتى مبلغ
+    percentage: float  # نسبة من المبلغ
+    city: Optional[str] = None  # المدينة (None = جميع المدن)
+    country: Optional[str] = None  # البلد (None = جميع البلدان)
+    currency_type: str = "normal"  # نوع العملة: normal, payable
+    type: str = "outgoing"  # النوع: outgoing (صادر), incoming (وارد)
+
+class CommissionRate(BaseModel):
+    """Commission rate configuration for an agent"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    agent_id: str
+    agent_name: str
+    currency: str  # IQD or USD
+    bulletin_type: str  # transfers (حوالات)
+    date: str  # تاريخ النشرة
+    tiers: List[CommissionTier]  # قائمة الشرائح
+    created_at: str
+    updated_at: str
+
+class CommissionRateCreate(BaseModel):
+    agent_id: str
+    currency: str = "IQD"
+    bulletin_type: str = "transfers"
+    date: str
+    tiers: List[CommissionTier]
+
 class UserCreate(BaseModel):
     username: str
     password: str
