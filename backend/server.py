@@ -2587,6 +2587,290 @@ async def get_account(account_code: str, current_user: dict = Depends(require_ad
     account.pop('_id', None)
     return account
 
+@api_router.get("/accounting/reports/trial-balance")
+async def get_trial_balance(
+    start_date: str = None,
+    end_date: str = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get trial balance report (ميزان المراجعة)
+    Shows all accounts with debit and credit totals
+    """
+    # Get all accounts
+    accounts = await db.accounts.find({'is_active': True}).sort('code', 1).to_list(length=None)
+    
+    # Build query for journal entries
+    query = {'is_cancelled': False}
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query['$gte'] = start_date
+        if end_date:
+            date_query['$lte'] = end_date
+        query['date'] = date_query
+    
+    # Get all journal entries in period
+    entries = await db.journal_entries.find(query).to_list(length=None)
+    
+    # Calculate totals for each account
+    account_totals = {}
+    for account in accounts:
+        account_totals[account['code']] = {
+            'code': account['code'],
+            'name_ar': account['name_ar'],
+            'name_en': account['name_en'],
+            'category': account['category'],
+            'debit': 0,
+            'credit': 0,
+            'balance': 0
+        }
+    
+    # Sum up debits and credits from journal entries
+    for entry in entries:
+        for line in entry.get('lines', []):
+            code = line.get('account_code')
+            if code in account_totals:
+                account_totals[code]['debit'] += line.get('debit', 0)
+                account_totals[code]['credit'] += line.get('credit', 0)
+    
+    # Calculate balances based on account type
+    total_debit = 0
+    total_credit = 0
+    
+    for code, data in account_totals.items():
+        category = data['category']
+        # Assets and Expenses: Debit increases, Credit decreases
+        if category in ['أصول', 'مصاريف']:
+            data['balance'] = data['debit'] - data['credit']
+        else:  # Liabilities, Equity, Revenues: Credit increases, Debit decreases
+            data['balance'] = data['credit'] - data['debit']
+        
+        total_debit += data['debit']
+        total_credit += data['credit']
+    
+    # Filter out accounts with no activity (optional)
+    active_accounts = [data for data in account_totals.values() if data['debit'] != 0 or data['credit'] != 0]
+    
+    return {
+        "accounts": active_accounts,
+        "total_debit": total_debit,
+        "total_credit": total_credit,
+        "is_balanced": abs(total_debit - total_credit) < 0.01,
+        "start_date": start_date,
+        "end_date": end_date
+    }
+
+@api_router.get("/accounting/reports/income-statement")
+async def get_income_statement(
+    start_date: str = None,
+    end_date: str = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get income statement (قائمة الدخل)
+    Shows revenues, expenses, and net profit/loss
+    """
+    # Get revenue and expense accounts
+    revenue_accounts = await db.accounts.find({
+        'category': 'إيرادات',
+        'is_active': True
+    }).to_list(length=None)
+    
+    expense_accounts = await db.accounts.find({
+        'category': 'مصاريف',
+        'is_active': True
+    }).to_list(length=None)
+    
+    # Build query for journal entries
+    query = {'is_cancelled': False}
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query['$gte'] = start_date
+        if end_date:
+            date_query['$lte'] = end_date
+        query['date'] = date_query
+    
+    entries = await db.journal_entries.find(query).to_list(length=None)
+    
+    # Calculate revenue totals
+    revenues = []
+    total_revenue = 0
+    for account in revenue_accounts:
+        debit = 0
+        credit = 0
+        for entry in entries:
+            for line in entry.get('lines', []):
+                if line.get('account_code') == account['code']:
+                    debit += line.get('debit', 0)
+                    credit += line.get('credit', 0)
+        
+        # For revenue: credit increases, debit decreases
+        balance = credit - debit
+        if balance != 0:
+            revenues.append({
+                'code': account['code'],
+                'name_ar': account['name_ar'],
+                'amount': balance
+            })
+            total_revenue += balance
+    
+    # Calculate expense totals
+    expenses = []
+    total_expenses = 0
+    for account in expense_accounts:
+        debit = 0
+        credit = 0
+        for entry in entries:
+            for line in entry.get('lines', []):
+                if line.get('account_code') == account['code']:
+                    debit += line.get('debit', 0)
+                    credit += line.get('credit', 0)
+        
+        # For expenses: debit increases, credit decreases
+        balance = debit - credit
+        if balance != 0:
+            expenses.append({
+                'code': account['code'],
+                'name_ar': account['name_ar'],
+                'amount': balance
+            })
+            total_expenses += balance
+    
+    net_profit = total_revenue - total_expenses
+    
+    return {
+        "revenues": revenues,
+        "expenses": expenses,
+        "total_revenue": total_revenue,
+        "total_expenses": total_expenses,
+        "net_profit": net_profit,
+        "start_date": start_date,
+        "end_date": end_date
+    }
+
+@api_router.get("/accounting/reports/balance-sheet")
+async def get_balance_sheet(
+    end_date: str = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get balance sheet (الميزانية العمومية)
+    Shows assets, liabilities, and equity at a specific date
+    """
+    # Get accounts by category
+    asset_accounts = await db.accounts.find({
+        'category': 'أصول',
+        'is_active': True
+    }).to_list(length=None)
+    
+    liability_accounts = await db.accounts.find({
+        'category': 'التزامات',
+        'is_active': True
+    }).to_list(length=None)
+    
+    equity_accounts = await db.accounts.find({
+        'category': 'حقوق الملكية',
+        'is_active': True
+    }).to_list(length=None)
+    
+    # Build query for journal entries up to end_date
+    query = {'is_cancelled': False}
+    if end_date:
+        query['date'] = {'$lte': end_date}
+    
+    entries = await db.journal_entries.find(query).to_list(length=None)
+    
+    # Calculate asset totals
+    assets = []
+    total_assets = 0
+    for account in asset_accounts:
+        debit = 0
+        credit = 0
+        for entry in entries:
+            for line in entry.get('lines', []):
+                if line.get('account_code') == account['code']:
+                    debit += line.get('debit', 0)
+                    credit += line.get('credit', 0)
+        
+        balance = debit - credit
+        if balance != 0:
+            assets.append({
+                'code': account['code'],
+                'name_ar': account['name_ar'],
+                'amount': balance
+            })
+            total_assets += balance
+    
+    # Calculate liability totals
+    liabilities = []
+    total_liabilities = 0
+    for account in liability_accounts:
+        debit = 0
+        credit = 0
+        for entry in entries:
+            for line in entry.get('lines', []):
+                if line.get('account_code') == account['code']:
+                    debit += line.get('debit', 0)
+                    credit += line.get('credit', 0)
+        
+        balance = credit - debit
+        if balance != 0:
+            liabilities.append({
+                'code': account['code'],
+                'name_ar': account['name_ar'],
+                'amount': balance
+            })
+            total_liabilities += balance
+    
+    # Calculate equity totals
+    equity = []
+    total_equity = 0
+    for account in equity_accounts:
+        debit = 0
+        credit = 0
+        for entry in entries:
+            for line in entry.get('lines', []):
+                if line.get('account_code') == account['code']:
+                    debit += line.get('debit', 0)
+                    credit += line.get('credit', 0)
+        
+        balance = credit - debit
+        if balance != 0:
+            equity.append({
+                'code': account['code'],
+                'name_ar': account['name_ar'],
+                'amount': balance
+            })
+            total_equity += balance
+    
+    # Add net income to equity
+    income_statement = await get_income_statement(None, end_date, current_user)
+    net_income = income_statement['net_profit']
+    if net_income != 0:
+        equity.append({
+            'code': 'NET_INCOME',
+            'name_ar': 'صافي الربح/الخسارة للفترة',
+            'amount': net_income
+        })
+        total_equity += net_income
+    
+    total_liabilities_equity = total_liabilities + total_equity
+    is_balanced = abs(total_assets - total_liabilities_equity) < 0.01
+    
+    return {
+        "assets": assets,
+        "liabilities": liabilities,
+        "equity": equity,
+        "total_assets": total_assets,
+        "total_liabilities": total_liabilities,
+        "total_equity": total_equity,
+        "total_liabilities_equity": total_liabilities_equity,
+        "is_balanced": is_balanced,
+        "end_date": end_date
+    }
+
 @api_router.delete("/accounting/accounts/{account_code}")
 async def delete_account(account_code: str, current_user: dict = Depends(require_admin)):
     """
