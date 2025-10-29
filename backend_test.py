@@ -824,7 +824,7 @@ class APITester:
 
     def run_all_tests(self):
         """Run all tests in sequence"""
-        print("🚀 Starting Backend API Tests for Chart of Accounts DELETE Endpoint")
+        print("🚀 Starting Backend API Tests for Commission Paid Accounting Entry")
         print("=" * 70)
         
         # Step 1: Authentication
@@ -832,9 +832,9 @@ class APITester:
             print("❌ Authentication failed. Cannot proceed with other tests.")
             return
         
-        # Step 2: Test Chart of Accounts DELETE Endpoint (MAIN FOCUS)
-        print("\n📊 Testing Chart of Accounts DELETE Endpoint")
-        self.test_chart_of_accounts_delete_endpoint()
+        # Step 2: Test Commission Paid Accounting Entry (MAIN FOCUS)
+        print("\n💰 Testing Commission Paid Accounting Entry for Incoming Transfers")
+        self.test_commission_paid_accounting_entry()
         
         # Print summary
         self.print_summary()
