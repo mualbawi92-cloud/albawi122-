@@ -521,6 +521,25 @@ const TransferDetailsPage = () => {
 
                     <div className="space-y-4">
                       <Label className="text-base font-bold">صورة الهوية *</Label>
+                      <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-3">
+                        <p className="text-sm font-bold text-blue-900 mb-2">📋 الهويات المقبولة:</p>
+                        <ul className="text-xs text-blue-800 space-y-1 mr-4">
+                          <li>✅ البطاقة المدنية الموحدة العراقية (خلفية وردية)</li>
+                          <li>✅ البطاقة الوطنية العراقية (خلفية زرقاء/خضراء)</li>
+                          <li>✅ إجازة السوق العراقية</li>
+                          <li>✅ جواز السفر العراقي</li>
+                        </ul>
+                        <p className="text-xs text-blue-700 mt-3 font-bold">⚠️ تعليمات مهمة:</p>
+                        <ul className="text-xs text-blue-700 space-y-1 mr-4 mt-1">
+                          <li>• التقط صورة واضحة للهوية الأصلية</li>
+                          <li>• تأكد من ظهور الصورة الشخصية والأرقام بوضوح</li>
+                          <li>• إضاءة جيدة بدون ظلال</li>
+                          <li>• الصورة مستقيمة وليست مائلة</li>
+                        </ul>
+                        <p className="text-xs text-green-700 mt-3">
+                          🔒 جميع الصور محمية ومشفرة
+                        </p>
+                      </div>
                       
                       <div className="flex gap-4">
                         <Button
