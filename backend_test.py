@@ -562,14 +562,17 @@ class APITester:
     
     # Removed commission testing methods - focus is now on Transit Account System
     
-    def test_critical_commission_paid_flow(self):
-        """CRITICAL TEST: Commission Paid Accounting Entry - Complete End-to-End Test"""
-        print("\n🚨 CRITICAL TEST: Commission Paid Accounting Entry - Complete End-to-End Test")
+    def test_comprehensive_commission_paid_flow(self):
+        """🚨 COMPREHENSIVE TEST: Incoming Commission Payment Flow"""
+        print("\n🚨 COMPREHENSIVE TEST: Incoming Commission Payment Flow")
         print("=" * 80)
-        print("User reported: Commission paid is NOT being recorded correctly in the ledger")
-        print("Expected: TWO journal entries should be created when receiving transfer:")
-        print("  1. Entry 1 (TR-RCV-{code}): Transfer received entry")
-        print("  2. Entry 2 (COM-PAID-{code}): Commission paid entry ⭐ THIS IS THE FIX")
+        print("الهدف: التأكد من أن العمولة المدفوعة تعمل بشكل صحيح عند تسليم الحوالة")
+        print("Expected: Complete commission paid accounting cycle verification")
+        print("  1. Transfer creation and wallet deduction")
+        print("  2. Transfer reception with commission calculation")
+        print("  3. Journal entries: TR-RCV-{code} + COM-PAID-{code}")
+        print("  4. Account balances: 5110 + receiver agent")
+        print("  5. Commission reports and ledger verification")
         print("=" * 80)
         
         # Test Setup Verification
