@@ -22,6 +22,7 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import CancelledTransfersPage from './pages/CancelledTransfersPage';
 import TransitAccountPage from './pages/TransitAccountPage';
 import AllCommissionsViewPage from './pages/AllCommissionsViewPage';
+import NotificationsPage from './pages/NotificationsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
