@@ -774,7 +774,7 @@ class APITester:
             self.log_result("Accounting System Check", False, f"Error checking accounting system: {str(e)}")
         
         # Check journal entries endpoint
-        print("\n6. Testing journal entries endpoint...")
+        print("\n5.2. Testing journal entries endpoint...")
         try:
             response = self.make_request('GET', '/accounting/journal-entries', token=self.admin_token)
             if response.status_code == 200:
