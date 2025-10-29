@@ -102,6 +102,175 @@ const CreateTransferPage = () => {
     setLoading(false);
   };
 
+  const handlePrint = () => {
+    const printWindow = window.open('', '_blank');
+    const printContent = `
+      <!DOCTYPE html>
+      <html dir="rtl" lang="ar">
+      <head>
+        <meta charset="UTF-8">
+        <title>طباعة الحوالة - ${result.transfer_number}</title>
+        <style>
+          @media print {
+            @page { margin: 1cm; }
+          }
+          body {
+            font-family: 'Cairo', 'Arial', sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 3px solid #1e3a5f;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+          }
+          .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+          }
+          .transfer-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d4af37;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 20px 0;
+          }
+          .section {
+            margin: 25px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+          }
+          .label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+          }
+          .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+          }
+          .pin-section {
+            background: #fff5f5;
+            border: 3px solid #e53e3e;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+          }
+          .pin {
+            font-size: 48px;
+            font-weight: bold;
+            color: #e53e3e;
+            letter-spacing: 8px;
+            margin: 20px 0;
+          }
+          .warning {
+            color: #e53e3e;
+            font-weight: bold;
+            font-size: 16px;
+          }
+          .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+          }
+          .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+          }
+          @media print {
+            button { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="title">🏦 نظام الحوالات المالية</div>
+          <div class="transfer-number">رقم الحوالة: ${result.transfer_number || 'غير متوفر'}</div>
+        </div>
+
+        <div class="section">
+          <div class="grid">
+            <div>
+              <div class="label">اسم المرسل</div>
+              <div class="value">${result.sender_name}</div>
+            </div>
+            ${result.sender_phone ? `
+            <div>
+              <div class="label">رقم تلفون المرسل</div>
+              <div class="value">${result.sender_phone}</div>
+            </div>
+            ` : ''}
+            <div>
+              <div class="label">اسم المستلم</div>
+              <div class="value">${result.receiver_name}</div>
+            </div>
+            <div>
+              <div class="label">المبلغ</div>
+              <div class="value">${result.amount.toLocaleString()} ${result.currency}</div>
+            </div>
+            <div>
+              <div class="label">رمز الحوالة</div>
+              <div class="value">${result.transfer_code}</div>
+            </div>
+            <div>
+              <div class="label">إلى محافظة</div>
+              <div class="value">${result.to_governorate}</div>
+            </div>
+            ${result.from_agent_name ? `
+            <div>
+              <div class="label">الصراف المرسل</div>
+              <div class="value">${result.from_agent_name}</div>
+            </div>
+            ` : ''}
+            ${result.to_agent_name ? `
+            <div>
+              <div class="label">الصراف المستلم</div>
+              <div class="value">${result.to_agent_name}</div>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="pin-section">
+          <div class="label">الرقم السري (PIN)</div>
+          <div class="pin">${result.pin}</div>
+          <div class="warning">⚠️ أعطِ هذا الرقم للمستلِم فقط! احتفظ بهذه الورقة بأمان.</div>
+        </div>
+
+        <div class="footer">
+          <p>تاريخ الإنشاء: ${new Date().toLocaleDateString('ar-IQ')} - ${new Date().toLocaleTimeString('ar-IQ')}</p>
+          <p>نظام الحوالات المالية - جميع الحقوق محفوظة</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <button onclick="window.print()" style="padding: 15px 40px; font-size: 18px; background: #1e3a5f; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+            🖨️ طباعة
+          </button>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+  };
+
   if (result) {
     return (
       <div className="min-h-screen bg-background">
