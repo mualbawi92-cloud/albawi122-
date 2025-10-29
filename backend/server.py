@@ -90,6 +90,53 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
+# ============ STARTUP: Create Database Indexes ============
+@app.on_event("startup")
+async def create_database_indexes():
+    """Create MongoDB indexes for better performance"""
+    logger.info("Creating database indexes...")
+    
+    try:
+        # Transfers indexes (most critical)
+        await db.transfers.create_index([("transfer_code", 1)], unique=True)
+        await db.transfers.create_index([("from_agent_id", 1), ("created_at", -1)])
+        await db.transfers.create_index([("to_agent_id", 1), ("status", 1)])
+        await db.transfers.create_index([("status", 1), ("created_at", -1)])
+        await db.transfers.create_index([("created_at", -1)])
+        
+        # Users indexes
+        await db.users.create_index([("username", 1)], unique=True)
+        await db.users.create_index([("id", 1)], unique=True)
+        await db.users.create_index([("role", 1)])
+        
+        # Journal entries indexes
+        await db.journal_entries.create_index([("reference_id", 1)])
+        await db.journal_entries.create_index([("reference_type", 1)])
+        await db.journal_entries.create_index([("date", -1)])
+        await db.journal_entries.create_index([("entry_number", 1)], unique=True)
+        
+        # Accounts indexes
+        await db.accounts.create_index([("code", 1)], unique=True)
+        await db.accounts.create_index([("agent_id", 1)])
+        await db.accounts.create_index([("category", 1)])
+        
+        # Commission rates indexes
+        await db.commission_rates.create_index([("agent_id", 1), ("currency", 1)])
+        
+        # Admin commissions indexes
+        await db.admin_commissions.create_index([("agent_id", 1), ("type", 1)])
+        await db.admin_commissions.create_index([("transfer_id", 1)])
+        await db.admin_commissions.create_index([("created_at", -1)])
+        
+        # Receipts indexes
+        await db.receipts.create_index([("transfer_id", 1)])
+        await db.receipts.create_index([("received_by", 1)])
+        
+        logger.info("✅ Database indexes created successfully!")
+        
+    except Exception as e:
+        logger.error(f"Error creating indexes: {str(e)}")
+
 # ============ AI Monitoring Functions ============
 
 async def check_duplicate_transfers(sender_name: str, receiver_name: str, amount: float, currency: str) -> dict:
