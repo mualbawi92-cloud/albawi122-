@@ -147,6 +147,16 @@ const Navbar = () => {
             )}
             {user?.role === 'admin' && (
               <Button
+                onClick={() => navigate('/paid-commissions')}
+                variant="ghost"
+                className="text-white hover:bg-white/10 font-bold text-sm"
+                data-testid="nav-paid-commissions"
+              >
+                🔻 العمولات المدفوعة
+              </Button>
+            )}
+            {user?.role === 'admin' && (
+              <Button
                 onClick={() => navigate('/transit-account')}
                 variant="ghost"
                 className="text-white hover:bg-white/10 font-bold text-sm"
