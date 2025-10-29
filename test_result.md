@@ -332,6 +332,64 @@ frontend:
     stuck_count: 0
     priority: "critical"
     needs_retesting: false
+
+  - task: "Chart of Accounts Page (صفحة الدليل المحاسبي)"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/ChartOfAccountsPage.js, App.js, Navbar.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ NEW FEATURE: Complete Chart of Accounts Page with CRUD operations
+          
+          Implementation:
+          1. Created ChartOfAccountsPage.js with full features:
+             - Hierarchical account display (parent-child structure)
+             - Visual indentation for sub-accounts
+             - Account details: code, Arabic name, English name, category, balance, currency
+             - Search functionality (by name or code)
+             - Category filter dropdown
+             - Add new account dialog with fields:
+               * Account code
+               * Arabic name
+               * English name
+               * Category (أصول, التزامات, حقوق الملكية, إيرادات, مصاريف)
+               * Parent account (optional, for sub-accounts)
+               * Currency (IQD/USD)
+             - Delete account button with confirmation dialog
+             - Smart delete validation:
+               * Disabled for accounts with children
+               * Backend validates balance = 0
+             - Arabic RTL design
+             - Mobile responsive
+             - Admin-only access
+          
+          2. Added route in App.js: /chart-of-accounts
+          
+          3. Updated Navbar.js:
+             - Desktop menu: Added "📚 الدليل المحاسبي" button
+             - Mobile menu: Added same link
+             - Admin-only visibility
+          
+          Backend endpoints used:
+          - GET /api/accounting/accounts (existing)
+          - POST /api/accounting/accounts (existing)
+          - DELETE /api/accounting/accounts/{code} (newly implemented)
+          
+          Features:
+          - ✅ Hierarchical display with proper indentation
+          - ✅ Parent accounts highlighted (bold, different background)
+          - ✅ Balance display with color coding (green for positive, red for negative)
+          - ✅ Add account with parent selection
+          - ✅ Delete with safety checks
+          - ✅ Search and filter
+          - ✅ Responsive design
+          
+          Ready for comprehensive frontend testing.
   
   - task: "Commission Rate DELETE Endpoint"
     implemented: true
