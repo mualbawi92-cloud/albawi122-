@@ -89,6 +89,16 @@ const Navbar = () => {
             >
               📋 الحوالات
             </Button>
+            {user?.role === 'agent' && (
+              <Button
+                onClick={() => navigate('/agent-ledger')}
+                variant="ghost"
+                className="text-white hover:bg-white/10 font-bold text-sm"
+                data-testid="nav-agent-ledger"
+              >
+                📊 دفتر الأستاذ الخاص
+              </Button>
+            )}
             {user?.role === 'admin' && (
               <Button
                 onClick={() => navigate('/admin/dashboard')}
