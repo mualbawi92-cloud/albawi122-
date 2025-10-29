@@ -1168,7 +1168,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             # Transit = دائن (المبلغ فقط)
             # عمولات محققة = دائن (العمولة المستحصلة من الصراف)
             
-            commission_amount = transfer_doc.get('commission_amount', 0)
+            commission_amount = transfer_doc.get('commission', 0)  # الاسم الصحيح هو 'commission' وليس 'commission_amount'
             total_received = transfer_data.amount + commission_amount  # ما استلمه الصراف من العميل
             
             lines = [
