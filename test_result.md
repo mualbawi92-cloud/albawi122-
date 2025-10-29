@@ -415,6 +415,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Commission Rate UPDATE Endpoint"
     - "Add receiver_name field to transfer system"
     - "Enhanced error messages for transfer reception"
     - "Interactive dashboard cards"
@@ -424,7 +425,7 @@ test_plan:
     - "Commission rate display in CreateTransferPage"
   stuck_tasks: []
   test_all: false
-  test_priority: "critical_first"
+  test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
