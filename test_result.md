@@ -551,9 +551,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Chart of Accounts DELETE Endpoint"
-    - "Chart of Accounts Page (صفحة الدليل المحاسبي)"
-    - "Reports Page Implementation"
+    - "Commission paid accounting entry for incoming transfers"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -561,26 +559,44 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
-      Implemented all requested features:
+      ✅ CRITICAL FIX IMPLEMENTED: Commission Paid Accounting Entry
       
-      1. ✅ Enhanced error messages during transfer reception
-      2. ✅ Interactive dashboard cards with navigation
-      3. ✅ Complete wallet system (backend + frontend)
+      User Issue:
+      - عند تسليم حوالة واردة، العمولة المدفوعة لا تُسجل بشكل صحيح
+      - العمولة لا تُرحّل من حساب "عمولات مدفوعة" في دفتر الأستاذ
       
-      Backend changes:
-      - Enhanced /api/transfers/{id}/receive with specific error messages
-      - Added wallet endpoints: /api/wallet/deposit, /api/wallet/transactions, /api/wallet/balance
-      - Automatic wallet updates on transfer creation and reception
-      - Migration script run successfully (8 users updated)
+      Root Cause Analysis:
+      - In receive_transfer endpoint, incoming_commission was only added to wallet
+      - No separate accounting journal entry was created for the paid commission
+      - Only main transfer amount was recorded in journal entries
       
-      Frontend changes:
-      - Dashboard cards now clickable with proper navigation
-      - Created WalletPage for viewing balance and transactions
-      - Created WalletManagementPage for admins to add funds
-      - Updated TransfersListPage to support URL query parameters
-      - Updated Navbar with wallet management link
+      Fix Applied (backend/server.py, lines 1950-2000):
+      1. Added قيد 2 (Entry 2) for paid commission after the main transfer entry
+      2. Entry structure:
+         - Debit: Account 5110 (عمولات حوالات مدفوعة)
+         - Credit: Receiver agent account
+      3. Updates both account balances correctly
+      4. Entry created only if incoming_commission > 0
       
-      Ready for testing. All services running successfully.
+      Expected Results:
+      - Paid commissions now properly tracked in account 5110
+      - Ledger shows commission movements
+      - All accounting entries are balanced and complete
+      
+      Testing Request:
+      Please test the following comprehensive flow:
+      1. Login as admin and create two agents with commission rates
+      2. Agent 1 creates a transfer with outgoing commission
+      3. Agent 2 receives the transfer with incoming commission
+      4. Verify:
+         a. Two journal entries created for receiving (transfer + commission)
+         b. Account 5110 balance increases by incoming_commission
+         c. Receiver agent balance reflects both transfer and commission
+         d. GET /api/accounting/journal endpoint shows both entries
+         e. GET /api/accounting/ledger?account_code=5110 shows the commission
+      5. Check complete accounting cycle is balanced
+      
+      Ready for comprehensive backend testing!
   - agent: "main"
     message: |
       ✅ IMPORTANT UPDATE: Added receiver_name field to transfer system
