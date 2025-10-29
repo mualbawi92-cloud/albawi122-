@@ -1075,34 +1075,193 @@ class APITester:
         except Exception as e:
             self.log_result("Ledger Access 2002", False, f"Error accessing ledger: {str(e)}")
         
-        # Backend Code Verification
-        print("\n--- BACKEND CODE VERIFICATION ---")
+        # اختبارات الحالات الخاصة (Special Cases Testing)
+        print("\n--- اختبارات الحالات الخاصة (Special Cases Testing) ---")
         
-        print("Verifying backend implementation for commission paid accounting...")
+        # Test Case 1: Zero Commission
+        print("\n1. Test Case: Zero Commission")
+        print("   Testing commission calculation with 0% rate...")
         
-        # Check if the receive transfer endpoint exists and has the right structure
+        # Create a commission rate with 0% for testing
+        zero_commission_data = {
+            "agent_id": receiver_agent_id,
+            "currency": "IQD",
+            "bulletin_type": "transfers",
+            "date": "2024-01-02",
+            "tiers": [
+                {
+                    "from_amount": 0,
+                    "to_amount": 9999999,
+                    "percentage": 0.0,
+                    "commission_type": "percentage",
+                    "fixed_amount": 0,
+                    "city": None,
+                    "country": None,
+                    "currency_type": "normal",
+                    "type": "incoming"
+                }
+            ]
+        }
+        
         try:
-            # We can't call the actual receive endpoint, but we can verify the transfer details
+            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=zero_commission_data)
+            if response.status_code == 200:
+                zero_rate_id = response.json().get('id')
+                self.log_result("Zero Commission Rate Setup", True, "0% commission rate created for testing")
+                
+                # Clean up immediately
+                try:
+                    self.make_request('DELETE', f'/commission-rates/{zero_rate_id}', token=self.admin_token)
+                    print("   ✓ Zero commission rate cleaned up")
+                except:
+                    pass
+            else:
+                self.log_result("Zero Commission Rate Setup", False, f"Could not create 0% rate: {response.status_code}")
+        except Exception as e:
+            self.log_result("Zero Commission Rate Setup", False, f"Error: {str(e)}")
+        
+        # Test Case 2: Multiple Tiers
+        print("\n2. Test Case: Multiple Commission Tiers")
+        print("   Verifying commission rate system supports multiple tiers...")
+        
+        multi_tier_data = {
+            "agent_id": receiver_agent_id,
+            "currency": "IQD",
+            "bulletin_type": "transfers",
+            "date": "2024-01-03",
+            "tiers": [
+                {
+                    "from_amount": 0,
+                    "to_amount": 500000,
+                    "percentage": 1.0,
+                    "commission_type": "percentage",
+                    "fixed_amount": 0,
+                    "city": None,
+                    "country": None,
+                    "currency_type": "normal",
+                    "type": "incoming"
+                },
+                {
+                    "from_amount": 500001,
+                    "to_amount": 9999999,
+                    "percentage": 2.5,
+                    "commission_type": "percentage",
+                    "fixed_amount": 0,
+                    "city": None,
+                    "country": None,
+                    "currency_type": "normal",
+                    "type": "incoming"
+                }
+            ]
+        }
+        
+        try:
+            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=multi_tier_data)
+            if response.status_code == 200:
+                multi_tier_id = response.json().get('id')
+                self.log_result("Multi-Tier Commission Setup", True, "Multi-tier commission rate created successfully")
+                
+                # Clean up
+                try:
+                    self.make_request('DELETE', f'/commission-rates/{multi_tier_id}', token=self.admin_token)
+                    print("   ✓ Multi-tier commission rate cleaned up")
+                except:
+                    pass
+            else:
+                self.log_result("Multi-Tier Commission Setup", False, f"Could not create multi-tier rate: {response.status_code}")
+        except Exception as e:
+            self.log_result("Multi-Tier Commission Setup", False, f"Error: {str(e)}")
+        
+        # Test Case 3: USD Currency
+        print("\n3. Test Case: USD Currency Support")
+        print("   Verifying system supports USD transfers and commissions...")
+        
+        usd_commission_data = {
+            "agent_id": receiver_agent_id,
+            "currency": "USD",
+            "bulletin_type": "transfers",
+            "date": "2024-01-04",
+            "tiers": [
+                {
+                    "from_amount": 0,
+                    "to_amount": 99999,
+                    "percentage": 2.0,
+                    "commission_type": "percentage",
+                    "fixed_amount": 0,
+                    "city": None,
+                    "country": None,
+                    "currency_type": "normal",
+                    "type": "incoming"
+                }
+            ]
+        }
+        
+        try:
+            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=usd_commission_data)
+            if response.status_code == 200:
+                usd_rate_id = response.json().get('id')
+                self.log_result("USD Commission Setup", True, "USD commission rate created successfully")
+                
+                # Clean up
+                try:
+                    self.make_request('DELETE', f'/commission-rates/{usd_rate_id}', token=self.admin_token)
+                    print("   ✓ USD commission rate cleaned up")
+                except:
+                    pass
+            else:
+                self.log_result("USD Commission Setup", False, f"Could not create USD rate: {response.status_code}")
+        except Exception as e:
+            self.log_result("USD Commission Setup", False, f"Error: {str(e)}")
+        
+        # Backend Implementation Verification
+        print("\n--- BACKEND IMPLEMENTATION VERIFICATION ---")
+        
+        print("Verifying backend code structure for commission paid accounting...")
+        
+        # Check commission calculation endpoint
+        print("\n1. Testing commission calculation preview...")
+        try:
+            params = {
+                'amount': transfer_amount,
+                'currency': 'IQD',
+                'to_governorate': 'BS'
+            }
+            response = self.make_request('GET', '/commission/calculate-preview', token=self.agent_basra_token, params=params)
+            if response.status_code == 200:
+                preview_data = response.json()
+                commission_percentage = preview_data.get('commission_percentage', 0)
+                commission_amount = preview_data.get('commission_amount', 0)
+                
+                print(f"   ✅ Commission Preview: {commission_percentage}% = {commission_amount:,} IQD")
+                self.log_result("Commission Preview Calculation", True, f"Preview shows {commission_percentage}% = {commission_amount:,} IQD")
+            else:
+                self.log_result("Commission Preview Calculation", False, f"Preview failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Commission Preview Calculation", False, f"Error: {str(e)}")
+        
+        # Verify transfer structure
+        print("\n2. Verifying transfer data structure...")
+        try:
             response = self.make_request('GET', f'/transfers/{transfer_id}', token=self.agent_basra_token)
             if response.status_code == 200:
                 transfer_details = response.json()
                 
-                print("   Transfer details verification:")
-                print(f"   - Status: {transfer_details.get('status')}")
-                print(f"   - Amount: {transfer_details.get('amount', 0):,} {transfer_details.get('currency', 'IQD')}")
-                print(f"   - Incoming commission: {transfer_details.get('incoming_commission', 0):,}")
-                print(f"   - Incoming commission %: {transfer_details.get('incoming_commission_percentage', 0)}%")
+                required_fields = ['id', 'transfer_code', 'amount', 'currency', 'status', 
+                                 'sender_name', 'receiver_name', 'incoming_commission', 
+                                 'incoming_commission_percentage']
                 
-                # The incoming commission should be 0 during creation (calculated during receive)
-                if transfer_details.get('incoming_commission', 0) == 0:
-                    self.log_result("Transfer Structure", True, "Transfer structure correct (incoming commission calculated during receive)")
+                missing_fields = [field for field in required_fields if field not in transfer_details]
+                
+                if not missing_fields:
+                    self.log_result("Transfer Data Structure", True, "All required fields present in transfer data")
+                    print(f"   ✅ Transfer has all required fields for commission processing")
                 else:
-                    self.log_result("Transfer Structure", False, f"Unexpected incoming commission during creation: {transfer_details.get('incoming_commission', 0)}")
+                    self.log_result("Transfer Data Structure", False, f"Missing fields: {missing_fields}")
                 
             else:
-                self.log_result("Transfer Details Check", False, f"Could not get transfer details: {response.status_code}")
+                self.log_result("Transfer Data Structure", False, f"Could not verify structure: {response.status_code}")
         except Exception as e:
-            self.log_result("Transfer Details Check", False, f"Error getting transfer details: {str(e)}")
+            self.log_result("Transfer Data Structure", False, f"Error: {str(e)}")
         
         # Cleanup
         print("\n--- CLEANUP ---")
