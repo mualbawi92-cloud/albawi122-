@@ -699,7 +699,7 @@ class APITester:
 
     def run_all_tests(self):
         """Run all tests in sequence"""
-        print("🚀 Starting Backend API Tests for Commission Rate UPDATE Endpoint")
+        print("🚀 Starting Backend API Tests for Commission Rate DELETE Endpoint")
         print("=" * 70)
         
         # Step 1: Authentication
@@ -707,9 +707,9 @@ class APITester:
             print("❌ Authentication failed. Cannot proceed with other tests.")
             return
         
-        # Step 2: Test Commission Rate UPDATE Endpoint (MAIN FOCUS)
-        print("\n📊 Testing Commission Rate UPDATE Endpoint")
-        self.test_commission_rate_update_endpoint()
+        # Step 2: Test Commission Rate DELETE Endpoint (MAIN FOCUS)
+        print("\n📊 Testing Commission Rate DELETE Endpoint")
+        self.test_commission_rate_delete_endpoint()
         
         # Print summary
         self.print_summary()
