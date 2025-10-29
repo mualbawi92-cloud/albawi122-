@@ -773,6 +773,43 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
     await db.users.insert_one(user_doc)
     await log_audit(None, current_user['id'], 'user_created', {'new_user_id': user_id})
     
+    # Create accounting entry for agent automatically
+    if user_data.role == 'agent':
+        try:
+            # Get the highest exchange company account code
+            exchange_accounts = await db.accounts.find({
+                'category': 'شركات الصرافة',
+                'code': {'$regex': '^2\\d{3}$'}
+            }).sort('code', -1).to_list(length=1)
+            
+            if exchange_accounts:
+                last_code = int(exchange_accounts[0]['code'])
+            else:
+                last_code = 2000
+            
+            account_code = str(last_code + 1)
+            
+            # Create account
+            account = {
+                'id': f'acc_{user_id}',
+                'code': account_code,
+                'name_ar': f'صيرفة {user_data.display_name}',
+                'name_en': f'Exchange {user_data.display_name}',
+                'category': 'شركات الصرافة',
+                'parent_code': None,
+                'is_active': True,
+                'balance': 0,
+                'currency': 'IQD',
+                'agent_id': user_id,
+                'created_at': datetime.now(timezone.utc).isoformat(),
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }
+            
+            await db.accounts.insert_one(account)
+            logger.info(f"Created accounting entry {account_code} for agent {user_data.display_name}")
+        except Exception as e:
+            logger.error(f"Failed to create accounting entry for agent: {str(e)}")
+    
     user_doc.pop('password_hash', None)
     user_doc.pop('_id', None)
     return user_doc
