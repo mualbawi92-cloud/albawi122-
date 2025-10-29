@@ -1837,8 +1837,17 @@ async def calculate_commission_preview(
             to_amount = tier_data.get('to_amount', float('inf'))
             
             if from_amount <= amount <= to_amount:
-                commission_percentage = tier_data.get('percentage', 0)
-                commission_amount = (amount * commission_percentage) / 100
+                # Check commission type
+                commission_type = tier_data.get('commission_type', 'percentage')
+                
+                if commission_type == 'fixed_amount':
+                    # Fixed amount commission
+                    commission_amount = tier_data.get('fixed_amount', 0)
+                    commission_percentage = (commission_amount / amount * 100) if amount > 0 else 0
+                else:
+                    # Percentage commission
+                    commission_percentage = tier_data.get('percentage', 0)
+                    commission_amount = (amount * commission_percentage) / 100
                 break
     
     return {
