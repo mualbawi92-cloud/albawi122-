@@ -128,6 +128,16 @@ const Navbar = () => {
                 💰 إدارة العمولات
               </Button>
             )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => navigate('/transit-account')}
+                variant="ghost"
+                className="text-white hover:bg-white/10 font-bold text-sm"
+                data-testid="nav-transit-account"
+              >
+                🏦 حساب الترانزيت
+              </Button>
+            )}
             <Button
               onClick={() => navigate('/settings')}
               variant="ghost"
