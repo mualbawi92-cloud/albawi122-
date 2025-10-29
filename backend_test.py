@@ -139,7 +139,7 @@ class APITester:
         print("\n=== Testing Dashboard Stats ===")
         
         try:
-            response = self.make_request('GET', '/dashboard/stats', token=self.agent_token)
+            response = self.make_request('GET', '/dashboard/stats', token=self.agent_baghdad_token)
             if response.status_code == 200:
                 data = response.json()
                 required_fields = ['pending_incoming', 'pending_outgoing', 'completed_today', 
