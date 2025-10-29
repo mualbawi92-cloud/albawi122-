@@ -1164,27 +1164,42 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 await db.accounts.insert_one(transit_account)
             
             # Create journal entry for transfer
-            # المكتب المُصدر (استلم نقدية من العميل) = مدين
-            # Transit = دائن
+            # المكتب المُصدر (استلم نقدية من العميل) = مدين (المبلغ + العمولة)
+            # Transit = دائن (المبلغ فقط)
+            # إيرادات عمولات = دائن (العمولة)
+            
+            commission_amount = transfer_doc.get('commission_amount', 0)
+            total_received = transfer_data.amount + commission_amount  # ما استلمه الصراف من العميل
+            
+            lines = [
+                {
+                    'account_code': sender_account['code'],  # Sender Account (مدين) - استلم نقدية + عمولة
+                    'debit': total_received,
+                    'credit': 0
+                },
+                {
+                    'account_code': '1030',  # Transit Account (دائن) - مبلغ الحوالة فقط
+                    'debit': 0,
+                    'credit': transfer_data.amount
+                }
+            ]
+            
+            # Add commission line if exists
+            if commission_amount > 0:
+                lines.append({
+                    'account_code': '4010',  # إيرادات عمولات (دائن)
+                    'debit': 0,
+                    'credit': commission_amount
+                })
+            
             journal_entry = {
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-{transfer_code}",
                 'date': datetime.now(timezone.utc).isoformat(),
-                'description': f'حوالة صادرة: {transfer_code} من {current_user["display_name"]}',
-                'lines': [
-                    {
-                        'account_code': sender_account['code'],  # Sender Account (مدين) - استلم نقدية
-                        'debit': transfer_data.amount,
-                        'credit': 0
-                    },
-                    {
-                        'account_code': '1030',  # Transit Account (دائن)
-                        'debit': 0,
-                        'credit': transfer_data.amount
-                    }
-                ],
-                'total_debit': transfer_data.amount,
-                'total_credit': transfer_data.amount,
+                'description': f'حوالة صادرة: {transfer_code} من {current_user["display_name"]} (مبلغ {transfer_data.amount} + عمولة {commission_amount})',
+                'lines': lines,
+                'total_debit': total_received,
+                'total_credit': total_received,
                 'reference_type': 'transfer_created',
                 'reference_id': transfer_id,
                 'created_by': current_user['id'],
@@ -1195,17 +1210,43 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             await db.journal_entries.insert_one(journal_entry)
             
             # Update account balances
-            # Sender account increases (debit for assets - استلم نقدية)
+            # Sender account increases (debit for assets - استلم نقدية + عمولة)
             await db.accounts.update_one(
                 {'code': sender_account['code']},
-                {'$inc': {'balance': transfer_data.amount}}
+                {'$inc': {'balance': total_received}}
             )
             
-            # Transit account decreases (credit for assets)
+            # Transit account decreases (credit for assets - مبلغ الحوالة فقط)
             await db.accounts.update_one(
                 {'code': '1030'},
                 {'$inc': {'balance': -transfer_data.amount}}
             )
+            
+            # Commission account increases if exists
+            if commission_amount > 0:
+                # Get or create commission revenue account
+                commission_account = await db.accounts.find_one({'code': '4010'})
+                if not commission_account:
+                    commission_account = {
+                        'id': 'commission_revenue',
+                        'code': '4010',
+                        'name_ar': 'إيرادات عمولات الحوالات',
+                        'name_en': 'Transfer Commission Revenue',
+                        'category': 'إيرادات',
+                        'parent_code': None,
+                        'is_active': True,
+                        'balance': 0,
+                        'currency': 'IQD',
+                        'created_at': datetime.now(timezone.utc).isoformat(),
+                        'updated_at': datetime.now(timezone.utc).isoformat()
+                    }
+                    await db.accounts.insert_one(commission_account)
+                
+                # Commission revenue increases (credit for revenue)
+                await db.accounts.update_one(
+                    {'code': '4010'},
+                    {'$inc': {'balance': commission_amount}}
+                )
             
             logger.info(f"Created journal entry for transfer {transfer_code}")
     except Exception as e:
