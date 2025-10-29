@@ -156,6 +156,9 @@ const TransfersListPage = () => {
                     </div>
                     <div className="text-left space-y-2">
                       <p className="text-2xl font-bold text-secondary">{transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}</p>
+                      <p className="text-sm text-gray-600">
+                        نسبة العمولة: <span className="font-bold text-primary">{transfer.commission_percentage || 0.13}%</span>
+                      </p>
                       {getStatusBadge(transfer.status)}
                     </div>
                   </div>
