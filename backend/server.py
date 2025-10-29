@@ -20,6 +20,8 @@ from collections import defaultdict
 import asyncio
 import base64
 from cryptography.fernet import Fernet
+from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+import httpx
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
