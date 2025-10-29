@@ -1775,6 +1775,59 @@ async def receive_transfer(
         'id_image_url': id_image_url
     })
     
+    # ============ CREATE ACCOUNTING JOURNAL ENTRY ============
+    try:
+        # Get receiver agent account
+        receiver_account = await db.accounts.find_one({'agent_id': current_user['id']})
+        
+        if receiver_account:
+            # Create journal entry for receiving transfer
+            journal_entry = {
+                'id': str(uuid.uuid4()),
+                'entry_number': f"TR-RCV-{transfer['transfer_code']}",
+                'date': datetime.now(timezone.utc).isoformat(),
+                'description': f'حوالة مستلمة: {transfer["transfer_code"]} من قبل {current_user["display_name"]}',
+                'lines': [
+                    {
+                        'account_code': receiver_account['code'],  # Receiver Account (مدين)
+                        'debit': transfer['amount'],
+                        'credit': 0
+                    },
+                    {
+                        'account_code': '1030',  # Transit Account (دائن)
+                        'debit': 0,
+                        'credit': transfer['amount']
+                    }
+                ],
+                'total_debit': transfer['amount'],
+                'total_credit': transfer['amount'],
+                'reference_type': 'transfer_received',
+                'reference_id': transfer_id,
+                'created_by': current_user['id'],
+                'created_at': datetime.now(timezone.utc).isoformat(),
+                'is_cancelled': False
+            }
+            
+            await db.journal_entries.insert_one(journal_entry)
+            
+            # Update account balances
+            # Receiver account increases (debit for assets)
+            await db.accounts.update_one(
+                {'code': receiver_account['code']},
+                {'$inc': {'balance': transfer['amount']}}
+            )
+            
+            # Transit account decreases (credit for assets)
+            await db.accounts.update_one(
+                {'code': '1030'},
+                {'$inc': {'balance': -transfer['amount']}}
+            )
+            
+            logger.info(f"Created journal entry for receiving transfer {transfer['transfer_code']}")
+    except Exception as e:
+        logger.error(f"Error creating journal entry for receiving transfer: {str(e)}")
+    # ============ END ACCOUNTING ENTRY ============
+    
     # Notify via WebSocket
     await sio.emit('transfer_completed', {'transfer_id': transfer_id})
     
