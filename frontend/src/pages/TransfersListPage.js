@@ -18,6 +18,9 @@ const TransfersListPage = () => {
   const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
   
+  // Active tab: 'outgoing' or 'incoming'
+  const [activeTab, setActiveTab] = useState('outgoing');
+  
   // Initialize filters from URL query params
   const [filter, setFilter] = useState({ 
     status: searchParams.get('status') || '', 
