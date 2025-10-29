@@ -436,6 +436,44 @@ class JournalEntryCreate(BaseModel):
     reference_id: Optional[str] = None
 
 # ============================================
+# Exchange Operations Models (عمليات الصرافة)
+# ============================================
+
+class ExchangeRate(BaseModel):
+    """Exchange rate settings (أسعار الصرف)"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    buy_rate: float  # سعر شراء USD (كم دينار لشراء دولار واحد)
+    sell_rate: float  # سعر بيع USD (كم دينار لبيع دولار واحد)
+    updated_by: str
+    updated_at: str
+
+class ExchangeRateUpdate(BaseModel):
+    buy_rate: float
+    sell_rate: float
+
+class ExchangeOperation(BaseModel):
+    """Exchange operation record (عملية صرف)"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    operation_type: str  # "buy" or "sell"
+    amount_usd: float  # المبلغ بالدولار
+    amount_iqd: float  # المبلغ بالدينار
+    exchange_rate: float  # سعر الصرف المستخدم
+    profit: float  # الربح من فرق الصرف
+    admin_id: str
+    admin_name: str
+    journal_entry_id: Optional[str] = None  # رقم القيد المحاسبي
+    notes: Optional[str] = None
+    created_at: str
+
+class ExchangeOperationCreate(BaseModel):
+    operation_type: str  # "buy" or "sell"
+    amount_usd: float
+    exchange_rate: float
+    notes: Optional[str] = None
+
+# ============================================
 
 class UserCreate(BaseModel):
     username: str
