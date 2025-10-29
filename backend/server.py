@@ -1101,12 +1101,45 @@ async def receive_transfer(
     await db.receipts.insert_one(receipt_doc)
     
     # Update transfer status
+    # Calculate incoming commission for receiving agent
+    incoming_commission = 0.0
+    incoming_commission_percentage = 0.0
+    
+    # Try to get commission rate for receiving agent
+    commission_rates = await db.commission_rates.find({
+        'agent_id': current_user['id'],
+        'currency': transfer['currency']
+    }).to_list(length=None)
+    
+    if commission_rates:
+        rate = commission_rates[0]
+        for tier_data in rate.get('tiers', []):
+            if tier_data.get('type') != 'incoming':
+                continue
+            
+            city = tier_data.get('city')
+            country = tier_data.get('country')
+            
+            if city and city != '(جميع المدن)':
+                # Could check city here
+                pass
+            
+            from_amount = tier_data.get('from_amount', 0)
+            to_amount = tier_data.get('to_amount', float('inf'))
+            
+            if from_amount <= transfer['amount'] <= to_amount:
+                incoming_commission_percentage = tier_data.get('percentage', 0)
+                incoming_commission = (transfer['amount'] * incoming_commission_percentage) / 100
+                break
+    
     await db.transfers.update_one(
         {'id': transfer_id},
         {'$set': {
             'status': 'completed',
             'to_agent_id': current_user['id'],
             'to_agent_name': current_user['display_name'],
+            'incoming_commission': incoming_commission,
+            'incoming_commission_percentage': incoming_commission_percentage,
             'updated_at': datetime.now(timezone.utc).isoformat()
         }}
     )
