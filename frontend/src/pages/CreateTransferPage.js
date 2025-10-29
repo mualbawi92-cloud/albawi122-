@@ -557,6 +557,39 @@ const CreateTransferPage = () => {
                 />
               </div>
 
+              {/* Commission Display */}
+              {formData.amount && parseFloat(formData.amount) > 0 && formData.to_governorate && (
+                <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-bold text-blue-900">نسبة العمولة على الحوالة</Label>
+                    {commissionData.loading && (
+                      <span className="text-xs text-blue-600">جاري الحساب...</span>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white p-3 rounded border border-blue-200">
+                      <Label className="text-xs text-muted-foreground">نسبة العمولة</Label>
+                      <p className="text-2xl font-bold text-blue-700" data-testid="commission-percentage">
+                        {commissionData.percentage.toFixed(2)}%
+                      </p>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-blue-200">
+                      <Label className="text-xs text-muted-foreground">مبلغ العمولة</Label>
+                      <p className="text-2xl font-bold text-blue-700" data-testid="commission-amount">
+                        {commissionData.amount.toLocaleString()} {formData.currency}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {commissionData.percentage === 0 && !commissionData.loading && (
+                    <p className="text-xs text-blue-700">
+                      ℹ️ لم يتم تحديد نسبة عمولة لهذه الحوالة من قبل المدير
+                    </p>
+                  )}
+                </div>
+              )}
+
               <div className="flex gap-4 pt-4">
                 <Button
                   type="button"
