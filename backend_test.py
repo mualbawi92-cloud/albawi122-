@@ -823,7 +823,7 @@ class APITester:
         
         print("Checking ledger for account 5110...")
         try:
-            response = self.make_request('GET', '/accounting/ledger', token=self.admin_token, params={'account_code': '5110'})
+            response = self.make_request('GET', '/accounting/ledger/5110', token=self.admin_token)
             if response.status_code == 200:
                 ledger_data = response.json()
                 entries = ledger_data.get('entries', [])
