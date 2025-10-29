@@ -84,6 +84,56 @@ const ChartOfAccountsPage = () => {
     setLoading(false);
   };
 
+  const fetchTrialBalance = async () => {
+    setLoading(true);
+    try {
+      const params = {};
+      if (reportStartDate) params.start_date = reportStartDate;
+      if (reportEndDate) params.end_date = reportEndDate;
+      
+      const response = await axios.get(`${API}/accounting/reports/trial-balance`, { params });
+      setTrialBalance(response.data);
+      toast.success('تم تحميل ميزان المراجعة بنجاح');
+    } catch (error) {
+      console.error('Error fetching trial balance:', error);
+      toast.error('خطأ في تحميل ميزان المراجعة');
+    }
+    setLoading(false);
+  };
+
+  const fetchIncomeStatement = async () => {
+    setLoading(true);
+    try {
+      const params = {};
+      if (reportStartDate) params.start_date = reportStartDate;
+      if (reportEndDate) params.end_date = reportEndDate;
+      
+      const response = await axios.get(`${API}/accounting/reports/income-statement`, { params });
+      setIncomeStatement(response.data);
+      toast.success('تم تحميل قائمة الدخل بنجاح');
+    } catch (error) {
+      console.error('Error fetching income statement:', error);
+      toast.error('خطأ في تحميل قائمة الدخل');
+    }
+    setLoading(false);
+  };
+
+  const fetchBalanceSheet = async () => {
+    setLoading(true);
+    try {
+      const params = {};
+      if (reportEndDate) params.end_date = reportEndDate;
+      
+      const response = await axios.get(`${API}/accounting/reports/balance-sheet`, { params });
+      setBalanceSheet(response.data);
+      toast.success('تم تحميل الميزانية العمومية بنجاح');
+    } catch (error) {
+      console.error('Error fetching balance sheet:', error);
+      toast.error('خطأ في تحميل الميزانية العمومية');
+    }
+    setLoading(false);
+  };
+
   const filterAccounts = () => {
     let filtered = accounts;
 
