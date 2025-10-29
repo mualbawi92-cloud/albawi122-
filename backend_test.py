@@ -121,47 +121,24 @@ class APITester:
             self.log_result("Agent Baghdad Login", False, "Could not authenticate with any common password")
             return False
         
-        # Try to login as agent_basra, create if doesn't exist
-        try:
-            response = self.make_request('POST', '/login', json=AGENT_BASRA_CREDENTIALS)
-            if response.status_code == 200:
-                data = response.json()
-                self.agent_basra_token = data['access_token']
-                self.agent_basra_user_id = data['user']['id']
-                self.log_result("Agent Basra Login", True, f"Agent Basra authenticated successfully")
-            else:
-                # Agent doesn't exist, create it
-                print("   Agent Basra doesn't exist, creating...")
-                agent_data = {
-                    "username": "agent_basra",
-                    "password": "test123",
-                    "display_name": "صيرفة البصرة للاختبار",
-                    "governorate": "BS",
-                    "phone": "07801234567",
-                    "address": "البصرة - العشار",
-                    "role": "agent",
-                    "wallet_limit_iqd": 10000000,
-                    "wallet_limit_usd": 50000
-                }
-                
-                create_response = self.make_request('POST', '/register', token=self.admin_token, json=agent_data)
-                if create_response.status_code == 200:
-                    print("   ✓ Agent Basra created successfully")
-                    # Now try to login
-                    login_response = self.make_request('POST', '/login', json=AGENT_BASRA_CREDENTIALS)
-                    if login_response.status_code == 200:
-                        data = login_response.json()
-                        self.agent_basra_token = data['access_token']
-                        self.agent_basra_user_id = data['user']['id']
-                        self.log_result("Agent Basra Creation & Login", True, "Agent Basra created and authenticated")
-                    else:
-                        self.log_result("Agent Basra Login After Creation", False, f"Login failed after creation: {login_response.status_code}")
-                        return False
-                else:
-                    self.log_result("Agent Basra Creation", False, f"Failed to create agent: {create_response.status_code}", create_response.text)
-                    return False
-        except Exception as e:
-            self.log_result("Agent Basra Login", False, f"Agent Basra login error: {str(e)}")
+        # Try to login as agent_basra with different passwords
+        agent_basra_authenticated = False
+        for password in POSSIBLE_PASSWORDS:
+            try:
+                credentials = {"username": "agent_basra", "password": password}
+                response = self.make_request('POST', '/login', json=credentials)
+                if response.status_code == 200:
+                    data = response.json()
+                    self.agent_basra_token = data['access_token']
+                    self.agent_basra_user_id = data['user']['id']
+                    self.log_result("Agent Basra Login", True, f"Agent Basra authenticated with password: {password}")
+                    agent_basra_authenticated = True
+                    break
+            except Exception as e:
+                continue
+        
+        if not agent_basra_authenticated:
+            self.log_result("Agent Basra Login", False, "Could not authenticate with any common password")
             return False
         
         return True
