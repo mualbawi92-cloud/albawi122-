@@ -88,12 +88,18 @@ const CommissionsManagementPage = () => {
     }
     setSelectedAgent(null);
     setAgentCommissionRates([]);
+    setShowAddForm(false);
+    setEditingRate(null);
   }, [selectedGovernorate, agents]);
 
   useEffect(() => {
     if (selectedAgent) {
       fetchAgentCommissionRates(selectedAgent.id);
+    } else {
+      setAgentCommissionRates([]);
     }
+    setShowAddForm(false);
+    setEditingRate(null);
   }, [selectedAgent]);
 
   const fetchAgents = async () => {
@@ -129,7 +135,11 @@ const CommissionsManagementPage = () => {
   };
 
   const removeTier = (index) => {
-    setTiers(tiers.filter((_, i) => i !== index));
+    if (tiers.length > 1) {
+      setTiers(tiers.filter((_, i) => i !== index));
+    } else {
+      toast.error('يجب أن يكون هناك شريحة واحدة على الأقل');
+    }
   };
 
   const updateTier = (index, field, value) => {
@@ -141,7 +151,7 @@ const CommissionsManagementPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.agent_id) {
+    if (!selectedAgent) {
       toast.error('يرجى اختيار الصراف');
       return;
     }
@@ -150,7 +160,7 @@ const CommissionsManagementPage = () => {
 
     try {
       const submitData = {
-        agent_id: formData.agent_id,
+        agent_id: selectedAgent.id,
         currency: formData.currency,
         bulletin_type: formData.bulletin_type,
         date: formData.date,
@@ -158,19 +168,27 @@ const CommissionsManagementPage = () => {
           from_amount: parseFloat(tier.from_amount) || 0,
           to_amount: parseFloat(tier.to_amount) || 0,
           percentage: parseFloat(tier.percentage) || 0,
-          city: tier.city === '(جميع المدن)' ? null : tier.city,
-          country: tier.country === '(جميع البلدان)' ? null : tier.country,
+          city: tier.city === '(جميع المدن)' ? '(جميع المدن)' : tier.city,
+          country: tier.country === '(جميع البلدان)' ? '(جميع البلدان)' : tier.country,
           currency_type: tier.currency_type,
           type: tier.type
         }))
       };
 
-      await axios.post(`${API}/commission-rates`, submitData);
-      toast.success('تم حفظ نشرة الأسعار بنجاح!');
+      if (editingRate) {
+        // Update existing rate (if we had update endpoint)
+        toast.info('تعديل النشرات غير متاح حالياً');
+      } else {
+        // Create new rate
+        await axios.post(`${API}/commission-rates`, submitData);
+        toast.success('تم حفظ نشرة الأسعار بنجاح!');
+      }
       
-      // Reset form
+      // Refresh rates and reset form
+      await fetchAgentCommissionRates(selectedAgent.id);
+      setShowAddForm(false);
+      setEditingRate(null);
       setFormData({
-        agent_id: '',
         currency: 'IQD',
         bulletin_type: 'transfers',
         date: new Date().toISOString().split('T')[0],
@@ -179,8 +197,8 @@ const CommissionsManagementPage = () => {
         from_amount: 0,
         to_amount: 1000000000,
         percentage: 0.25,
-        city: 'بغداد',
-        country: 'العراق',
+        city: '(جميع المدن)',
+        country: '(جميع البلدان)',
         currency_type: 'normal',
         type: 'outgoing'
       }]);
@@ -195,360 +213,366 @@ const CommissionsManagementPage = () => {
     setLoading(false);
   };
 
+  const handleDeleteRate = async (rateId) => {
+    if (!window.confirm('هل أنت متأكد من حذف هذه النشرة؟')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API}/commission-rates/${rateId}`);
+      toast.success('تم حذف النشرة بنجاح');
+      await fetchAgentCommissionRates(selectedAgent.id);
+    } catch (error) {
+      console.error('Error deleting rate:', error);
+      toast.error('خطأ في حذف النشرة');
+    }
+  };
+
+  const handleEditRate = (rate) => {
+    setEditingRate(rate);
+    setFormData({
+      currency: rate.currency,
+      bulletin_type: rate.bulletin_type,
+      date: rate.date,
+    });
+    setTiers(rate.tiers || []);
+    setShowAddForm(true);
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F7FA]">
       <Navbar />
       <div className="container mx-auto p-4 sm:p-6 space-y-6">
-        
         {/* Header */}
-        <Card className="shadow-lg border-0">
-          <CardHeader className="bg-gradient-to-l from-secondary/20 to-secondary/10 p-6">
-            <CardTitle className="text-3xl text-primary">💰 إدارة العمولات - نشرة الأسعار</CardTitle>
-            <p className="text-gray-600 mt-2">تحديد نسب العمولات لكل صراف حسب شرائح المبالغ</p>
+        <Card className="border-0 shadow-lg">
+          <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5">
+            <CardTitle className="text-2xl sm:text-3xl">💰 إدارة العمولات</CardTitle>
+            <CardDescription className="text-base">
+              إدارة نشرات الأسعار والعمولات لجميع الصرافين
+            </CardDescription>
           </CardHeader>
         </Card>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Main Settings */}
-          <Card className="shadow-lg">
-            <CardContent className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date" className="text-base font-bold">تاريخ النشرة</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="h-12"
-                    required
-                  />
-                </div>
+        {/* Step 1: Select Governorate */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">1️⃣ اختر المحافظة</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Select value={selectedGovernorate} onValueChange={setSelectedGovernorate}>
+              <SelectTrigger className="w-full h-12">
+                <SelectValue placeholder="اختر المحافظة..." />
+              </SelectTrigger>
+              <SelectContent>
+                {IRAQI_GOVERNORATES.map((gov) => (
+                  <SelectItem key={gov.code} value={gov.code}>
+                    {gov.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
 
-                <div className="space-y-2">
-                  <Label htmlFor="currency" className="text-base font-bold">العملة</Label>
-                  <Select value={formData.currency} onValueChange={(value) => setFormData({ ...formData, currency: value })}>
-                    <SelectTrigger className="h-12">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="IQD">دينار عراقي</SelectItem>
-                      <SelectItem value="USD">دولار أمريكي</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="agent" className="text-base font-bold">الصراف *</Label>
-                  <Select value={formData.agent_id} onValueChange={(value) => setFormData({ ...formData, agent_id: value })}>
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="اختر الصراف" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-80">
-                      {agents.map((agent) => (
-                        <SelectItem key={agent.id} value={agent.id}>
-                          {agent.display_name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bulletin_type" className="text-base font-bold">نوع النشرة</Label>
-                  <Select value={formData.bulletin_type} onValueChange={(value) => setFormData({ ...formData, bulletin_type: value })}>
-                    <SelectTrigger className="h-12">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="transfers">حوالات</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tiers Table */}
-          <Card className="shadow-lg">
-            <CardHeader className="bg-gray-50 p-4">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl text-primary">شرائح العمولات</CardTitle>
-                <Button
-                  type="button"
-                  onClick={addTier}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                >
-                  ➕ إضافة شريحة
-                </Button>
-              </div>
+        {/* Step 2: Select Agent */}
+        {selectedGovernorate && filteredAgents.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl">2️⃣ اختر الصراف</CardTitle>
+              <CardDescription>
+                {filteredAgents.length} صراف في {IRAQI_GOVERNORATES.find(g => g.code === selectedGovernorate)?.name}
+              </CardDescription>
             </CardHeader>
-            <CardContent className="p-0">
-              {/* Desktop Table View */}
-              <div className="hidden lg:block overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-primary text-white">
-                    <tr>
-                      <th className="p-3 text-right text-sm">حذف</th>
-                      <th className="p-3 text-right text-sm">البلد</th>
-                      <th className="p-3 text-right text-sm">المدينة</th>
-                      <th className="p-3 text-right text-sm">النوع</th>
-                      <th className="p-3 text-right text-sm">نوع العملة</th>
-                      <th className="p-3 text-right text-sm">حتى مبلغ</th>
-                      <th className="p-3 text-right text-sm">نسبة من المبلغ</th>
-                      <th className="p-3 text-right text-sm">خدمات</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tiers.map((tier, index) => (
-                      <tr key={index} className="border-b hover:bg-gray-50">
-                        <td className="p-3">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeTier(index)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            🗑️
-                          </Button>
-                        </td>
-                        <td className="p-3">
-                          <Select 
-                            value={tier.country} 
-                            onValueChange={(value) => updateTier(index, 'country', value)}
-                          >
-                            <SelectTrigger className="h-10">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="(جميع البلدان)">(جميع البلدان)</SelectItem>
-                              <SelectItem value="العراق">العراق</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="p-3">
-                          <Select 
-                            value={tier.city} 
-                            onValueChange={(value) => updateTier(index, 'city', value)}
-                          >
-                            <SelectTrigger className="h-10">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="max-h-60">
-                              <SelectItem value="(جميع المدن)">(جميع المدن)</SelectItem>
-                              {IRAQI_GOVERNORATES.map((gov) => (
-                                <SelectItem key={gov.code} value={gov.name}>
-                                  {gov.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="p-3">
-                          <Select 
-                            value={tier.type} 
-                            onValueChange={(value) => updateTier(index, 'type', value)}
-                          >
-                            <SelectTrigger className="h-10">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="outgoing">صادر</SelectItem>
-                              <SelectItem value="incoming">وارد</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="p-3">
-                          <Select 
-                            value={tier.currency_type} 
-                            onValueChange={(value) => updateTier(index, 'currency_type', value)}
-                          >
-                            <SelectTrigger className="h-10">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="normal">عادية</SelectItem>
-                              <SelectItem value="payable">علينا</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="p-3">
-                          <Input
-                            type="number"
-                            value={tier.to_amount}
-                            onChange={(e) => updateTier(index, 'to_amount', e.target.value)}
-                            className="h-10 w-full"
-                            step="0.01"
-                            dir="ltr"
-                          />
-                        </td>
-                        <td className="p-3">
-                          <Input
-                            type="number"
-                            value={tier.percentage}
-                            onChange={(e) => updateTier(index, 'percentage', e.target.value)}
-                            className="h-10 w-full"
-                            step="0.01"
-                            dir="ltr"
-                          />
-                        </td>
-                        <td className="p-3">
-                          <Input
-                            type="number"
-                            value={0}
-                            disabled
-                            className="h-10 w-20 bg-gray-100"
-                            dir="ltr"
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Mobile Card View */}
-              <div className="lg:hidden p-4 space-y-4">
-                {tiers.map((tier, index) => (
-                  <Card key={index} className="border-2 border-gray-200 shadow-md">
-                    <CardContent className="p-4 space-y-3">
-                      <div className="flex items-center justify-between mb-3 pb-3 border-b-2">
-                        <span className="text-lg font-bold text-primary">شريحة #{index + 1}</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeTier(index)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          🗑️ حذف
-                        </Button>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-sm font-bold">البلد</Label>
-                        <Select 
-                          value={tier.country} 
-                          onValueChange={(value) => updateTier(index, 'country', value)}
-                        >
-                          <SelectTrigger className="h-11">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="(جميع البلدان)">(جميع البلدان)</SelectItem>
-                            <SelectItem value="العراق">العراق</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-sm font-bold">المدينة</Label>
-                        <Select 
-                          value={tier.city} 
-                          onValueChange={(value) => updateTier(index, 'city', value)}
-                        >
-                          <SelectTrigger className="h-11">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-60">
-                            <SelectItem value="(جميع المدن)">(جميع المدن)</SelectItem>
-                            {IRAQI_GOVERNORATES.map((gov) => (
-                              <SelectItem key={gov.code} value={gov.name}>
-                                {gov.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-bold">النوع</Label>
-                          <Select 
-                            value={tier.type} 
-                            onValueChange={(value) => updateTier(index, 'type', value)}
-                          >
-                            <SelectTrigger className="h-11">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="outgoing">صادر</SelectItem>
-                              <SelectItem value="incoming">وارد</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label className="text-sm font-bold">نوع العملة</Label>
-                          <Select 
-                            value={tier.currency_type} 
-                            onValueChange={(value) => updateTier(index, 'currency_type', value)}
-                          >
-                            <SelectTrigger className="h-11">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="normal">عادية</SelectItem>
-                              <SelectItem value="payable">علينا</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-bold">حتى مبلغ</Label>
-                          <Input
-                            type="number"
-                            value={tier.to_amount}
-                            onChange={(e) => updateTier(index, 'to_amount', e.target.value)}
-                            className="h-11"
-                            step="0.01"
-                            dir="ltr"
-                            placeholder="0"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label className="text-sm font-bold">نسبة %</Label>
-                          <Input
-                            type="number"
-                            value={tier.percentage}
-                            onChange={(e) => updateTier(index, 'percentage', e.target.value)}
-                            className="h-11"
-                            step="0.01"
-                            dir="ltr"
-                            placeholder="0.00"
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {filteredAgents.map((agent) => (
+                  <Button
+                    key={agent.id}
+                    variant={selectedAgent?.id === agent.id ? "default" : "outline"}
+                    className="h-auto p-4 justify-start text-right"
+                    onClick={() => setSelectedAgent(agent)}
+                  >
+                    <div className="w-full">
+                      <p className="font-bold">{agent.display_name}</p>
+                      <p className="text-sm opacity-80">{agent.phone}</p>
+                    </div>
+                  </Button>
                 ))}
               </div>
             </CardContent>
           </Card>
+        )}
 
-          {/* Actions */}
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate('/dashboard')}
-              className="flex-1 h-12 text-lg border-2"
-            >
-              إلغاء
-            </Button>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-secondary hover:bg-secondary/90 text-primary h-12 text-lg font-bold"
-            >
-              {loading ? 'جاري الحفظ...' : '💾 حفظ'}
-            </Button>
-          </div>
-        </form>
+        {selectedGovernorate && filteredAgents.length === 0 && (
+          <Card>
+            <CardContent className="p-6 text-center text-muted-foreground">
+              لا يوجد صرافين في هذه المحافظة
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Step 3: Manage Commission Rates */}
+        {selectedAgent && (
+          <>
+            {/* Existing Rates */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl">3️⃣ النشرات الحالية للصراف: {selectedAgent.display_name}</CardTitle>
+                  <CardDescription>
+                    {agentCommissionRates.length} نشرة محفوظة
+                  </CardDescription>
+                </div>
+                <Button
+                  onClick={() => {
+                    setShowAddForm(true);
+                    setEditingRate(null);
+                  }}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  ➕ إضافة نشرة جديدة
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {agentCommissionRates.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    لا توجد نشرات محفوظة لهذا الصراف
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {agentCommissionRates.map((rate) => (
+                      <Card key={rate.id} className="border-2">
+                        <CardHeader className="pb-3">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <CardTitle className="text-lg">
+                                {rate.currency} - {rate.bulletin_type}
+                              </CardTitle>
+                              <CardDescription>
+                                التاريخ: {new Date(rate.date).toLocaleDateString('ar-IQ')}
+                              </CardDescription>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleDeleteRate(rate.id)}
+                              >
+                                🗑️ حذف
+                              </Button>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead className="bg-gray-100">
+                                <tr>
+                                  <th className="p-2 text-right">من</th>
+                                  <th className="p-2 text-right">إلى</th>
+                                  <th className="p-2 text-right">النسبة %</th>
+                                  <th className="p-2 text-right">المدينة</th>
+                                  <th className="p-2 text-right">النوع</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {rate.tiers?.map((tier, idx) => (
+                                  <tr key={idx} className="border-t">
+                                    <td className="p-2">{tier.from_amount?.toLocaleString()}</td>
+                                    <td className="p-2">{tier.to_amount?.toLocaleString()}</td>
+                                    <td className="p-2 font-bold">{tier.percentage}%</td>
+                                    <td className="p-2">{tier.city || '(جميع المدن)'}</td>
+                                    <td className="p-2">
+                                      {tier.type === 'outgoing' ? '📤 صادرة' : '📥 واردة'}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Add/Edit Form */}
+            {showAddForm && (
+              <Card className="border-4 border-blue-500">
+                <CardHeader className="bg-blue-50">
+                  <CardTitle className="text-xl">
+                    {editingRate ? '✏️ تعديل النشرة' : '➕ إضافة نشرة جديدة'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Form Fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>العملة *</Label>
+                        <Select value={formData.currency} onValueChange={(value) => setFormData({...formData, currency: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="IQD">دينار عراقي (IQD)</SelectItem>
+                            <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>نوع النشرة *</Label>
+                        <Select value={formData.bulletin_type} onValueChange={(value) => setFormData({...formData, bulletin_type: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="transfers">حوالات</SelectItem>
+                            <SelectItem value="exchange">صرافة</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>التاريخ *</Label>
+                        <Input
+                          type="date"
+                          value={formData.date}
+                          onChange={(e) => setFormData({...formData, date: e.target.value})}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Tiers */}
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <Label className="text-lg font-bold">الشرائح (Tiers)</Label>
+                        <Button type="button" onClick={addTier} variant="outline">
+                          ➕ إضافة شريحة
+                        </Button>
+                      </div>
+
+                      {tiers.map((tier, index) => (
+                        <Card key={index} className="border-2">
+                          <CardContent className="pt-4 space-y-4">
+                            <div className="flex justify-between items-center mb-2">
+                              <Label className="font-bold">الشريحة {index + 1}</Label>
+                              {tiers.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => removeTier(index)}
+                                >
+                                  🗑️ حذف
+                                </Button>
+                              )}
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              <div className="space-y-2">
+                                <Label>من مبلغ</Label>
+                                <Input
+                                  type="number"
+                                  value={tier.from_amount}
+                                  onChange={(e) => updateTier(index, 'from_amount', e.target.value)}
+                                  placeholder="0"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>إلى مبلغ</Label>
+                                <Input
+                                  type="number"
+                                  value={tier.to_amount}
+                                  onChange={(e) => updateTier(index, 'to_amount', e.target.value)}
+                                  placeholder="1000000000"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>النسبة %</Label>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  value={tier.percentage}
+                                  onChange={(e) => updateTier(index, 'percentage', e.target.value)}
+                                  placeholder="0.25"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>المدينة</Label>
+                                <Select
+                                  value={tier.city}
+                                  onValueChange={(value) => updateTier(index, 'city', value)}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="(جميع المدن)">(جميع المدن)</SelectItem>
+                                    {IRAQI_GOVERNORATES.map((gov) => (
+                                      <SelectItem key={gov.code} value={gov.name}>
+                                        {gov.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label>النوع</Label>
+                                <Select
+                                  value={tier.type}
+                                  onValueChange={(value) => updateTier(index, 'type', value)}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="outgoing">📤 صادرة (Outgoing)</SelectItem>
+                                    <SelectItem value="incoming">📥 واردة (Incoming)</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+
+                    {/* Submit Buttons */}
+                    <div className="flex gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setShowAddForm(false);
+                          setEditingRate(null);
+                        }}
+                        className="flex-1"
+                      >
+                        إلغاء
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                      >
+                        {loading ? 'جاري الحفظ...' : editingRate ? 'تحديث النشرة' : 'حفظ النشرة'}
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
