@@ -75,9 +75,12 @@ const TransfersListPage = () => {
     
     // Filter by tab (direction)
     if (activeTab === 'outgoing') {
-      return t.direction === 'outgoing';
+      // Outgoing: transfers sent by current user
+      return t.from_agent_id === user?.id;
     } else if (activeTab === 'incoming') {
-      return t.direction === 'incoming';
+      // Incoming: pending transfers that current user can receive
+      // (not sent by current user and status is pending)
+      return t.from_agent_id !== user?.id && t.status === 'pending';
     }
     
     return true;
