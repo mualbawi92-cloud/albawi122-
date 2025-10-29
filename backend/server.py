@@ -1609,6 +1609,70 @@ async def calculate_commission(amount: float, agent_id: str, transfer_type: str,
     
     return {"commission": 0, "percentage": 0}
 
+@api_router.get("/commission/calculate-preview")
+async def calculate_commission_preview(
+    amount: float,
+    currency: str,
+    to_governorate: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Calculate commission for current user's transfer before creating it
+    Used by frontend to show commission preview in real-time
+    """
+    if amount <= 0:
+        return {
+            "commission_percentage": 0.0,
+            "commission_amount": 0.0,
+            "message": "Invalid amount"
+        }
+    
+    # Try to get commission rate for this agent
+    commission_rates = await db.commission_rates.find({
+        'agent_id': current_user['id'],
+        'currency': currency
+    }).to_list(length=None)
+    
+    commission_percentage = 0.0
+    commission_amount = 0.0
+    
+    if commission_rates:
+        # Get the latest rate
+        rate = commission_rates[0]
+        
+        # Find applicable tier for outgoing transfer
+        for tier_data in rate.get('tiers', []):
+            # Check if tier matches
+            if tier_data.get('type') != 'outgoing':
+                continue
+            
+            # Check city/country filters
+            city = tier_data.get('city')
+            country = tier_data.get('country')
+            
+            # If city/country specified, check if matches
+            if city and city != '(جميع المدن)' and city != to_governorate:
+                continue
+            
+            if country and country != '(جميع البلدان)':
+                # Could add country check here if needed
+                pass
+            
+            # Check amount range
+            from_amount = tier_data.get('from_amount', 0)
+            to_amount = tier_data.get('to_amount', float('inf'))
+            
+            if from_amount <= amount <= to_amount:
+                commission_percentage = tier_data.get('percentage', 0)
+                commission_amount = (amount * commission_percentage) / 100
+                break
+    
+    return {
+        "commission_percentage": commission_percentage,
+        "commission_amount": commission_amount,
+        "currency": currency
+    }
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
