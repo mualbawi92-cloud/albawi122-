@@ -719,7 +719,12 @@ class APITester:
         try:
             response = self.make_request('GET', '/commission-rates', token=self.admin_token)
             if response.status_code == 200:
-                rates = response.json().get('rates', [])
+                rates_data = response.json()
+                if isinstance(rates_data, list):
+                    rates = rates_data
+                else:
+                    rates = rates_data.get('rates', [])
+                
                 receiver_rates = [rate for rate in rates if rate.get('agent_id') == receiver_agent_id]
                 print(f"   Found {len(receiver_rates)} commission rates for receiver agent:")
                 for rate in receiver_rates:
