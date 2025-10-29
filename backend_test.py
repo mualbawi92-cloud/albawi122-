@@ -498,14 +498,14 @@ class APITester:
             response = self.make_request('GET', '/transit-account/pending-transfers', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                if 'transfers' in data and 'totals' in data:
-                    transfers = data['transfers']
+                if 'pending_transfers' in data and 'totals' in data:
+                    transfers = data['pending_transfers']
                     totals = data['totals']
                     self.log_result("Transit Account Pending Transfers", True, 
                                   f"Retrieved {len(transfers)} pending transfers. Totals: {totals}")
                     return data
                 else:
-                    self.log_result("Transit Account Pending Transfers", False, "Missing 'transfers' or 'totals' fields", data)
+                    self.log_result("Transit Account Pending Transfers", False, "Missing 'pending_transfers' or 'totals' fields", data)
             else:
                 self.log_result("Transit Account Pending Transfers", False, f"Failed with status {response.status_code}", response.text)
         except Exception as e:
