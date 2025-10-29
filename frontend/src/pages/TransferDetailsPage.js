@@ -285,38 +285,30 @@ const TransferDetailsPage = () => {
               )}
             </div>
 
-            {/* Commission Information */}
-            {(transfer.commission > 0 || transfer.incoming_commission > 0) && (
-              <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-300 rounded-lg p-6">
-                <h3 className="text-lg font-bold text-blue-900 mb-4">💰 معلومات العمولات</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {transfer.commission > 0 && (
-                    <div className="bg-white p-4 rounded-lg border border-blue-200">
-                      <Label className="text-sm text-blue-700">عمولة الإرسال (محققة)</Label>
-                      <p className="text-2xl font-bold text-green-600">
-                        {transfer.commission?.toLocaleString()} {transfer.currency}
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1">
-                        النسبة: {transfer.commission_percentage || 0}%
-                      </p>
-                    </div>
-                  )}
-                  {transfer.incoming_commission > 0 && (
-                    <div className="bg-white p-4 rounded-lg border border-red-200">
-                      <Label className="text-sm text-red-700">عمولة الاستلام (مدفوعة) ⭐</Label>
-                      <p className="text-2xl font-bold text-red-600">
-                        {transfer.incoming_commission?.toLocaleString()} {transfer.currency}
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1">
-                        النسبة: {transfer.incoming_commission_percentage || 0}%
-                      </p>
-                      <div className="mt-2 bg-red-50 border border-red-200 rounded p-2">
-                        <p className="text-xs text-red-800">
-                          🔻 <strong>استقطاع:</strong> تم خصم هذا المبلغ من حساب "عمولات مدفوعة" وإضافته للصراف المستلم
-                        </p>
-                      </div>
-                    </div>
-                  )}
+            {/* Commission Information - عمولة التسليم الواردة فقط */}
+            {transfer.incoming_commission > 0 && (
+              <div className="bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-400 rounded-lg p-6">
+                <h3 className="text-lg font-bold text-red-900 mb-4">💰 عمولة التسليم (الواردة)</h3>
+                <div className="bg-white p-6 rounded-lg border-2 border-red-300 shadow-md">
+                  <div className="flex items-center justify-between mb-4">
+                    <Label className="text-base font-bold text-red-800">العمولة المدفوعة للمستلم</Label>
+                    <span className="bg-red-200 text-red-900 px-3 py-1 rounded-full text-sm font-bold">
+                      {transfer.incoming_commission_percentage || 0}%
+                    </span>
+                  </div>
+                  <p className="text-4xl font-bold text-red-600 mb-4">
+                    {transfer.incoming_commission?.toLocaleString()} {transfer.currency}
+                  </p>
+                  <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
+                    <p className="text-sm text-red-900 font-semibold mb-2">
+                      🔻 <strong>تفاصيل الاستقطاع:</strong>
+                    </p>
+                    <ul className="text-xs text-red-800 space-y-1 mr-4">
+                      <li>• تم خصم هذا المبلغ من حساب "عمولات مدفوعة (5110)"</li>
+                      <li>• تمت إضافته لرصيد الصراف المستلم</li>
+                      <li>• تم تسجيله في القيود المحاسبية (COM-PAID-{transfer.transfer_code})</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             )}
