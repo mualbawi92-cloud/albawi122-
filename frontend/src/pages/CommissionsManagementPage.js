@@ -852,6 +852,43 @@ const CommissionsManagementPage = () => {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-red-600">⚠️ تأكيد إلغاء النشرة</DialogTitle>
+            <DialogDescription className="text-base pt-4">
+              <div className="space-y-3">
+                <p className="font-bold text-gray-800">هل أنت متأكد من إلغاء هذه النشرة؟</p>
+                <div className="bg-red-50 border-2 border-red-200 p-3 rounded-lg">
+                  <p className="text-red-800 font-medium">⚠️ تحذير:</p>
+                  <p className="text-red-700">سيتم حذف النشرة نهائياً ولا يمكن التراجع عن هذه العملية</p>
+                </div>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={cancelDelete}
+              className="flex-1"
+            >
+              ❌ لا، إلغاء العملية
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={confirmDelete}
+              className="flex-1"
+              disabled={loading}
+            >
+              {loading ? 'جاري الإلغاء...' : '✅ نعم، إلغاء النشرة'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
