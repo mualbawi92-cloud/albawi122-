@@ -200,17 +200,20 @@ const CommissionsManagementPage = () => {
   };
 
   const handleDeleteRate = async (rateId) => {
-    if (!window.confirm('هل أنت متأكد من حذف هذه النشرة؟')) {
+    // Create custom confirm dialog
+    const result = window.confirm('هل ترغب بحذف هذه النشرة؟\n\nنعم: سيتم حذف النشرة نهائياً\nلا: إلغاء العملية');
+    
+    if (!result) {
       return;
     }
 
     try {
       await axios.delete(`${API}/commission-rates/${rateId}`);
-      toast.success('تم حذف النشرة بنجاح');
+      toast.success('✅ تم حذف النشرة بنجاح');
       await fetchAgentCommissionRates(selectedAgent.id);
     } catch (error) {
       console.error('Error deleting rate:', error);
-      toast.error('خطأ في حذف النشرة');
+      toast.error('❌ خطأ في حذف النشرة');
     }
   };
 
