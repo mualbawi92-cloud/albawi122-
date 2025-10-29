@@ -204,7 +204,10 @@ const CommissionsManagementPage = () => {
       }
       
       // Refresh rates and reset form
-      await fetchAgentCommissionRates(selectedAgent.id);
+      if (selectedAgent) {
+        await fetchAgentCommissionRates(selectedAgent.id);
+      }
+      await fetchAllRates();
       handleCancelEdit();
       
     } catch (error) {
