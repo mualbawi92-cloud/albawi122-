@@ -2433,6 +2433,122 @@ async def manual_check_delayed_transfers(current_user: dict = Depends(require_ad
         "delayed_count": len(delayed)
     }
 
+# ============================================
+# Accounting Endpoints (الحسابات)
+# ============================================
+
+@api_router.post("/accounting/initialize")
+async def initialize_chart_of_accounts(current_user: dict = Depends(require_admin)):
+    """
+    Initialize the chart of accounts with default accounts
+    """
+    default_accounts = [
+        # الأصول - Assets
+        {"code": "1000", "name_ar": "الأصول", "name_en": "Assets", "category": "أصول", "parent_code": None, "currency": "IQD"},
+        {"code": "1010", "name_ar": "صندوق بالدينار", "name_en": "Cash IQD", "category": "أصول", "parent_code": "1000", "currency": "IQD"},
+        {"code": "1020", "name_ar": "صندوق بالدولار", "name_en": "Cash USD", "category": "أصول", "parent_code": "1000", "currency": "USD"},
+        {"code": "1030", "name_ar": "صندوق عملات أجنبية أخرى", "name_en": "Cash Other Currencies", "category": "أصول", "parent_code": "1000", "currency": "IQD"},
+        {"code": "1100", "name_ar": "الذمم المدينة", "name_en": "Accounts Receivable", "category": "أصول", "parent_code": "1000", "currency": "IQD"},
+        {"code": "1110", "name_ar": "ذمم زبائن", "name_en": "Customer Receivables", "category": "أصول", "parent_code": "1100", "currency": "IQD"},
+        {"code": "1120", "name_ar": "ذمم شركات صرافة", "name_en": "Exchange Company Receivables", "category": "أصول", "parent_code": "1100", "currency": "IQD"},
+        {"code": "1200", "name_ar": "حوالات قيد الاستلام", "name_en": "Transfers Receivable", "category": "أصول", "parent_code": "1000", "currency": "IQD"},
+        
+        # الالتزامات - Liabilities
+        {"code": "2000", "name_ar": "الالتزامات", "name_en": "Liabilities", "category": "التزامات", "parent_code": None, "currency": "IQD"},
+        {"code": "2010", "name_ar": "ذمم زبائن دائنة", "name_en": "Customer Payables", "category": "التزامات", "parent_code": "2000", "currency": "IQD"},
+        {"code": "2020", "name_ar": "ذمم شركات صرافة دائنة", "name_en": "Exchange Company Payables", "category": "التزامات", "parent_code": "2000", "currency": "IQD"},
+        {"code": "2100", "name_ar": "حوالات قيد التسليم", "name_en": "Transfers Payable", "category": "التزامات", "parent_code": "2000", "currency": "IQD"},
+        
+        # حقوق الملكية - Equity
+        {"code": "3000", "name_ar": "حقوق الملكية", "name_en": "Equity", "category": "حقوق الملكية", "parent_code": None, "currency": "IQD"},
+        {"code": "3000", "name_ar": "رأس المال", "name_en": "Capital", "category": "حقوق الملكية", "parent_code": None, "currency": "IQD"},
+        {"code": "3100", "name_ar": "أرباح وخسائر مرحلة", "name_en": "Retained Earnings", "category": "حقوق الملكية", "parent_code": "3000", "currency": "IQD"},
+        
+        # الإيرادات - Revenues
+        {"code": "4000", "name_ar": "الإيرادات", "name_en": "Revenues", "category": "إيرادات", "parent_code": None, "currency": "IQD"},
+        {"code": "4010", "name_ar": "أرباح فرق صرف (بيع وشراء)", "name_en": "Exchange Profit", "category": "إيرادات", "parent_code": "4000", "currency": "IQD"},
+        {"code": "4100", "name_ar": "إيرادات الحوالات", "name_en": "Transfer Revenues", "category": "إيرادات", "parent_code": "4000", "currency": "IQD"},
+        {"code": "4110", "name_ar": "عمولة حوالات واردة (محققة)", "name_en": "Incoming Transfer Commission", "category": "إيرادات", "parent_code": "4100", "currency": "IQD"},
+        {"code": "4120", "name_ar": "عمولة حوالات صادرة (محققة)", "name_en": "Outgoing Transfer Commission", "category": "إيرادات", "parent_code": "4100", "currency": "IQD"},
+        
+        # المصاريف - Expenses
+        {"code": "5000", "name_ar": "المصاريف", "name_en": "Expenses", "category": "مصاريف", "parent_code": None, "currency": "IQD"},
+        {"code": "5010", "name_ar": "رواتب وأجور", "name_en": "Salaries", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
+        {"code": "5020", "name_ar": "إيجار مكتب", "name_en": "Office Rent", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
+        {"code": "5030", "name_ar": "كهرباء وماء وإنترنت", "name_en": "Utilities", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
+        {"code": "5040", "name_ar": "مصاريف اتصالات", "name_en": "Communication Expenses", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
+        {"code": "5050", "name_ar": "مصاريف متنوعة", "name_en": "Miscellaneous Expenses", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
+        {"code": "5100", "name_ar": "عمولات مدفوعة", "name_en": "Commission Paid", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
+        {"code": "5110", "name_ar": "عمولات حوالات مدفوعة", "name_en": "Transfer Commission Paid", "category": "مصاريف", "parent_code": "5100", "currency": "IQD"},
+    ]
+    
+    # Check if already initialized
+    existing = await db.accounts.count_documents({})
+    if existing > 0:
+        raise HTTPException(status_code=400, detail="Chart of accounts already initialized")
+    
+    # Insert all accounts
+    for acc_data in default_accounts:
+        account = {
+            'id': str(uuid.uuid4()),
+            **acc_data,
+            'balance': 0.0,
+            'is_active': True,
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        await db.accounts.insert_one(account)
+    
+    return {"message": f"تم إنشاء {len(default_accounts)} حساب بنجاح", "count": len(default_accounts)}
+
+@api_router.get("/accounting/accounts")
+async def get_chart_of_accounts(current_user: dict = Depends(require_admin)):
+    """
+    Get all accounts in chart of accounts
+    """
+    accounts = await db.accounts.find({'is_active': True}).sort('code', 1).to_list(length=None)
+    
+    for acc in accounts:
+        acc.pop('_id', None)
+    
+    return {"accounts": accounts}
+
+@api_router.post("/accounting/accounts")
+async def create_account(account_data: AccountCreate, current_user: dict = Depends(require_admin)):
+    """
+    Create a new account
+    """
+    # Check if code already exists
+    existing = await db.accounts.find_one({'code': account_data.code})
+    if existing:
+        raise HTTPException(status_code=400, detail="Account code already exists")
+    
+    account = {
+        'id': str(uuid.uuid4()),
+        **account_data.model_dump(),
+        'balance': 0.0,
+        'is_active': True,
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'updated_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.accounts.insert_one(account)
+    account.pop('_id', None)
+    
+    return account
+
+@api_router.get("/accounting/accounts/{account_code}")
+async def get_account(account_code: str, current_user: dict = Depends(require_admin)):
+    """
+    Get specific account details and balance
+    """
+    account = await db.accounts.find_one({'code': account_code})
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    account.pop('_id', None)
+    return account
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
