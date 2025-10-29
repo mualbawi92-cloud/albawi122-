@@ -675,8 +675,41 @@ class APITester:
             self.log_result("Sender Wallet Funding", False, f"Error adding funds: {str(e)}")
             return False
         
-        # PHASE 1: Create Transfer (Agent 1 sends)
-        print("\n--- PHASE 1: CREATE TRANSFER (Agent 1 sends) ---")
+        # Get initial wallet balances
+        print("\n--- INITIAL WALLET BALANCES ---")
+        
+        # Get sender (Baghdad) initial balance
+        try:
+            response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
+            if response.status_code == 200:
+                sender_initial_balance = response.json()
+                sender_initial_iqd = sender_initial_balance['wallet_balance_iqd']
+                print(f"Agent Baghdad initial balance: {sender_initial_iqd:,} IQD")
+                self.log_result("Sender Initial Balance", True, f"Baghdad balance: {sender_initial_iqd:,} IQD")
+            else:
+                self.log_result("Sender Initial Balance", False, f"Could not get balance: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Sender Initial Balance", False, f"Error: {str(e)}")
+            return False
+        
+        # Get receiver (Basra) initial balance
+        try:
+            response = self.make_request('GET', '/wallet/balance', token=self.agent_basra_token)
+            if response.status_code == 200:
+                receiver_initial_balance = response.json()
+                receiver_initial_iqd = receiver_initial_balance['wallet_balance_iqd']
+                print(f"Agent Basra initial balance: {receiver_initial_iqd:,} IQD")
+                self.log_result("Receiver Initial Balance", True, f"Basra balance: {receiver_initial_iqd:,} IQD")
+            else:
+                self.log_result("Receiver Initial Balance", False, f"Could not get balance: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Receiver Initial Balance", False, f"Error: {str(e)}")
+            return False
+
+        # PHASE 1: إنشاء حوالة (Create Transfer - Agent 1 sends)
+        print("\n--- PHASE 1: إنشاء حوالة (Create Transfer - Agent 1 sends) ---")
         
         transfer_amount = 1000000  # 1,000,000 IQD
         expected_commission = transfer_amount * 0.02  # 2% = 20,000 IQD
@@ -687,11 +720,14 @@ class APITester:
             "amount": transfer_amount,
             "currency": "IQD",
             "to_governorate": "BS",  # Basra
-            "note": "Critical test - Commission paid accounting"
+            "note": "Comprehensive test - Commission paid accounting"
         }
         
         print(f"Creating transfer: {transfer_amount:,} IQD")
         print(f"Expected incoming commission: {expected_commission:,} IQD (2%)")
+        print(f"Sender: {transfer_data['sender_name']}")
+        print(f"Receiver: {transfer_data['receiver_name']}")
+        print(f"To governorate: {transfer_data['to_governorate']}")
         
         transfer_id = None
         transfer_code = None
