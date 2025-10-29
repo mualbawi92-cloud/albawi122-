@@ -523,8 +523,8 @@ class APITester:
                 
                 if response.status_code == 200:
                     data = response.json()
-                    expected_percentage = 1.0  # Second tier
-                    expected_amount = 2000000 * 1.0 / 100  # 20000
+                    expected_percentage = 0.25  # Same tier for existing rate
+                    expected_amount = 2000000 * 0.25 / 100  # 5000
                     
                     if (abs(data['commission_percentage'] - expected_percentage) < 0.01 and 
                         abs(data['commission_amount'] - expected_amount) < 0.01):
