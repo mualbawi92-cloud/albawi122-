@@ -275,163 +275,115 @@ class APITester:
         
         return None
     
-    def test_commission_calculate_preview(self):
-        """Test GET /api/commission/calculate-preview endpoint"""
-        print("\n=== Testing Commission Calculate Preview Endpoint ===")
+    def test_transit_account_balance(self):
+        """Test GET /api/transit-account/balance (Admin only)"""
+        print("\n=== Testing Transit Account Balance Endpoint ===")
         
-        # Test 1: Valid parameters with IQD amount=1000000, to_governorate=BG
-        print("\n--- Test 1: Valid IQD parameters (1,000,000 IQD to BG) ---")
         try:
-            params = {
-                'amount': 1000000,
-                'currency': 'IQD',
-                'to_governorate': 'BG'
-            }
-            
-            response = self.make_request('GET', '/commission/calculate-preview', 
-                                       token=self.agent_baghdad_token, params=params)
-            
+            response = self.make_request('GET', '/transit-account/balance', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                required_fields = ['commission_percentage', 'commission_amount', 'currency']
+                required_fields = ['balance_iqd', 'balance_usd', 'pending_transfers_count']
                 
                 missing_fields = [field for field in required_fields if field not in data]
                 if not missing_fields:
-                    self.log_result("Commission Preview - Valid IQD", True, 
-                                  f"Commission: {data['commission_percentage']}% = {data['commission_amount']} {data['currency']}")
+                    self.log_result("Transit Account Balance", True, 
+                                  f"Balance retrieved: IQD={data['balance_iqd']}, USD={data['balance_usd']}, Pending={data['pending_transfers_count']}")
+                    return data
                 else:
-                    self.log_result("Commission Preview - Valid IQD", False, 
-                                  f"Missing required fields: {missing_fields}", data)
+                    self.log_result("Transit Account Balance", False, f"Missing fields: {missing_fields}", data)
             else:
-                self.log_result("Commission Preview - Valid IQD", False, 
-                              f"Failed with status {response.status_code}", response.text)
+                self.log_result("Transit Account Balance", False, f"Failed with status {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Commission Preview - Valid IQD", False, f"Error: {str(e)}")
+            self.log_result("Transit Account Balance", False, f"Error: {str(e)}")
         
-        # Test 2: Valid parameters with USD amount=5000, to_governorate=BS
-        print("\n--- Test 2: Valid USD parameters (5,000 USD to BS) ---")
+        # Test admin-only access
         try:
-            params = {
-                'amount': 5000,
-                'currency': 'USD',
-                'to_governorate': 'BS'
-            }
-            
-            response = self.make_request('GET', '/commission/calculate-preview', 
-                                       token=self.agent_baghdad_token, params=params)
-            
+            response = self.make_request('GET', '/transit-account/balance', token=self.agent_baghdad_token)
+            if response.status_code == 403:
+                self.log_result("Transit Account Balance - Agent Access", True, "Correctly rejected agent access")
+            else:
+                self.log_result("Transit Account Balance - Agent Access", False, f"Expected 403, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Transit Account Balance - Agent Access", False, f"Error: {str(e)}")
+        
+        return None
+    
+    def test_transit_account_transactions(self):
+        """Test GET /api/transit-account/transactions (Admin only)"""
+        print("\n=== Testing Transit Account Transactions Endpoint ===")
+        
+        try:
+            # Test with default limit
+            response = self.make_request('GET', '/transit-account/transactions', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                required_fields = ['commission_percentage', 'commission_amount', 'currency']
-                
-                missing_fields = [field for field in required_fields if field not in data]
-                if not missing_fields:
-                    self.log_result("Commission Preview - Valid USD", True, 
-                                  f"Commission: {data['commission_percentage']}% = {data['commission_amount']} {data['currency']}")
+                if isinstance(data, list):
+                    self.log_result("Transit Account Transactions", True, f"Retrieved {len(data)} transactions")
                 else:
-                    self.log_result("Commission Preview - Valid USD", False, 
-                                  f"Missing required fields: {missing_fields}", data)
+                    self.log_result("Transit Account Transactions", False, "Response is not a list", data)
             else:
-                self.log_result("Commission Preview - Valid USD", False, 
-                              f"Failed with status {response.status_code}", response.text)
+                self.log_result("Transit Account Transactions", False, f"Failed with status {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Commission Preview - Valid USD", False, f"Error: {str(e)}")
+            self.log_result("Transit Account Transactions", False, f"Error: {str(e)}")
         
-        # Test 3: Missing parameters
-        print("\n--- Test 3: Missing parameters ---")
+        # Test with limit parameter
         try:
-            # Missing amount parameter
-            params = {
-                'currency': 'IQD',
-                'to_governorate': 'BG'
-            }
-            
-            response = self.make_request('GET', '/commission/calculate-preview', 
-                                       token=self.agent_baghdad_token, params=params)
-            
-            if response.status_code == 422:  # FastAPI validation error
-                self.log_result("Commission Preview - Missing Amount", True, 
-                              "Correctly rejected request with missing amount parameter")
-            else:
-                self.log_result("Commission Preview - Missing Amount", False, 
-                              f"Expected 422 status, got {response.status_code}", response.text)
-        except Exception as e:
-            self.log_result("Commission Preview - Missing Amount", False, f"Error: {str(e)}")
-        
-        # Test 4: Invalid amount (0)
-        print("\n--- Test 4: Invalid amount (0) ---")
-        try:
-            params = {
-                'amount': 0,
-                'currency': 'IQD',
-                'to_governorate': 'BG'
-            }
-            
-            response = self.make_request('GET', '/commission/calculate-preview', 
-                                       token=self.agent_baghdad_token, params=params)
-            
+            params = {'limit': 10}
+            response = self.make_request('GET', '/transit-account/transactions', token=self.admin_token, params=params)
             if response.status_code == 200:
                 data = response.json()
-                # Should return 0 commission for invalid amount
-                if data.get('commission_percentage') == 0.0 and data.get('commission_amount') == 0.0:
-                    self.log_result("Commission Preview - Zero Amount", True, 
-                                  "Correctly returned 0 commission for zero amount")
+                if isinstance(data, list) and len(data) <= 10:
+                    self.log_result("Transit Account Transactions - With Limit", True, f"Retrieved {len(data)} transactions (limit 10)")
                 else:
-                    self.log_result("Commission Preview - Zero Amount", False, 
-                                  f"Expected 0 commission, got: {data}")
+                    self.log_result("Transit Account Transactions - With Limit", False, f"Expected max 10 transactions, got {len(data) if isinstance(data, list) else 'non-list'}")
             else:
-                self.log_result("Commission Preview - Zero Amount", False, 
-                              f"Unexpected status {response.status_code}", response.text)
+                self.log_result("Transit Account Transactions - With Limit", False, f"Failed with status {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Commission Preview - Zero Amount", False, f"Error: {str(e)}")
+            self.log_result("Transit Account Transactions - With Limit", False, f"Error: {str(e)}")
         
-        # Test 5: Invalid amount (negative)
-        print("\n--- Test 5: Invalid amount (negative) ---")
+        # Test admin-only access
         try:
-            params = {
-                'amount': -1000,
-                'currency': 'IQD',
-                'to_governorate': 'BG'
-            }
-            
-            response = self.make_request('GET', '/commission/calculate-preview', 
-                                       token=self.agent_baghdad_token, params=params)
-            
+            response = self.make_request('GET', '/transit-account/transactions', token=self.agent_baghdad_token)
+            if response.status_code == 403:
+                self.log_result("Transit Account Transactions - Agent Access", True, "Correctly rejected agent access")
+            else:
+                self.log_result("Transit Account Transactions - Agent Access", False, f"Expected 403, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Transit Account Transactions - Agent Access", False, f"Error: {str(e)}")
+    
+    def test_transit_account_pending_transfers(self):
+        """Test GET /api/transit-account/pending-transfers (Admin only)"""
+        print("\n=== Testing Transit Account Pending Transfers Endpoint ===")
+        
+        try:
+            response = self.make_request('GET', '/transit-account/pending-transfers', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                # Should return 0 commission for invalid amount
-                if data.get('commission_percentage') == 0.0 and data.get('commission_amount') == 0.0:
-                    self.log_result("Commission Preview - Negative Amount", True, 
-                                  "Correctly returned 0 commission for negative amount")
+                if 'transfers' in data and 'totals' in data:
+                    transfers = data['transfers']
+                    totals = data['totals']
+                    self.log_result("Transit Account Pending Transfers", True, 
+                                  f"Retrieved {len(transfers)} pending transfers. Totals: {totals}")
+                    return data
                 else:
-                    self.log_result("Commission Preview - Negative Amount", False, 
-                                  f"Expected 0 commission, got: {data}")
+                    self.log_result("Transit Account Pending Transfers", False, "Missing 'transfers' or 'totals' fields", data)
             else:
-                self.log_result("Commission Preview - Negative Amount", False, 
-                              f"Unexpected status {response.status_code}", response.text)
+                self.log_result("Transit Account Pending Transfers", False, f"Failed with status {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Commission Preview - Negative Amount", False, f"Error: {str(e)}")
+            self.log_result("Transit Account Pending Transfers", False, f"Error: {str(e)}")
         
-        # Test 6: Authentication required
-        print("\n--- Test 6: Authentication required ---")
+        # Test admin-only access
         try:
-            params = {
-                'amount': 1000,
-                'currency': 'IQD',
-                'to_governorate': 'BG'
-            }
-            
-            response = self.make_request('GET', '/commission/calculate-preview', 
-                                       token=None, params=params)  # No token
-            
-            if response.status_code == 403:  # Forbidden
-                self.log_result("Commission Preview - No Auth", True, 
-                              "Correctly rejected request without authentication")
+            response = self.make_request('GET', '/transit-account/pending-transfers', token=self.agent_baghdad_token)
+            if response.status_code == 403:
+                self.log_result("Transit Account Pending Transfers - Agent Access", True, "Correctly rejected agent access")
             else:
-                self.log_result("Commission Preview - No Auth", False, 
-                              f"Expected 403 status, got {response.status_code}", response.text)
+                self.log_result("Transit Account Pending Transfers - Agent Access", False, f"Expected 403, got {response.status_code}")
         except Exception as e:
-            self.log_result("Commission Preview - No Auth", False, f"Error: {str(e)}")
+            self.log_result("Transit Account Pending Transfers - Agent Access", False, f"Error: {str(e)}")
+        
+        return None
     
     def test_commission_with_rates(self):
         """Test commission calculation with configured rates"""
