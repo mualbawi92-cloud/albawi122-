@@ -42,6 +42,28 @@ cipher = Fernet(ENCRYPTION_KEY)
 # Transit Account ID (constant)
 TRANSIT_ACCOUNT_ID = "transit_account_main"
 
+# Iraqi Governorate Code to Name Mapping
+GOVERNORATE_CODE_TO_NAME = {
+    'BG': 'بغداد',
+    'BS': 'البصرة',
+    'NJ': 'النجف',
+    'KR': 'كربلاء',
+    'BB': 'بابل',
+    'AN': 'الأنبار',
+    'DY': 'ديالى',
+    'WS': 'واسط',
+    'SA': 'صلاح الدين',
+    'NI': 'نينوى',
+    'DQ': 'ذي قار',
+    'QA': 'القادسية',
+    'MY': 'المثنى',
+    'MI': 'ميسان',
+    'KI': 'كركوك',
+    'ER': 'أربيل',
+    'SU': 'السليمانية',
+    'DH': 'دهوك'
+}
+
 # Security Config
 MAX_LOGIN_ATTEMPTS = int(os.environ.get('MAX_LOGIN_ATTEMPTS', 5))
 LOCKOUT_DURATION = int(os.environ.get('LOCKOUT_DURATION_MINUTES', 15))
