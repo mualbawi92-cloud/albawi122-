@@ -143,17 +143,6 @@ const TransfersListPage = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={filter.direction || ""} onValueChange={(value) => setFilter({ ...filter, direction: value || "" })}>
-                <SelectTrigger className="w-48 h-12" data-testid="direction-filter">
-                  <SelectValue placeholder="الاتجاه" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value=" ">كل الحوالات</SelectItem>
-                  <SelectItem value="incoming">واردة</SelectItem>
-                  <SelectItem value="outgoing">صادرة</SelectItem>
-                </SelectContent>
-              </Select>
-
               <Button
                 onClick={() => navigate('/transfers/create')}
                 className="bg-secondary hover:bg-secondary/90 text-primary font-bold mr-auto"
