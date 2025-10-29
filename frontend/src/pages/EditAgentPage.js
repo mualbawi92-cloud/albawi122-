@@ -45,6 +45,7 @@ const EditAgentPage = () => {
     display_name: '',
     phone: '',
     governorate: '',
+    address: '',
     wallet_limit_iqd: '',
     wallet_limit_usd: '',
     new_password: '',
