@@ -479,6 +479,19 @@ const Navbar = () => {
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
+                  navigate('/journal-transfer');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-journal-transfer"
+              >
+                🔄 قيد مزدوج
+              </Button>
+            )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
                   navigate('/ledger');
                   setMobileMenuOpen(false);
                 }}
