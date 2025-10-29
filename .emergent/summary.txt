@@ -1,99 +1,200 @@
 <analysis>
-The AI engineer successfully developed a full-stack cash transfer application, iteratively enhancing it based on detailed user feedback. Initially, the project involved migrating to MongoDB, configuring a FastAPI backend with a React frontend, and integrating Cloudinary for image uploads. Key architectural decisions included using Shadcn UI, Tailwind CSS, and ensuring full Arabic (RTL) localization. The development trajectory systematically covered authentication, transfer creation, reception (with specific error messages), agent/admin management, a comprehensive wallet system with real-time balance updates and financial statements, transfer cancellation/editing capabilities, and an admin dashboard with overview and detailed agency statements. The engineer demonstrated strong debugging skills, addressing issues like Pydantic validation errors for new fields and ensuring data consistency with migration scripts. The work is currently focused on enabling administrators to edit agent-specific wallet limits.
+The AI engineer successfully enhanced a full-stack cash transfer application (FastAPI backend, React frontend). Key work included fixing a JSX error in , making the logo and company name clickable to the dashboard in , and enabling text-based amount display in , , , and . Wallet balances were integrated into  and  for admin view, with vertical display for currencies. The Admin Dashboard () was updated with transfer statistics. Critical new features involved adding  and a unique 6-digit  with confirmation modal and print functionality to . A comprehensive commission management system was implemented, allowing admins to set dynamic rates for agents via a new , replacing the fixed 0.13% rate. The application was configured for multi-platform (web, Android, iOS) using Capacitor. Security was enhanced with  and dedicated security files. Lastly, image upload for transfer reception was refined, simplifying verification to only the first name match. The current work focuses on adding a commission rate display field to the .
 </analysis>
 
 <product_requirements>
-The application is a local cash transfer system where agents manage transfers, and recipients prove identity. It requires unique s and s, PIN entry, and ID photo uploads for reception. All actions must be audit-logged.
+The application is a secure local cash transfer system facilitating agent-managed transfers where recipients verify identity using a PIN and ID photo. Each transfer requires unique s and s, with all actions audit-logged.
 
-**Key Features Implemented/Requested:**
-1.  **Agent Management:** User registration with roles (agent/admin). Admins can add, edit (including financial limits), activate/deactivate agents.
-2.  **Transfer Creation:** Agents initiate transfers (sender name, amount, recipient details). PIN is generated and stored encrypted.
-3.  **Transfer Reception:** Recipient agent views transfer (after entering ), requests PIN, uploads ID photo, enters full name. System validates PIN and full name with specific error messages. Sender cannot receive their own transfer.
-4.  **Transfer Lifecycle:** Sending agent can cancel or edit pending transfers. Cancelled/edited transfers are logged and visible to administrators.
-5.  **Financials:**
-    *   Currency: IQD/USD.
-    *   Commissions: Admin receives 0.13% on completed transfers.
-    *   Wallet System: Each agent has a wallet (IQD/USD). Balances update automatically on transfer creation/reception. Admins can manually add funds and set / for agents.
-    *   Account Statements: Detailed statements for agents (credits, debits, running balance, totals, filters). Only completed transfers count; cancelled transfers appear as reverse entries.
-    *   Admin Dashboard: Overview of all agencies, including their required wallet amounts (numeric and Arabic text), with links to detailed statements.
-6.  **UI/UX:** Full Arabic (RTL) interface with specific color palette (dark blue, gold, light gray) and fonts (Cairo/Noto Kufi). Mobile responsiveness, detailed error messages, and interactive dashboard cards (linking to filtered transfer lists).
+**Implemented/Enhanced Features:**
+*   **Agent & Admin Management:** Admins can view agent wallet balances (IQD/USD) and set custom commission rates per agent.
+*   **Transfer Creation:** Agents create transfers with sender name, amount, recipient details, and now . Each transfer gets a unique, non-repeating 6-digit . A summary modal confirms details before final creation, and a print option for transfer details is available.
+*   **Transfer Reception:** Enhanced camera interface for ID photo upload (previously fixed as black screen), with recipient full name verification. The process was simplified to only match the first name.
+*   **Financials:** Agent wallets update automatically. Admin dashboard shows various transfer statistics (completed, cancelled, pending, total). Commission calculation is now dynamic, based on agent-specific rates configurable by the admin, replacing a fixed rate. Amount displays include both numeric and Arabic text.
+*   **UI/UX:** Improved mobile responsiveness for commission rate tables. Clicking the company logo/name navigates to the dashboard. Fixes for JSX errors and display issues were implemented.
+*   **Platform Support:** The application is configured to run as a web app, Android app, and iOS app using Capacitor.
+*   **Security:** Enhanced security layers added with rate limiting and best practices.
 </product_requirements>
 
 <key_technical_concepts>
 -   **Full-stack:** FastAPI (Backend), React (Frontend), MongoDB (Database).
 -   **Styling:** Tailwind CSS, Shadcn UI.
 -   **Authentication:** JWT, bcrypt.
--   **Image Storage:** Cloudinary.
--   **Real-time:** WebSockets.
+-   **Image Storage:** Cloudinary, Camera API for live capture.
+-   **Mobile Development:** Capacitor (Web, Android, iOS).
 -   **Data Validation:** Pydantic.
 -   **Cryptography:** For PIN encryption/decryption.
--   **Localization:** Full Arabic (RTL).
+-   **Localization:** Full Arabic (RTL), Arabic number conversion.
+-   **Security:**  for rate limiting, HTTP security headers.
 </key_technical_concepts>
 
 <code_architecture>
-The application employs a standard full-stack architecture, featuring a FastAPI backend and a React frontend within the  directory.
+The application uses a FastAPI backend and a React frontend.
 
 
 
 **Key Files and Changes Summary:**
 
--   **/app/backend/server.py**:
-    -   **Importance**: Defines all API endpoints, MongoDB interactions, and core business logic.
-    -   **Changes**: Extended  and  models with wallet balances, limits, and encrypted PINs. Implemented comprehensive wallet operations (add balance, statement generation). Added endpoints for , , , , . Enhanced  with specific error messages, sender-self-receipt prevention, and wallet updates. Modified  for wallet deduction and encrypted PIN storage. Added Arabic number conversion and PIN encryption/decryption utilities.
--   **/app/frontend/src/App.js**:
-    -   **Importance**: Manages application-wide routing.
-    -   **Changes**: Added routes for , , , , .
--   **/app/frontend/src/components/Navbar.js**:
-    -   **Importance**: Provides navigation links.
-    -   **Changes**: Added new navigation links for ,  (admin), ,  (admin), and  (admin) for both desktop and mobile views.
--   **/app/frontend/src/pages/DashboardPage.js**:
-    -   **Importance**: Displays a user's activity summary.
-    -   **Changes**: Made summary cards interactive to filter ; displays user's wallet balance.
--   **/app/frontend/src/pages/TransfersListPage.js**:
-    -   **Importance**: Lists transfers.
-    -   **Changes**: Supports URL query parameters for filtering; displays .
--   **/app/frontend/src/pages/CreateTransferPage.js**:
-    -   **Importance**: Form for creating new transfers.
-    -   **Changes**: Added input field for .
--   **/app/frontend/src/pages/TransferDetailsPage.js**:
-    -   **Importance**: Displays specific transfer details.
-    -   **Changes**: Displays ; added View PIN button, Cancel Transfer and Edit Transfer buttons with an inline edit form for the sender.
--   **/app/frontend/src/pages/AgentStatementPage.js**:
-    -   **Importance**: Displays an agent's account statement.
-    -   **Changes**: Implemented detailed UI for statement (summary cards, filterable table, footer totals); filters for  transfers only and displays  transfers as reverse entries.
--   **/app/frontend/src/pages/AllTransfersAdminPage.js**:
-    -   **Importance**: Admin view of all transfers.
-    -   **Changes**: Displays .
--   **/app/frontend/src/pages/AddAgentPage.js**:
-    -   **Importance**: Admin page to add new agents.
-    -   **Changes**: Added input fields for  and .
--   **/app/frontend/src/pages/EditAgentPage.js**:
-    -   **Importance**: Admin page to edit existing agent details.
-    -   **Changes**: Currently being updated to include input fields for  and .
--   **/app/frontend/src/pages/AdminDashboardPage.js**:
-    -   **Importance**: New admin overview page.
-    -   **Changes**: Implemented detailed UI with total stats, table of agencies (including current balance, required from wallet in Arabic text, and a link to their statement). Added a quick action button for cancelled/edited transfers.
--   **/app/frontend/src/pages/CancelledTransfersPage.js**:
-    -   **Importance**: New page for admin to view cancelled/edited transfers.
-    -   **Changes**: Page created; content implementation is pending.
--   **/app/frontend/src/utils/arabicNumbers.js**:
-    -   **Importance**: New utility for formatting numbers into Arabic text.
-    -   **Changes**: Contains , , and  functions.
--   **/app/scripts/*.py**:
-    -   **Importance**: Migration scripts to update existing MongoDB documents.
-    -   **Changes**: Created  (add wallet balances),  (add receiver name), and  (add wallet limits) for existing users/transfers.
+*   ****:
+    *   **Importance**: Core backend logic and API endpoints.
+    *   **Changes**: Added , , and  to  and  models. Implemented unique 6-digit  generation. Updated  to handle new fields and dynamically calculate commissions based on agent-specific rates. Modified  for simplified first-name verification. Added Pydantic models and endpoints for  and  to manage agent commission profiles. Integrated  for rate limiting and applied general security middleware.
+*   ****:
+    *   **Importance**: Manages application-wide routing.
+    *   **Changes**: Added route for .
+*   ****:
+    *   **Importance**: Global navigation.
+    *   **Changes**: Made logo and company name clickable to . Added navigation link for  for admin users.
+*   ****:
+    *   **Importance**: UI component for dialogs/modals.
+    *   **Changes**: Created/updated to be compatible with Shadcn UI for modal displays (e.g., for transfer confirmation, camera interface).
+*   ****:
+    *   **Importance**: Admin overview.
+    *   **Changes**: Added summary cards displaying daily/total completed, cancelled, and pending transfers.
+*   ****:
+    *   **Importance**: Displays agent's financial statement.
+    *   **Changes**: Fixed JSX errors. Updated to display amounts in both numeric and Arabic text using .
+*   ****:
+    *   **Importance**: Lists all agents for admin.
+    *   **Changes**: Displays  and  for each agent, formatted vertically.
+*   ****:
+    *   **Importance**: Admin view of all transfers.
+    *   **Changes**: Added a Commission Percentage column to the transfer list.
+*   ****:
+    *   **Importance**: NEW admin page for managing agent commission rates.
+    *   **Changes**: Created to allow admins to define and manage commission tiers for agents, designed with mobile responsiveness.
+*   ****:
+    *   **Importance**: Form for creating new transfers.
+    *   **Changes**: Added  input field. Implemented a confirmation modal displaying transfer summary before submission. Added display for auto-generated 6-digit  and a print button on success. Updated to display amounts in both numeric and Arabic text. Work is ongoing to add a commission display field.
+*   ****:
+    *   **Importance**: Admin page to edit agent details.
+    *   **Changes**: Displays  and  for the agent, formatted vertically. (The initial  task was pending here but not explicitly addressed later).
+*   ****:
+    *   **Importance**: Displays specific transfer details.
+    *   **Changes**: Updated to display amounts in both numeric and Arabic text. Enhanced the camera interface for receiving transfers: integrated a full-screen modal with camera switching (front/back), with fixes for the black screen issue.
+*   ****:
+    *   **Importance**: Lists transfers.
+    *   **Changes**: Added a Commission Percentage column to the transfer list.
+*   ****:
+    *   **Importance**: Utility for formatting numbers.
+    *   **Changes**: Added  function for displaying currency amounts with both numeric and Arabic text.
+*   ****:
+    *   **Importance**: Frontend dependencies and scripts.
+    *   **Changes**: Added , ,  and relevant scripts for Capacitor build process. Added yarn install v1.22.22
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+success Saved lockfile.
+Done in 0.04s. dependencies.
+*   ****:
+    *   **Importance**: Capacitor configuration.
+    *   **Changes**: Initialized Capacitor configuration.
+*   ****:
+    *   **Importance**: Android app permissions.
+    *   **Changes**: Added , ,  for mobile functionality.
+*   ****:
+    *   **Importance**: iOS app permissions.
+    *   **Changes**: Added , ,  for camera and storage access.
+*   ****:
+    *   **Importance**: Centralized security settings.
+    *   **Changes**: New file created to define rate limits and other security configurations.
+*   ****:
+    *   **Importance**: Custom security middleware.
+    *   **Changes**: New file created to implement security features like rate limiting, HTTP headers.
+*   ****:
+    *   **Importance**: Image validation logic (later simplified).
+    *   **Changes**: Initially created for Iraqi ID validation, later simplified to only verify first name.
+*   **, , , **:
+    *   **Importance**: Documentation for build process, mobile setup, and security.
+    *   **Changes**: New files created to provide instructions and best practices.
+*   **🚀 بدء عملية البناء لنظام الحوالات
+=========================================
+
+📦 الخطوة 1: بناء تطبيق React...
+yarn run v1.22.22
+$ craco build
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  179.26 kB (+173 B)  build/static/js/main.310319c9.js
+  12 kB               build/static/css/main.b20a6692.css
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  yarn global add serve
+  serve -s build
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+
+Done in 33.65s.
+✅ تم بناء React بنجاح
+
+🔄 الخطوة 2: مزامنة مع Capacitor...
+✔ Copying web assets from build to android/app/src/main/assets/public in 27.53ms
+✔ Creating capacitor.config.json in android/app/src/main/assets in 582.93μs
+✔ copy android in 99.28ms
+✔ Updating Android plugins in 6.09ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/camera@7.0.2
+       @capacitor/filesystem@7.1.4
+✔ update android in 122.26ms
+✔ Copying web assets from build to ios/App/App/public in 16.64ms
+✔ Creating capacitor.config.json in ios/App/App in 146.78μs
+✔ copy ios in 108.59ms
+✔ Updating iOS plugins in 5.33ms
+[warn] Skipping pod install because CocoaPods is not installed
+[warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+✔ Updating iOS native dependencies with pod install in 3.35ms
+[info] Found 2 Capacitor plugins for ios:
+       @capacitor/camera@7.0.2
+       @capacitor/filesystem@7.1.4
+✔ update ios in 101.71ms
+✔ copy web in 12.16ms
+✔ update web in 11.81ms
+[info] Sync finished in 0.775s
+✅ تمت المزامنة بنجاح
+
+✅ البناء الأساسي اكتمل!
+
+الخطوات التالية:
+===================
+
+📱 لبناء تطبيق Android:
+   npx cap open android
+   ثم في Android Studio:
+   Build → Build Bundle(s) / APK(s) → Build APK(s)
+
+🍎 لبناء تطبيق iOS:
+   npx cap open ios
+   ثم في Xcode:
+   Product → Archive
+
+🌐 الموقع الإلكتروني جاهز في مجلد: build/
+
+📚 للمزيد من التفاصيل، راجع: /app/BUILD_GUIDE.md**:
+    *   **Importance**: Script for building mobile apps.
+    *   **Changes**: New script created to automate Capacitor build processes.
 </code_architecture>
 
 <pending_tasks>
--   Complete the frontend implementation for editing agent wallet limits on the .
--   Populate the  with data and UI to display cancelled and edited transfers for administrators.
--   Refine the  to fully reflect the amount required from wallet using the new numeric and Arabic text formatting.
+-   Complete the frontend implementation for editing agent wallet limits on the . (Initial pending task, not addressed explicitly in trajectory)
+-   Populate the  with data and UI to display cancelled and edited transfers for administrators. (Initial pending task, not addressed explicitly in trajectory)
+-   Refine the  to fully reflect the amount required from wallet using the new numeric and Arabic text formatting. (Initial pending task, not addressed explicitly in trajectory)
+-   Update the  Pydantic model in  to include  and  fields. (Initial pending task, not addressed explicitly in trajectory)
+-   Add a field to  to display the calculated commission rate dynamically.
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary, the AI engineer was working on enabling administrators to modify the financial limits ( and ) for existing agents. This involves updating the  component in the frontend to include input fields for these new limits. Concurrently, the backend  endpoint in  needs to be adapted to accept and persist these  and  values when an agent's profile is updated by an administrator. The related Pydantic  model also needs to be extended to properly validate these new fields. This work directly addresses the user's request to allow admins to define financial exposure limits for each agency.
+Immediately before this summary, the AI engineer was working on the user's request to display the calculated commission rate directly within the  on the frontend. The user explicitly stated: اريد بحقل انشاء حواله جديده اخر شي نضيف شي اسمه نسبه العموله على الحواله اضيف هذا مربع ونسبه العمول راح يحدده المدير واذا نسبه كانت صفر سوف تكتب صفر (I want to add a field at the end of the new transfer creation form, called commission percentage on the transfer. This field will display the commission rate, which the manager will determine, and if the rate is zero, it will show zero). The AI engineer confirmed this and planned to تمام! سأضيف حقل يعرض نسبة العمولة في صفحة إنشاء الحوالة الجديدة، ويحسبها تلقائياً بناءً على المبلغ ونشرة الأسعار: (Okay! I will add a field that displays the commission percentage on the new transfer creation page, and it will calculate it automatically based on the amount and the price list). This involves updating the  component to fetch and display the relevant commission rate dynamically as the user inputs transfer details.
 </current_work>
 
 <optional_next_step>
-Update the  Pydantic model in  to include  and  fields.
+Add a display field for the calculated commission rate in  as per the user's request.
 </optional_next_step>
