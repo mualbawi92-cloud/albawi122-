@@ -794,6 +794,15 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         {'$inc': {wallet_field: -transfer_data.amount}}
     )
     
+    # Add amount to transit account (الحوالات الواردة لم تُسلَّم)
+    await update_transit_balance(
+        amount=transfer_data.amount,
+        currency=transfer_data.currency,
+        operation='add',
+        reference_id=transfer_id,
+        note=f'حوالة واردة من {current_user["display_name"]} - {transfer_code}'
+    )
+    
     # Log wallet transaction
     await db.wallet_transactions.insert_one({
         'id': str(uuid.uuid4()),
