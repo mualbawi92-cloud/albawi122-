@@ -79,6 +79,7 @@ function AppRoutes() {
       <Route path="/journal-transfer" element={<ProtectedRoute><JournalTransferPage /></ProtectedRoute>} />
       <Route path="/ledger" element={<ProtectedRoute><LedgerPage /></ProtectedRoute>} />
       <Route path="/agent-ledger" element={<ProtectedRoute><AgentLedgerPage /></ProtectedRoute>} />
+      <Route path="/agent-commissions" element={<ProtectedRoute><AgentCommissionsPage /></ProtectedRoute>} />
       <Route path="/exchange" element={<ProtectedRoute><ExchangeOperationsPage /></ProtectedRoute>} />
       <Route path="/statement" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
       <Route path="/statement/:agentId" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
