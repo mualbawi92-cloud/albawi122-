@@ -362,6 +362,14 @@ const CommissionsManagementPage = () => {
                             <div className="flex gap-2">
                               <Button
                                 size="sm"
+                                variant="outline"
+                                className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                                onClick={() => handleEditRate(rate)}
+                              >
+                                ✏️ تعديل
+                              </Button>
+                              <Button
+                                size="sm"
                                 variant="destructive"
                                 onClick={() => handleDeleteRate(rate.id)}
                               >
