@@ -13,6 +13,7 @@ import AddAgentPage from './pages/AddAgentPage';
 import EditAgentPage from './pages/EditAgentPage';
 import SettingsPage from './pages/SettingsPage';
 import CommissionsPage from './pages/CommissionsPage';
+import CommissionsManagementPage from './pages/CommissionsManagementPage';
 import AllTransfersAdminPage from './pages/AllTransfersAdminPage';
 import WalletPage from './pages/WalletPage';
 import WalletManagementPage from './pages/WalletManagementPage';
