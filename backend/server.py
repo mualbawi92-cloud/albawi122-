@@ -1905,7 +1905,7 @@ async def receive_transfer(
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-RCV-{transfer['transfer_code']}",
                 'date': datetime.now(timezone.utc).isoformat(),
-                'description': f'حوالة مستلمة: {transfer["transfer_code"]} من قبل {current_user["display_name"]}',
+                'description': f'استلام حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
                 'lines': [
                     {
                         'account_code': '1030',  # Transit Account (مدين)
