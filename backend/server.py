@@ -1775,6 +1775,59 @@ async def calculate_commission_preview(
         "currency": currency
     }
 
+# ============================================
+# Transit Account Endpoints
+# ============================================
+
+@api_router.get("/transit-account/balance")
+async def get_transit_account_balance(current_user: dict = Depends(require_admin)):
+    """Get transit account balance (Admin only)"""
+    transit = await get_or_create_transit_account()
+    
+    # Get count of pending transfers
+    pending_transfers = await db.transfers.count_documents({'status': 'pending'})
+    
+    return {
+        "balance_iqd": transit.get('balance_iqd', 0),
+        "balance_usd": transit.get('balance_usd', 0),
+        "pending_transfers_count": pending_transfers,
+        "updated_at": transit.get('updated_at')
+    }
+
+@api_router.get("/transit-account/transactions")
+async def get_transit_transactions(
+    limit: int = 50,
+    current_user: dict = Depends(require_admin)
+):
+    """Get transit account transaction history (Admin only)"""
+    transactions = await db.transit_transactions.find().sort('created_at', -1).limit(limit).to_list(length=limit)
+    
+    for transaction in transactions:
+        transaction.pop('_id', None)
+    
+    return transactions
+
+@api_router.get("/transit-account/pending-transfers")
+async def get_transit_pending_transfers(current_user: dict = Depends(require_admin)):
+    """Get all pending transfers in transit (Admin only)"""
+    pending_transfers = await db.transfers.find({'status': 'pending'}).to_list(length=None)
+    
+    # Calculate totals by currency
+    totals = {'IQD': 0, 'USD': 0}
+    for transfer in pending_transfers:
+        transfer.pop('_id', None)
+        transfer.pop('pin_hash', None)
+        transfer.pop('pin_encrypted', None)
+        
+        currency = transfer.get('currency', 'IQD')
+        totals[currency] += transfer.get('amount', 0)
+    
+    return {
+        "pending_transfers": pending_transfers,
+        "total_count": len(pending_transfers),
+        "totals": totals
+    }
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
