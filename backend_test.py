@@ -1,32 +1,42 @@
 #!/usr/bin/env python3
 """
-CRITICAL TEST: Commission Paid Accounting Entry - Complete End-to-End Test
+🚨 COMPREHENSIVE TEST: Incoming Commission Payment Flow
 
-**Context:**
-User reported that commission paid is NOT being recorded correctly in the ledger. 
-We just added test data. Now we need to verify the complete flow works.
+**الهدف:** التأكد من أن العمولة المدفوعة تعمل بشكل صحيح عند تسليم الحوالة
 
-**Test Setup Complete:**
-- ✅ Account 5110 (عمولات حوالات مدفوعة) created
-- ✅ Account 4020 (عمولات محققة) created  
-- ✅ 2 test agents created with accounting entries
-- ✅ Incoming commission rates (2%) set for both agents
+**السيناريو الكامل:**
 
-**Test Agents:**
-- Agent 1: agent_baghdad / test123 (Account code: 2001)
-- Agent 2: agent_basra / test123 (Account code: 2002)
+### المتطلبات المسبقة:
+- ✅ Agent 1: agent_baghdad / test123
+- ✅ Agent 2: agent_basra / test123  
+- ✅ كلاهما لديه incoming commission rate = 2%
+- ✅ حساب 5110 (عمولات حوالات مدفوعة) موجود
 
-**Complete Test Flow:**
-Phase 1: Create Transfer (Agent 1 sends)
-Phase 2: Receive Transfer (Agent 2 receives) 
-Phase 3: Verify Journal Entries ⭐ THIS IS THE CRITICAL PART
-Phase 4: Verify Account Balances
-Phase 5: Verify Ledger
+### الاختبار الشامل:
 
-**CRITICAL CHECK:**
-Must verify TWO journal entries are created:
-1. Entry 1 (TR-RCV-{code}): Transfer received entry
-2. Entry 2 (COM-PAID-{code}): Commission paid entry ⭐ THIS IS THE FIX
+**Phase 1: إنشاء حوالة**
+1. Login as agent_baghdad
+2. GET /api/wallet/balance - تسجيل الرصيد الحالي
+3. Create transfer: 1,000,000 IQD to BS
+4. Verify: Transfer created, Status = 'pending', Wallet decreased
+
+**Phase 2: استلام الحوالة** 
+1. Login as agent_basra
+2. GET /api/wallet/balance - تسجيل الرصيد قبل الاستلام
+3. Receive transfer (SIMULATED due to Cloudinary)
+4. Verify response: Success = true, Status = 'completed'
+
+**Phase 3: التحقق من العمولة المدفوعة** ⭐ الاختبار الرئيسي
+- Verify journal entries: TR-RCV-{code} + COM-PAID-{code}
+- Verify account 5110 balance increase by 20,000
+- Verify receiver agent balance: 1,000,000 + 20,000 = 1,020,000
+- Verify commission reports
+- Verify ledger entries
+
+**Expected Results:**
+✅ الصراف المستلم يحصل على: المبلغ + العمولة = 1,020,000 دينار
+✅ القيود المحاسبية: قيد الحوالة + قيد العمولة المدفوعة
+✅ التقارير: العمولة تظهر في تقرير العمولات المدفوعة
 """
 
 import requests
