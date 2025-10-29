@@ -24,6 +24,7 @@ import TransitAccountPage from './pages/TransitAccountPage';
 import AllCommissionsViewPage from './pages/AllCommissionsViewPage';
 import NotificationsPage from './pages/NotificationsPage';
 import ReportsPage from './pages/ReportsPage';
+import ChartOfAccountsPage from './pages/ChartOfAccountsPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
