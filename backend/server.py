@@ -831,6 +831,22 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         {'$inc': {wallet_field: -transfer_data.amount}}
     )
     
+    # Record earned commission for admin (من الحوالة الصادرة)
+    if commission > 0:
+        await db.admin_commissions.insert_one({
+            'id': str(uuid.uuid4()),
+            'type': 'earned',  # عمولة محققة
+            'amount': commission,
+            'currency': transfer_data.currency,
+            'transfer_id': transfer_id,
+            'transfer_code': transfer_code,
+            'agent_id': current_user['id'],
+            'agent_name': current_user['display_name'],
+            'commission_percentage': commission_percentage,
+            'note': f'عمولة محققة من حوالة صادرة',
+            'created_at': datetime.now(timezone.utc).isoformat()
+        })
+    
     # Add amount to transit account (الحوالات الواردة لم تُسلَّم)
     await update_transit_balance(
         amount=transfer_data.amount,
