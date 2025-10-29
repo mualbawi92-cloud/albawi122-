@@ -18,6 +18,7 @@ const AdminDashboardPage = () => {
   const [statements, setStatements] = useState({});
   const [allTransfers, setAllTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [transitData, setTransitData] = useState(null);
 
   useEffect(() => {
     if (user?.role !== 'admin') {
