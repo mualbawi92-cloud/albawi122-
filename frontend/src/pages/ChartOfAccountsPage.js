@@ -19,7 +19,8 @@ const CATEGORIES = [
   { value: 'التزامات', label: 'التزامات (Liabilities)' },
   { value: 'حقوق الملكية', label: 'حقوق الملكية (Equity)' },
   { value: 'إيرادات', label: 'إيرادات (Revenues)' },
-  { value: 'مصاريف', label: 'مصاريف (Expenses)' }
+  { value: 'مصاريف', label: 'مصاريف (Expenses)' },
+  { value: 'شركات الصرافة', label: 'شركات الصرافة (Exchange Companies)' }
 ];
 
 const CURRENCIES = ['IQD', 'USD'];
