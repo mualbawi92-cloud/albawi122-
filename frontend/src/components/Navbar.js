@@ -101,6 +101,56 @@ const Navbar = () => {
                 📊 دفتر الأستاذ الخاص
               </Button>
             )}
+            
+            {/* Agent Commissions Dropdown Menu */}
+            {user?.role === 'agent' && (
+              <div className="relative">
+                <Button
+                  onClick={() => setAgentCommissionsMenuOpen(!agentCommissionsMenuOpen)}
+                  onBlur={() => setTimeout(() => setAgentCommissionsMenuOpen(false), 200)}
+                  variant="ghost"
+                  className="text-white hover:bg-white/10 font-bold text-sm"
+                  data-testid="nav-agent-commissions-menu"
+                >
+                  💰 العمولات ▾
+                </Button>
+                
+                {agentCommissionsMenuOpen && (
+                  <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border-2 border-primary/20 min-w-[200px] z-50">
+                    <div className="py-2">
+                      <button
+                        onClick={() => {
+                          navigate('/agent-commissions?tab=summary');
+                          setAgentCommissionsMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        📊 نسبة الأرباح والخسائر
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/agent-commissions?tab=earned');
+                          setAgentCommissionsMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        💰 العمولات المحققة
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/agent-commissions?tab=paid');
+                          setAgentCommissionsMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        🔻 العمولات المدفوعة
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            
             {user?.role === 'admin' && (
               <Button
                 onClick={() => navigate('/admin/dashboard')}
