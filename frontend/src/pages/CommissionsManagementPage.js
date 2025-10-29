@@ -74,7 +74,9 @@ const CommissionsManagementPage = () => {
     {
       from_amount: 0,
       to_amount: 1000000000,
+      commission_type: 'percentage',
       percentage: 0.25,
+      fixed_amount: 0,
       city: '(جميع المدن)',
       country: '(جميع البلدان)',
       currency_type: 'normal',
