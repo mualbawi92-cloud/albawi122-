@@ -523,17 +523,46 @@ class APITester:
     
     # Removed commission testing methods - focus is now on Transit Account System
     
-    def test_commission_rate_update_endpoint(self):
-        """Test PUT /api/commission-rates/{rate_id} - Commission Rate UPDATE functionality"""
-        print("\n=== Testing Commission Rate UPDATE Endpoint ===")
+    def test_commission_rate_delete_endpoint(self):
+        """Test DELETE /api/commission-rates/{rate_id} - Commission Rate DELETE functionality"""
+        print("\n=== Testing Commission Rate DELETE Endpoint ===")
         
         if not self.agent_baghdad_user_id:
-            self.log_result("Commission Rate Update", False, "Agent user ID not available")
+            self.log_result("Commission Rate Delete", False, "Agent user ID not available")
             return False
         
-        # Step 1: Create a commission rate first (if needed)
-        print("\n--- Step 1: Creating initial commission rate ---")
-        initial_rate_data = {
+        # Step 1: Login as admin (already done in authentication)
+        print("\n--- Step 1: Admin authentication verified ---")
+        if not self.admin_token:
+            self.log_result("Admin Authentication", False, "Admin token not available")
+            return False
+        
+        # Step 2: Get list of commission rates (GET /api/commission-rates)
+        print("\n--- Step 2: Getting list of commission rates ---")
+        initial_rates = []
+        try:
+            response = self.make_request('GET', '/commission-rates', token=self.admin_token)
+            if response.status_code == 200:
+                initial_rates = response.json()
+                self.log_result("Get Commission Rates List", True, f"Retrieved {len(initial_rates)} commission rates")
+                
+                # Display existing rates
+                if initial_rates:
+                    print("Existing commission rates:")
+                    for rate in initial_rates[:3]:  # Show first 3
+                        print(f"  - ID: {rate.get('id')}, Agent: {rate.get('agent_name')}, Currency: {rate.get('currency')}")
+                else:
+                    print("No existing commission rates found")
+            else:
+                self.log_result("Get Commission Rates List", False, f"Failed with status {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Get Commission Rates List", False, f"Error: {str(e)}")
+            return False
+        
+        # Step 3: Create a test commission rate to delete
+        print("\n--- Step 3: Creating test commission rate for deletion ---")
+        test_rate_data = {
             "agent_id": self.agent_baghdad_user_id,
             "currency": "IQD",
             "bulletin_type": "transfers",
@@ -547,142 +576,108 @@ class APITester:
                     "country": "العراق",
                     "currency_type": "normal",
                     "type": "outgoing"
-                },
-                {
-                    "from_amount": 100000.0,
-                    "to_amount": 500000.0,
-                    "percentage": 0.20,
-                    "city": "بغداد",
-                    "country": "العراق",
-                    "currency_type": "normal",
-                    "type": "outgoing"
                 }
             ]
         }
         
         created_rate_id = None
         try:
-            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=initial_rate_data)
+            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=test_rate_data)
             if response.status_code == 200:
                 data = response.json()
                 created_rate_id = data.get('id')
-                self.log_result("Commission Rate Creation", True, f"Rate created with ID: {created_rate_id}")
+                self.log_result("Test Rate Creation", True, f"Test rate created with ID: {created_rate_id}")
             else:
-                self.log_result("Commission Rate Creation", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Test Rate Creation", False, f"Failed with status {response.status_code}", response.text)
                 return False
         except Exception as e:
-            self.log_result("Commission Rate Creation", False, f"Error: {str(e)}")
+            self.log_result("Test Rate Creation", False, f"Error: {str(e)}")
             return False
         
         if not created_rate_id:
-            self.log_result("Commission Rate Update Test", False, "Could not create initial commission rate")
+            self.log_result("Commission Rate Delete Test", False, "Could not create test commission rate")
             return False
         
-        # Step 2: Update the commission rate with new data
-        print("\n--- Step 2: Updating commission rate ---")
-        updated_rate_data = {
-            "agent_id": self.agent_baghdad_user_id,
-            "currency": "IQD",
-            "bulletin_type": "transfers",
-            "date": "2024-01-20",  # Changed date
-            "tiers": [
-                {
-                    "from_amount": 0.0,
-                    "to_amount": 150000.0,  # Changed amount range
-                    "percentage": 0.30,     # Changed percentage
-                    "city": "بغداد",
-                    "country": "العراق",
-                    "currency_type": "normal",
-                    "type": "outgoing"
-                },
-                {
-                    "from_amount": 150000.0,  # Changed amount range
-                    "to_amount": 750000.0,   # Changed amount range
-                    "percentage": 0.25,      # Changed percentage
-                    "city": "بغداد",
-                    "country": "العراق",
-                    "currency_type": "normal",
-                    "type": "outgoing"
-                },
-                {
-                    # Added new tier
-                    "from_amount": 750000.0,
-                    "to_amount": 2000000.0,
-                    "percentage": 0.15,
-                    "city": "بغداد",
-                    "country": "العراق",
-                    "currency_type": "normal",
-                    "type": "outgoing"
-                }
-            ]
-        }
-        
+        # Step 4: Verify the rate exists before deletion
+        print("\n--- Step 4: Verifying rate exists before deletion ---")
         try:
-            response = self.make_request('PUT', f'/commission-rates/{created_rate_id}', token=self.admin_token, json=updated_rate_data)
+            response = self.make_request('GET', '/commission-rates', token=self.admin_token)
+            if response.status_code == 200:
+                rates_before = response.json()
+                rate_exists = any(rate.get('id') == created_rate_id for rate in rates_before)
+                if rate_exists:
+                    self.log_result("Rate Exists Before Delete", True, f"Rate {created_rate_id} found in list")
+                else:
+                    self.log_result("Rate Exists Before Delete", False, f"Rate {created_rate_id} not found in list")
+                    return False
+            else:
+                self.log_result("Rate Exists Before Delete", False, f"Failed to get rates: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Rate Exists Before Delete", False, f"Error: {str(e)}")
+            return False
+        
+        # Step 5: Test DELETE endpoint with admin authentication
+        print("\n--- Step 5: Testing DELETE endpoint with admin authentication ---")
+        try:
+            response = self.make_request('DELETE', f'/commission-rates/{created_rate_id}', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                
-                # Verify the update was successful
-                if (data.get('date') == updated_rate_data['date'] and 
-                    len(data.get('tiers', [])) == 3 and
-                    data['tiers'][0]['percentage'] == 0.30 and
-                    data['tiers'][1]['percentage'] == 0.25 and
-                    data['tiers'][2]['percentage'] == 0.15):
-                    
-                    self.log_result("Commission Rate Update", True, 
-                                  f"Rate updated successfully. New date: {data['date']}, Tiers: {len(data['tiers'])}")
-                else:
-                    self.log_result("Commission Rate Update", False, "Update response doesn't match expected data", data)
+                self.log_result("Commission Rate DELETE", True, f"Rate deleted successfully: {data.get('message', 'Success')}")
             else:
-                self.log_result("Commission Rate Update", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Commission Rate DELETE", False, f"Delete failed with status {response.status_code}", response.text)
+                return False
         except Exception as e:
-            self.log_result("Commission Rate Update", False, f"Error: {str(e)}")
+            self.log_result("Commission Rate DELETE", False, f"Error: {str(e)}")
+            return False
         
-        # Step 3: Verify the data is updated in database by fetching it
-        print("\n--- Step 3: Verifying database update ---")
+        # Step 6: Verify the rate was actually deleted
+        print("\n--- Step 6: Verifying rate was deleted ---")
         try:
-            response = self.make_request('GET', f'/commission-rates/agent/{self.agent_baghdad_user_id}', token=self.admin_token)
+            response = self.make_request('GET', '/commission-rates', token=self.admin_token)
             if response.status_code == 200:
-                rates = response.json()
-                updated_rate = None
-                for rate in rates:
-                    if rate.get('id') == created_rate_id:
-                        updated_rate = rate
-                        break
-                
-                if updated_rate:
-                    if (updated_rate.get('date') == "2024-01-20" and 
-                        len(updated_rate.get('tiers', [])) == 3 and
-                        updated_rate['tiers'][0]['percentage'] == 0.30):
-                        
-                        self.log_result("Database Verification", True, "Updated data correctly persisted in database")
-                    else:
-                        self.log_result("Database Verification", False, "Database data doesn't match update", updated_rate)
+                rates_after = response.json()
+                rate_still_exists = any(rate.get('id') == created_rate_id for rate in rates_after)
+                if not rate_still_exists:
+                    self.log_result("Rate Deletion Verified", True, f"Rate {created_rate_id} successfully removed from list")
                 else:
-                    self.log_result("Database Verification", False, "Updated rate not found in database")
+                    self.log_result("Rate Deletion Verified", False, f"Rate {created_rate_id} still exists after deletion")
             else:
-                self.log_result("Database Verification", False, f"Failed to fetch rates: {response.status_code}", response.text)
+                self.log_result("Rate Deletion Verified", False, f"Failed to verify deletion: {response.status_code}")
         except Exception as e:
-            self.log_result("Database Verification", False, f"Error: {str(e)}")
+            self.log_result("Rate Deletion Verified", False, f"Error: {str(e)}")
         
-        # Step 4: Test admin authentication requirement
-        print("\n--- Step 4: Testing admin authentication requirement ---")
+        # Step 7: Test authentication requirement (agent should not be able to delete)
+        print("\n--- Step 7: Testing authentication requirement ---")
+        
+        # First create another test rate
         try:
-            response = self.make_request('PUT', f'/commission-rates/{created_rate_id}', token=self.agent_baghdad_token, json=updated_rate_data)
-            if response.status_code == 403:
-                self.log_result("Admin Auth Requirement", True, "Correctly rejected agent access (403)")
+            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=test_rate_data)
+            if response.status_code == 200:
+                data = response.json()
+                test_rate_id_2 = data.get('id')
+                
+                # Try to delete with agent token (should fail)
+                response = self.make_request('DELETE', f'/commission-rates/{test_rate_id_2}', token=self.agent_baghdad_token)
+                if response.status_code == 403:
+                    self.log_result("Agent Access Rejection", True, "Correctly rejected agent access (403)")
+                else:
+                    self.log_result("Agent Access Rejection", False, f"Expected 403, got {response.status_code}")
+                
+                # Clean up the second test rate
+                self.make_request('DELETE', f'/commission-rates/{test_rate_id_2}', token=self.admin_token)
             else:
-                self.log_result("Admin Auth Requirement", False, f"Expected 403, got {response.status_code}")
+                self.log_result("Second Test Rate Creation", False, "Could not create second test rate for auth testing")
         except Exception as e:
-            self.log_result("Admin Auth Requirement", False, f"Error: {str(e)}")
+            self.log_result("Agent Access Rejection", False, f"Error: {str(e)}")
         
-        # Step 5: Test error cases
-        print("\n--- Step 5: Testing error cases ---")
+        # Step 8: Test error cases
+        print("\n--- Step 8: Testing error cases ---")
         
         # Test with non-existent rate ID
         try:
-            fake_rate_id = "non-existent-rate-id"
-            response = self.make_request('PUT', f'/commission-rates/{fake_rate_id}', token=self.admin_token, json=updated_rate_data)
+            fake_rate_id = "non-existent-rate-id-12345"
+            response = self.make_request('DELETE', f'/commission-rates/{fake_rate_id}', token=self.admin_token)
             if response.status_code == 404:
                 self.log_result("Rate Not Found Error", True, "Correctly returned 404 for non-existent rate")
             else:
@@ -690,30 +685,15 @@ class APITester:
         except Exception as e:
             self.log_result("Rate Not Found Error", False, f"Error: {str(e)}")
         
-        # Test with invalid data (missing required fields)
+        # Test with no authentication
         try:
-            invalid_data = {
-                "agent_id": self.agent_baghdad_user_id,
-                # Missing currency, bulletin_type, date, tiers
-            }
-            response = self.make_request('PUT', f'/commission-rates/{created_rate_id}', token=self.admin_token, json=invalid_data)
-            if response.status_code == 422:  # Validation error
-                self.log_result("Invalid Data Validation", True, "Correctly rejected invalid data (422)")
+            response = self.make_request('DELETE', f'/commission-rates/{fake_rate_id}')  # No token
+            if response.status_code in [401, 403]:
+                self.log_result("No Auth Rejection", True, f"Correctly rejected unauthenticated request ({response.status_code})")
             else:
-                self.log_result("Invalid Data Validation", False, f"Expected 422, got {response.status_code}")
+                self.log_result("No Auth Rejection", False, f"Expected 401/403, got {response.status_code}")
         except Exception as e:
-            self.log_result("Invalid Data Validation", False, f"Error: {str(e)}")
-        
-        # Cleanup: Delete the test commission rate
-        print("\n--- Cleanup: Deleting test commission rate ---")
-        try:
-            response = self.make_request('DELETE', f'/commission-rates/{created_rate_id}', token=self.admin_token)
-            if response.status_code == 200:
-                print("✓ Test commission rate deleted for cleanup")
-            else:
-                print(f"⚠ Could not delete test commission rate: {response.status_code}")
-        except Exception as e:
-            print(f"⚠ Cleanup error: {e}")
+            self.log_result("No Auth Rejection", False, f"Error: {str(e)}")
         
         return True
 
