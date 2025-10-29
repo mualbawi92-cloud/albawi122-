@@ -171,6 +171,12 @@ const AgentsListPage = () => {
                           <span className="text-muted-foreground">📞</span>
                           <span className="font-medium" dir="ltr">{agent.phone || 'غير متوفر'}</span>
                         </div>
+                        {agent.address && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <span className="text-muted-foreground">📍</span>
+                            <span className="font-medium">{agent.address}</span>
+                          </div>
+                        )}
                         <div className="flex items-center gap-2 text-sm">
                           <span className="text-muted-foreground">📋</span>
                           <span>{agent.role === 'admin' ? 'مدير' : 'صراف'}</span>
