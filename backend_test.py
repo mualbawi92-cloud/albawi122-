@@ -957,30 +957,57 @@ class APITester:
         except Exception as e:
             self.log_result("Commission Paid Entry System", False, f"Error: {str(e)}")
         
-        # PHASE 4: Verify Account Balances
-        print("\n--- PHASE 4: VERIFY ACCOUNT BALANCES ---")
-        
-        print("Checking current account balances...")
+        # 3.6 - التحقق من رصيد الحسابات
+        print("\n3.6 - التحقق من رصيد الحسابات:")
         try:
             response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
             if response.status_code == 200:
-                accounts = response.json().get('accounts', [])
+                accounts_data = response.json()
+                accounts = accounts_data.get('accounts', [])
                 
                 # Find specific accounts
                 account_5110 = next((acc for acc in accounts if acc.get('code') == '5110'), None)
+                account_4020 = next((acc for acc in accounts if acc.get('code') == '4020'), None)
+                account_1030 = next((acc for acc in accounts if acc.get('code') == '1030'), None)
+                account_2001 = next((acc for acc in accounts if acc.get('code') == '2001'), None)
                 account_2002 = next((acc for acc in accounts if acc.get('code') == '2002'), None)
+                
+                print("   Current account balances:")
                 
                 if account_5110:
                     balance_5110 = account_5110.get('balance', 0)
-                    print(f"   Account 5110 (عمولات مدفوعة): {balance_5110:,} IQD")
-                    self.log_result("Account 5110 Balance", True, f"Account 5110 balance: {balance_5110:,} IQD")
+                    print(f"   ✅ Account 5110 (عمولات حوالات مدفوعة): {balance_5110:,} IQD")
+                    print(f"      Expected after receive: {balance_5110 + expected_commission:,} IQD")
+                    self.log_result("Account 5110 Balance", True, f"Account 5110 current balance: {balance_5110:,} IQD")
                 else:
                     self.log_result("Account 5110 Balance", False, "Account 5110 not found")
                 
+                if account_4020:
+                    balance_4020 = account_4020.get('balance', 0)
+                    print(f"   ✅ Account 4020 (عمولات محققة): {balance_4020:,} IQD")
+                    self.log_result("Account 4020 Balance", True, f"Account 4020 balance: {balance_4020:,} IQD")
+                else:
+                    self.log_result("Account 4020 Balance", False, "Account 4020 not found")
+                
+                if account_1030:
+                    balance_1030 = account_1030.get('balance', 0)
+                    print(f"   ✅ Account 1030 (Transit Account): {balance_1030:,} IQD")
+                    self.log_result("Account 1030 Balance", True, f"Account 1030 balance: {balance_1030:,} IQD")
+                else:
+                    self.log_result("Account 1030 Balance", False, "Account 1030 not found")
+                
+                if account_2001:
+                    balance_2001 = account_2001.get('balance', 0)
+                    print(f"   ✅ Account 2001 (Baghdad Agent): {balance_2001:,} IQD")
+                    self.log_result("Account 2001 Balance", True, f"Account 2001 balance: {balance_2001:,} IQD")
+                else:
+                    self.log_result("Account 2001 Balance", False, "Account 2001 not found")
+                
                 if account_2002:
                     balance_2002 = account_2002.get('balance', 0)
-                    print(f"   Account 2002 (Basra Agent): {balance_2002:,} IQD")
-                    self.log_result("Account 2002 Balance", True, f"Account 2002 balance: {balance_2002:,} IQD")
+                    print(f"   ✅ Account 2002 (Basra Agent): {balance_2002:,} IQD")
+                    print(f"      Expected after receive: {balance_2002 - (transfer_amount + expected_commission):,} IQD")
+                    self.log_result("Account 2002 Balance", True, f"Account 2002 current balance: {balance_2002:,} IQD")
                 else:
                     self.log_result("Account 2002 Balance", False, "Account 2002 not found")
                 
@@ -989,12 +1016,13 @@ class APITester:
         except Exception as e:
             self.log_result("Account Balances Check", False, f"Error checking balances: {str(e)}")
         
-        # PHASE 5: Verify Ledger
-        print("\n--- PHASE 5: VERIFY LEDGER ---")
+        # 3.7 - التحقق من دفتر الأستاذ
+        print("\n3.7 - التحقق من دفتر الأستاذ:")
         
-        print("Checking ledger for account 5110...")
+        # Check ledger for account 5110
+        print("   Checking ledger for account 5110 (عمولات حوالات مدفوعة)...")
         try:
-            response = self.make_request('GET', '/accounting/ledger/5110', token=self.admin_token)
+            response = self.make_request('GET', '/accounting/ledger?account_code=5110', token=self.admin_token)
             if response.status_code == 200:
                 ledger_data = response.json()
                 entries = ledger_data.get('entries', [])
@@ -1008,14 +1036,44 @@ class APITester:
                         credit = entry.get('credit', 0)
                         description = entry.get('description', '')
                         date = entry.get('date', '')
+                        balance = entry.get('balance', 0)
                         print(f"      {date}: {description}")
-                        print(f"        Debit: {debit:,}, Credit: {credit:,}")
+                        print(f"        Debit: {debit:,}, Credit: {credit:,}, Balance: {balance:,}")
+                else:
+                    print("   ⚠️  No ledger entries yet (expected before commission paid transactions)")
                 
-                self.log_result("Ledger Access", True, f"Ledger accessible for account 5110 ({len(entries)} entries)")
+                self.log_result("Ledger Access 5110", True, f"Ledger accessible for account 5110 ({len(entries)} entries)")
             else:
-                self.log_result("Ledger Access", False, f"Could not access ledger: {response.status_code}")
+                self.log_result("Ledger Access 5110", False, f"Could not access ledger: {response.status_code}")
         except Exception as e:
-            self.log_result("Ledger Access", False, f"Error accessing ledger: {str(e)}")
+            self.log_result("Ledger Access 5110", False, f"Error accessing ledger: {str(e)}")
+        
+        # Check ledger for account 2002 (Basra Agent)
+        print("   Checking ledger for account 2002 (Basra Agent)...")
+        try:
+            response = self.make_request('GET', '/accounting/ledger?account_code=2002', token=self.admin_token)
+            if response.status_code == 200:
+                ledger_data = response.json()
+                entries = ledger_data.get('entries', [])
+                
+                print(f"   Found {len(entries)} ledger entries for account 2002")
+                
+                if entries:
+                    print("   Recent ledger entries:")
+                    for entry in entries[:3]:  # Show first 3
+                        debit = entry.get('debit', 0)
+                        credit = entry.get('credit', 0)
+                        description = entry.get('description', '')
+                        date = entry.get('date', '')
+                        balance = entry.get('balance', 0)
+                        print(f"      {date}: {description}")
+                        print(f"        Debit: {debit:,}, Credit: {credit:,}, Balance: {balance:,}")
+                
+                self.log_result("Ledger Access 2002", True, f"Ledger accessible for account 2002 ({len(entries)} entries)")
+            else:
+                self.log_result("Ledger Access 2002", False, f"Could not access ledger: {response.status_code}")
+        except Exception as e:
+            self.log_result("Ledger Access 2002", False, f"Error accessing ledger: {str(e)}")
         
         # Backend Code Verification
         print("\n--- BACKEND CODE VERIFICATION ---")
