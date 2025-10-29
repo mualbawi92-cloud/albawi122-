@@ -555,9 +555,9 @@ const TransferDetailsPage = () => {
 
                       {/* Camera Full Screen Modal */}
                       {useCamera && (
-                        <div className="fixed inset-0 z-50 bg-black">
+                        <div className="fixed inset-0 z-[9999] bg-black">
                           {/* Header */}
-                          <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/90 to-transparent p-4">
+                          <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black via-black/80 to-transparent p-4 safe-area-top">
                             <div className="flex items-center justify-between text-white">
                               <h3 className="text-lg font-bold">📷 التقاط صورة الهوية</h3>
                               <Button
@@ -565,7 +565,7 @@ const TransferDetailsPage = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setUseCamera(false)}
-                                className="text-white hover:bg-white/20 text-xl"
+                                className="text-white hover:bg-white/20 text-2xl px-4"
                               >
                                 ✕
                               </Button>
@@ -573,31 +573,35 @@ const TransferDetailsPage = () => {
                           </div>
 
                           {/* Camera View */}
-                          <div className="w-full h-full">
+                          <div className="w-full h-full flex items-center justify-center">
                             <Webcam
                               ref={webcamRef}
                               audio={false}
                               screenshotFormat="image/jpeg"
+                              screenshotQuality={0.95}
                               videoConstraints={{
-                                facingMode: facingMode
+                                facingMode: facingMode,
+                                width: { min: 640, ideal: 1280, max: 1920 },
+                                height: { min: 480, ideal: 720, max: 1080 },
                               }}
+                              onUserMediaError={handleCameraError}
                               style={{
                                 width: '100%',
                                 height: '100%',
-                                objectFit: 'cover'
+                                objectFit: 'cover',
                               }}
                             />
                           </div>
 
                           {/* Controls */}
-                          <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/90 to-transparent p-6 pb-8">
-                            <div className="flex items-center justify-center gap-6">
+                          <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black via-black/80 to-transparent p-6 pb-8 safe-area-bottom">
+                            <div className="flex items-center justify-center gap-6 mb-4">
                               {/* Switch Camera Button */}
                               <Button
                                 type="button"
                                 onClick={switchCamera}
                                 size="lg"
-                                className="h-16 w-16 rounded-full bg-white/30 text-white border-2 border-white hover:bg-white/40 backdrop-blur-sm"
+                                className="h-16 w-16 rounded-full bg-white/30 text-white border-2 border-white hover:bg-white/40 backdrop-blur-sm flex items-center justify-center"
                               >
                                 <span className="text-2xl">🔄</span>
                               </Button>
@@ -607,25 +611,31 @@ const TransferDetailsPage = () => {
                                 type="button"
                                 onClick={captureImage}
                                 size="lg"
-                                className="h-20 w-20 rounded-full bg-white hover:bg-gray-200 border-4 border-secondary shadow-2xl"
+                                className="h-20 w-20 rounded-full bg-white hover:bg-gray-200 border-4 border-secondary shadow-2xl flex items-center justify-center"
                                 data-testid="capture-btn"
                               >
                                 <span className="text-3xl">📸</span>
                               </Button>
 
-                              {/* Gallery Button (placeholder) */}
+                              {/* Gallery Button */}
                               <Button
                                 type="button"
-                                onClick={() => document.getElementById('file-upload').click()}
+                                onClick={() => {
+                                  setUseCamera(false);
+                                  document.getElementById('file-upload').click();
+                                }}
                                 size="lg"
-                                className="h-16 w-16 rounded-full bg-white/30 text-white border-2 border-white hover:bg-white/40 backdrop-blur-sm"
+                                className="h-16 w-16 rounded-full bg-white/30 text-white border-2 border-white hover:bg-white/40 backdrop-blur-sm flex items-center justify-center"
                               >
                                 <span className="text-2xl">🖼️</span>
                               </Button>
                             </div>
                             
-                            <p className="text-center text-white text-sm mt-4 font-bold">
+                            <p className="text-center text-white text-base font-bold drop-shadow-lg">
                               {facingMode === 'user' ? '📱 الكاميرا الأمامية' : '📷 الكاميرا الخلفية'}
+                            </p>
+                            <p className="text-center text-white/70 text-sm mt-2">
+                              اضغط على زر 🔄 للتبديل بين الكاميرات
                             </p>
                           </div>
                         </div>
