@@ -1543,15 +1543,15 @@ async def update_transfer(
     update_data: TransferUpdate, 
     current_user: dict = Depends(get_current_user)
 ):
-    """Update a transfer (only sender can update pending transfers)"""
+    """Update a transfer (sender or admin can update pending transfers)"""
     transfer = await db.transfers.find_one({'id': transfer_id})
     
     if not transfer:
         raise HTTPException(status_code=404, detail="الحوالة غير موجودة")
     
-    # Only sender can update
-    if transfer['from_agent_id'] != current_user['id']:
-        raise HTTPException(status_code=403, detail="فقط المُرسل يمكنه تعديل الحوالة")
+    # Only sender or admin can update
+    if transfer['from_agent_id'] != current_user['id'] and current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="فقط المُرسل أو الأدمن يمكنه تعديل الحوالة")
     
     # Can only update pending transfers
     if transfer['status'] != 'pending':
