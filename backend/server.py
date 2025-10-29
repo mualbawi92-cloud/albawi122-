@@ -1423,15 +1423,15 @@ async def get_transfer_pin(transfer_id: str, current_user: dict = Depends(get_cu
 
 @api_router.patch("/transfers/{transfer_id}/cancel")
 async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_current_user)):
-    """Cancel a transfer (only sender can cancel pending transfers)"""
+    """Cancel a transfer (sender or admin can cancel pending transfers)"""
     transfer = await db.transfers.find_one({'id': transfer_id})
     
     if not transfer:
         raise HTTPException(status_code=404, detail="الحوالة غير موجودة")
     
-    # Only sender can cancel
-    if transfer['from_agent_id'] != current_user['id']:
-        raise HTTPException(status_code=403, detail="فقط المُرسل يمكنه إلغاء الحوالة")
+    # Only sender or admin can cancel
+    if transfer['from_agent_id'] != current_user['id'] and current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="فقط المُرسل أو الأدمن يمكنه إلغاء الحوالة")
     
     # Can only cancel pending transfers
     if transfer['status'] != 'pending':
