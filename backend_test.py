@@ -241,7 +241,7 @@ class APITester:
         }
         
         try:
-            response = self.make_request('POST', '/transfers', token=self.agent_token, json=transfer_data)
+            response = self.make_request('POST', '/transfers', token=self.agent_baghdad_token, json=transfer_data)
             if response.status_code == 200:
                 data = response.json()
                 transfer_id = data.get('id')
