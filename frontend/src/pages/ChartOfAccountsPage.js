@@ -305,18 +305,67 @@ const ChartOfAccountsPage = () => {
           <CardHeader className="bg-gradient-to-l from-purple-50 to-purple-100">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <CardTitle className="text-2xl sm:text-3xl">📚 الدليل المحاسبي</CardTitle>
+                <CardTitle className="text-2xl sm:text-3xl">📚 الدليل المحاسبي والتقارير</CardTitle>
                 <CardDescription className="text-base">
-                  دليل الحسابات الكامل مع الأرصدة
+                  دليل الحسابات والتقارير المحاسبية
                 </CardDescription>
               </div>
-              <Button onClick={() => setShowAddDialog(true)} className="w-full sm:w-auto">
-                ➕ إضافة حساب جديد
-              </Button>
+              {activeTab === 'accounts' && (
+                <Button onClick={() => setShowAddDialog(true)} className="w-full sm:w-auto">
+                  ➕ إضافة حساب جديد
+                </Button>
+              )}
             </div>
           </CardHeader>
         </Card>
 
+        {/* Tabs */}
+        <div className="flex gap-2 border-b-2 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('accounts')}
+            className={`px-6 py-3 font-bold text-lg transition-all whitespace-nowrap ${
+              activeTab === 'accounts'
+                ? 'border-b-4 border-primary text-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-primary'
+            }`}
+          >
+            📋 الحسابات
+          </button>
+          <button
+            onClick={() => setActiveTab('trial-balance')}
+            className={`px-6 py-3 font-bold text-lg transition-all whitespace-nowrap ${
+              activeTab === 'trial-balance'
+                ? 'border-b-4 border-primary text-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-primary'
+            }`}
+          >
+            ⚖️ ميزان المراجعة
+          </button>
+          <button
+            onClick={() => setActiveTab('income-statement')}
+            className={`px-6 py-3 font-bold text-lg transition-all whitespace-nowrap ${
+              activeTab === 'income-statement'
+                ? 'border-b-4 border-primary text-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-primary'
+            }`}
+          >
+            📊 قائمة الدخل
+          </button>
+          <button
+            onClick={() => setActiveTab('balance-sheet')}
+            className={`px-6 py-3 font-bold text-lg transition-all whitespace-nowrap ${
+              activeTab === 'balance-sheet'
+                ? 'border-b-4 border-primary text-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-primary'
+            }`}
+          >
+            📈 الميزانية العمومية
+          </button>
+        </div>
+
+        {/* Accounts Tab */}
+        {activeTab === 'accounts' && (
+          <>
         {/* Filters */}
         <Card>
           <CardContent className="pt-6">
