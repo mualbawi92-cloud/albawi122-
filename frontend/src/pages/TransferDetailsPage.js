@@ -725,6 +725,67 @@ const TransferDetailsPage = () => {
                       )}
                     </div>
 
+                    {/* Expected Commission Display */}
+                    {expectedCommission && expectedCommission.commission_amount > 0 && (
+                      <div className="bg-gradient-to-r from-green-50 to-green-100 border-2 border-green-400 rounded-lg p-6">
+                        <h4 className="text-lg font-bold text-green-900 mb-4 flex items-center gap-2">
+                          <span>💰</span>
+                          <span>عمولة الاستلام - ربحك من هذه الحوالة</span>
+                        </h4>
+                        
+                        <div className="bg-white rounded-lg p-4 border-2 border-green-300 shadow-sm">
+                          <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div className="text-center p-3 bg-green-50 rounded-lg">
+                              <p className="text-xs text-green-700 mb-1">نسبة العمولة</p>
+                              <p className="text-3xl font-bold text-green-600">
+                                {expectedCommission.commission_percentage}%
+                              </p>
+                            </div>
+                            <div className="text-center p-3 bg-green-50 rounded-lg">
+                              <p className="text-xs text-green-700 mb-1">مبلغ العمولة (ربحك)</p>
+                              <p className="text-3xl font-bold text-green-600">
+                                {expectedCommission.commission_amount?.toLocaleString()}
+                              </p>
+                              <p className="text-xs text-green-700">{transfer.currency}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-blue-50 border border-blue-300 rounded-lg p-3">
+                            <p className="text-sm text-blue-900 font-semibold mb-2">
+                              📊 تفاصيل المبالغ:
+                            </p>
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-gray-700">مبلغ الحوالة:</span>
+                                <span className="font-bold">{transfer.amount?.toLocaleString()} {transfer.currency}</span>
+                              </div>
+                              <div className="flex justify-between text-green-700">
+                                <span className="font-semibold">+ عمولتك:</span>
+                                <span className="font-bold">+{expectedCommission.commission_amount?.toLocaleString()} {transfer.currency}</span>
+                              </div>
+                              <div className="border-t-2 border-gray-300 pt-1 mt-2"></div>
+                              <div className="flex justify-between text-lg font-bold text-primary">
+                                <span>المجموع في محفظتك:</span>
+                                <span>{(transfer.amount + expectedCommission.commission_amount)?.toLocaleString()} {transfer.currency}</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-3 bg-yellow-50 border border-yellow-300 rounded p-2">
+                            <p className="text-xs text-yellow-800">
+                              ℹ️ <strong>ملاحظة:</strong> سيتم إضافة المبلغ الأساسي + العمولة إلى محفظتك فوراً بعد الاستلام
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {loadingCommission && (
+                      <div className="text-center py-4 text-gray-600">
+                        <p>جاري حساب العمولة المتوقعة...</p>
+                      </div>
+                    )}
+
                     <div className="flex gap-4 pt-4">
                       <Button
                         type="button"
