@@ -285,6 +285,42 @@ const TransferDetailsPage = () => {
               )}
             </div>
 
+            {/* Commission Information */}
+            {(transfer.commission > 0 || transfer.incoming_commission > 0) && (
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-300 rounded-lg p-6">
+                <h3 className="text-lg font-bold text-blue-900 mb-4">💰 معلومات العمولات</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {transfer.commission > 0 && (
+                    <div className="bg-white p-4 rounded-lg border border-blue-200">
+                      <Label className="text-sm text-blue-700">عمولة الإرسال (محققة)</Label>
+                      <p className="text-2xl font-bold text-green-600">
+                        {transfer.commission?.toLocaleString()} {transfer.currency}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">
+                        النسبة: {transfer.commission_percentage || 0}%
+                      </p>
+                    </div>
+                  )}
+                  {transfer.incoming_commission > 0 && (
+                    <div className="bg-white p-4 rounded-lg border border-red-200">
+                      <Label className="text-sm text-red-700">عمولة الاستلام (مدفوعة) ⭐</Label>
+                      <p className="text-2xl font-bold text-red-600">
+                        {transfer.incoming_commission?.toLocaleString()} {transfer.currency}
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">
+                        النسبة: {transfer.incoming_commission_percentage || 0}%
+                      </p>
+                      <div className="mt-2 bg-red-50 border border-red-200 rounded p-2">
+                        <p className="text-xs text-red-800">
+                          🔻 <strong>استقطاع:</strong> تم خصم هذا المبلغ من حساب "عمولات مدفوعة" وإضافته للصراف المستلم
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Show PIN Button for Sender */}
             {user && transfer.from_agent_id === user.id && !showPin && (
               <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
