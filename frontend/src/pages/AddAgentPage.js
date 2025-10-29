@@ -198,6 +198,18 @@ const AddAgentPage = () => {
                 </Select>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-base font-bold">عنوان الصيرفة</Label>
+                <Input
+                  id="address"
+                  data-testid="address-input"
+                  value={formData.address}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  className="text-base h-12"
+                  placeholder="مثال: شارع الرشيد، قرب ساحة التحرير"
+                />
+              </div>
+
               {/* Wallet Limits */}
               <div className="space-y-2">
                 <Label htmlFor="wallet_limit_iqd" className="text-base font-bold">
