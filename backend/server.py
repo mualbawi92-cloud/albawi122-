@@ -599,6 +599,7 @@ class UserCreate(BaseModel):
     display_name: str
     governorate: str
     phone: str
+    address: Optional[str] = None  # عنوان الصيرفة
     role: str = "agent"
     wallet_limit_iqd: float = 0.0  # حد أقصى للسحب بالدينار
     wallet_limit_usd: float = 0.0  # حد أقصى للسحب بالدولار
