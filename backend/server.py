@@ -1837,6 +1837,8 @@ async def receive_transfer(
         
         if receiver_account:
             # Create journal entry for receiving transfer
+            # Transit = مدين
+            # المكتب المُسلِّم (دفع نقدية للمستلم) = دائن
             journal_entry = {
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-RCV-{transfer['transfer_code']}",
@@ -1844,12 +1846,12 @@ async def receive_transfer(
                 'description': f'حوالة مستلمة: {transfer["transfer_code"]} من قبل {current_user["display_name"]}',
                 'lines': [
                     {
-                        'account_code': receiver_account['code'],  # Receiver Account (مدين)
+                        'account_code': '1030',  # Transit Account (مدين)
                         'debit': transfer['amount'],
                         'credit': 0
                     },
                     {
-                        'account_code': '1030',  # Transit Account (دائن)
+                        'account_code': receiver_account['code'],  # Receiver Account (دائن) - دفع نقدية
                         'debit': 0,
                         'credit': transfer['amount']
                     }
@@ -1866,15 +1868,15 @@ async def receive_transfer(
             await db.journal_entries.insert_one(journal_entry)
             
             # Update account balances
-            # Receiver account increases (debit for assets)
+            # Transit account increases (debit for assets)
             await db.accounts.update_one(
-                {'code': receiver_account['code']},
+                {'code': '1030'},
                 {'$inc': {'balance': transfer['amount']}}
             )
             
-            # Transit account decreases (credit for assets)
+            # Receiver account decreases (credit for assets - دفع نقدية)
             await db.accounts.update_one(
-                {'code': '1030'},
+                {'code': receiver_account['code']},
                 {'$inc': {'balance': -transfer['amount']}}
             )
             
