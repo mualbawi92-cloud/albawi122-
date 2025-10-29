@@ -348,6 +348,19 @@ const Navbar = () => {
             >
               📋 الحوالات
             </Button>
+            {user?.role === 'agent' && (
+              <Button
+                onClick={() => {
+                  navigate('/agent-ledger');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-agent-ledger"
+              >
+                📊 دفتر الأستاذ الخاص
+              </Button>
+            )}
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
