@@ -260,6 +260,19 @@ const Navbar = () => {
                 💳 إدارة المحافظ
               </Button>
             )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/commissions-management');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-commissions-manage"
+              >
+                💰 إدارة العمولات
+              </Button>
+            )}
             <Button
               onClick={() => {
                 navigate('/settings');
