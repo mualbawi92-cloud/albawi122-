@@ -60,6 +60,10 @@ const CommissionsManagementPage = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingRate, setEditingRate] = useState(null);
   
+  // Delete confirmation dialog
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [rateToDelete, setRateToDelete] = useState(null);
+  
   const [formData, setFormData] = useState({
     currency: 'IQD',
     bulletin_type: 'transfers',
