@@ -637,7 +637,7 @@ class APITester:
     
     def run_all_tests(self):
         """Run all tests in sequence"""
-        print("🚀 Starting Backend API Tests for Commission Calculate Preview Endpoint")
+        print("🚀 Starting Backend API Tests for Transit Account System")
         print("=" * 60)
         
         # Step 1: Authentication
@@ -645,11 +645,23 @@ class APITester:
             print("❌ Authentication failed. Cannot proceed with other tests.")
             return
         
-        # Step 2: Test commission calculate preview endpoint (MAIN FOCUS)
-        self.test_commission_calculate_preview()
+        # Step 2: Test wallet system (prerequisite for transit testing)
+        print("\n🔧 Testing Wallet System (Prerequisites)")
+        self.test_wallet_balance_endpoint()
+        self.test_dashboard_stats()
+        self.test_admin_deposit()
+        self.test_wallet_transactions()
         
-        # Step 3: Test commission calculation with configured rates
-        self.test_commission_with_rates()
+        # Step 3: Test Transit Account Endpoints (MAIN FOCUS)
+        print("\n🏦 Testing Transit Account Endpoints")
+        self.test_transit_account_balance()
+        self.test_transit_account_transactions()
+        self.test_transit_account_pending_transfers()
+        
+        # Step 4: Test Transfer Flow with Transit Integration
+        print("\n🔄 Testing Transfer Flow with Transit Integration")
+        self.test_transfer_flow_with_transit()
+        self.test_transfer_reception_with_transit()
         
         # Print summary
         self.print_summary()
