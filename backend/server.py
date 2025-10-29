@@ -613,8 +613,9 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     if not transfer_data.to_governorate:
         raise HTTPException(status_code=400, detail="المحافظة المستلمة مطلوبة")
     
-    # Generate transfer code and PIN
+    # Generate transfer code, transfer number, and PIN
     transfer_code, seq_num = await generate_transfer_code(transfer_data.to_governorate)
+    transfer_number = await generate_unique_transfer_number()
     pin = generate_pin()
     pin_hash_str = hash_pin(pin)
     
@@ -634,6 +635,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     transfer_doc = {
         'id': transfer_id,
         'transfer_code': transfer_code,
+        'transfer_number': transfer_number,
         'seq_number': seq_num,
         'from_agent_id': current_user['id'],
         'from_agent_name': current_user['display_name'],
@@ -641,6 +643,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'to_agent_id': transfer_data.to_agent_id,
         'to_agent_name': to_agent_name,
         'sender_name': transfer_data.sender_name,
+        'sender_phone': transfer_data.sender_phone,
         'receiver_name': transfer_data.receiver_name,
         'amount': transfer_data.amount,
         'currency': transfer_data.currency,
