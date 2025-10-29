@@ -327,33 +327,43 @@ const CreateTransferPage = () => {
                 )}
               </div>
 
-              <div className="flex gap-4 pt-4">
+              <div className="space-y-3 pt-4">
                 <Button
-                  onClick={() => navigate('/dashboard')}
-                  className="flex-1 bg-primary hover:bg-primary/90 text-lg font-bold py-6"
-                  data-testid="back-to-dashboard-btn"
+                  onClick={handlePrint}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white text-lg font-bold py-6"
                 >
-                  العودة للرئيسية
+                  🖨️ طباعة الحوالة
                 </Button>
-                <Button
-                  onClick={() => {
-                    setResult(null);
-                    setFormData({
-                      sender_name: '',
-                      receiver_name: '',
-                      amount: '',
-                      currency: 'IQD',
-                      to_governorate: '',
-                      to_agent_id: '',
-                      note: ''
-                    });
-                  }}
-                  variant="outline"
-                  className="flex-1 border-2 border-secondary text-lg font-bold py-6"
-                  data-testid="create-another-btn"
-                >
-                  إنشاء حوالة أخرى
-                </Button>
+                
+                <div className="flex gap-4">
+                  <Button
+                    onClick={() => navigate('/dashboard')}
+                    className="flex-1 bg-primary hover:bg-primary/90 text-lg font-bold py-6"
+                    data-testid="back-to-dashboard-btn"
+                  >
+                    العودة للرئيسية
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setResult(null);
+                      setFormData({
+                        sender_name: '',
+                        sender_phone: '',
+                        receiver_name: '',
+                        amount: '',
+                        currency: 'IQD',
+                        to_governorate: '',
+                        to_agent_id: '',
+                        note: ''
+                      });
+                    }}
+                    variant="outline"
+                    className="flex-1 border-2 border-secondary text-lg font-bold py-6"
+                    data-testid="create-another-btn"
+                  >
+                    إنشاء حوالة أخرى
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
