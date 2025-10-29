@@ -2549,6 +2549,33 @@ async def get_account(account_code: str, current_user: dict = Depends(require_ad
     account.pop('_id', None)
     return account
 
+@api_router.delete("/accounting/accounts/{account_code}")
+async def delete_account(account_code: str, current_user: dict = Depends(require_admin)):
+    """
+    Delete an account from chart of accounts
+    """
+    # Check if account exists
+    account = await db.accounts.find_one({'code': account_code})
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    # Check if account has child accounts
+    children = await db.accounts.count_documents({'parent_code': account_code})
+    if children > 0:
+        raise HTTPException(status_code=400, detail="Cannot delete account with child accounts. Delete children first.")
+    
+    # Check if account has transactions (has non-zero balance)
+    if account.get('balance', 0) != 0:
+        raise HTTPException(status_code=400, detail="Cannot delete account with non-zero balance")
+    
+    # Delete the account
+    result = await db.accounts.delete_one({'code': account_code})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=500, detail="Failed to delete account")
+    
+    return {"message": "تم حذف الحساب بنجاح", "code": account_code}
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
