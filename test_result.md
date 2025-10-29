@@ -313,6 +313,38 @@ frontend:
           
           **Test Coverage: 12/12 tests passed (100% success rate)**
 
+  - task: "Transit Account System (حساب الحوالات الواردة لم تُسلَّم)"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py, frontend/src/pages/TransitAccountPage.js, AdminDashboardPage.js, Navbar.js, App.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ MAJOR FEATURE: Transit account system for holding transfers
+          
+          **System Logic:**
+          - Transfer creation: Amount → Transit Account
+          - Transfer reception: Transit → Receiver
+          - Transfer cancellation: Transit → Sender (commission not returned)
+          - Transfer update: Transit adjusted for amount difference
+          
+          Backend:
+          - Created transit account helper functions
+          - Modified create_transfer, receive_transfer, cancel_transfer, update_transfer
+          - Added 3 new endpoints: /balance, /transactions, /pending-transfers
+          - Separate balances for IQD and USD
+          - Transaction logging for audit trail
+          
+          Frontend:
+          - TransitAccountPage: Overview, Pending Transfers, Transaction History
+          - AdminDashboard: Transit balance card with navigation
+          - Navbar: Transit account link for admin
+          - Fully responsive design
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
