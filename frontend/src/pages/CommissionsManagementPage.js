@@ -227,20 +227,26 @@ const CommissionsManagementPage = () => {
     }
 
     console.log('محاولة حذف النشرة:', rateId);
+    setLoading(true);
     
     try {
       const response = await axios.delete(`${API}/commission-rates/${rateId}`);
       console.log('استجابة الحذف:', response.data);
       toast.success('✅ تم حذف النشرة بنجاح');
       
-      // Refresh the list
-      console.log('تحديث قائمة النشرات...');
-      await fetchAgentCommissionRates(selectedAgent.id);
-      console.log('تم تحديث القائمة بنجاح');
+      // Refresh both lists
+      console.log('تحديث قوائم النشرات...');
+      if (selectedAgent) {
+        await fetchAgentCommissionRates(selectedAgent.id);
+      }
+      await fetchAllRates();
+      console.log('تم تحديث القوائم بنجاح');
     } catch (error) {
       console.error('خطأ في حذف النشرة:', error);
       console.error('تفاصيل الخطأ:', error.response?.data);
       toast.error('❌ خطأ في حذف النشرة: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setLoading(false);
     }
   };
 
