@@ -212,6 +212,19 @@ const CreateTransferPage = () => {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="sender_phone" className="text-base font-bold">رقم تلفون المرسل</Label>
+                <Input
+                  id="sender_phone"
+                  type="tel"
+                  value={formData.sender_phone}
+                  onChange={(e) => setFormData({ ...formData, sender_phone: e.target.value })}
+                  className="text-base h-12"
+                  placeholder="+9647801234567"
+                  dir="ltr"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="receiver_name" className="text-base font-bold">اسم المستلم الثلاثي *</Label>
                 <Input
                   id="receiver_name"
