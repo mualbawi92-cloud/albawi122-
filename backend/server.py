@@ -2576,6 +2576,333 @@ async def delete_account(account_code: str, current_user: dict = Depends(require
     
     return {"message": "تم حذف الحساب بنجاح", "code": account_code}
 
+# ============================================
+# Journal Entry Endpoints (القيود المحاسبية)
+# ============================================
+
+@api_router.post("/accounting/journal-entries")
+async def create_journal_entry(entry_data: JournalEntryCreate, current_user: dict = Depends(require_admin)):
+    """
+    Create a manual journal entry (قيد يومي يدوي)
+    """
+    # Validate that total debit equals total credit
+    total_debit = sum(line.get('debit', 0) for line in entry_data.lines)
+    total_credit = sum(line.get('credit', 0) for line in entry_data.lines)
+    
+    if abs(total_debit - total_credit) > 0.01:  # Allow small floating point differences
+        raise HTTPException(
+            status_code=400, 
+            detail=f"القيد غير متوازن: المدين {total_debit} ≠ الدائن {total_credit}"
+        )
+    
+    # Validate all account codes exist
+    for line in entry_data.lines:
+        account = await db.accounts.find_one({'code': line['account_code']})
+        if not account:
+            raise HTTPException(
+                status_code=404,
+                detail=f"الحساب {line['account_code']} غير موجود"
+            )
+    
+    # Generate entry number
+    last_entry = await db.journal_entries.find_one(sort=[('created_at', -1)])
+    if last_entry and 'entry_number' in last_entry:
+        try:
+            last_num = int(last_entry['entry_number'].replace('JE-', ''))
+            entry_number = f"JE-{last_num + 1:06d}"
+        except:
+            entry_number = f"JE-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
+    else:
+        entry_number = "JE-000001"
+    
+    # Create journal entry
+    journal_entry = {
+        'id': str(uuid.uuid4()),
+        'entry_number': entry_number,
+        'date': datetime.now(timezone.utc).isoformat(),
+        'description': entry_data.description,
+        'lines': entry_data.lines,
+        'total_debit': total_debit,
+        'total_credit': total_credit,
+        'reference_type': entry_data.reference_type,
+        'reference_id': entry_data.reference_id,
+        'created_by': current_user['id'],
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'is_cancelled': False
+    }
+    
+    await db.journal_entries.insert_one(journal_entry)
+    
+    # Update account balances
+    for line in entry_data.lines:
+        account_code = line['account_code']
+        debit = line.get('debit', 0)
+        credit = line.get('credit', 0)
+        
+        account = await db.accounts.find_one({'code': account_code})
+        if account:
+            # For assets and expenses: debit increases, credit decreases
+            # For liabilities, equity, and revenues: credit increases, debit decreases
+            category = account.get('category', '')
+            if category in ['أصول', 'مصاريف']:
+                balance_change = debit - credit
+            else:  # التزامات, حقوق الملكية, إيرادات
+                balance_change = credit - debit
+            
+            new_balance = account.get('balance', 0) + balance_change
+            
+            await db.accounts.update_one(
+                {'code': account_code},
+                {
+                    '$set': {
+                        'balance': new_balance,
+                        'updated_at': datetime.now(timezone.utc).isoformat()
+                    }
+                }
+            )
+    
+    journal_entry.pop('_id', None)
+    return journal_entry
+
+@api_router.get("/accounting/journal-entries")
+async def get_journal_entries(
+    start_date: str = None,
+    end_date: str = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get all journal entries (دفتر اليومية)
+    Optional filters: start_date, end_date (ISO format)
+    """
+    query = {'is_cancelled': False}
+    
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query['$gte'] = start_date
+        if end_date:
+            date_query['$lte'] = end_date
+        query['date'] = date_query
+    
+    entries = await db.journal_entries.find(query).sort('date', -1).to_list(length=None)
+    
+    for entry in entries:
+        entry.pop('_id', None)
+    
+    return {"entries": entries, "total": len(entries)}
+
+@api_router.get("/accounting/ledger/{account_code}")
+async def get_account_ledger(
+    account_code: str,
+    start_date: str = None,
+    end_date: str = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get ledger for a specific account (دفتر الأستاذ)
+    """
+    # Verify account exists
+    account = await db.accounts.find_one({'code': account_code})
+    if not account:
+        raise HTTPException(status_code=404, detail="الحساب غير موجود")
+    
+    # Build query
+    query = {'is_cancelled': False}
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query['$gte'] = start_date
+        if end_date:
+            date_query['$lte'] = end_date
+        query['date'] = date_query
+    
+    # Get all journal entries
+    entries = await db.journal_entries.find(query).sort('date', 1).to_list(length=None)
+    
+    # Filter and transform entries containing this account
+    ledger_entries = []
+    running_balance = 0
+    
+    for entry in entries:
+        for line in entry.get('lines', []):
+            if line.get('account_code') == account_code:
+                debit = line.get('debit', 0)
+                credit = line.get('credit', 0)
+                
+                # Calculate balance change based on account category
+                category = account.get('category', '')
+                if category in ['أصول', 'مصاريف']:
+                    balance_change = debit - credit
+                else:
+                    balance_change = credit - debit
+                
+                running_balance += balance_change
+                
+                ledger_entries.append({
+                    'date': entry['date'],
+                    'entry_number': entry['entry_number'],
+                    'description': entry['description'],
+                    'debit': debit,
+                    'credit': credit,
+                    'balance': running_balance
+                })
+    
+    account.pop('_id', None)
+    
+    return {
+        "account": account,
+        "entries": ledger_entries,
+        "total_entries": len(ledger_entries),
+        "current_balance": account.get('balance', 0)
+    }
+
+@api_router.patch("/accounting/journal-entries/{entry_id}")
+async def update_journal_entry(
+    entry_id: str,
+    entry_data: JournalEntryCreate,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Update a journal entry (تعديل قيد)
+    """
+    # Get existing entry
+    existing = await db.journal_entries.find_one({'id': entry_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="القيد غير موجود")
+    
+    if existing.get('is_cancelled'):
+        raise HTTPException(status_code=400, detail="لا يمكن تعديل قيد ملغى")
+    
+    # Validate new entry balance
+    total_debit = sum(line.get('debit', 0) for line in entry_data.lines)
+    total_credit = sum(line.get('credit', 0) for line in entry_data.lines)
+    
+    if abs(total_debit - total_credit) > 0.01:
+        raise HTTPException(
+            status_code=400,
+            detail=f"القيد غير متوازن: المدين {total_debit} ≠ الدائن {total_credit}"
+        )
+    
+    # Validate all account codes exist
+    for line in entry_data.lines:
+        account = await db.accounts.find_one({'code': line['account_code']})
+        if not account:
+            raise HTTPException(
+                status_code=404,
+                detail=f"الحساب {line['account_code']} غير موجود"
+            )
+    
+    # Reverse old entry effects on account balances
+    for line in existing.get('lines', []):
+        account_code = line['account_code']
+        debit = line.get('debit', 0)
+        credit = line.get('credit', 0)
+        
+        account = await db.accounts.find_one({'code': account_code})
+        if account:
+            category = account.get('category', '')
+            if category in ['أصول', 'مصاريف']:
+                balance_change = -(debit - credit)
+            else:
+                balance_change = -(credit - debit)
+            
+            new_balance = account.get('balance', 0) + balance_change
+            
+            await db.accounts.update_one(
+                {'code': account_code},
+                {'$set': {'balance': new_balance, 'updated_at': datetime.now(timezone.utc).isoformat()}}
+            )
+    
+    # Apply new entry effects
+    for line in entry_data.lines:
+        account_code = line['account_code']
+        debit = line.get('debit', 0)
+        credit = line.get('credit', 0)
+        
+        account = await db.accounts.find_one({'code': account_code})
+        if account:
+            category = account.get('category', '')
+            if category in ['أصول', 'مصاريف']:
+                balance_change = debit - credit
+            else:
+                balance_change = credit - debit
+            
+            new_balance = account.get('balance', 0) + balance_change
+            
+            await db.accounts.update_one(
+                {'code': account_code},
+                {'$set': {'balance': new_balance, 'updated_at': datetime.now(timezone.utc).isoformat()}}
+            )
+    
+    # Update journal entry
+    updated_entry = {
+        'description': entry_data.description,
+        'lines': entry_data.lines,
+        'total_debit': total_debit,
+        'total_credit': total_credit,
+        'reference_type': entry_data.reference_type,
+        'reference_id': entry_data.reference_id,
+        'updated_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.journal_entries.update_one(
+        {'id': entry_id},
+        {'$set': updated_entry}
+    )
+    
+    result = await db.journal_entries.find_one({'id': entry_id})
+    result.pop('_id', None)
+    
+    return result
+
+@api_router.delete("/accounting/journal-entries/{entry_id}")
+async def cancel_journal_entry(entry_id: str, current_user: dict = Depends(require_admin)):
+    """
+    Cancel a journal entry (إلغاء قيد)
+    """
+    # Get existing entry
+    existing = await db.journal_entries.find_one({'id': entry_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="القيد غير موجود")
+    
+    if existing.get('is_cancelled'):
+        raise HTTPException(status_code=400, detail="القيد ملغى مسبقاً")
+    
+    # Reverse entry effects on account balances
+    for line in existing.get('lines', []):
+        account_code = line['account_code']
+        debit = line.get('debit', 0)
+        credit = line.get('credit', 0)
+        
+        account = await db.accounts.find_one({'code': account_code})
+        if account:
+            category = account.get('category', '')
+            if category in ['أصول', 'مصاريف']:
+                balance_change = -(debit - credit)
+            else:
+                balance_change = -(credit - debit)
+            
+            new_balance = account.get('balance', 0) + balance_change
+            
+            await db.accounts.update_one(
+                {'code': account_code},
+                {'$set': {'balance': new_balance, 'updated_at': datetime.now(timezone.utc).isoformat()}}
+            )
+    
+    # Mark as cancelled
+    await db.journal_entries.update_one(
+        {'id': entry_id},
+        {
+            '$set': {
+                'is_cancelled': True,
+                'cancelled_at': datetime.now(timezone.utc).isoformat(),
+                'cancelled_by': current_user['id']
+            }
+        }
+    )
+    
+    return {"message": "تم إلغاء القيد بنجاح", "entry_id": entry_id}
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
