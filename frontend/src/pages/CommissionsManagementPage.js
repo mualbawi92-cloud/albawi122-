@@ -226,21 +226,22 @@ const CommissionsManagementPage = () => {
   };
 
   const handleDeleteRate = async (rateId) => {
-    // Create custom confirm dialog
-    const result = window.confirm('هل ترغب بحذف هذه النشرة؟\n\nنعم: سيتم حذف النشرة نهائياً\nلا: إلغاء العملية');
-    
-    if (!result) {
-      console.log('حذف النشرة تم إلغاؤه من قبل المستخدم');
-      return;
-    }
+    // Show confirmation dialog
+    setRateToDelete(rateId);
+    setShowDeleteDialog(true);
+  };
 
-    console.log('محاولة حذف النشرة:', rateId);
+  const confirmDelete = async () => {
+    if (!rateToDelete) return;
+    
+    console.log('محاولة إلغاء النشرة:', rateToDelete);
     setLoading(true);
+    setShowDeleteDialog(false);
     
     try {
-      const response = await axios.delete(`${API}/commission-rates/${rateId}`);
-      console.log('استجابة الحذف:', response.data);
-      toast.success('✅ تم حذف النشرة بنجاح');
+      const response = await axios.delete(`${API}/commission-rates/${rateToDelete}`);
+      console.log('استجابة الإلغاء:', response.data);
+      toast.success('✅ تم إلغاء النشرة بنجاح');
       
       // Refresh both lists
       console.log('تحديث قوائم النشرات...');
@@ -250,12 +251,19 @@ const CommissionsManagementPage = () => {
       await fetchAllRates();
       console.log('تم تحديث القوائم بنجاح');
     } catch (error) {
-      console.error('خطأ في حذف النشرة:', error);
+      console.error('خطأ في إلغاء النشرة:', error);
       console.error('تفاصيل الخطأ:', error.response?.data);
-      toast.error('❌ خطأ في حذف النشرة: ' + (error.response?.data?.detail || error.message));
+      toast.error('❌ خطأ في إلغاء النشرة: ' + (error.response?.data?.detail || error.message));
     } finally {
       setLoading(false);
+      setRateToDelete(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteDialog(false);
+    setRateToDelete(null);
+    console.log('تم إلغاء عملية الحذف من قبل المستخدم');
   };
 
   const handleEditRate = (rate) => {
