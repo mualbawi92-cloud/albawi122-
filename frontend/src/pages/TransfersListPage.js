@@ -87,8 +87,35 @@ const TransfersListPage = () => {
       <div className="container mx-auto p-3 sm:p-6">
         <Card className="shadow-xl mb-4 sm:mb-6">
           <CardHeader className="p-4 sm:p-6">
-            <CardTitle className="text-2xl sm:text-3xl text-primary">جميع الحوالات</CardTitle>
+            <CardTitle className="text-2xl sm:text-3xl text-primary">الحوالات</CardTitle>
           </CardHeader>
+          
+          {/* Tabs */}
+          <div className="border-b-2 px-4 sm:px-6">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveTab('outgoing')}
+                className={`px-6 py-3 font-bold text-lg transition-all ${
+                  activeTab === 'outgoing'
+                    ? 'border-b-4 border-primary text-primary bg-primary/5'
+                    : 'text-muted-foreground hover:text-primary'
+                }`}
+              >
+                📤 إرسال حوالة
+              </button>
+              <button
+                onClick={() => setActiveTab('incoming')}
+                className={`px-6 py-3 font-bold text-lg transition-all ${
+                  activeTab === 'incoming'
+                    ? 'border-b-4 border-primary text-primary bg-primary/5'
+                    : 'text-muted-foreground hover:text-primary'
+                }`}
+              >
+                📥 تسليم حوالة
+              </button>
+            </div>
+          </div>
+          
           <CardContent className="p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-6">
               <Input
