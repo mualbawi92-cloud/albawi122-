@@ -37,8 +37,9 @@ from typing import Dict, Any, Optional
 # Configuration
 BASE_URL = "https://secure-remit-1.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
-AGENT_BAGHDAD_CREDENTIALS = {"username": "agent_baghdad", "password": "test123"}
-AGENT_BASRA_CREDENTIALS = {"username": "agent_basra", "password": "test123"}
+
+# Try different possible passwords for test agents
+POSSIBLE_PASSWORDS = ["test123", "agent123", "123456", "password", "admin123"]
 
 class APITester:
     def __init__(self):
