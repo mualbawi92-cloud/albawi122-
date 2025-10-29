@@ -87,14 +87,6 @@ const Navbar = () => {
             >
               📋 الحوالات
             </Button>
-            <Button
-              onClick={() => navigate('/statement')}
-              variant="ghost"
-              className="text-white hover:bg-white/10 font-bold text-sm"
-              data-testid="nav-statement"
-            >
-              📊 كشف الحساب
-            </Button>
             {user?.role === 'admin' && (
               <Button
                 onClick={() => navigate('/admin/dashboard')}
