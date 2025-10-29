@@ -681,6 +681,7 @@ class UserUpdate(BaseModel):
     display_name: Optional[str] = None
     phone: Optional[str] = None
     governorate: Optional[str] = None
+    address: Optional[str] = None  # عنوان الصيرفة
     current_password: Optional[str] = None
     new_password: Optional[str] = None
 
