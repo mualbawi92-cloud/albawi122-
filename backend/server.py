@@ -3622,12 +3622,14 @@ async def get_account_ledger(
     account_code: str,
     start_date: str = None,
     end_date: str = None,
+    page: int = 1,
+    limit: int = 100,
     current_user: dict = Depends(require_admin)
 ):
     """
-    Get ledger for a specific account (دفتر الأستاذ)
+    Get ledger for a specific account (دفتر الأستاذ) with pagination
     """
-    # Verify account exists
+    # Verify account exists (using index)
     account = await db.accounts.find_one({'code': account_code})
     if not account:
         raise HTTPException(status_code=404, detail="الحساب غير موجود")
@@ -3642,8 +3644,14 @@ async def get_account_ledger(
             date_query['$lte'] = end_date
         query['date'] = date_query
     
-    # Get all journal entries
-    entries = await db.journal_entries.find(query).sort('date', 1).to_list(length=None)
+    # Calculate skip for pagination
+    skip = (page - 1) * limit
+    
+    # Get journal entries with pagination (using date index)
+    entries = await db.journal_entries.find(query).sort('date', 1).skip(skip).limit(limit).to_list(limit)
+    
+    # Get total count
+    total_entries = await db.journal_entries.count_documents(query)
     
     # Filter and transform entries containing this account
     ledger_entries = []
