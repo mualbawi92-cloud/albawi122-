@@ -442,3 +442,72 @@ agent_communication:
          - Tested with real commission rates: 0.25% for Baghdad agent
       
       **No Issues Found:** The commission calculate preview endpoint is fully functional and ready for production use.
+  
+  - agent: "main"
+    message: |
+      ✅ NEW MAJOR FEATURE: Transit Account System (حساب الحوالات الواردة لم تُسلَّم)
+      
+      User Request: Implement transit account system where transfers are held until received
+      
+      **System Flow:**
+      1. Transfer Creation: Amount deducted from sender → Added to transit account
+      2. Transfer Reception: Amount deducted from transit → Added to receiver
+      3. Transfer Cancellation: Amount deducted from transit → Returned to sender (without commission)
+      4. Transfer Update: Transit account adjusted based on amount difference
+      
+      **Backend Changes:**
+      1. Added constant: TRANSIT_ACCOUNT_ID
+      2. Created helper functions:
+         - get_or_create_transit_account(): Initialize/retrieve transit account
+         - update_transit_balance(): Update balance and log transactions
+      
+      3. Modified create_transfer:
+         - Added: Add amount to transit account after deducting from sender
+         - Logs transit transaction
+      
+      4. Modified receive_transfer:
+         - Added: Subtract amount from transit before adding to receiver
+         - Logs transit transaction
+      
+      5. Modified cancel_transfer:
+         - Added: Subtract amount from transit when returning to sender
+         - Commission NOT returned to sender (as per requirement)
+         - Logs transit transaction
+      
+      6. Modified update_transfer:
+         - Added: Adjust transit account when transfer amount changes
+         - Handles both increases and decreases
+      
+      7. New Endpoints:
+         - GET /api/transit-account/balance (Admin only)
+           Returns: balance_iqd, balance_usd, pending_transfers_count
+         - GET /api/transit-account/transactions?limit=50 (Admin only)
+           Returns: Transaction history
+         - GET /api/transit-account/pending-transfers (Admin only)
+           Returns: All pending transfers with totals by currency
+      
+      **Frontend Changes:**
+      1. Created TransitAccountPage.js:
+         - 3 tabs: Overview, Pending Transfers, Transaction History
+         - Balance cards for IQD and USD
+         - Pending transfers count
+         - Transaction log with add/subtract indicators
+         - Click on pending transfer navigates to details
+      
+      2. Updated App.js:
+         - Added route: /transit-account
+      
+      3. Updated Navbar.js:
+         - Added "🏦 حساب الترانزيت" button for admin (desktop & mobile)
+      
+      4. Updated AdminDashboardPage.js:
+         - Added transit account balance card
+         - Shows IQD, USD, and pending count
+         - Clickable card navigates to TransitAccountPage
+         - Fetches transit data on page load
+      
+      **Database Collections:**
+      - transit_account: Stores balance_iqd, balance_usd
+      - transit_transactions: Logs all add/subtract operations
+      
+      Ready for testing!
