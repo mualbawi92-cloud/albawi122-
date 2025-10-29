@@ -719,7 +719,7 @@ class APITester:
         # Check journal entries endpoint
         print("\n6. Testing journal entries endpoint...")
         try:
-            response = self.make_request('GET', '/accounting/journal', token=self.admin_token)
+            response = self.make_request('GET', '/accounting/journal-entries', token=self.admin_token)
             if response.status_code == 200:
                 journal_entries = response.json().get('entries', [])
                 self.log_result("Journal Entries Endpoint", True, f"Journal entries accessible ({len(journal_entries)} entries found)")
@@ -738,7 +738,7 @@ class APITester:
         # Check ledger endpoint
         print("\n7. Testing ledger endpoint...")
         try:
-            response = self.make_request('GET', '/accounting/ledger', token=self.admin_token, params={'account_code': '5110'})
+            response = self.make_request('GET', '/accounting/ledger/5110', token=self.admin_token)
             if response.status_code == 200:
                 ledger_entries = response.json().get('entries', [])
                 self.log_result("Ledger Endpoint", True, f"Ledger accessible for account 5110 ({len(ledger_entries)} entries)")
