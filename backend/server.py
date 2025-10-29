@@ -1139,6 +1139,77 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         note=f'حوالة واردة من {current_user["display_name"]} - {transfer_code}'
     )
     
+    # ============ CREATE ACCOUNTING JOURNAL ENTRY ============
+    try:
+        # Get sender agent account
+        sender_account = await db.accounts.find_one({'agent_id': current_user['id']})
+        
+        if sender_account:
+            # Get or create Transit account
+            transit_account = await db.accounts.find_one({'code': '1030'})
+            if not transit_account:
+                transit_account = {
+                    'id': 'transit_account',
+                    'code': '1030',
+                    'name_ar': 'الحوالات الواردة لم تُسلَّم',
+                    'name_en': 'Transit Account',
+                    'category': 'أصول',
+                    'parent_code': None,
+                    'is_active': True,
+                    'balance': 0,
+                    'currency': 'IQD',
+                    'created_at': datetime.now(timezone.utc).isoformat(),
+                    'updated_at': datetime.now(timezone.utc).isoformat()
+                }
+                await db.accounts.insert_one(transit_account)
+            
+            # Create journal entry for transfer
+            journal_entry = {
+                'id': str(uuid.uuid4()),
+                'entry_number': f"TR-{transfer_code}",
+                'date': datetime.now(timezone.utc).isoformat(),
+                'description': f'حوالة صادرة: {transfer_code} من {current_user["display_name"]}',
+                'lines': [
+                    {
+                        'account_code': '1030',  # Transit Account (مدين)
+                        'debit': transfer_data.amount,
+                        'credit': 0
+                    },
+                    {
+                        'account_code': sender_account['code'],  # Sender Account (دائن)
+                        'debit': 0,
+                        'credit': transfer_data.amount
+                    }
+                ],
+                'total_debit': transfer_data.amount,
+                'total_credit': transfer_data.amount,
+                'reference_type': 'transfer_created',
+                'reference_id': transfer_id,
+                'created_by': current_user['id'],
+                'created_at': datetime.now(timezone.utc).isoformat(),
+                'is_cancelled': False
+            }
+            
+            await db.journal_entries.insert_one(journal_entry)
+            
+            # Update account balances
+            # Transit account increases (debit for assets)
+            await db.accounts.update_one(
+                {'code': '1030'},
+                {'$inc': {'balance': transfer_data.amount}}
+            )
+            
+            # Sender account decreases (credit for assets)
+            await db.accounts.update_one(
+                {'code': sender_account['code']},
+                {'$inc': {'balance': -transfer_data.amount}}
+            )
+            
+            logger.info(f"Created journal entry for transfer {transfer_code}")
+    except Exception as e:
+        logger.error(f"Error creating journal entry for transfer: {str(e)}")
+    # ============ END ACCOUNTING ENTRY ============
+    
     # Log wallet transaction
     await db.wallet_transactions.insert_one({
         'id': str(uuid.uuid4()),
