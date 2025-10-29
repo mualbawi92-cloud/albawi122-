@@ -1696,6 +1696,37 @@ async def delete_commission_rate(rate_id: str, current_user: dict = Depends(requ
         raise HTTPException(status_code=404, detail="Commission rate not found")
     return {"message": "Commission rate deleted"}
 
+@api_router.put("/commission-rates/{rate_id}")
+async def update_commission_rate(rate_id: str, rate_data: CommissionRateCreate, current_user: dict = Depends(require_admin)):
+    """Update commission rate"""
+    # Check if rate exists
+    existing_rate = await db.commission_rates.find_one({'id': rate_id})
+    if not existing_rate:
+        raise HTTPException(status_code=404, detail="Commission rate not found")
+    
+    # Prepare update data
+    update_doc = {
+        'agent_id': rate_data.agent_id,
+        'currency': rate_data.currency,
+        'bulletin_type': rate_data.bulletin_type,
+        'date': rate_data.date,
+        'tiers': [tier.model_dump() for tier in rate_data.tiers],
+        'updated_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Update
+    result = await db.commission_rates.update_one(
+        {'id': rate_id},
+        {'$set': update_doc}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=400, detail="Failed to update commission rate")
+    
+    # Get updated rate
+    updated_rate = await db.commission_rates.find_one({'id': rate_id})
+    return CommissionRate(**updated_rate)
+
 @api_router.post("/commission-rates/calculate")
 async def calculate_commission(amount: float, agent_id: str, transfer_type: str, city: str, country: str, currency: str = "IQD"):
     """Calculate commission for a transfer"""
