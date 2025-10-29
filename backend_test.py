@@ -839,10 +839,10 @@ class APITester:
         except Exception as e:
             self.log_result("Zero Commission Rate Setup", False, f"Error creating 0% rate: {str(e)}")
         
-        # Phase 6: Cleanup
-        print("\n--- PHASE 6: CLEANUP ---")
+        # Phase 7: Cleanup
+        print("\n--- PHASE 7: CLEANUP ---")
         
-        print("9. Cleaning up test data...")
+        print("7.1. Cleaning up test data...")
         
         # Cancel the test transfer
         try:
