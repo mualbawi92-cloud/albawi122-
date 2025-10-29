@@ -765,6 +765,7 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
         'role': user_data.role,
         'governorate': user_data.governorate,
         'phone': user_data.phone,
+        'address': user_data.address,
         'is_active': True,
         'wallet_balance_iqd': 0.0,
         'wallet_balance_usd': 0.0,
