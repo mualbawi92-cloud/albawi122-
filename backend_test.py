@@ -523,33 +523,213 @@ class APITester:
     
     # Removed commission testing methods - focus is now on Transit Account System
     
+    def test_commission_rate_update_endpoint(self):
+        """Test PUT /api/commission-rates/{rate_id} - Commission Rate UPDATE functionality"""
+        print("\n=== Testing Commission Rate UPDATE Endpoint ===")
+        
+        if not self.agent_baghdad_user_id:
+            self.log_result("Commission Rate Update", False, "Agent user ID not available")
+            return False
+        
+        # Step 1: Create a commission rate first (if needed)
+        print("\n--- Step 1: Creating initial commission rate ---")
+        initial_rate_data = {
+            "agent_id": self.agent_baghdad_user_id,
+            "currency": "IQD",
+            "bulletin_type": "transfers",
+            "date": "2024-01-15",
+            "tiers": [
+                {
+                    "from_amount": 0.0,
+                    "to_amount": 100000.0,
+                    "percentage": 0.25,
+                    "city": "بغداد",
+                    "country": "العراق",
+                    "currency_type": "normal",
+                    "type": "outgoing"
+                },
+                {
+                    "from_amount": 100000.0,
+                    "to_amount": 500000.0,
+                    "percentage": 0.20,
+                    "city": "بغداد",
+                    "country": "العراق",
+                    "currency_type": "normal",
+                    "type": "outgoing"
+                }
+            ]
+        }
+        
+        created_rate_id = None
+        try:
+            response = self.make_request('POST', '/commission-rates', token=self.admin_token, json=initial_rate_data)
+            if response.status_code == 200:
+                data = response.json()
+                created_rate_id = data.get('id')
+                self.log_result("Commission Rate Creation", True, f"Rate created with ID: {created_rate_id}")
+            else:
+                self.log_result("Commission Rate Creation", False, f"Failed with status {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Commission Rate Creation", False, f"Error: {str(e)}")
+            return False
+        
+        if not created_rate_id:
+            self.log_result("Commission Rate Update Test", False, "Could not create initial commission rate")
+            return False
+        
+        # Step 2: Update the commission rate with new data
+        print("\n--- Step 2: Updating commission rate ---")
+        updated_rate_data = {
+            "agent_id": self.agent_baghdad_user_id,
+            "currency": "IQD",
+            "bulletin_type": "transfers",
+            "date": "2024-01-20",  # Changed date
+            "tiers": [
+                {
+                    "from_amount": 0.0,
+                    "to_amount": 150000.0,  # Changed amount range
+                    "percentage": 0.30,     # Changed percentage
+                    "city": "بغداد",
+                    "country": "العراق",
+                    "currency_type": "normal",
+                    "type": "outgoing"
+                },
+                {
+                    "from_amount": 150000.0,  # Changed amount range
+                    "to_amount": 750000.0,   # Changed amount range
+                    "percentage": 0.25,      # Changed percentage
+                    "city": "بغداد",
+                    "country": "العراق",
+                    "currency_type": "normal",
+                    "type": "outgoing"
+                },
+                {
+                    # Added new tier
+                    "from_amount": 750000.0,
+                    "to_amount": 2000000.0,
+                    "percentage": 0.15,
+                    "city": "بغداد",
+                    "country": "العراق",
+                    "currency_type": "normal",
+                    "type": "outgoing"
+                }
+            ]
+        }
+        
+        try:
+            response = self.make_request('PUT', f'/commission-rates/{created_rate_id}', token=self.admin_token, json=updated_rate_data)
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify the update was successful
+                if (data.get('date') == updated_rate_data['date'] and 
+                    len(data.get('tiers', [])) == 3 and
+                    data['tiers'][0]['percentage'] == 0.30 and
+                    data['tiers'][1]['percentage'] == 0.25 and
+                    data['tiers'][2]['percentage'] == 0.15):
+                    
+                    self.log_result("Commission Rate Update", True, 
+                                  f"Rate updated successfully. New date: {data['date']}, Tiers: {len(data['tiers'])}")
+                else:
+                    self.log_result("Commission Rate Update", False, "Update response doesn't match expected data", data)
+            else:
+                self.log_result("Commission Rate Update", False, f"Failed with status {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Commission Rate Update", False, f"Error: {str(e)}")
+        
+        # Step 3: Verify the data is updated in database by fetching it
+        print("\n--- Step 3: Verifying database update ---")
+        try:
+            response = self.make_request('GET', f'/commission-rates/agent/{self.agent_baghdad_user_id}', token=self.admin_token)
+            if response.status_code == 200:
+                rates = response.json()
+                updated_rate = None
+                for rate in rates:
+                    if rate.get('id') == created_rate_id:
+                        updated_rate = rate
+                        break
+                
+                if updated_rate:
+                    if (updated_rate.get('date') == "2024-01-20" and 
+                        len(updated_rate.get('tiers', [])) == 3 and
+                        updated_rate['tiers'][0]['percentage'] == 0.30):
+                        
+                        self.log_result("Database Verification", True, "Updated data correctly persisted in database")
+                    else:
+                        self.log_result("Database Verification", False, "Database data doesn't match update", updated_rate)
+                else:
+                    self.log_result("Database Verification", False, "Updated rate not found in database")
+            else:
+                self.log_result("Database Verification", False, f"Failed to fetch rates: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Database Verification", False, f"Error: {str(e)}")
+        
+        # Step 4: Test admin authentication requirement
+        print("\n--- Step 4: Testing admin authentication requirement ---")
+        try:
+            response = self.make_request('PUT', f'/commission-rates/{created_rate_id}', token=self.agent_baghdad_token, json=updated_rate_data)
+            if response.status_code == 403:
+                self.log_result("Admin Auth Requirement", True, "Correctly rejected agent access (403)")
+            else:
+                self.log_result("Admin Auth Requirement", False, f"Expected 403, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Admin Auth Requirement", False, f"Error: {str(e)}")
+        
+        # Step 5: Test error cases
+        print("\n--- Step 5: Testing error cases ---")
+        
+        # Test with non-existent rate ID
+        try:
+            fake_rate_id = "non-existent-rate-id"
+            response = self.make_request('PUT', f'/commission-rates/{fake_rate_id}', token=self.admin_token, json=updated_rate_data)
+            if response.status_code == 404:
+                self.log_result("Rate Not Found Error", True, "Correctly returned 404 for non-existent rate")
+            else:
+                self.log_result("Rate Not Found Error", False, f"Expected 404, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Rate Not Found Error", False, f"Error: {str(e)}")
+        
+        # Test with invalid data (missing required fields)
+        try:
+            invalid_data = {
+                "agent_id": self.agent_baghdad_user_id,
+                # Missing currency, bulletin_type, date, tiers
+            }
+            response = self.make_request('PUT', f'/commission-rates/{created_rate_id}', token=self.admin_token, json=invalid_data)
+            if response.status_code == 422:  # Validation error
+                self.log_result("Invalid Data Validation", True, "Correctly rejected invalid data (422)")
+            else:
+                self.log_result("Invalid Data Validation", False, f"Expected 422, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Invalid Data Validation", False, f"Error: {str(e)}")
+        
+        # Cleanup: Delete the test commission rate
+        print("\n--- Cleanup: Deleting test commission rate ---")
+        try:
+            response = self.make_request('DELETE', f'/commission-rates/{created_rate_id}', token=self.admin_token)
+            if response.status_code == 200:
+                print("✓ Test commission rate deleted for cleanup")
+            else:
+                print(f"⚠ Could not delete test commission rate: {response.status_code}")
+        except Exception as e:
+            print(f"⚠ Cleanup error: {e}")
+        
+        return True
+
     def run_all_tests(self):
         """Run all tests in sequence"""
-        print("🚀 Starting Backend API Tests for Transit Account System")
-        print("=" * 60)
+        print("🚀 Starting Backend API Tests for Commission Rate UPDATE Endpoint")
+        print("=" * 70)
         
         # Step 1: Authentication
         if not self.test_authentication():
             print("❌ Authentication failed. Cannot proceed with other tests.")
             return
         
-        # Step 2: Test wallet system (prerequisite for transit testing)
-        print("\n🔧 Testing Wallet System (Prerequisites)")
-        self.test_wallet_balance_endpoint()
-        self.test_dashboard_stats()
-        self.test_admin_deposit()
-        self.test_wallet_transactions()
-        
-        # Step 3: Test Transit Account Endpoints (MAIN FOCUS)
-        print("\n🏦 Testing Transit Account Endpoints")
-        self.test_transit_account_balance()
-        self.test_transit_account_transactions()
-        self.test_transit_account_pending_transfers()
-        
-        # Step 4: Test Transfer Flow with Transit Integration
-        print("\n🔄 Testing Transfer Flow with Transit Integration")
-        self.test_transfer_flow_with_transit()
-        self.test_transfer_reception_with_transit()
+        # Step 2: Test Commission Rate UPDATE Endpoint (MAIN FOCUS)
+        print("\n📊 Testing Commission Rate UPDATE Endpoint")
+        self.test_commission_rate_update_endpoint()
         
         # Print summary
         self.print_summary()
