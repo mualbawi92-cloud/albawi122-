@@ -773,8 +773,17 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             to_amount = tier_data.get('to_amount', float('inf'))
             
             if from_amount <= transfer_data.amount <= to_amount:
-                commission_percentage = tier_data.get('percentage', 0)
-                commission = (transfer_data.amount * commission_percentage) / 100
+                # Check commission type
+                commission_type = tier_data.get('commission_type', 'percentage')
+                
+                if commission_type == 'fixed_amount':
+                    # Fixed amount commission
+                    commission = tier_data.get('fixed_amount', 0)
+                    commission_percentage = (commission / transfer_data.amount * 100) if transfer_data.amount > 0 else 0
+                else:
+                    # Percentage commission
+                    commission_percentage = tier_data.get('percentage', 0)
+                    commission = (transfer_data.amount * commission_percentage) / 100
                 break
     
     # If no commission rate found, use 0% (not default 0.13%)
