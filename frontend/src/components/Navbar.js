@@ -413,6 +413,59 @@ const Navbar = () => {
                 📊 دفتر الأستاذ الخاص
               </Button>
             )}
+            
+            {/* Agent Commissions Dropdown for Mobile */}
+            {user?.role === 'agent' && (
+              <div className="w-full">
+                <Button
+                  onClick={() => setMobileAgentCommissionsOpen(!mobileAgentCommissionsOpen)}
+                  variant="ghost"
+                  className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                  data-testid="mobile-nav-agent-commissions-menu"
+                >
+                  💰 العمولات {mobileAgentCommissionsOpen ? '▴' : '▾'}
+                </Button>
+                
+                {mobileAgentCommissionsOpen && (
+                  <div className="bg-white/10 rounded-lg mt-1 mb-2">
+                    <Button
+                      onClick={() => {
+                        navigate('/agent-commissions?tab=summary');
+                        setMobileMenuOpen(false);
+                        setMobileAgentCommissionsOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      📊 نسبة الأرباح والخسائر
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/agent-commissions?tab=earned');
+                        setMobileMenuOpen(false);
+                        setMobileAgentCommissionsOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      💰 العمولات المحققة
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/agent-commissions?tab=paid');
+                        setMobileMenuOpen(false);
+                        setMobileAgentCommissionsOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      🔻 العمولات المدفوعة
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+            
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
