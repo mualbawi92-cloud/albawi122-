@@ -195,7 +195,7 @@ class APITester:
         print("\n=== Testing Wallet Transactions ===")
         
         try:
-            response = self.make_request('GET', '/wallet/transactions', token=self.agent_token)
+            response = self.make_request('GET', '/wallet/transactions', token=self.agent_baghdad_token)
             if response.status_code == 200:
                 data = response.json()
                 if isinstance(data, list):
