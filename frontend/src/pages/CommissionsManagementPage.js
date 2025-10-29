@@ -793,7 +793,7 @@ const CommissionsManagementPage = () => {
                               onClick={() => handleDeleteRate(rate.id)}
                               disabled={loading}
                             >
-                              {loading ? '...' : '🗑️ حذف'}
+                              {loading ? 'جاري الإلغاء...' : '❌ إلغاء النشرة'}
                             </Button>
                           </div>
                         </div>
