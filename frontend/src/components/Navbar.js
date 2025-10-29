@@ -14,6 +14,8 @@ const Navbar = () => {
   const { connected } = useWebSocket();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [accountingMenuOpen, setAccountingMenuOpen] = useState(false);
+  const [mobileAccountingOpen, setMobileAccountingOpen] = useState(false);
 
   useEffect(() => {
     if (user?.role === 'admin') {
