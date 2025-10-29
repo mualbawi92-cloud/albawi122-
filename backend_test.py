@@ -793,7 +793,7 @@ class APITester:
             self.log_result("Journal Entries Endpoint", False, f"Error accessing journal entries: {str(e)}")
         
         # Check ledger endpoint
-        print("\n7. Testing ledger endpoint...")
+        print("\n5.3. Testing ledger endpoint...")
         try:
             response = self.make_request('GET', '/accounting/ledger/5110', token=self.admin_token)
             if response.status_code == 200:
