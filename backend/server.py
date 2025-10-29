@@ -1418,6 +1418,59 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
     
     await log_audit(transfer_id, current_user['id'], 'transfer_cancelled', {})
     
+    # ============ CREATE ACCOUNTING JOURNAL ENTRY (REVERSAL) ============
+    try:
+        # Get sender agent account
+        sender_account = await db.accounts.find_one({'agent_id': current_user['id']})
+        
+        if sender_account:
+            # Create reversal journal entry for cancelled transfer
+            journal_entry = {
+                'id': str(uuid.uuid4()),
+                'entry_number': f"TR-CXL-{transfer['transfer_code']}",
+                'date': datetime.now(timezone.utc).isoformat(),
+                'description': f'إلغاء حوالة: {transfer["transfer_code"]} - إرجاع إلى {current_user["display_name"]}',
+                'lines': [
+                    {
+                        'account_code': sender_account['code'],  # Sender Account (مدين) - استرجاع
+                        'debit': transfer['amount'],
+                        'credit': 0
+                    },
+                    {
+                        'account_code': '1030',  # Transit Account (دائن)
+                        'debit': 0,
+                        'credit': transfer['amount']
+                    }
+                ],
+                'total_debit': transfer['amount'],
+                'total_credit': transfer['amount'],
+                'reference_type': 'transfer_cancelled',
+                'reference_id': transfer_id,
+                'created_by': current_user['id'],
+                'created_at': datetime.now(timezone.utc).isoformat(),
+                'is_cancelled': False
+            }
+            
+            await db.journal_entries.insert_one(journal_entry)
+            
+            # Update account balances
+            # Sender account increases back (debit for assets)
+            await db.accounts.update_one(
+                {'code': sender_account['code']},
+                {'$inc': {'balance': transfer['amount']}}
+            )
+            
+            # Transit account decreases (credit for assets)
+            await db.accounts.update_one(
+                {'code': '1030'},
+                {'$inc': {'balance': -transfer['amount']}}
+            )
+            
+            logger.info(f"Created reversal journal entry for cancelled transfer {transfer['transfer_code']}")
+    except Exception as e:
+        logger.error(f"Error creating reversal journal entry: {str(e)}")
+    # ============ END ACCOUNTING ENTRY ============
+    
     return {'success': True, 'message': 'تم إلغاء الحوالة بنجاح'}
 
 @api_router.patch("/transfers/{transfer_id}/update")
