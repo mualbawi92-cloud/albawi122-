@@ -17,7 +17,7 @@ import time
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://agentpay-1.preview.emergentagent.com/api"
+BASE_URL = "https://hawala-dash.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
 AGENT_BAGHDAD_CREDENTIALS = {"username": "agent_baghdad", "password": "agent123"}
 AGENT_BASRA_CREDENTIALS = {"username": "agent_basra", "password": "agent123"}
