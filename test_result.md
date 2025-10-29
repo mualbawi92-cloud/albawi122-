@@ -300,6 +300,7 @@ test_plan:
     - "Wallet system backend"
     - "Wallet pages"
     - "Add receiver_name field to transfer forms and displays"
+    - "Commission rate display in CreateTransferPage"
   stuck_tasks: []
   test_all: false
   test_priority: "critical_first"
