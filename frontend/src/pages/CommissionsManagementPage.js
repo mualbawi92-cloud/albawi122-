@@ -194,7 +194,9 @@ const CommissionsManagementPage = () => {
         tiers: tiers.map(tier => ({
           from_amount: parseFloat(tier.from_amount) || 0,
           to_amount: parseFloat(tier.to_amount) || 0,
+          commission_type: tier.commission_type || 'percentage',
           percentage: parseFloat(tier.percentage) || 0,
+          fixed_amount: parseFloat(tier.fixed_amount) || 0,
           city: tier.city === '(جميع المدن)' ? '(جميع المدن)' : tier.city,
           country: tier.country === '(جميع البلدان)' ? '(جميع البلدان)' : tier.country,
           currency_type: tier.currency_type,
