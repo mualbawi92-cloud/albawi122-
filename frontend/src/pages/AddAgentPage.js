@@ -68,6 +68,7 @@ const AddAgentPage = () => {
         display_name: formData.display_name,
         governorate: formData.governorate,
         phone: formData.phone,
+        address: formData.address,
         role: 'agent',
         wallet_limit_iqd: parseFloat(formData.wallet_limit_iqd) || 0,
         wallet_limit_usd: parseFloat(formData.wallet_limit_usd) || 0
