@@ -59,6 +59,42 @@ const CreateTransferPage = () => {
     loading: false
   });
 
+  // Calculate commission when amount, currency, or governorate changes
+  useEffect(() => {
+    const calculateCommission = async () => {
+      // Only calculate if we have all required fields
+      if (!formData.amount || parseFloat(formData.amount) <= 0 || !formData.currency || !formData.to_governorate) {
+        setCommissionData({ percentage: 0, amount: 0, loading: false });
+        return;
+      }
+
+      setCommissionData(prev => ({ ...prev, loading: true }));
+
+      try {
+        const response = await axios.get(`${API}/commission/calculate-preview`, {
+          params: {
+            amount: parseFloat(formData.amount),
+            currency: formData.currency,
+            to_governorate: formData.to_governorate
+          }
+        });
+
+        setCommissionData({
+          percentage: response.data.commission_percentage || 0,
+          amount: response.data.commission_amount || 0,
+          loading: false
+        });
+      } catch (error) {
+        console.error('Error calculating commission:', error);
+        setCommissionData({ percentage: 0, amount: 0, loading: false });
+      }
+    };
+
+    // Debounce the calculation to avoid too many API calls
+    const timeoutId = setTimeout(calculateCommission, 500);
+    return () => clearTimeout(timeoutId);
+  }, [formData.amount, formData.currency, formData.to_governorate]);
+
   const handleGovernorateChange = async (value) => {
     setFormData({ ...formData, to_governorate: value, to_agent_id: '' });
     
