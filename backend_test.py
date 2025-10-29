@@ -118,7 +118,7 @@ class APITester:
         print("\n=== Testing Wallet Balance Endpoint ===")
         
         try:
-            response = self.make_request('GET', '/wallet/balance', token=self.agent_token)
+            response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
             if response.status_code == 200:
                 data = response.json()
                 if 'wallet_balance_iqd' in data and 'wallet_balance_usd' in data:
