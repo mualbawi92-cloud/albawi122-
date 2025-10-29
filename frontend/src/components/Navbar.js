@@ -471,71 +471,93 @@ const Navbar = () => {
                 📊 التقارير
               </Button>
             )}
+            
+            {/* Accounting Dropdown for Mobile */}
             {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
-                  navigate('/chart-of-accounts');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-chart-of-accounts"
-              >
-                📚 الدليل المحاسبي
-              </Button>
+              <div className="w-full">
+                <Button
+                  onClick={() => setMobileAccountingOpen(!mobileAccountingOpen)}
+                  variant="ghost"
+                  className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                  data-testid="mobile-nav-accounting-menu"
+                >
+                  📊 المحاسبة {mobileAccountingOpen ? '▴' : '▾'}
+                </Button>
+                
+                {mobileAccountingOpen && (
+                  <div className="bg-white/10 rounded-lg mt-1 mb-2">
+                    <Button
+                      onClick={() => {
+                        navigate('/chart-of-accounts');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      📚 الدليل المحاسبي
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/ledger');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      📊 دفتر الأستاذ
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/journal');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      📖 دفتر اليومية
+                    </Button>
+                    <div className="border-t border-white/20 my-1"></div>
+                    <Button
+                      onClick={() => {
+                        navigate('/chart-of-accounts?tab=trial-balance');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      ⚖️ ميزان المراجعة
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/manual-journal-entry');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      📝 قيد التسوية
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/journal-transfer');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      🔄 القيد المزدوج
+                    </Button>
+                  </div>
+                )}
+              </div>
             )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
-                  navigate('/manual-journal-entry');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-manual-journal"
-              >
-                📝 القيود اليدوية
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
-                  navigate('/journal');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-journal"
-              >
-                📖 دفتر اليومية
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
-                  navigate('/journal-transfer');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-journal-transfer"
-              >
-                🔄 قيد مزدوج
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
-                  navigate('/ledger');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-ledger"
-              >
-                📊 دفتر الأستاذ
-              </Button>
-            )}
+            
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
