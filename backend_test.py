@@ -82,7 +82,7 @@ class APITester:
             raise
     
     def test_authentication(self):
-        """Test admin and agent authentication"""
+        """Test admin and agent authentication, create agents if needed"""
         print("\n=== Testing Authentication ===")
         
         # Test admin login
@@ -100,7 +100,7 @@ class APITester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
         
-        # Test agent_baghdad login
+        # Try to login as agent_baghdad, create if doesn't exist
         try:
             response = self.make_request('POST', '/login', json=AGENT_BAGHDAD_CREDENTIALS)
             if response.status_code == 200:
@@ -109,13 +109,41 @@ class APITester:
                 self.agent_baghdad_user_id = data['user']['id']
                 self.log_result("Agent Baghdad Login", True, f"Agent Baghdad authenticated successfully")
             else:
-                self.log_result("Agent Baghdad Login", False, f"Agent Baghdad login failed: {response.status_code}", response.text)
-                return False
+                # Agent doesn't exist, create it
+                print("   Agent Baghdad doesn't exist, creating...")
+                agent_data = {
+                    "username": "agent_baghdad",
+                    "password": "test123",
+                    "display_name": "صيرفة بغداد للاختبار",
+                    "governorate": "BG",
+                    "phone": "07901234567",
+                    "address": "بغداد - الكرادة",
+                    "role": "agent",
+                    "wallet_limit_iqd": 10000000,
+                    "wallet_limit_usd": 50000
+                }
+                
+                create_response = self.make_request('POST', '/register', token=self.admin_token, json=agent_data)
+                if create_response.status_code == 200:
+                    print("   ✓ Agent Baghdad created successfully")
+                    # Now try to login
+                    login_response = self.make_request('POST', '/login', json=AGENT_BAGHDAD_CREDENTIALS)
+                    if login_response.status_code == 200:
+                        data = login_response.json()
+                        self.agent_baghdad_token = data['access_token']
+                        self.agent_baghdad_user_id = data['user']['id']
+                        self.log_result("Agent Baghdad Creation & Login", True, "Agent Baghdad created and authenticated")
+                    else:
+                        self.log_result("Agent Baghdad Login After Creation", False, f"Login failed after creation: {login_response.status_code}")
+                        return False
+                else:
+                    self.log_result("Agent Baghdad Creation", False, f"Failed to create agent: {create_response.status_code}", create_response.text)
+                    return False
         except Exception as e:
             self.log_result("Agent Baghdad Login", False, f"Agent Baghdad login error: {str(e)}")
             return False
         
-        # Test agent_basra login
+        # Try to login as agent_basra, create if doesn't exist
         try:
             response = self.make_request('POST', '/login', json=AGENT_BASRA_CREDENTIALS)
             if response.status_code == 200:
@@ -124,8 +152,36 @@ class APITester:
                 self.agent_basra_user_id = data['user']['id']
                 self.log_result("Agent Basra Login", True, f"Agent Basra authenticated successfully")
             else:
-                self.log_result("Agent Basra Login", False, f"Agent Basra login failed: {response.status_code}", response.text)
-                return False
+                # Agent doesn't exist, create it
+                print("   Agent Basra doesn't exist, creating...")
+                agent_data = {
+                    "username": "agent_basra",
+                    "password": "test123",
+                    "display_name": "صيرفة البصرة للاختبار",
+                    "governorate": "BS",
+                    "phone": "07801234567",
+                    "address": "البصرة - العشار",
+                    "role": "agent",
+                    "wallet_limit_iqd": 10000000,
+                    "wallet_limit_usd": 50000
+                }
+                
+                create_response = self.make_request('POST', '/register', token=self.admin_token, json=agent_data)
+                if create_response.status_code == 200:
+                    print("   ✓ Agent Basra created successfully")
+                    # Now try to login
+                    login_response = self.make_request('POST', '/login', json=AGENT_BASRA_CREDENTIALS)
+                    if login_response.status_code == 200:
+                        data = login_response.json()
+                        self.agent_basra_token = data['access_token']
+                        self.agent_basra_user_id = data['user']['id']
+                        self.log_result("Agent Basra Creation & Login", True, "Agent Basra created and authenticated")
+                    else:
+                        self.log_result("Agent Basra Login After Creation", False, f"Login failed after creation: {login_response.status_code}")
+                        return False
+                else:
+                    self.log_result("Agent Basra Creation", False, f"Failed to create agent: {create_response.status_code}", create_response.text)
+                    return False
         except Exception as e:
             self.log_result("Agent Basra Login", False, f"Agent Basra login error: {str(e)}")
             return False
