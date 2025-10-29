@@ -1427,6 +1427,8 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
         
         if sender_account:
             # Create reversal journal entry for cancelled transfer
+            # Transit = مدين (استرجاع)
+            # المكتب المُصدر = دائن (رد النقدية للعميل)
             journal_entry = {
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-CXL-{transfer['transfer_code']}",
@@ -1434,12 +1436,12 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
                 'description': f'إلغاء حوالة: {transfer["transfer_code"]} - إرجاع إلى {current_user["display_name"]}',
                 'lines': [
                     {
-                        'account_code': sender_account['code'],  # Sender Account (مدين) - استرجاع
+                        'account_code': '1030',  # Transit Account (مدين)
                         'debit': transfer['amount'],
                         'credit': 0
                     },
                     {
-                        'account_code': '1030',  # Transit Account (دائن)
+                        'account_code': sender_account['code'],  # Sender Account (دائن) - رد النقدية
                         'debit': 0,
                         'credit': transfer['amount']
                     }
@@ -1456,15 +1458,15 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
             await db.journal_entries.insert_one(journal_entry)
             
             # Update account balances
-            # Sender account increases back (debit for assets)
+            # Transit account increases (debit for assets)
             await db.accounts.update_one(
-                {'code': sender_account['code']},
+                {'code': '1030'},
                 {'$inc': {'balance': transfer['amount']}}
             )
             
-            # Transit account decreases (credit for assets)
+            # Sender account decreases (credit for assets - رد النقدية)
             await db.accounts.update_one(
-                {'code': '1030'},
+                {'code': sender_account['code']},
                 {'$inc': {'balance': -transfer['amount']}}
             )
             
