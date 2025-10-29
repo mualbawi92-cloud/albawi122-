@@ -520,14 +520,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Commission Rate UPDATE Endpoint"
-    - "Add receiver_name field to transfer system"
-    - "Enhanced error messages for transfer reception"
-    - "Interactive dashboard cards"
-    - "Wallet system backend"
-    - "Wallet pages"
-    - "Add receiver_name field to transfer forms and displays"
-    - "Commission rate display in CreateTransferPage"
+    - "Chart of Accounts DELETE Endpoint"
+    - "Chart of Accounts Page (صفحة الدليل المحاسبي)"
+    - "Reports Page Implementation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
