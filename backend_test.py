@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """
 Backend API Testing for Cash Transfer System
-FOCUS: Commission Rate DELETE Endpoint Testing
+FOCUS: Chart of Accounts DELETE Endpoint Testing
 
-Tests the Commission Rate DELETE functionality:
-1. GET /api/commission-rates - Get list of commission rates
-2. DELETE /api/commission-rates/{rate_id} - Delete commission rate
-3. Admin authentication requirement
-4. Verification of deletion
-5. Error handling (rate not found, authentication issues)
+Tests the Chart of Accounts DELETE functionality:
+1. GET /api/accounting/accounts - Get list of accounts
+2. POST /api/accounting/accounts - Create test accounts
+3. DELETE /api/accounting/accounts/{account_code} - Delete account
+4. Admin authentication requirement
+5. Verification of deletion and business rules
+6. Error handling (account not found, has children, non-zero balance)
 """
 
 import requests
