@@ -349,68 +349,69 @@ const CommissionsManagementPage = () => {
                     لا توجد نشرات محفوظة لهذا الصراف
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {agentCommissionRates.map((rate) => (
-                      <Card key={rate.id} className="border-2">
-                        <CardHeader className="pb-3">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <CardTitle className="text-lg">
-                                {rate.currency} - {rate.bulletin_type}
-                              </CardTitle>
-                              <CardDescription>
-                                التاريخ: {new Date(rate.date).toLocaleDateString('ar-IQ')}
-                              </CardDescription>
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="border-blue-500 text-blue-600 hover:bg-blue-50"
-                                onClick={() => handleEditRate(rate)}
-                              >
-                                ✏️ تعديل
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => handleDeleteRate(rate.id)}
-                              >
-                                🗑️ حذف
-                              </Button>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                              <thead className="bg-gray-100">
-                                <tr>
-                                  <th className="p-2 text-right">من</th>
-                                  <th className="p-2 text-right">إلى</th>
-                                  <th className="p-2 text-right">النسبة %</th>
-                                  <th className="p-2 text-right">المدينة</th>
-                                  <th className="p-2 text-right">النوع</th>
-                                </tr>
-                              </thead>
-                              <tbody>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead className="bg-gradient-to-l from-primary/20 to-primary/10">
+                        <tr>
+                          <th className="p-3 text-right border font-bold">العملة</th>
+                          <th className="p-3 text-right border font-bold">النوع</th>
+                          <th className="p-3 text-right border font-bold">التاريخ</th>
+                          <th className="p-3 text-right border font-bold">الشرائح</th>
+                          <th className="p-3 text-center border font-bold">الإجراءات</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {agentCommissionRates.map((rate) => (
+                          <tr key={rate.id} className="border-b hover:bg-gray-50">
+                            <td className="p-3 border">
+                              <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                                rate.currency === 'IQD' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                              }`}>
+                                {rate.currency}
+                              </span>
+                            </td>
+                            <td className="p-3 border font-medium">{rate.bulletin_type}</td>
+                            <td className="p-3 border text-sm">{new Date(rate.date).toLocaleDateString('ar-IQ')}</td>
+                            <td className="p-3 border">
+                              <div className="space-y-2 max-w-2xl">
                                 {rate.tiers?.map((tier, idx) => (
-                                  <tr key={idx} className="border-t">
-                                    <td className="p-2">{tier.from_amount?.toLocaleString()}</td>
-                                    <td className="p-2">{tier.to_amount?.toLocaleString()}</td>
-                                    <td className="p-2 font-bold">{tier.percentage}%</td>
-                                    <td className="p-2">{tier.city || '(جميع المدن)'}</td>
-                                    <td className="p-2">
-                                      {tier.type === 'outgoing' ? '📤 صادرة' : '📥 واردة'}
-                                    </td>
-                                  </tr>
+                                  <div key={idx} className="flex items-center gap-2 text-sm bg-gray-50 p-2 rounded border">
+                                    <span className="font-bold text-purple-700">{tier.percentage}%</span>
+                                    <span className="text-gray-600">|</span>
+                                    <span>من {tier.from_amount?.toLocaleString()}</span>
+                                    <span>→</span>
+                                    <span>إلى {tier.to_amount?.toLocaleString()}</span>
+                                    <span className="text-gray-600">|</span>
+                                    <span className="text-xs">{tier.city || '(جميع المدن)'}</span>
+                                    <span className="text-gray-600">|</span>
+                                    <span className="text-xs">{tier.type === 'outgoing' ? '📤 صادرة' : '📥 واردة'}</span>
+                                  </div>
                                 ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                              </div>
+                            </td>
+                            <td className="p-3 border">
+                              <div className="flex gap-2 justify-center">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                                  onClick={() => handleEditRate(rate)}
+                                >
+                                  ✏️ تعديل
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => handleDeleteRate(rate.id)}
+                                >
+                                  🗑️ حذف
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </CardContent>
