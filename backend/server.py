@@ -379,6 +379,64 @@ class CommissionRateCreate(BaseModel):
     date: str
     tiers: List[CommissionTier]
 
+# ============================================
+# Accounting Models (النماذج المحاسبية)
+# ============================================
+
+class AccountCategory(str):
+    """Account categories in Arabic"""
+    ASSETS = "أصول"  # Assets
+    LIABILITIES = "التزامات"  # Liabilities
+    EQUITY = "حقوق الملكية"  # Equity
+    REVENUES = "إيرادات"  # Revenues
+    EXPENSES = "مصاريف"  # Expenses
+
+class Account(BaseModel):
+    """Account in chart of accounts"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    code: str  # 1010, 1020, etc.
+    name_ar: str  # الاسم بالعربي
+    name_en: str  # English name
+    category: str  # أصول، التزامات، إلخ
+    parent_code: Optional[str] = None  # للحسابات الفرعية
+    is_active: bool = True
+    balance: float = 0.0  # الرصيد الحالي
+    currency: str = "IQD"  # العملة
+    created_at: str
+    updated_at: str
+
+class AccountCreate(BaseModel):
+    code: str
+    name_ar: str
+    name_en: str
+    category: str
+    parent_code: Optional[str] = None
+    currency: str = "IQD"
+
+class JournalEntry(BaseModel):
+    """Journal entry (قيد يومية)"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    entry_number: str  # رقم القيد
+    date: str  # تاريخ القيد
+    description: str  # الوصف
+    lines: List[dict]  # سطور القيد (مدين ودائن)
+    total_debit: float  # إجمالي المدين
+    total_credit: float  # إجمالي الدائن
+    reference_type: Optional[str] = None  # نوع المرجع (transfer, exchange, etc.)
+    reference_id: Optional[str] = None  # معرف المرجع
+    created_by: str  # من أنشأ القيد
+    created_at: str
+
+class JournalEntryCreate(BaseModel):
+    description: str
+    lines: List[dict]  # [{"account_code": "1010", "debit": 1000, "credit": 0}, ...]
+    reference_type: Optional[str] = None
+    reference_id: Optional[str] = None
+
+# ============================================
+
 class UserCreate(BaseModel):
     username: str
     password: str
