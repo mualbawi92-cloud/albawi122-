@@ -53,6 +53,11 @@ const CreateTransferPage = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [commissionData, setCommissionData] = useState({
+    percentage: 0,
+    amount: 0,
+    loading: false
+  });
 
   const handleGovernorateChange = async (value) => {
     setFormData({ ...formData, to_governorate: value, to_agent_id: '' });
