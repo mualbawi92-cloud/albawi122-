@@ -566,10 +566,7 @@ const CommissionsManagementPage = () => {
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => {
-                          setShowAddForm(false);
-                          setEditingRate(null);
-                        }}
+                        onClick={handleCancelEdit}
                         className="flex-1"
                       >
                         إلغاء
