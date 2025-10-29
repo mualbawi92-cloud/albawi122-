@@ -944,7 +944,16 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
         }}
     )
     
-    # Return money to sender's wallet
+    # Subtract amount from transit account (return from transit)
+    await update_transit_balance(
+        amount=transfer['amount'],
+        currency=transfer['currency'],
+        operation='subtract',
+        reference_id=transfer_id,
+        note=f'إلغاء حوالة - إرجاع إلى {current_user["display_name"]} - {transfer["transfer_code"]}'
+    )
+    
+    # Return money to sender's wallet (المبلغ فقط بدون العمولة)
     wallet_field = f'wallet_balance_{transfer["currency"].lower()}'
     await db.users.update_one(
         {'id': current_user['id']},
