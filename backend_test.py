@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
 Backend API Testing for Cash Transfer System
-FOCUS: Commission Rate UPDATE Endpoint Testing
+FOCUS: Commission Rate DELETE Endpoint Testing
 
-Tests the Commission Rate UPDATE functionality:
-1. PUT /api/commission-rates/{rate_id} - Update existing commission rate
-2. Admin authentication requirement
-3. Field validation and updates
-4. Database persistence verification
-5. Error handling (rate not found, validation errors)
+Tests the Commission Rate DELETE functionality:
+1. GET /api/commission-rates - Get list of commission rates
+2. DELETE /api/commission-rates/{rate_id} - Delete commission rate
+3. Admin authentication requirement
+4. Verification of deletion
+5. Error handling (rate not found, authentication issues)
 """
 
 import requests
