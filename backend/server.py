@@ -143,6 +143,58 @@ def decrypt_pin(encrypted_pin: str) -> str:
     """Decrypt PIN"""
     return cipher.decrypt(encrypted_pin.encode()).decode()
 
+# ============================================
+# Transit Account Helper Functions
+# ============================================
+
+async def get_or_create_transit_account():
+    """Get or create transit account for pending transfers"""
+    transit = await db.transit_account.find_one({'id': TRANSIT_ACCOUNT_ID})
+    
+    if not transit:
+        transit = {
+            'id': TRANSIT_ACCOUNT_ID,
+            'type': 'transit_account',
+            'balance_iqd': 0.0,
+            'balance_usd': 0.0,
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        await db.transit_account.insert_one(transit)
+    
+    return transit
+
+async def update_transit_balance(amount: float, currency: str, operation: str, reference_id: str, note: str):
+    """
+    Update transit account balance
+    operation: 'add' or 'subtract'
+    """
+    await get_or_create_transit_account()
+    
+    balance_field = f'balance_{currency.lower()}'
+    increment = amount if operation == 'add' else -amount
+    
+    # Update balance
+    await db.transit_account.update_one(
+        {'id': TRANSIT_ACCOUNT_ID},
+        {
+            '$inc': {balance_field: increment},
+            '$set': {'updated_at': datetime.now(timezone.utc).isoformat()}
+        }
+    )
+    
+    # Log transaction
+    await db.transit_transactions.insert_one({
+        'id': str(uuid.uuid4()),
+        'amount': amount,
+        'currency': currency,
+        'operation': operation,
+        'balance_after': 0,  # Will be updated in query
+        'reference_id': reference_id,
+        'note': note,
+        'created_at': datetime.now(timezone.utc).isoformat()
+    })
+
 def number_to_arabic(num: float) -> str:
     """Convert number to Arabic words"""
     if num == 0:
