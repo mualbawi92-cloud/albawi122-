@@ -1436,6 +1436,93 @@ async def join_governorate(sid, data):
         sio.enter_room(sid, f"gov_{governorate}")
         print(f"Client {sid} joined governorate {governorate}")
 
+# ============ Commission Rate Endpoints ============
+
+@api_router.post("/commission-rates", response_model=CommissionRate)
+async def create_commission_rate(rate_data: CommissionRateCreate, current_user: dict = Depends(require_admin)):
+    """Create or update commission rate for an agent"""
+    # Get agent info
+    agent = await db.users.find_one({'id': rate_data.agent_id})
+    if not agent:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    
+    rate_id = str(uuid.uuid4())
+    rate_doc = {
+        'id': rate_id,
+        'agent_id': rate_data.agent_id,
+        'agent_name': agent['display_name'],
+        'currency': rate_data.currency,
+        'bulletin_type': rate_data.bulletin_type,
+        'date': rate_data.date,
+        'tiers': [tier.model_dump() for tier in rate_data.tiers],
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'updated_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.commission_rates.insert_one(rate_doc)
+    return CommissionRate(**rate_doc)
+
+@api_router.get("/commission-rates/agent/{agent_id}", response_model=List[CommissionRate])
+async def get_agent_commission_rates(agent_id: str, current_user: dict = Depends(get_current_user)):
+    """Get all commission rates for an agent"""
+    rates = await db.commission_rates.find({'agent_id': agent_id}).to_list(length=None)
+    return [CommissionRate(**rate) for rate in rates]
+
+@api_router.get("/commission-rates", response_model=List[CommissionRate])
+async def get_all_commission_rates(current_user: dict = Depends(require_admin)):
+    """Get all commission rates (admin only)"""
+    rates = await db.commission_rates.find().to_list(length=None)
+    return [CommissionRate(**rate) for rate in rates]
+
+@api_router.delete("/commission-rates/{rate_id}")
+async def delete_commission_rate(rate_id: str, current_user: dict = Depends(require_admin)):
+    """Delete commission rate"""
+    result = await db.commission_rates.delete_one({'id': rate_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Commission rate not found")
+    return {"message": "Commission rate deleted"}
+
+@api_router.post("/commission-rates/calculate")
+async def calculate_commission(amount: float, agent_id: str, transfer_type: str, city: str, country: str, currency: str = "IQD"):
+    """Calculate commission for a transfer"""
+    # Find applicable commission rate
+    rates = await db.commission_rates.find({
+        'agent_id': agent_id,
+        'currency': currency
+    }).to_list(length=None)
+    
+    if not rates:
+        return {"commission": 0, "percentage": 0}
+    
+    # Get the latest rate
+    rate = rates[0]
+    
+    # Find applicable tier
+    for tier_data in rate['tiers']:
+        tier = CommissionTier(**tier_data)
+        
+        # Check if tier matches the criteria
+        if tier.type != transfer_type:
+            continue
+        
+        if tier.city and tier.city != city and tier.city != "(جميع المدن)":
+            continue
+        
+        if tier.country and tier.country != country and tier.country != "(جميع البلدان)":
+            continue
+        
+        # Check amount range
+        if tier.from_amount <= amount <= tier.to_amount:
+            commission = (amount * tier.percentage) / 100
+            return {
+                "commission": commission,
+                "percentage": tier.percentage,
+                "from_amount": tier.from_amount,
+                "to_amount": tier.to_amount
+            }
+    
+    return {"commission": 0, "percentage": 0}
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
