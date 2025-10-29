@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
@@ -37,11 +37,22 @@ const IRAQI_GOVERNORATES = [
 const CommissionsManagementPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  
+  // Filter states
+  const [selectedGovernorate, setSelectedGovernorate] = useState('');
   const [agents, setAgents] = useState([]);
+  const [filteredAgents, setFilteredAgents] = useState([]);
+  
+  // Selected agent and their commission rates
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [agentCommissionRates, setAgentCommissionRates] = useState([]);
+  
+  // Form states
   const [loading, setLoading] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingRate, setEditingRate] = useState(null);
   
   const [formData, setFormData] = useState({
-    agent_id: '',
     currency: 'IQD',
     bulletin_type: 'transfers',
     date: new Date().toISOString().split('T')[0],
@@ -52,8 +63,8 @@ const CommissionsManagementPage = () => {
       from_amount: 0,
       to_amount: 1000000000,
       percentage: 0.25,
-      city: 'بغداد',
-      country: 'العراق',
+      city: '(جميع المدن)',
+      country: '(جميع البلدان)',
       currency_type: 'normal',
       type: 'outgoing'
     }
@@ -68,6 +79,23 @@ const CommissionsManagementPage = () => {
     fetchAgents();
   }, [user, navigate]);
 
+  useEffect(() => {
+    if (selectedGovernorate) {
+      const filtered = agents.filter(agent => agent.governorate === selectedGovernorate);
+      setFilteredAgents(filtered);
+    } else {
+      setFilteredAgents([]);
+    }
+    setSelectedAgent(null);
+    setAgentCommissionRates([]);
+  }, [selectedGovernorate, agents]);
+
+  useEffect(() => {
+    if (selectedAgent) {
+      fetchAgentCommissionRates(selectedAgent.id);
+    }
+  }, [selectedAgent]);
+
   const fetchAgents = async () => {
     try {
       const response = await axios.get(`${API}/agents`);
@@ -75,6 +103,16 @@ const CommissionsManagementPage = () => {
     } catch (error) {
       console.error('Error fetching agents:', error);
       toast.error('خطأ في تحميل قائمة الصرافين');
+    }
+  };
+
+  const fetchAgentCommissionRates = async (agentId) => {
+    try {
+      const response = await axios.get(`${API}/commission-rates/agent/${agentId}`);
+      setAgentCommissionRates(response.data);
+    } catch (error) {
+      console.error('Error fetching commission rates:', error);
+      setAgentCommissionRates([]);
     }
   };
 
