@@ -65,9 +65,21 @@ const TransfersListPage = () => {
     return <Badge className={config.className}>{config.label}</Badge>;
   };
 
-  const filteredTransfers = transfers.filter(t => 
-    !searchCode || t.transfer_code.toLowerCase().includes(searchCode.toLowerCase())
-  );
+  const filteredTransfers = transfers.filter(t => {
+    // Filter by search code
+    if (searchCode && !t.transfer_code.toLowerCase().includes(searchCode.toLowerCase())) {
+      return false;
+    }
+    
+    // Filter by tab (direction)
+    if (activeTab === 'outgoing') {
+      return t.direction === 'outgoing';
+    } else if (activeTab === 'incoming') {
+      return t.direction === 'incoming';
+    }
+    
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-background" data-testid="transfers-list-page">
