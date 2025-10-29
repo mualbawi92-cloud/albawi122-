@@ -253,6 +253,43 @@ const AdminDashboardPage = () => {
           </Card>
         </div>
 
+        {/* Transit Account Card */}
+        {transitData && (
+          <Card 
+            className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl cursor-pointer hover:shadow-xl transition-shadow"
+            onClick={() => navigate('/transit-account')}
+          >
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl font-bold text-purple-900 flex items-center justify-between">
+                <span>🏦 حساب الحوالات الواردة لم تُسلَّم (الترانزيت)</span>
+                <span className="text-sm font-normal text-purple-700">اضغط للتفاصيل</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white/60 p-4 rounded-lg">
+                  <p className="text-sm text-purple-700 mb-1">الرصيد بالدينار</p>
+                  <p className="text-3xl font-bold text-purple-900">
+                    {transitData.balance_iqd?.toLocaleString() || 0} IQD
+                  </p>
+                </div>
+                <div className="bg-white/60 p-4 rounded-lg">
+                  <p className="text-sm text-purple-700 mb-1">الرصيد بالدولار</p>
+                  <p className="text-3xl font-bold text-purple-900">
+                    {transitData.balance_usd?.toLocaleString() || 0} USD
+                  </p>
+                </div>
+                <div className="bg-white/60 p-4 rounded-lg">
+                  <p className="text-sm text-purple-700 mb-1">الحوالات المعلقة</p>
+                  <p className="text-3xl font-bold text-purple-900">
+                    {transitData.pending_transfers_count || 0}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Total Credit */}
