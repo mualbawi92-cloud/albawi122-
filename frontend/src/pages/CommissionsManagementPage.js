@@ -237,6 +237,27 @@ const CommissionsManagementPage = () => {
     });
     setTiers(rate.tiers || []);
     setShowAddForm(true);
+    // Scroll to form
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingRate(null);
+    setShowAddForm(false);
+    setFormData({
+      currency: 'IQD',
+      bulletin_type: 'transfers',
+      date: new Date().toISOString().split('T')[0],
+    });
+    setTiers([{
+      from_amount: 0,
+      to_amount: 1000000000,
+      percentage: 0.25,
+      city: '(جميع المدن)',
+      country: '(جميع البلدان)',
+      currency_type: 'normal',
+      type: 'outgoing'
+    }]);
   };
 
   return (
