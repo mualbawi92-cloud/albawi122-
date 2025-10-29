@@ -54,6 +54,7 @@ function AppRoutes() {
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
       <Route path="/commissions" element={<ProtectedRoute><CommissionsPage /></ProtectedRoute>} />
       <Route path="/commissions-management" element={<ProtectedRoute><CommissionsManagementPage /></ProtectedRoute>} />
+      <Route path="/commissions-view" element={<ProtectedRoute><AllCommissionsViewPage /></ProtectedRoute>} />
       <Route path="/admin/all-transfers" element={<ProtectedRoute><AllTransfersAdminPage /></ProtectedRoute>} />
       <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
       <Route path="/wallet/manage" element={<ProtectedRoute><WalletManagementPage /></ProtectedRoute>} />
