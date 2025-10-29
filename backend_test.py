@@ -163,12 +163,12 @@ class APITester:
         """Test POST /api/wallet/deposit (admin only)"""
         print("\n=== Testing Admin Deposit Functionality ===")
         
-        if not self.agent_user_id:
+        if not self.agent_baghdad_user_id:
             self.log_result("Admin Deposit", False, "Agent user ID not available")
             return False
         
         deposit_data = {
-            "user_id": self.agent_user_id,
+            "user_id": self.agent_baghdad_user_id,
             "amount": 10000,
             "currency": "IQD",
             "note": "Test deposit from automated testing"
