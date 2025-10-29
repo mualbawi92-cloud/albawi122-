@@ -90,6 +90,121 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
+# ============ AI Monitoring Functions ============
+
+async def check_duplicate_transfers(sender_name: str, receiver_name: str, amount: float, currency: str) -> dict:
+    """
+    Check for duplicate transfers on the same day
+    Returns dict with is_duplicate flag and details
+    """
+    # Get today's date range
+    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    today_end = today_start + timedelta(days=1)
+    
+    # Search for transfers with same sender/receiver name and amount today
+    query = {
+        'created_at': {
+            '$gte': today_start.isoformat(),
+            '$lt': today_end.isoformat()
+        },
+        'amount': amount,
+        'currency': currency,
+        '$or': [
+            {'sender_name': sender_name},
+            {'receiver_name': receiver_name}
+        ]
+    }
+    
+    duplicates = await db.transfers.find(query).to_list(length=None)
+    
+    if len(duplicates) > 0:
+        return {
+            'is_duplicate': True,
+            'count': len(duplicates),
+            'transfers': [
+                {
+                    'transfer_code': t.get('transfer_code'),
+                    'sender_name': t.get('sender_name'),
+                    'receiver_name': t.get('receiver_name'),
+                    'amount': t.get('amount'),
+                    'created_at': t.get('created_at')
+                }
+                for t in duplicates
+            ]
+        }
+    
+    return {'is_duplicate': False, 'count': 0, 'transfers': []}
+
+async def read_id_card_with_ai(image_url: str) -> dict:
+    """
+    Use OpenAI Vision to read name from ID card image
+    Returns dict with extracted_name and confidence
+    """
+    try:
+        # Download image and convert to base64
+        async with httpx.AsyncClient() as client:
+            response = await client.get(image_url)
+            if response.status_code != 200:
+                return {'success': False, 'error': 'Failed to download image'}
+            
+            image_data = response.content
+            image_base64 = base64.b64encode(image_data).decode('utf-8')
+        
+        # Initialize LLM with Vision
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            return {'success': False, 'error': 'No API key found'}
+        
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"id-card-{uuid.uuid4()}",
+            system_message="أنت خبير في قراءة الهويات العراقية. مهمتك استخراج الاسم الثلاثي الكامل بالعربي من صورة الهوية."
+        ).with_model("openai", "gpt-4o")
+        
+        # Create image content
+        image_content = ImageContent(image_base64=image_base64)
+        
+        # Ask AI to extract name
+        user_message = UserMessage(
+            text="اقرأ الاسم الثلاثي الكامل من هذه الهوية العراقية. أجب فقط بالاسم الثلاثي بدون أي نص إضافي. مثال: أحمد علي حسن",
+            file_contents=[image_content]
+        )
+        
+        response = await chat.send_message(user_message)
+        
+        extracted_name = response.strip()
+        
+        return {
+            'success': True,
+            'extracted_name': extracted_name
+        }
+        
+    except Exception as e:
+        logger.error(f"Error reading ID card with AI: {str(e)}")
+        return {'success': False, 'error': str(e)}
+
+async def create_ai_notification(admin_id: str, notification_type: str, title: str, message: str, related_transfer_id: str = None):
+    """
+    Create an AI-generated notification for admin
+    """
+    notification = {
+        'id': str(uuid.uuid4()),
+        'type': notification_type,  # 'duplicate_transfer', 'id_mismatch', 'suspicious_pattern'
+        'title': title,
+        'message': message,
+        'related_transfer_id': related_transfer_id,
+        'is_read': False,
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'severity': 'high'
+    }
+    
+    await db.notifications.insert_one(notification)
+    
+    # Emit socket event for real-time notification
+    await sio.emit('new_notification', {
+        'notification': notification
+    }, room=f'admin_{admin_id}')
+
 # ============ Helper Functions ============
 
 def compute_check_digit(base: str) -> str:
