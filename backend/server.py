@@ -2111,6 +2111,141 @@ async def get_transit_pending_transfers(current_user: dict = Depends(require_adm
         "totals": totals
     }
 
+# ============================================
+# AI Monitoring System (نظام المراقبة بالذكاء الاصطناعي)
+# ============================================
+
+async def analyze_transfer_with_ai(transfer_data: dict) -> dict:
+    """
+    Analyze transfer using AI to detect suspicious patterns
+    """
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    from dotenv import load_dotenv
+    import os
+    
+    load_dotenv()
+    
+    api_key = os.getenv('EMERGENT_LLM_KEY')
+    
+    # Prepare transfer details for AI analysis
+    analysis_prompt = f"""
+أنت نظام مراقبة ذكي لنظام الحوالات المالية. حلل الحوالة التالية وأخبرني إذا كان هناك شيء مشبوه:
+
+**تفاصيل الحوالة:**
+- رقم الحوالة: {transfer_data.get('transfer_code')}
+- المبلغ: {transfer_data.get('amount'):,.0f} {transfer_data.get('currency')}
+- المرسل: {transfer_data.get('sender_name')}
+- المستلم: {transfer_data.get('receiver_name')}
+- من صراف: {transfer_data.get('from_agent_name')}
+- إلى: {transfer_data.get('to_governorate')}
+- التاريخ: {transfer_data.get('created_at')}
+
+**معايير الكشف:**
+1. أسماء غريبة أو غير طبيعية (أسماء أجنبية، رموز، أرقام)
+2. مبلغ كبير جداً (مليار دينار أو أكثر)
+3. نمط غير طبيعي
+
+**المطلوب:**
+- هل هذه الحوالة مشبوهة؟ (نعم/لا)
+- مستوى الخطر: (منخفض/متوسط/عالي)
+- السبب: اشرح لماذا تعتبرها مشبوهة أو آمنة (بالعربي)
+
+أجب بتنسيق JSON فقط:
+{{
+  "is_suspicious": true/false,
+  "risk_level": "low/medium/high",
+  "reason": "السبب بالعربي",
+  "recommendations": "التوصيات للمدير"
+}}
+"""
+    
+    try:
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"transfer_analysis_{transfer_data.get('id')}",
+            system_message="أنت نظام مراقبة ذكي متخصص في كشف الحوالات المشبوهة. أجب دائماً بتنسيق JSON."
+        ).with_model("openai", "gpt-4o")
+        
+        user_message = UserMessage(text=analysis_prompt)
+        response = await chat.send_message(user_message)
+        
+        # Parse JSON response
+        import json
+        import re
+        
+        # Extract JSON from response
+        json_match = re.search(r'\{.*\}', response, re.DOTALL)
+        if json_match:
+            analysis_result = json.loads(json_match.group())
+        else:
+            analysis_result = {
+                "is_suspicious": False,
+                "risk_level": "low",
+                "reason": "فشل التحليل",
+                "recommendations": "يرجى المراجعة اليدوية"
+            }
+        
+        return analysis_result
+    except Exception as e:
+        print(f"Error in AI analysis: {e}")
+        return {
+            "is_suspicious": False,
+            "risk_level": "low",
+            "reason": f"خطأ في التحليل: {str(e)}",
+            "recommendations": "يرجى المراجعة اليدوية"
+        }
+
+async def check_duplicate_transfers_today(sender_name: str, receiver_name: str) -> int:
+    """
+    Check how many times the same sender/receiver pair appeared today
+    """
+    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    today_end = today_start + timedelta(days=1)
+    
+    count = await db.transfers.count_documents({
+        'sender_name': sender_name,
+        'receiver_name': receiver_name,
+        'created_at': {
+            '$gte': today_start.isoformat(),
+            '$lt': today_end.isoformat()
+        }
+    })
+    
+    return count
+
+async def check_delayed_transfers():
+    """
+    Check for delayed transfers (pending for more than 1-2 days)
+    """
+    one_day_ago = datetime.now(timezone.utc) - timedelta(days=1)
+    two_days_ago = datetime.now(timezone.utc) - timedelta(days=2)
+    
+    delayed_transfers = await db.transfers.find({
+        'status': 'pending',
+        'created_at': {'$lt': one_day_ago.isoformat()}
+    }).to_list(length=None)
+    
+    return delayed_transfers
+
+async def create_notification(title: str, message: str, severity: str, related_transfer_id: str = None, related_agent_id: str = None):
+    """
+    Create a notification for admin
+    severity: low, medium, high, critical
+    """
+    notification = {
+        'id': str(uuid.uuid4()),
+        'title': title,
+        'message': message,
+        'severity': severity,
+        'related_transfer_id': related_transfer_id,
+        'related_agent_id': related_agent_id,
+        'is_read': False,
+        'created_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.notifications.insert_one(notification)
+    return notification
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
