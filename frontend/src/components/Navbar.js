@@ -296,6 +296,19 @@ const Navbar = () => {
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
+                  navigate('/commissions-view');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-commissions-view"
+              >
+                📊 عرض جميع النشرات
+              </Button>
+            )}
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
                   navigate('/transit-account');
                   setMobileMenuOpen(false);
                 }}
