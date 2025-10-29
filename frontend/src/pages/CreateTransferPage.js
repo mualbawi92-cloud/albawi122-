@@ -40,6 +40,7 @@ const CreateTransferPage = () => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     sender_name: '',
+    sender_phone: '',
     receiver_name: '',
     amount: '',
     currency: 'IQD',
@@ -50,6 +51,7 @@ const CreateTransferPage = () => {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleGovernorateChange = async (value) => {
     setFormData({ ...formData, to_governorate: value, to_agent_id: '' });
