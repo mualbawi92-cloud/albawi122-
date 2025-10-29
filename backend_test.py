@@ -1022,7 +1022,7 @@ class APITester:
         # Check ledger for account 5110
         print("   Checking ledger for account 5110 (عمولات حوالات مدفوعة)...")
         try:
-            response = self.make_request('GET', '/accounting/ledger?account_code=5110', token=self.admin_token)
+            response = self.make_request('GET', '/accounting/ledger/5110', token=self.admin_token)
             if response.status_code == 200:
                 ledger_data = response.json()
                 entries = ledger_data.get('entries', [])
