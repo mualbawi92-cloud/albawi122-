@@ -25,6 +25,9 @@ import AllCommissionsViewPage from './pages/AllCommissionsViewPage';
 import NotificationsPage from './pages/NotificationsPage';
 import ReportsPage from './pages/ReportsPage';
 import ChartOfAccountsPage from './pages/ChartOfAccountsPage';
+import ManualJournalEntryPage from './pages/ManualJournalEntryPage';
+import JournalPage from './pages/JournalPage';
+import LedgerPage from './pages/LedgerPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
