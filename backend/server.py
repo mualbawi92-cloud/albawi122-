@@ -1393,9 +1393,11 @@ async def get_transfers(
     status: Optional[str] = None,
     governorate: Optional[str] = None,
     direction: Optional[str] = None,  # 'incoming' or 'outgoing'
+    page: int = 1,
+    limit: int = 50,  # عدد الحوالات في الصفحة
     current_user: dict = Depends(get_current_user)
 ):
-    """Get transfers list with filters"""
+    """Get transfers list with filters and pagination"""
     query = {}
     
     if status:
@@ -1420,7 +1422,15 @@ async def get_transfers(
             {'to_governorate': current_user.get('governorate'), 'to_agent_id': None}
         ]
     
-    transfers = await db.transfers.find(query, {'_id': 0, 'pin_hash': 0}).sort('created_at', -1).to_list(1000)
+    # Calculate skip for pagination
+    skip = (page - 1) * limit
+    
+    # Use indexes with sort and pagination
+    transfers = await db.transfers.find(
+        query, 
+        {'_id': 0, 'pin_hash': 0}
+    ).sort('created_at', -1).skip(skip).limit(limit).to_list(limit)
+    
     return transfers
 
 @api_router.get("/transfers/{transfer_id}", response_model=Transfer)
