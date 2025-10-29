@@ -107,7 +107,8 @@ const EditAgentPage = () => {
       const updateData = {
         display_name: formData.display_name,
         phone: formData.phone,
-        governorate: formData.governorate
+        governorate: formData.governorate,
+        address: formData.address
       };
 
       if (formData.new_password) {
