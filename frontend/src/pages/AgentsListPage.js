@@ -214,20 +214,20 @@ const AgentsListPage = () => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex flex-col gap-2 pt-3">
-                          <Button
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/statement/${agent.id}`);
-                            }}
-                            className="bg-blue-600 hover:bg-blue-700 text-white w-full"
-                            data-testid={`statement-${agent.username}`}
-                          >
-                            📊 كشف الحساب
-                          </Button>
-                          
-                          {user?.role === 'admin' && (
+                        {user?.role === 'admin' && (
+                          <div className="flex flex-col gap-2 pt-3">
+                            <Button
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/statement/${agent.id}`);
+                              }}
+                              className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                              data-testid={`statement-${agent.username}`}
+                            >
+                              📊 كشف الحساب
+                            </Button>
+                            
                             <div className="flex gap-2">
                               <Button
                                 size="sm"
@@ -254,8 +254,8 @@ const AgentsListPage = () => {
                                 {agent.is_active ? '🔴 تعطيل' : '✅ تفعيل'}
                               </Button>
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
