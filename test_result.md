@@ -140,7 +140,73 @@ backend:
       - working: "NA"
         agent: "main"
         comment: |
-          ✅ CRITICAL FIX: Added journal entry for paid commission on incoming transfers
+          User reported issue: Agent filter in commissions page shows all agents instead of filtering by selected agent
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ COMPREHENSIVE AGENT FILTER TESTING COMPLETED - FILTER WORKING CORRECTLY
+          
+          **Test Request:** Test agent filter functionality in /api/admin-commissions endpoint
+          
+          **Test Results Summary:**
+          - Total Tests: 19
+          - Passed: 19 (100% success rate)
+          - Failed: 0
+          - Agent filter is working correctly and as expected
+          
+          **Key Findings:**
+          
+          1. **Agent Filter Functionality - FULLY WORKING:**
+             - ✅ Without filter: Returns 11 total commissions from all agents
+             - ✅ With agent filter: Returns correct subset (10 commissions for agent f4b3efad-4a95-40ec-80a8-dae9e6192a17)
+             - ✅ Different agent filter: Returns correct subset (1 commission for agent 93f60a70-e4df-44ed-907d-732998cfe432)
+             - ✅ Non-existent agent: Returns 0 commissions (correct behavior)
+          
+          2. **Data Type Verification - CONSISTENT:**
+             - ✅ admin_commissions collection: agent_id stored as string
+             - ✅ transfers collection: from_agent_id and to_agent_id stored as string
+             - ✅ Filter comparison: string vs string (correct data type matching)
+             - ✅ No data type mismatches found
+          
+          3. **Backend Implementation - ROBUST:**
+             - ✅ Parameter reception: agent_id parameter correctly received and processed
+             - ✅ admin_commissions filtering: Works correctly with MongoDB query
+             - ✅ transfers collection filtering: Works correctly for both earned and paid commissions
+             - ✅ Logging: Comprehensive logging shows filter operations working correctly
+          
+          4. **Filter Accuracy - PERFECT:**
+             - ✅ All filtered results belong to the correct agent (100% accuracy)
+             - ✅ Count matches expected: Filtered count equals actual agent commission count
+             - ✅ No wrong agent commissions returned in filtered results
+             - ✅ Filter reduces results as expected (11 → 10 → 1 → 0 for different agents)
+          
+          **Backend Logs Verification:**
+          The backend logs clearly show the filter working correctly:
+          - "Admin commissions filter - agent_id: None" → Returns 11 total
+          - "Admin commissions filter - agent_id: f4b3efad-4a95-40ec-80a8-dae9e6192a17" → Returns 10 for that agent
+          - "Admin commissions filter - agent_id: 93f60a70-e4df-44ed-907d-732998cfe432" → Returns 1 for that agent
+          - "Applying agent_id filter" messages confirm parameter is received and processed
+          
+          **Detailed Test Coverage:**
+          1. ✅ Tested with multiple real agents that have commissions
+          2. ✅ Tested with agents that have no commissions
+          3. ✅ Tested with non-existent agent IDs
+          4. ✅ Tested both 'paid' and 'earned' commission types
+          5. ✅ Verified data structure and types in both collections
+          6. ✅ Confirmed backend logging and parameter processing
+          
+          **CONCLUSION:**
+          The agent filter in /api/admin-commissions endpoint is working correctly. The reported issue 
+          may be related to:
+          1. Frontend implementation not sending the agent_id parameter correctly
+          2. Frontend not processing the filtered response correctly
+          3. User interface issue in the commissions page
+          4. Caching issue in the frontend
+          
+          **RECOMMENDATION:**
+          The backend filter functionality is verified and working perfectly. The issue appears to be 
+          in the frontend implementation. Main agent should investigate the frontend commissions page 
+          to ensure it's properly sending the agent_id parameter and processing the filtered response.
           
           Problem Reported by User:
           - When receiving an incoming transfer, the paid commission was not properly recorded
