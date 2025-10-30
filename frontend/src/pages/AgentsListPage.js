@@ -158,7 +158,9 @@ const AgentsListPage = () => {
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <CardTitle className="text-xl text-primary">{agent.display_name}</CardTitle>
-                          <CardDescription>@{agent.username}</CardDescription>
+                          {user?.role === 'admin' && (
+                            <CardDescription>@{agent.username}</CardDescription>
+                          )}
                         </div>
                         <Badge className="bg-secondary text-primary">
                           {IRAQI_GOVERNORATES.find(g => g.code === agent.governorate)?.name || agent.governorate}
