@@ -268,6 +268,7 @@ const AgentLedgerPage = () => {
                                     txn.type === 'incoming' ? 'bg-orange-100 text-orange-800' :
                                     txn.type === 'commission_earned' ? 'bg-green-100 text-green-800' :
                                     txn.type === 'commission_paid' ? 'bg-red-100 text-red-800' :
+                                    txn.type === 'journal_entry' ? 'bg-indigo-100 text-indigo-800' :
                                     'bg-gray-100 text-gray-800'
                                   }`}>
                                     {
@@ -275,6 +276,7 @@ const AgentLedgerPage = () => {
                                       txn.type === 'incoming' ? '📥 واردة' :
                                       txn.type === 'commission_earned' ? '💰 عمولة محققة' :
                                       txn.type === 'commission_paid' ? '🔻 عمولة مدفوعة' :
+                                      txn.type === 'journal_entry' ? '📝 قيد يومي' :
                                       txn.type
                                     }
                                   </span>
