@@ -252,18 +252,18 @@ const LedgerPage = () => {
                           </p>
                         </div>
 
-                        {/* الدائن والمدين */}
+                        {/* المدين والدائن */}
                         <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-blue-50 rounded-lg p-3">
+                            <p className="text-xs text-blue-700 mb-1">📤 المدين (خروج)</p>
+                            <p className="text-lg font-bold text-blue-700">
+                              {entry.debit > 0 ? entry.debit.toLocaleString() : '-'}
+                            </p>
+                          </div>
                           <div className="bg-green-50 rounded-lg p-3">
                             <p className="text-xs text-green-700 mb-1">📥 الدائن (دخول)</p>
                             <p className="text-lg font-bold text-green-700">
                               {entry.credit > 0 ? entry.credit.toLocaleString() : '-'}
-                            </p>
-                          </div>
-                          <div className="bg-red-50 rounded-lg p-3">
-                            <p className="text-xs text-red-700 mb-1">📤 المدين (خروج)</p>
-                            <p className="text-lg font-bold text-red-700">
-                              {entry.debit > 0 ? entry.debit.toLocaleString() : '-'}
                             </p>
                           </div>
                         </div>
