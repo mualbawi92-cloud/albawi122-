@@ -1393,8 +1393,12 @@ async def get_transfers(
     status: Optional[str] = None,
     governorate: Optional[str] = None,
     direction: Optional[str] = None,  # 'incoming' or 'outgoing'
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    currency: Optional[str] = None,
+    agent_id: Optional[str] = None,
     page: int = 1,
-    limit: int = 50,  # عدد الحوالات في الصفحة
+    limit: int = 50,
     current_user: dict = Depends(get_current_user)
 ):
     """Get transfers list with filters and pagination"""
@@ -1406,15 +1410,35 @@ async def get_transfers(
     if governorate:
         query['to_governorate'] = governorate
     
-    if direction == 'incoming':
+    # Date range filter
+    if start_date and end_date:
+        query['created_at'] = {
+            '$gte': start_date,
+            '$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date
+        }
+    elif start_date:
+        query['created_at'] = {'$gte': start_date}
+    elif end_date:
+        query['created_at'] = {'$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date}
+    
+    # Currency filter
+    if currency:
+        query['currency'] = currency
+    
+    # Agent filter (for admin)
+    if current_user['role'] == 'admin' and agent_id:
+        query['$or'] = [
+            {'from_agent_id': agent_id},
+            {'to_agent_id': agent_id}
+        ]
+    elif direction == 'incoming':
         query['$or'] = [
             {'to_agent_id': current_user['id']},
             {'to_governorate': current_user.get('governorate'), 'to_agent_id': None}
         ]
     elif direction == 'outgoing':
         query['from_agent_id'] = current_user['id']
-    
-    if current_user['role'] == 'agent' and not direction:
+    elif current_user['role'] == 'agent' and not direction:
         # Show both incoming and outgoing for agent
         query['$or'] = [
             {'from_agent_id': current_user['id']},
