@@ -199,24 +199,69 @@ const AgentLedgerPage = () => {
                   </CardHeader>
                   <CardContent>
                     {ledgerData.transactions && ledgerData.transactions.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <table className="w-full border-collapse">
-                          <thead>
-                            <tr className="bg-blue-100 border-b-2 border-blue-300">
-                              <th className="p-3 text-right">التاريخ</th>
-                              <th className="p-3 text-right">النوع</th>
-                              <th className="p-3 text-right">الوصف</th>
-                              <th className="p-3 text-right">الرصيد</th>
-                              <th className="p-3 text-right">الدائن (دخول)</th>
-                              <th className="p-3 text-right">المدين (خروج)</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {ledgerData.transactions.map((txn, idx) => (
-                              <tr key={idx} className="border-b hover:bg-blue-50">
-                                <td className="p-3 text-sm">{formatDate(txn.date)}</td>
-                                <td className="p-3">
-                                  <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                      <>
+                        {/* Desktop View - Table */}
+                        <div className="hidden md:block overflow-x-auto">
+                          <table className="w-full border-collapse">
+                            <thead>
+                              <tr className="bg-blue-100 border-b-2 border-blue-300">
+                                <th className="p-3 text-right">التاريخ</th>
+                                <th className="p-3 text-right">النوع</th>
+                                <th className="p-3 text-right">الوصف</th>
+                                <th className="p-3 text-right">الرصيد</th>
+                                <th className="p-3 text-right">الدائن (دخول)</th>
+                                <th className="p-3 text-right">المدين (خروج)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {ledgerData.transactions.map((txn, idx) => (
+                                <tr key={idx} className="border-b hover:bg-blue-50">
+                                  <td className="p-3 text-sm">{formatDate(txn.date)}</td>
+                                  <td className="p-3">
+                                    <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                                      txn.type === 'outgoing' ? 'bg-purple-100 text-purple-800' :
+                                      txn.type === 'incoming' ? 'bg-orange-100 text-orange-800' :
+                                      txn.type === 'commission_earned' ? 'bg-green-100 text-green-800' :
+                                      txn.type === 'commission_paid' ? 'bg-red-100 text-red-800' :
+                                      'bg-gray-100 text-gray-800'
+                                    }`}>
+                                      {
+                                        txn.type === 'outgoing' ? '📤 حوالة صادرة' :
+                                        txn.type === 'incoming' ? '📥 حوالة واردة' :
+                                        txn.type === 'commission_earned' ? '💰 عمولة محققة' :
+                                        txn.type === 'commission_paid' ? '🔻 عمولة مدفوعة' :
+                                        txn.type
+                                      }
+                                    </span>
+                                  </td>
+                                  <td className="p-3 text-sm">{txn.description}</td>
+                                  <td className="p-3 font-bold text-blue-600">
+                                    {formatCurrency(txn.balance, txn.currency)}
+                                  </td>
+                                  <td className="p-3 font-bold text-green-600">
+                                    {txn.credit > 0 ? formatCurrency(txn.credit, txn.currency) : '-'}
+                                  </td>
+                                  <td className="p-3 font-bold text-red-600">
+                                    {txn.debit > 0 ? formatCurrency(txn.debit, txn.currency) : '-'}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Mobile View - Cards */}
+                        <div className="md:hidden space-y-4">
+                          {ledgerData.transactions.map((txn, idx) => (
+                            <div key={idx} className="bg-white border-2 border-blue-200 rounded-lg p-4 shadow-sm">
+                              {/* التاريخ والنوع */}
+                              <div className="flex justify-between items-center mb-3 pb-3 border-b">
+                                <div>
+                                  <p className="text-xs text-gray-500">التاريخ</p>
+                                  <p className="text-sm font-semibold">{formatDate(txn.date)}</p>
+                                </div>
+                                <div>
+                                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                                     txn.type === 'outgoing' ? 'bg-purple-100 text-purple-800' :
                                     txn.type === 'incoming' ? 'bg-orange-100 text-orange-800' :
                                     txn.type === 'commission_earned' ? 'bg-green-100 text-green-800' :
@@ -224,29 +269,49 @@ const AgentLedgerPage = () => {
                                     'bg-gray-100 text-gray-800'
                                   }`}>
                                     {
-                                      txn.type === 'outgoing' ? '📤 حوالة صادرة' :
-                                      txn.type === 'incoming' ? '📥 حوالة واردة' :
+                                      txn.type === 'outgoing' ? '📤 صادرة' :
+                                      txn.type === 'incoming' ? '📥 واردة' :
                                       txn.type === 'commission_earned' ? '💰 عمولة محققة' :
                                       txn.type === 'commission_paid' ? '🔻 عمولة مدفوعة' :
                                       txn.type
                                     }
                                   </span>
-                                </td>
-                                <td className="p-3 text-sm">{txn.description}</td>
-                                <td className="p-3 font-bold text-blue-600">
+                                </div>
+                              </div>
+
+                              {/* الوصف */}
+                              <div className="mb-3">
+                                <p className="text-xs text-gray-500 mb-1">الوصف</p>
+                                <p className="text-sm font-medium">{txn.description}</p>
+                              </div>
+
+                              {/* الرصيد */}
+                              <div className="bg-gradient-to-l from-blue-50 to-blue-100 rounded-lg p-3 mb-3">
+                                <p className="text-xs text-blue-700 mb-1">💰 الرصيد</p>
+                                <p className="text-2xl font-bold text-blue-600">
                                   {formatCurrency(txn.balance, txn.currency)}
-                                </td>
-                                <td className="p-3 font-bold text-green-600">
-                                  {txn.credit > 0 ? formatCurrency(txn.credit, txn.currency) : '-'}
-                                </td>
-                                <td className="p-3 font-bold text-red-600">
-                                  {txn.debit > 0 ? formatCurrency(txn.debit, txn.currency) : '-'}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                                </p>
+                              </div>
+
+                              {/* الدائن والمدين */}
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-green-50 rounded-lg p-3">
+                                  <p className="text-xs text-green-700 mb-1">📥 الدائن (دخول)</p>
+                                  <p className="text-lg font-bold text-green-700">
+                                    {txn.credit > 0 ? formatCurrency(txn.credit, txn.currency) : '-'}
+                                  </p>
+                                </div>
+                                <div className="bg-red-50 rounded-lg p-3">
+                                  <p className="text-xs text-red-700 mb-1">📤 المدين (خروج)</p>
+                                  <p className="text-lg font-bold text-red-700">
+                                    {txn.debit > 0 ? formatCurrency(txn.debit, txn.currency) : '-'}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
                     ) : (
                       <div className="text-center py-12 text-muted-foreground">
                         لا توجد حركات مالية في هذه الفترة
