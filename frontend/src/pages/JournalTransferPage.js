@@ -73,8 +73,8 @@ const JournalTransferPage = () => {
       await axios.post(`${API}/accounting/journal-entries`, {
         description: description,
         lines: [
-          { account_code: toAccount, debit: amountNum, credit: 0 },
-          { account_code: fromAccount, debit: 0, credit: amountNum }
+          { account_code: fromAccount, debit: amountNum, credit: 0 },
+          { account_code: toAccount, debit: 0, credit: amountNum }
         ]
       });
 
