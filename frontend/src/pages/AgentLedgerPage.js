@@ -242,10 +242,6 @@ const AgentLedgerPage = () => {
                                 <td className="p-3 font-bold text-red-600">
                                   {txn.debit > 0 ? formatCurrency(txn.debit, txn.currency) : '-'}
                                 </td>
-                                </td>
-                                <td className="p-3 font-bold text-blue-600">
-                                  {formatCurrency(txn.balance, txn.currency)}
-                                </td>
                               </tr>
                             ))}
                           </tbody>
