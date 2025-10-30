@@ -206,9 +206,9 @@ const AgentLedgerPage = () => {
                               <th className="p-3 text-right">التاريخ</th>
                               <th className="p-3 text-right">النوع</th>
                               <th className="p-3 text-right">الوصف</th>
-                              <th className="p-3 text-right">المدين</th>
-                              <th className="p-3 text-right">الدائن</th>
                               <th className="p-3 text-right">الرصيد</th>
+                              <th className="p-3 text-right">الدائن (دخول)</th>
+                              <th className="p-3 text-right">المدين (خروج)</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -233,11 +233,15 @@ const AgentLedgerPage = () => {
                                   </span>
                                 </td>
                                 <td className="p-3 text-sm">{txn.description}</td>
-                                <td className="p-3 font-bold text-red-600">
-                                  {txn.debit > 0 ? formatCurrency(txn.debit, txn.currency) : '-'}
+                                <td className="p-3 font-bold text-blue-600">
+                                  {formatCurrency(txn.balance, txn.currency)}
                                 </td>
                                 <td className="p-3 font-bold text-green-600">
                                   {txn.credit > 0 ? formatCurrency(txn.credit, txn.currency) : '-'}
+                                </td>
+                                <td className="p-3 font-bold text-red-600">
+                                  {txn.debit > 0 ? formatCurrency(txn.debit, txn.currency) : '-'}
+                                </td>
                                 </td>
                                 <td className="p-3 font-bold text-blue-600">
                                   {formatCurrency(txn.balance, txn.currency)}
