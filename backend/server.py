@@ -4319,6 +4319,45 @@ async def get_agent_ledger(
                 'transfer_code': transfer['transfer_code']
             })
     
+    # ============ إضافة القيود اليدوية من دفتر اليومية ============
+    # Get agent's account code
+    agent_account = await db.accounts.find_one({'agent_id': agent_id})
+    
+    if agent_account:
+        account_code = agent_account['code']
+        
+        # Get journal entries containing this agent's account
+        journal_entries = await db.journal_entries.find({
+            'date': {
+                '$gte': date_from_dt.isoformat(),
+                '$lte': date_to_dt.isoformat()
+            },
+            'is_cancelled': False
+        }).to_list(length=None)
+        
+        # Filter and add journal entries
+        for entry in journal_entries:
+            for line in entry.get('lines', []):
+                if line.get('account_code') == account_code:
+                    debit = line.get('debit', 0)
+                    credit = line.get('credit', 0)
+                    
+                    # Determine currency from account or use IQD as default
+                    currency = agent_account.get('currency', 'IQD')
+                    
+                    transactions.append({
+                        'date': entry['date'],
+                        'type': 'journal_entry',
+                        'description': f"{entry['description']} - قيد رقم {entry['entry_number']}",
+                        'debit': debit,
+                        'credit': credit,
+                        'balance': 0,
+                        'currency': currency,
+                        'entry_id': entry['id'],
+                        'entry_number': entry['entry_number']
+                    })
+    # ============================================================
+    
     # Sort by date
     transactions.sort(key=lambda x: x['date'])
     
