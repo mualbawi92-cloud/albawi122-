@@ -184,7 +184,7 @@ const CommissionsUnifiedPage = () => {
                   <SelectContent>
                     <SelectItem value="all">الكل</SelectItem>
                     {agents.map(agent => (
-                      <SelectItem key={agent.user_id} value={agent.user_id}>
+                      <SelectItem key={agent.id} value={agent.id}>
                         {agent.display_name}
                       </SelectItem>
                     ))}
