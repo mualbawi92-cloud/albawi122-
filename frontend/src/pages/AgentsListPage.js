@@ -179,10 +179,12 @@ const AgentsListPage = () => {
                             <span className="font-medium">{agent.address}</span>
                           </div>
                         )}
-                        <div className="flex items-center gap-2 text-sm">
-                          <span className="text-muted-foreground">📋</span>
-                          <span>{agent.role === 'admin' ? 'مدير' : 'صراف'}</span>
-                        </div>
+                        {user?.role === 'admin' && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <span className="text-muted-foreground">📋</span>
+                            <span>{agent.role === 'admin' ? 'مدير' : 'صراف'}</span>
+                          </div>
+                        )}
                         
                         {/* Wallet Balance - Admin Only */}
                         {user?.role === 'admin' && (
