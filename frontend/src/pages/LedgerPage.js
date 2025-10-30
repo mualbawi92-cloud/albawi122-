@@ -179,42 +179,98 @@ const LedgerPage = () => {
                   لا توجد حركات في هذه الفترة
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead className="bg-gray-200">
-                      <tr>
-                        <th className="p-3 text-right">التاريخ</th>
-                        <th className="p-3 text-right">رقم القيد</th>
-                        <th className="p-3 text-right">البيان</th>
-                        <th className="p-3 text-center">الرصيد</th>
-                        <th className="p-3 text-center">الدائن (دخول)</th>
-                        <th className="p-3 text-center">المدين (خروج)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ledgerEntries.map((entry, idx) => (
-                        <tr key={idx} className="border-t hover:bg-gray-50">
-                          <td className="p-3">
-                            {new Date(entry.date).toLocaleDateString('ar-IQ')}
-                          </td>
-                          <td className="p-3">{entry.entry_number}</td>
-                          <td className="p-3">{entry.description}</td>
-                          <td className={`p-3 text-center font-bold ${
-                            entry.balance > 0 ? 'text-teal-700' : entry.balance < 0 ? 'text-red-700' : ''
+                <>
+                  {/* Desktop View - Table */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-200">
+                        <tr>
+                          <th className="p-3 text-right">التاريخ</th>
+                          <th className="p-3 text-right">رقم القيد</th>
+                          <th className="p-3 text-right">البيان</th>
+                          <th className="p-3 text-center">الرصيد</th>
+                          <th className="p-3 text-center">الدائن (دخول)</th>
+                          <th className="p-3 text-center">المدين (خروج)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {ledgerEntries.map((entry, idx) => (
+                          <tr key={idx} className="border-t hover:bg-gray-50">
+                            <td className="p-3">
+                              {new Date(entry.date).toLocaleDateString('ar-IQ')}
+                            </td>
+                            <td className="p-3">{entry.entry_number}</td>
+                            <td className="p-3">{entry.description}</td>
+                            <td className={`p-3 text-center font-bold ${
+                              entry.balance > 0 ? 'text-teal-700' : entry.balance < 0 ? 'text-red-700' : ''
+                            }`}>
+                              {entry.balance.toLocaleString()}
+                            </td>
+                            <td className="p-3 text-center font-bold text-green-700">
+                              {entry.credit > 0 ? entry.credit.toLocaleString() : '-'}
+                            </td>
+                            <td className="p-3 text-center font-bold text-blue-700">
+                              {entry.debit > 0 ? entry.debit.toLocaleString() : '-'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile View - Cards */}
+                  <div className="md:hidden space-y-4">
+                    {ledgerEntries.map((entry, idx) => (
+                      <div key={idx} className="bg-white border-2 border-gray-200 rounded-lg p-4 shadow-sm">
+                        {/* التاريخ ورقم القيد */}
+                        <div className="flex justify-between items-center mb-3 pb-3 border-b">
+                          <div>
+                            <p className="text-xs text-gray-500">التاريخ</p>
+                            <p className="text-sm font-semibold">
+                              {new Date(entry.date).toLocaleDateString('ar-IQ')}
+                            </p>
+                          </div>
+                          <div className="text-left">
+                            <p className="text-xs text-gray-500">رقم القيد</p>
+                            <p className="text-sm font-semibold">{entry.entry_number}</p>
+                          </div>
+                        </div>
+
+                        {/* البيان */}
+                        <div className="mb-3">
+                          <p className="text-xs text-gray-500 mb-1">البيان</p>
+                          <p className="text-sm font-medium">{entry.description}</p>
+                        </div>
+
+                        {/* الرصيد */}
+                        <div className="bg-gradient-to-l from-blue-50 to-blue-100 rounded-lg p-3 mb-3">
+                          <p className="text-xs text-blue-700 mb-1">💰 الرصيد</p>
+                          <p className={`text-2xl font-bold ${
+                            entry.balance > 0 ? 'text-teal-700' : entry.balance < 0 ? 'text-red-700' : 'text-gray-700'
                           }`}>
                             {entry.balance.toLocaleString()}
-                          </td>
-                          <td className="p-3 text-center font-bold text-green-700">
-                            {entry.credit > 0 ? entry.credit.toLocaleString() : '-'}
-                          </td>
-                          <td className="p-3 text-center font-bold text-blue-700">
-                            {entry.debit > 0 ? entry.debit.toLocaleString() : '-'}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          </p>
+                        </div>
+
+                        {/* الدائن والمدين */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-green-50 rounded-lg p-3">
+                            <p className="text-xs text-green-700 mb-1">📥 الدائن (دخول)</p>
+                            <p className="text-lg font-bold text-green-700">
+                              {entry.credit > 0 ? entry.credit.toLocaleString() : '-'}
+                            </p>
+                          </div>
+                          <div className="bg-red-50 rounded-lg p-3">
+                            <p className="text-xs text-red-700 mb-1">📤 المدين (خروج)</p>
+                            <p className="text-lg font-bold text-red-700">
+                              {entry.debit > 0 ? entry.debit.toLocaleString() : '-'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
