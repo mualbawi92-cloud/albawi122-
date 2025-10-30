@@ -67,41 +67,33 @@ const CommissionsUnifiedPage = () => {
   const fetchCommissions = async () => {
     setLoading(true);
     try {
+      const params = {
+        start_date: startDate,
+        end_date: endDate
+      };
+      
+      // Add agent filter if selected
+      if (selectedAgent !== 'all') {
+        params.agent_id = selectedAgent;
+      }
+      
+      // Add currency filter if selected
+      if (selectedCurrency !== 'all') {
+        params.currency = selectedCurrency;
+      }
+      
       // Fetch paid commissions
       const paidResponse = await axios.get(`${API}/admin-commissions`, {
-        params: {
-          type: 'paid',
-          start_date: startDate,
-          end_date: endDate
-        }
+        params: { ...params, type: 'paid' }
       });
       
       // Fetch earned commissions
       const earnedResponse = await axios.get(`${API}/admin-commissions`, {
-        params: {
-          type: 'earned',
-          start_date: startDate,
-          end_date: endDate
-        }
+        params: { ...params, type: 'earned' }
       });
       
-      let paid = paidResponse.data.commissions || [];
-      let earned = earnedResponse.data.commissions || [];
-      
-      // Apply agent filter
-      if (selectedAgent !== 'all') {
-        paid = paid.filter(c => c.agent_id === selectedAgent);
-        earned = earned.filter(c => c.agent_id === selectedAgent);
-      }
-      
-      // Apply currency filter
-      if (selectedCurrency !== 'all') {
-        paid = paid.filter(c => c.currency === selectedCurrency);
-        earned = earned.filter(c => c.currency === selectedCurrency);
-      }
-      
-      setPaidCommissions(paid);
-      setEarnedCommissions(earned);
+      setPaidCommissions(paidResponse.data.commissions || []);
+      setEarnedCommissions(earnedResponse.data.commissions || []);
       
     } catch (error) {
       console.error('Error fetching commissions:', error);
