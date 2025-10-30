@@ -550,17 +550,12 @@ class APITester:
     
     # Removed commission testing methods - focus is now on Transit Account System
     
-    def test_comprehensive_commission_paid_flow(self):
-        """🚨 COMPREHENSIVE TEST: Incoming Commission Payment Flow"""
-        print("\n🚨 COMPREHENSIVE TEST: Incoming Commission Payment Flow")
+    def test_agent_filter_in_commissions_endpoint(self):
+        """🚨 اختبار فلتر الصراف في endpoint العمولات"""
+        print("\n🚨 اختبار فلتر الصراف في endpoint العمولات")
         print("=" * 80)
-        print("الهدف: التأكد من أن العمولة المدفوعة تعمل بشكل صحيح عند تسليم الحوالة")
-        print("Expected: Complete commission paid accounting cycle verification")
-        print("  1. Transfer creation and wallet deduction")
-        print("  2. Transfer reception with commission calculation")
-        print("  3. Journal entries: TR-RCV-{code} + COM-PAID-{code}")
-        print("  4. Account balances: 5110 + receiver agent")
-        print("  5. Commission reports and ledger verification")
+        print("المشكلة المبلغ عنها: عند اختيار صراف واحد، يعرض النظام جميع الصرافين")
+        print("الهدف: التحقق من أن فلتر agent_id يعمل بشكل صحيح")
         print("=" * 80)
         
         # Test Setup Verification
