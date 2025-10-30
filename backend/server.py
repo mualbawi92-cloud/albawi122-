@@ -2816,11 +2816,14 @@ async def get_admin_commissions(
     type: Optional[str] = None,  # 'earned' or 'paid'
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
+    agent_id: Optional[str] = None,
+    currency: Optional[str] = None,
     current_user: dict = Depends(require_admin)
 ):
     """
     Get admin commissions (earned or paid) from both admin_commissions collection and transfers
     Combines old data (from transfers) with new data (from admin_commissions)
+    Supports filtering by date, agent, and currency
     """
     
     # ============ Get from admin_commissions collection (New Data) ============
@@ -2829,13 +2832,22 @@ async def get_admin_commissions(
     if type:
         query_commissions['type'] = type
     
-    if start_date or end_date:
-        date_query = {}
-        if start_date:
-            date_query['$gte'] = start_date
-        if end_date:
-            date_query['$lte'] = end_date
-        query_commissions['created_at'] = date_query
+    if start_date and end_date:
+        # Make sure we're comparing with the same format
+        query_commissions['created_at'] = {
+            '$gte': start_date,
+            '$lte': end_date + 'T23:59:59.999Z'  # Include end of day
+        }
+    elif start_date:
+        query_commissions['created_at'] = {'$gte': start_date}
+    elif end_date:
+        query_commissions['created_at'] = {'$lte': end_date + 'T23:59:59.999Z'}
+    
+    if agent_id:
+        query_commissions['agent_id'] = agent_id
+    
+    if currency:
+        query_commissions['currency'] = currency
     
     commissions_new = await db.admin_commissions.find(query_commissions).sort('created_at', -1).to_list(length=None)
     
@@ -2845,13 +2857,21 @@ async def get_admin_commissions(
     # ============ Get from transfers collection (Old Data) ============
     query_transfers = {'status': 'completed'}
     
-    if start_date or end_date:
-        date_query = {}
-        if start_date:
-            date_query['$gte'] = start_date
-        if end_date:
-            date_query['$lte'] = end_date
-        query_transfers['created_at'] = date_query
+    if start_date and end_date:
+        query_transfers['created_at'] = {
+            '$gte': start_date,
+            '$lte': end_date + 'T23:59:59.999Z'
+        }
+    elif start_date:
+        query_transfers['created_at'] = {'$gte': start_date}
+    elif end_date:
+        query_transfers['created_at'] = {'$lte': end_date + 'T23:59:59.999Z'}
+    
+    if currency:
+        query_transfers['currency'] = currency
+    
+    # For agent filter, we'll need to filter after conversion since
+    # transfers have different agent fields (from_agent_id, to_agent_id)
     
     transfers = await db.transfers.find(query_transfers).to_list(length=None)
     
@@ -2861,32 +2881,44 @@ async def get_admin_commissions(
     for transfer in transfers:
         # Earned commission (outgoing transfers)
         if (not type or type == 'earned') and transfer.get('commission', 0) > 0:
+            from_agent_id = transfer.get('from_agent_id')
+            
+            # Apply agent filter for earned commissions
+            if agent_id and from_agent_id != agent_id:
+                continue
+            
             commissions_old.append({
                 'id': f"t_earned_{transfer['id']}",
                 'type': 'earned',
                 'amount': transfer['commission'],
                 'currency': transfer['currency'],
                 'transfer_id': transfer['id'],
-                'transfer_code': transfer['transfer_code'],
-                'agent_id': transfer['from_agent_id'],
+                'transfer_code': transfer.get('transfer_code', transfer['id'][:8]),
+                'agent_id': from_agent_id,
                 'agent_name': transfer.get('sender_name', 'Unknown'),
-                'commission_percentage': 0,  # Can be calculated if needed
-                'note': f'عمولة محققة من حوالة {transfer["transfer_code"]}',
+                'commission_percentage': 0,
+                'note': f'عمولة محققة من حوالة {transfer.get("transfer_code", transfer["id"][:8])}',
                 'created_at': transfer['created_at']
             })
         
         # Paid commission (incoming transfers)
         if (not type or type == 'paid') and transfer.get('incoming_commission', 0) > 0:
+            to_agent_id = transfer.get('to_agent_id')
+            
+            # Apply agent filter for paid commissions
+            if agent_id and to_agent_id != agent_id:
+                continue
+            
             commissions_old.append({
                 'id': f"t_paid_{transfer['id']}",
                 'type': 'paid',
                 'amount': transfer['incoming_commission'],
                 'currency': transfer['currency'],
                 'transfer_id': transfer['id'],
-                'transfer_code': transfer['transfer_code'],
-                'agent_id': transfer.get('to_agent_id'),
+                'transfer_code': transfer.get('transfer_code', transfer['id'][:8]),
+                'agent_id': to_agent_id,
                 'agent_name': transfer.get('receiver_name', 'Unknown'),
-                'note': f'عمولة مدفوعة من حوالة {transfer["transfer_code"]}',
+                'note': f'عمولة مدفوعة من حوالة {transfer.get("transfer_code", transfer["id"][:8])}',
                 'created_at': transfer.get('updated_at', transfer['created_at'])
             })
     
