@@ -189,8 +189,8 @@ const LedgerPage = () => {
                           <th className="p-3 text-right">رقم القيد</th>
                           <th className="p-3 text-right">البيان</th>
                           <th className="p-3 text-center">الرصيد</th>
-                          <th className="p-3 text-center">الدائن (دخول)</th>
                           <th className="p-3 text-center">المدين (خروج)</th>
+                          <th className="p-3 text-center">الدائن (دخول)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -206,11 +206,11 @@ const LedgerPage = () => {
                             }`}>
                               {entry.balance.toLocaleString()}
                             </td>
-                            <td className="p-3 text-center font-bold text-green-700">
-                              {entry.credit > 0 ? entry.credit.toLocaleString() : '-'}
-                            </td>
                             <td className="p-3 text-center font-bold text-blue-700">
                               {entry.debit > 0 ? entry.debit.toLocaleString() : '-'}
+                            </td>
+                            <td className="p-3 text-center font-bold text-green-700">
+                              {entry.credit > 0 ? entry.credit.toLocaleString() : '-'}
                             </td>
                           </tr>
                         ))}
