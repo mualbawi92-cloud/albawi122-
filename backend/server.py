@@ -2810,6 +2810,40 @@ async def get_agents_profit_report(
         "agents": list(agents_data.values())
     }
 
+
+@api_router.get("/admin-commissions")
+async def get_admin_commissions(
+    type: Optional[str] = None,  # 'earned' or 'paid'
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Get admin commissions (earned or paid) from admin_commissions collection
+    """
+    query = {}
+    
+    # Filter by type
+    if type:
+        query['type'] = type
+    
+    # Date range filter
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query['$gte'] = start_date
+        if end_date:
+            date_query['$lte'] = end_date
+        query['created_at'] = date_query
+    
+    # Get commissions
+    commissions = await db.admin_commissions.find(query).sort('created_at', -1).to_list(length=None)
+    
+    for comm in commissions:
+        comm.pop('_id', None)
+    
+    return {'commissions': commissions}
+
 # ============================================
 # Transit Account Endpoints
 # ============================================
