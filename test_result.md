@@ -129,12 +129,12 @@ user_problem_statement: |
      - `Comparing agent_id`
 
 backend:
-  - task: "Commission paid accounting entry for incoming transfers"
+  - task: "Agent filter functionality in admin-commissions endpoint"
     implemented: true
     working: true
     file: "backend/server.py"
     stuck_count: 0
-    priority: "critical"
+    priority: "high"
     needs_retesting: false
     status_history:
       - working: "NA"
