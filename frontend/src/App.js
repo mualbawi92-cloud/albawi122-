@@ -33,6 +33,7 @@ import ExchangeOperationsPage from './pages/ExchangeOperationsPage';
 import PaidCommissionsPage from './pages/PaidCommissionsPage';
 import AgentLedgerPage from './pages/AgentLedgerPage';
 import AgentCommissionsPage from './pages/AgentCommissionsPage';
+import QuickReceiveTransferPage from './pages/QuickReceiveTransferPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
