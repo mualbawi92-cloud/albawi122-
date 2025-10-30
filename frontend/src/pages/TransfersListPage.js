@@ -128,17 +128,44 @@ const TransfersListPage = () => {
           </div>
           
           <CardContent className="p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
               <Input
                 placeholder="بحث برمز الحوالة..."
                 value={searchCode}
                 onChange={(e) => setSearchCode(e.target.value)}
-                className="w-full sm:max-w-xs h-10 sm:h-12 text-sm sm:text-base"
+                className="h-10"
                 data-testid="search-transfer-input"
               />
               
+              <Input
+                type="date"
+                placeholder="من تاريخ"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="h-10"
+              />
+              
+              <Input
+                type="date"
+                placeholder="إلى تاريخ"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="h-10"
+              />
+              
+              <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="العملة" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">كل العملات</SelectItem>
+                  <SelectItem value="IQD">IQD</SelectItem>
+                  <SelectItem value="USD">USD</SelectItem>
+                </SelectContent>
+              </Select>
+              
               <Select value={filter.status || ""} onValueChange={(value) => setFilter({ ...filter, status: value || "" })}>
-                <SelectTrigger className="w-48 h-12" data-testid="status-filter">
+                <SelectTrigger className="h-10" data-testid="status-filter">
                   <SelectValue placeholder="الحالة" />
                 </SelectTrigger>
                 <SelectContent>
@@ -148,15 +175,15 @@ const TransfersListPage = () => {
                   <SelectItem value="cancelled">ملغى</SelectItem>
                 </SelectContent>
               </Select>
-
-              <Button
-                onClick={() => navigate('/transfers/create')}
-                className="bg-secondary hover:bg-secondary/90 text-primary font-bold mr-auto"
-                data-testid="create-new-transfer-btn"
-              >
-                ➕ حوالة جديدة
-              </Button>
             </div>
+            
+            <Button
+              onClick={() => navigate('/transfers/create')}
+              className="bg-secondary hover:bg-secondary/90 text-primary font-bold mb-4"
+              data-testid="create-new-transfer-btn"
+            >
+              ➕ حوالة جديدة
+            </Button>
 
             {loading ? (
               <div className="text-center py-12 text-xl">جاري التحميل...</div>
