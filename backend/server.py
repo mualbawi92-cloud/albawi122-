@@ -1433,6 +1433,37 @@ async def get_transfers(
     
     return transfers
 
+@api_router.get("/transfers/search")
+async def search_transfers(
+    receiver_name: Optional[str] = None,
+    transfer_id: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Search transfers by receiver name or transfer ID"""
+    query = {}
+    
+    # Build search query
+    if transfer_id:
+        query['id'] = transfer_id
+    
+    if receiver_name:
+        # Case-insensitive search
+        query['receiver_name'] = {'$regex': receiver_name, '$options': 'i'}
+    
+    # Add user-specific filters
+    if current_user['role'] == 'agent':
+        # Agent can only see transfers they are receiving
+        query['receiving_agent_id'] = current_user['id']
+    
+    # Search transfers
+    transfers = await db.transfers.find(
+        query,
+        {'_id': 0, 'pin_hash': 0}
+    ).sort('created_at', -1).limit(50).to_list(50)
+    
+    return {'transfers': transfers}
+
+
 @api_router.get("/transfers/{transfer_id}", response_model=Transfer)
 async def get_transfer_details(transfer_id: str, current_user: dict = Depends(get_current_user)):
     """Get transfer details"""
