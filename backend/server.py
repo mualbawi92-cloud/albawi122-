@@ -1453,7 +1453,7 @@ async def search_transfers(
     # Add user-specific filters
     if current_user['role'] == 'agent':
         # Agent can only see transfers they are receiving
-        query['receiving_agent_id'] = current_user['id']
+        query['to_agent_id'] = current_user['id']
     
     # Search transfers
     transfers = await db.transfers.find(
