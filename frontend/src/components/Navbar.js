@@ -708,6 +708,17 @@ const Navbar = () => {
                     >
                       📊 التقارير المالية
                     </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/commissions-unified');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      💰 العمولات
+                    </Button>
                   </div>
                 )}
               </div>
