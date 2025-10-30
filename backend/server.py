@@ -2850,6 +2850,9 @@ async def get_admin_commissions(
     Supports filtering by date, agent, and currency
     """
     
+    # Debug logging
+    logger.info(f"Admin commissions filter - agent_id: {agent_id}, type: {type}, currency: {currency}")
+    
     # ============ Get from admin_commissions collection (New Data) ============
     query_commissions = {}
     
@@ -2869,11 +2872,16 @@ async def get_admin_commissions(
     
     if agent_id:
         query_commissions['agent_id'] = agent_id
+        logger.info(f"Applying agent_id filter: {agent_id}")
     
     if currency:
         query_commissions['currency'] = currency
     
+    logger.info(f"Query for admin_commissions: {query_commissions}")
+    
     commissions_new = await db.admin_commissions.find(query_commissions).sort('created_at', -1).to_list(length=None)
+    
+    logger.info(f"Found {len(commissions_new)} commissions from admin_commissions")
     
     for comm in commissions_new:
         comm.pop('_id', None)
@@ -2897,7 +2905,11 @@ async def get_admin_commissions(
     # For agent filter, we'll need to filter after conversion since
     # transfers have different agent fields (from_agent_id, to_agent_id)
     
+    logger.info(f"Query for transfers: {query_transfers}")
+    
     transfers = await db.transfers.find(query_transfers).to_list(length=None)
+    
+    logger.info(f"Found {len(transfers)} completed transfers")
     
     # Convert transfers to commission format
     commissions_old = []
