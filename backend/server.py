@@ -3740,13 +3740,15 @@ async def get_journal_entries(
     """
     query = {'is_cancelled': False}
     
-    if start_date or end_date:
-        date_query = {}
-        if start_date:
-            date_query['$gte'] = start_date
-        if end_date:
-            date_query['$lte'] = end_date
-        query['date'] = date_query
+    if start_date and end_date:
+        query['date'] = {
+            '$gte': start_date,
+            '$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date
+        }
+    elif start_date:
+        query['date'] = {'$gte': start_date}
+    elif end_date:
+        query['date'] = {'$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date}
     
     # Calculate skip for pagination
     skip = (page - 1) * limit
