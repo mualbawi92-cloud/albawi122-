@@ -334,6 +334,16 @@ const Navbar = () => {
                       >
                         🔄 القيد المزدوج
                       </button>
+                      <div className="border-t border-gray-200 my-1"></div>
+                      <button
+                        onClick={() => {
+                          navigate('/reports');
+                          setAccountingMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        📊 التقارير المالية
+                      </button>
                     </div>
                   </div>
                 )}
