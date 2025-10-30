@@ -58,6 +58,7 @@ function AppRoutes() {
       <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       <Route path="/transfers" element={<ProtectedRoute><TransfersListPage /></ProtectedRoute>} />
+      <Route path="/quick-receive" element={<ProtectedRoute><QuickReceiveTransferPage /></ProtectedRoute>} />
       <Route path="/transfers/create" element={<ProtectedRoute><CreateTransferPage /></ProtectedRoute>} />
       <Route path="/transfers/:id" element={<ProtectedRoute><TransferDetailsPage /></ProtectedRoute>} />
       <Route path="/agents" element={<ProtectedRoute><AgentsListPage /></ProtectedRoute>} />
