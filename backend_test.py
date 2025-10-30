@@ -1,42 +1,30 @@
 #!/usr/bin/env python3
 """
-🚨 COMPREHENSIVE TEST: Incoming Commission Payment Flow
+🚨 اختبار فلتر الصراف في endpoint العمولات
 
-**الهدف:** التأكد من أن العمولة المدفوعة تعمل بشكل صحيح عند تسليم الحوالة
+**المشكلة المبلغ عنها:**
+عند اختيار صراف واحد في صفحة العمولات، يعرض النظام جميع الصرافين بدلاً من الصراف المحدد فقط.
 
-**السيناريو الكامل:**
+**الاختبارات المطلوبة:**
 
-### المتطلبات المسبقة:
-- ✅ Agent 1: agent_baghdad / test123
-- ✅ Agent 2: agent_basra / test123  
-- ✅ كلاهما لديه incoming commission rate = 2%
-- ✅ حساب 5110 (عمولات حوالات مدفوعة) موجود
+1. اختبر endpoint `/api/admin-commissions` مع التالي:
+   - `type=paid&start_date=2024-01-01&end_date=2025-12-31` (بدون agent_id)
+   - `type=paid&start_date=2024-01-01&end_date=2025-12-31&agent_id=<any_valid_agent_id>` (مع agent_id محدد)
+   - قارن النتائج: هل عدد العمولات يختلف؟
 
-### الاختبار الشامل:
+2. تحقق من:
+   - هل يتم استقبال `agent_id` parameter في Backend؟
+   - هل الفلترة تعمل على `admin_commissions` collection؟
+   - هل الفلترة تعمل على `transfers` collection (البيانات القديمة)؟
 
-**Phase 1: إنشاء حوالة**
-1. Login as agent_baghdad
-2. GET /api/wallet/balance - تسجيل الرصيد الحالي
-3. Create transfer: 1,000,000 IQD to BS
-4. Verify: Transfer created, Status = 'pending', Wallet decreased
+3. تحقق من البيانات:
+   - اعرض عينة من `agent_id` في `admin_commissions`
+   - اعرض عينة من `from_agent_id` و `to_agent_id` في `transfers`
+   - تأكد من تطابق أنواع البيانات (string vs string)
 
-**Phase 2: استلام الحوالة** 
-1. Login as agent_basra
-2. GET /api/wallet/balance - تسجيل الرصيد قبل الاستلام
-3. Receive transfer (SIMULATED due to Cloudinary)
-4. Verify response: Success = true, Status = 'completed'
-
-**Phase 3: التحقق من العمولة المدفوعة** ⭐ الاختبار الرئيسي
-- Verify journal entries: TR-RCV-{code} + COM-PAID-{code}
-- Verify account 5110 balance increase by 20,000
-- Verify receiver agent balance: 1,000,000 + 20,000 = 1,020,000
-- Verify commission reports
-- Verify ledger entries
-
-**Expected Results:**
-✅ الصراف المستلم يحصل على: المبلغ + العمولة = 1,020,000 دينار
-✅ القيود المحاسبية: قيد الحوالة + قيد العمولة المدفوعة
-✅ التقارير: العمولة تظهر في تقرير العمولات المدفوعة
+4. اعرض logs Backend المتعلقة بـ:
+   - `Admin commissions filter`
+   - `Comparing agent_id`
 """
 
 import requests
