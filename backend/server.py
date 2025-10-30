@@ -2920,8 +2920,10 @@ async def get_admin_commissions(
             from_agent_id = transfer.get('from_agent_id')
             
             # Apply agent filter for earned commissions
-            if agent_id and from_agent_id != agent_id:
-                continue
+            if agent_id:
+                logger.debug(f"Comparing agent_id filter '{agent_id}' with from_agent_id '{from_agent_id}' - Match: {from_agent_id == agent_id}")
+                if from_agent_id != agent_id:
+                    continue
             
             commissions_old.append({
                 'id': f"t_earned_{transfer['id']}",
@@ -2942,8 +2944,10 @@ async def get_admin_commissions(
             to_agent_id = transfer.get('to_agent_id')
             
             # Apply agent filter for paid commissions
-            if agent_id and to_agent_id != agent_id:
-                continue
+            if agent_id:
+                logger.debug(f"Comparing agent_id filter '{agent_id}' with to_agent_id '{to_agent_id}' - Match: {to_agent_id == agent_id}")
+                if to_agent_id != agent_id:
+                    continue
             
             commissions_old.append({
                 'id': f"t_paid_{transfer['id']}",
@@ -2957,6 +2961,8 @@ async def get_admin_commissions(
                 'note': f'عمولة مدفوعة من حوالة {transfer.get("transfer_code", transfer["id"][:8])}',
                 'created_at': transfer.get('updated_at', transfer['created_at'])
             })
+    
+    logger.info(f"Found {len(commissions_old)} commissions from old transfers")
     
     # Combine both sources
     all_commissions = commissions_new + commissions_old
