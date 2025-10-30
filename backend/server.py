@@ -2819,30 +2819,84 @@ async def get_admin_commissions(
     current_user: dict = Depends(require_admin)
 ):
     """
-    Get admin commissions (earned or paid) from admin_commissions collection
+    Get admin commissions (earned or paid) from both admin_commissions collection and transfers
+    Combines old data (from transfers) with new data (from admin_commissions)
     """
-    query = {}
     
-    # Filter by type
+    # ============ Get from admin_commissions collection (New Data) ============
+    query_commissions = {}
+    
     if type:
-        query['type'] = type
+        query_commissions['type'] = type
     
-    # Date range filter
     if start_date or end_date:
         date_query = {}
         if start_date:
             date_query['$gte'] = start_date
         if end_date:
             date_query['$lte'] = end_date
-        query['created_at'] = date_query
+        query_commissions['created_at'] = date_query
     
-    # Get commissions
-    commissions = await db.admin_commissions.find(query).sort('created_at', -1).to_list(length=None)
+    commissions_new = await db.admin_commissions.find(query_commissions).sort('created_at', -1).to_list(length=None)
     
-    for comm in commissions:
+    for comm in commissions_new:
         comm.pop('_id', None)
     
-    return {'commissions': commissions}
+    # ============ Get from transfers collection (Old Data) ============
+    query_transfers = {'status': 'completed'}
+    
+    if start_date or end_date:
+        date_query = {}
+        if start_date:
+            date_query['$gte'] = start_date
+        if end_date:
+            date_query['$lte'] = end_date
+        query_transfers['created_at'] = date_query
+    
+    transfers = await db.transfers.find(query_transfers).to_list(length=None)
+    
+    # Convert transfers to commission format
+    commissions_old = []
+    
+    for transfer in transfers:
+        # Earned commission (outgoing transfers)
+        if (not type or type == 'earned') and transfer.get('commission', 0) > 0:
+            commissions_old.append({
+                'id': f"t_earned_{transfer['id']}",
+                'type': 'earned',
+                'amount': transfer['commission'],
+                'currency': transfer['currency'],
+                'transfer_id': transfer['id'],
+                'transfer_code': transfer['transfer_code'],
+                'agent_id': transfer['from_agent_id'],
+                'agent_name': transfer.get('sender_name', 'Unknown'),
+                'commission_percentage': 0,  # Can be calculated if needed
+                'note': f'عمولة محققة من حوالة {transfer["transfer_code"]}',
+                'created_at': transfer['created_at']
+            })
+        
+        # Paid commission (incoming transfers)
+        if (not type or type == 'paid') and transfer.get('incoming_commission', 0) > 0:
+            commissions_old.append({
+                'id': f"t_paid_{transfer['id']}",
+                'type': 'paid',
+                'amount': transfer['incoming_commission'],
+                'currency': transfer['currency'],
+                'transfer_id': transfer['id'],
+                'transfer_code': transfer['transfer_code'],
+                'agent_id': transfer.get('to_agent_id'),
+                'agent_name': transfer.get('receiver_name', 'Unknown'),
+                'note': f'عمولة مدفوعة من حوالة {transfer["transfer_code"]}',
+                'created_at': transfer.get('updated_at', transfer['created_at'])
+            })
+    
+    # Combine both sources
+    all_commissions = commissions_new + commissions_old
+    
+    # Sort by date (newest first)
+    all_commissions.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+    
+    return {'commissions': all_commissions}
 
 # ============================================
 # Transit Account Endpoints
