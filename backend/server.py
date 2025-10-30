@@ -2967,6 +2967,8 @@ async def get_admin_commissions(
     # Combine both sources
     all_commissions = commissions_new + commissions_old
     
+    logger.info(f"Total commissions returned: {len(all_commissions)}")
+    
     # Sort by date (newest first)
     all_commissions.sort(key=lambda x: x.get('created_at', ''), reverse=True)
     
