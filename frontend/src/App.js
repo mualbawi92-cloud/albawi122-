@@ -66,6 +66,7 @@ function AppRoutes() {
       <Route path="/agents/add" element={<ProtectedRoute><AddAgentPage /></ProtectedRoute>} />
       <Route path="/agents/edit/:id" element={<ProtectedRoute><EditAgentPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+      <Route path="/commissions-unified" element={<ProtectedRoute><CommissionsUnifiedPage /></ProtectedRoute>} />
       <Route path="/commissions" element={<ProtectedRoute><CommissionsPage /></ProtectedRoute>} />
       <Route path="/commissions-management" element={<ProtectedRoute><CommissionsManagementPage /></ProtectedRoute>} />
       <Route path="/commissions-view" element={<ProtectedRoute><AllCommissionsViewPage /></ProtectedRoute>} />
