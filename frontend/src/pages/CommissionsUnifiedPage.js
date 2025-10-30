@@ -75,22 +75,30 @@ const CommissionsUnifiedPage = () => {
       // Add agent filter if selected
       if (selectedAgent !== 'all') {
         params.agent_id = selectedAgent;
+        console.log('Applying agent filter:', selectedAgent);
       }
       
       // Add currency filter if selected
       if (selectedCurrency !== 'all') {
         params.currency = selectedCurrency;
+        console.log('Applying currency filter:', selectedCurrency);
       }
+      
+      console.log('Fetching commissions with params:', params);
       
       // Fetch paid commissions
       const paidResponse = await axios.get(`${API}/admin-commissions`, {
         params: { ...params, type: 'paid' }
       });
       
+      console.log('Paid commissions received:', paidResponse.data.commissions?.length || 0);
+      
       // Fetch earned commissions
       const earnedResponse = await axios.get(`${API}/admin-commissions`, {
         params: { ...params, type: 'earned' }
       });
+      
+      console.log('Earned commissions received:', earnedResponse.data.commissions?.length || 0);
       
       setPaidCommissions(paidResponse.data.commissions || []);
       setEarnedCommissions(earnedResponse.data.commissions || []);
