@@ -91,6 +91,14 @@ const Navbar = () => {
             >
               📋 الحوالات
             </Button>
+            <Button
+              onClick={() => navigate('/quick-receive')}
+              variant="ghost"
+              className="text-white hover:bg-white/10 font-bold text-sm"
+              data-testid="nav-quick-receive"
+            >
+              ⚡ تسليم حوالة
+            </Button>
             {user?.role === 'agent' && (
               <Button
                 onClick={() => navigate('/agent-ledger')}
