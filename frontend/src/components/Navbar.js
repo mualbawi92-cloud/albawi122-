@@ -189,42 +189,12 @@ const Navbar = () => {
             </Button>
             {user?.role === 'admin' && (
               <Button
-                onClick={() => navigate('/commissions')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-commissions"
-              >
-                💰 العمولات
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
                 onClick={() => navigate('/wallet/manage')}
                 variant="ghost"
                 className="text-white hover:bg-white/10 font-bold text-sm"
                 data-testid="nav-wallet-manage"
               >
                 💳 إدارة المحافظ
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/commissions-management')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-commissions-manage"
-              >
-                💰 إدارة العمولات
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/paid-commissions')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-paid-commissions"
-              >
-                🔻 العمولات المدفوعة
               </Button>
             )}
             {user?.role === 'admin' && (
