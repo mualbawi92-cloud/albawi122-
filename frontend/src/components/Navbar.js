@@ -504,19 +504,6 @@ const Navbar = () => {
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
-                  navigate('/commissions');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-commissions"
-              >
-                💰 العمولات
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
                   navigate('/wallet/manage');
                   setMobileMenuOpen(false);
                 }}
@@ -525,32 +512,6 @@ const Navbar = () => {
                 data-testid="mobile-nav-wallet-manage"
               >
                 💳 إدارة المحافظ
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
-                  navigate('/commissions-management');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-commissions-manage"
-              >
-                💰 إدارة العمولات
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
-                  navigate('/paid-commissions');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-paid-commissions"
-              >
-                🔻 العمولات المدفوعة
               </Button>
             )}
             {user?.role === 'admin' && (
