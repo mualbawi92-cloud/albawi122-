@@ -42,13 +42,16 @@ const TransfersListPage = () => {
 
   useEffect(() => {
     fetchTransfers();
-  }, [filter]);
+  }, [filter, startDate, endDate, selectedCurrency]);
 
   const fetchTransfers = async () => {
     try {
       const params = new URLSearchParams();
       if (filter.status && filter.status.trim()) params.append('status', filter.status.trim());
       if (filter.direction && filter.direction.trim()) params.append('direction', filter.direction.trim());
+      if (startDate) params.append('start_date', startDate);
+      if (endDate) params.append('end_date', endDate);
+      if (selectedCurrency !== 'all') params.append('currency', selectedCurrency);
 
       const response = await axios.get(`${API}/transfers?${params}`);
       setTransfers(response.data);
