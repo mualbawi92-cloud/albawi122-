@@ -200,14 +200,14 @@ const JournalTransferPage = () => {
                     </div>
                     <div className="border-t pt-2">
                       <div className="grid grid-cols-3 gap-4 text-sm py-2">
-                        <div>{getAccountName(toAccount)}</div>
+                        <div>{getAccountName(fromAccount)}</div>
                         <div className="text-center text-blue-700 font-bold">
                           {parseFloat(amount).toLocaleString()}
                         </div>
                         <div className="text-center">-</div>
                       </div>
                       <div className="grid grid-cols-3 gap-4 text-sm py-2">
-                        <div>{getAccountName(fromAccount)}</div>
+                        <div>{getAccountName(toAccount)}</div>
                         <div className="text-center">-</div>
                         <div className="text-center text-green-700 font-bold">
                           {parseFloat(amount).toLocaleString()}
