@@ -396,7 +396,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Commission paid accounting entry for incoming transfers"
+    - "Agent filter functionality in admin-commissions endpoint"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
