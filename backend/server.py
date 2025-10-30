@@ -3798,12 +3798,6 @@ async def get_account_ledger(
         query['date'] = {'$gte': start_date}
     elif end_date:
         query['date'] = {'$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date}
-        date_query = {}
-        if start_date:
-            date_query['$gte'] = start_date
-        if end_date:
-            date_query['$lte'] = end_date
-        query['date'] = date_query
     
     # Calculate skip for pagination
     skip = (page - 1) * limit
