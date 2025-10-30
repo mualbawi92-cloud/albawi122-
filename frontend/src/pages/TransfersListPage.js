@@ -29,6 +29,9 @@ const TransfersListPage = () => {
     direction: searchParams.get('direction') || '' 
   });
   const [searchCode, setSearchCode] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedCurrency, setSelectedCurrency] = useState('all');
 
   useEffect(() => {
     // Update filters if URL params change
