@@ -605,19 +605,6 @@ const Navbar = () => {
                 )}
               </Button>
             )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => {
-                  navigate('/reports');
-                  setMobileMenuOpen(false);
-                }}
-                variant="ghost"
-                className="w-full text-white hover:bg-white/10 font-bold justify-start"
-                data-testid="mobile-nav-reports"
-              >
-                📊 التقارير
-              </Button>
-            )}
             
             {/* Accounting Dropdown for Mobile */}
             {user?.role === 'admin' && (
