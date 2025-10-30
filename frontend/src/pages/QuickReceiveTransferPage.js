@@ -41,7 +41,7 @@ const QuickReceiveTransferPage = () => {
       
       // Filter only pending transfers that are ready to be received
       const pendingTransfers = response.data.transfers.filter(
-        t => t.status === 'pending' && t.receiving_agent_id === user.user_id
+        t => t.status === 'pending' && t.to_agent_id === user.user_id
       );
       
       setTransfers(pendingTransfers);
