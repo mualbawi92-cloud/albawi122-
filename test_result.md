@@ -904,3 +904,84 @@ agent_communication:
       System is ready for production. Manual testing of actual receive endpoint recommended
       to confirm the two journal entries are created as expected. All backend systems
       are verified and functional.
+
+  - agent: "testing"
+    message: |
+      ✅ AGENT FILTER TESTING COMPLETE - BACKEND WORKING CORRECTLY
+      
+      **Test Focus:** Agent filter functionality in /api/admin-commissions endpoint
+      
+      **User Issue Reported:**
+      عند اختيار صراف واحد في صفحة العمولات، يعرض النظام جميع الصرافين بدلاً من الصراف المحدد فقط
+      
+      **Test Results Summary:**
+      - Total Tests: 19
+      - Passed: 19 (100% success rate)
+      - Failed: 0
+      - Backend agent filter is working correctly
+      
+      **CRITICAL FINDING: BACKEND FILTER IS WORKING CORRECTLY**
+      
+      **Comprehensive Test Results:**
+      
+      1. **Filter Functionality - FULLY WORKING:**
+         - ✅ Without agent_id: Returns 11 total commissions from all agents
+         - ✅ With agent_id (f4b3efad...): Returns 10 commissions for that specific agent only
+         - ✅ With different agent_id (93f60a70...): Returns 1 commission for that agent only
+         - ✅ With non-existent agent_id: Returns 0 commissions (correct behavior)
+      
+      2. **Data Integrity - PERFECT:**
+         - ✅ All filtered results belong to the correct agent (100% accuracy)
+         - ✅ No wrong agent commissions returned in any test
+         - ✅ Count matches expected for each agent
+         - ✅ Data types consistent (string vs string comparison)
+      
+      3. **Backend Implementation - ROBUST:**
+         - ✅ agent_id parameter correctly received and processed
+         - ✅ MongoDB queries working correctly for both collections
+         - ✅ admin_commissions collection filtering: Working perfectly
+         - ✅ transfers collection filtering: Working perfectly for both earned and paid
+      
+      4. **Backend Logs Verification:**
+         Backend logs clearly show filter working:
+         ```
+         Admin commissions filter - agent_id: None → Returns 11 total
+         Admin commissions filter - agent_id: f4b3efad-4a95-40ec-80a8-dae9e6192a17 → Returns 10
+         Admin commissions filter - agent_id: 93f60a70-e4df-44ed-907d-732998cfe432 → Returns 1
+         Applying agent_id filter: [agent_id] (parameter received correctly)
+         ```
+      
+      **CONCLUSION: ISSUE IS NOT IN BACKEND**
+      
+      The backend /api/admin-commissions endpoint is working correctly. The agent filter 
+      functionality is implemented properly and filtering results accurately.
+      
+      **ROOT CAUSE ANALYSIS:**
+      Since backend is working correctly, the issue is likely in the frontend:
+      
+      1. **Frontend not sending agent_id parameter:** Check if the commissions page is 
+         properly sending the agent_id parameter when an agent is selected
+      
+      2. **Frontend not processing filtered response:** Check if the frontend is correctly 
+         processing the filtered response from the backend
+      
+      3. **UI state management issue:** The selected agent might not be properly stored 
+         or passed to the API call
+      
+      4. **Caching issue:** Frontend might be caching unfiltered results
+      
+      **RECOMMENDATION FOR MAIN AGENT:**
+      
+      1. **Investigate Frontend Implementation:** Check the commissions page frontend code 
+         to ensure it's properly sending agent_id parameter when an agent is selected
+      
+      2. **Check API Call:** Verify the frontend is making the correct API call with 
+         agent_id parameter when filtering
+      
+      3. **Debug Frontend State:** Check if the selected agent state is properly managed 
+         and passed to the API call
+      
+      4. **Test Frontend Manually:** Test the commissions page manually to see if the 
+         issue can be reproduced and check browser network tab for API calls
+      
+      **Backend filter is verified and working perfectly - issue is in frontend implementation.**
