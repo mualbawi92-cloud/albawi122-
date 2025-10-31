@@ -177,13 +177,24 @@ const TransfersListPage = () => {
               </Select>
             </div>
             
-            <Button
-              onClick={() => navigate('/transfers/create')}
-              className="bg-secondary hover:bg-secondary/90 text-primary font-bold mb-4"
-              data-testid="create-new-transfer-btn"
-            >
-              ➕ حوالة جديدة
-            </Button>
+            {/* Action Button - Shows different button based on active tab */}
+            {activeTab === 'outgoing' ? (
+              <Button
+                onClick={() => navigate('/transfers/create')}
+                className="bg-secondary hover:bg-secondary/90 text-primary font-bold mb-4"
+                data-testid="create-new-transfer-btn"
+              >
+                ➕ حوالة جديدة
+              </Button>
+            ) : (
+              <Button
+                onClick={() => navigate('/quick-receive')}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold mb-4"
+                data-testid="quick-receive-transfer-btn"
+              >
+                ➕ تسليم حوالة جديدة
+              </Button>
+            )}
 
             {loading ? (
               <div className="text-center py-12 text-xl">جاري التحميل...</div>
