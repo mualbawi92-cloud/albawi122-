@@ -247,13 +247,16 @@ const AdminDashboardPage = () => {
           {/* Completed Transfers (Delivered) */}
           <Card 
             className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 rounded-xl cursor-pointer hover:shadow-xl transition-shadow"
-            onClick={() => navigate('/transfers?status=completed')}
+            onClick={() => navigate(`/transfers?status=completed&start_date=${startDate}&end_date=${endDate}`)}
           >
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="space-y-1">
                   <p className="text-sm font-bold text-green-800">
                     ✅ إجمالي الحوالات المسلّمة
+                  </p>
+                  <p className="text-xs text-green-600 mb-2">
+                    {startDate && endDate && `من ${startDate} إلى ${endDate}`}
                   </p>
                   <p className="text-5xl font-bold text-green-600">
                     {transferStats.completed.count}
@@ -281,13 +284,16 @@ const AdminDashboardPage = () => {
           {/* Pending Transfers (Ready to Deliver) */}
           <Card 
             className="border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl cursor-pointer hover:shadow-xl transition-shadow"
-            onClick={() => navigate('/transfers?status=pending')}
+            onClick={() => navigate(`/transfers?status=pending&start_date=${startDate}&end_date=${endDate}`)}
           >
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="space-y-1">
                   <p className="text-sm font-bold text-yellow-800">
                     ⏳ إجمالي الحوالات الجاهزة للتسليم
+                  </p>
+                  <p className="text-xs text-yellow-600 mb-2">
+                    {startDate && endDate && `من ${startDate} إلى ${endDate}`}
                   </p>
                   <p className="text-5xl font-bold text-yellow-600">
                     {transferStats.pending.count}
