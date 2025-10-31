@@ -161,16 +161,6 @@ const Navbar = () => {
                 🏦 لوحة المدير
               </Button>
             )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/admin/all-transfers')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-all-transfers"
-              >
-                📊 كل الحوالات
-              </Button>
-            )}
             <Button
               onClick={() => navigate('/agents')}
               variant="ghost"
@@ -187,16 +177,6 @@ const Navbar = () => {
                 data-testid="nav-wallet-manage"
               >
                 💳 إدارة المحافظ
-              </Button>
-            )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/transit-account')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm"
-                data-testid="nav-transit-account"
-              >
-                🏦 حساب الترانزيت
               </Button>
             )}
             {user?.role === 'admin' && (
