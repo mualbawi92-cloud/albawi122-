@@ -188,19 +188,25 @@ backend:
           Ready for comprehensive backend testing to verify date filters work correctly.
 
 frontend:
-  - task: "No frontend changes needed"
+  - task: "TransfersListPage date filter UI (already implemented)"
     implemented: true
     working: "NA"
-    file: "N/A"
+    file: "frontend/src/pages/TransfersListPage.js"
     stuck_count: 0
-    priority: "low"
+    priority: "medium"
     needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: |
-          This is a backend-only fix for accounting entries.
-          No frontend changes required.
+          Frontend date filter UI already exists and sends correct date format to backend.
+          No frontend changes needed - the issue was in backend date comparison logic.
+          
+          Frontend implementation (lines 28-29, 162-181):
+          - Uses HTML5 date input (type="date")
+          - Sends dates in YYYY-MM-DD format to backend
+          - Implements proper date range selection (from/to)
+          - Works across all three tabs (Send, Receive, Query)
 
 metadata:
   created_by: "main_agent"
