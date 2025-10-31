@@ -43,10 +43,6 @@ const TransfersListPage = () => {
     try {
       const params = new URLSearchParams();
       
-      // Add date filters
-      if (startDate) params.append('start_date', startDate);
-      if (endDate) params.append('end_date', endDate);
-      
       // Add currency filter
       if (selectedCurrency !== 'all') params.append('currency', selectedCurrency);
       
