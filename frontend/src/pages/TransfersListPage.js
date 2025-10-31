@@ -46,20 +46,65 @@ const TransfersListPage = () => {
   }, [searchParams]);
 
   useEffect(() => {
+    // Set default dates (last 30 days)
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    setStartDate(thirtyDaysAgo.toISOString().split('T')[0]);
+    setEndDate(today.toISOString().split('T')[0]);
+    
     fetchTransfers();
-  }, [filter, startDate, endDate, selectedCurrency]);
+  }, [activeTab, startDate, endDate, selectedCurrency, selectedStatuses]);
 
   const fetchTransfers = async () => {
     try {
       const params = new URLSearchParams();
-      if (filter.status && filter.status.trim()) params.append('status', filter.status.trim());
-      if (filter.direction && filter.direction.trim()) params.append('direction', filter.direction.trim());
+      
+      // Add date filters
       if (startDate) params.append('start_date', startDate);
       if (endDate) params.append('end_date', endDate);
+      
+      // Add currency filter
       if (selectedCurrency !== 'all') params.append('currency', selectedCurrency);
+      
+      // Tab-specific filters
+      if (activeTab === 'outgoing') {
+        // Outgoing: all statuses for user's outgoing transfers
+        params.append('direction', 'outgoing');
+      } else if (activeTab === 'incoming') {
+        // Incoming: only pending transfers
+        params.append('direction', 'incoming');
+        params.append('status', 'pending');
+      } else if (activeTab === 'inquiry') {
+        // Inquiry: multiple statuses based on checkboxes
+        // Don't set direction - show all transfers
+        // Backend will filter based on user role
+      }
 
       const response = await axios.get(`${API}/transfers?${params}`);
-      setTransfers(response.data);
+      let fetchedTransfers = response.data;
+      
+      // For inquiry tab, apply status filters
+      if (activeTab === 'inquiry') {
+        fetchedTransfers = fetchedTransfers.filter(t => {
+          // Check if transfer matches selected statuses
+          if (t.status === 'pending' && !selectedStatuses.outgoing) return false;
+          if (t.status === 'completed' && !selectedStatuses.completed) return false;
+          if (t.status === 'cancelled' && !selectedStatuses.cancelled) return false;
+          return true;
+        });
+      }
+      
+      // Search by code
+      if (searchCode) {
+        fetchedTransfers = fetchedTransfers.filter(t => 
+          t.transfer_code?.toLowerCase().includes(searchCode.toLowerCase()) ||
+          t.id?.toLowerCase().includes(searchCode.toLowerCase())
+        );
+      }
+      
+      setTransfers(fetchedTransfers);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching transfers:', error);
