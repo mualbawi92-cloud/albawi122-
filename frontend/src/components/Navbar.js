@@ -225,10 +225,9 @@ const Navbar = () => {
             
             {/* Accounting Dropdown Menu */}
             {user?.role === 'admin' && (
-              <div className="relative">
+              <div className="relative" onMouseLeave={() => setAccountingMenuOpen(false)}>
                 <Button
                   onClick={() => setAccountingMenuOpen(!accountingMenuOpen)}
-                  onBlur={() => setTimeout(() => setAccountingMenuOpen(false), 200)}
                   variant="ghost"
                   className="text-white hover:bg-white/10 font-bold text-sm"
                   data-testid="nav-accounting-menu"
@@ -237,7 +236,8 @@ const Navbar = () => {
                 </Button>
                 
                 {accountingMenuOpen && (
-                  <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border-2 border-primary/20 min-w-[200px] z-50">
+                  <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border-2 border-primary/20 min-w-[200px] z-50"
+                       onMouseDown={(e) => e.preventDefault()}>
                     <div className="py-2">
                       <button
                         onClick={() => {
