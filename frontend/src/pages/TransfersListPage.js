@@ -245,7 +245,7 @@ const TransfersListPage = () => {
               {/* Manual Date Selection (Optional) */}
               <div className="border-t pt-3">
                 <Label className="text-sm font-semibold mb-2 block">أو اختر تاريخ محدد:</Label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
                   <div className="space-y-2">
                     <Label className="text-xs text-gray-600">من تاريخ</Label>
                     <Input
@@ -284,6 +284,15 @@ const TransfersListPage = () => {
                         <SelectItem value="USD">USD</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                  
+                  <div>
+                    <Button 
+                      onClick={handleSearch} 
+                      className="w-full h-9 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                    >
+                      🔍 بحث
+                    </Button>
                   </div>
                 </div>
               </div>
