@@ -194,109 +194,32 @@ const TransfersListPage = () => {
           </div>
           
           <CardContent className="p-4 sm:p-6">
-            {/* Filters Section */}
-            <div className="bg-gray-50 p-4 rounded-lg mb-4 space-y-4">
-              {/* Quick Date Filters - Easy to use */}
-              <div className="space-y-2">
-                <Label className="text-sm font-semibold">فلترة سريعة حسب التاريخ:</Label>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant={selectedQuickFilter === 'today' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleQuickFilter('today')}
-                    className="text-sm"
-                  >
-                    📅 اليوم
-                  </Button>
-                  <Button
-                    variant={selectedQuickFilter === 'last7' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleQuickFilter('last7')}
-                    className="text-sm"
-                  >
-                    📅 آخر 7 أيام
-                  </Button>
-                  <Button
-                    variant={selectedQuickFilter === 'last30' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleQuickFilter('last30')}
-                    className="text-sm"
-                  >
-                    📅 آخر 30 يوم
-                  </Button>
-                  <Button
-                    variant={selectedQuickFilter === 'thisMonth' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleQuickFilter('thisMonth')}
-                    className="text-sm"
-                  >
-                    📅 هذا الشهر
-                  </Button>
-                  <Button
-                    variant={selectedQuickFilter === 'all' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => handleQuickFilter('all')}
-                    className="text-sm"
-                  >
-                    📋 كل الحوالات
-                  </Button>
+            {/* Filters Section using QuickDateFilter Component */}
+            <QuickDateFilter
+              startDate={startDate}
+              endDate={endDate}
+              onStartDateChange={setStartDate}
+              onEndDateChange={setEndDate}
+              onSearch={handleSearch}
+              selectedFilter={selectedQuickFilter}
+              onQuickFilterChange={setSelectedQuickFilter}
+              showSearchButton={true}
+              additionalFilters={
+                <div className="space-y-2">
+                  <Label className="text-xs text-gray-600">العملة</Label>
+                  <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                    <SelectTrigger className="h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">كل العملات</SelectItem>
+                      <SelectItem value="IQD">IQD</SelectItem>
+                      <SelectItem value="USD">USD</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </div>
-              
-              {/* Manual Date Selection (Optional) */}
-              <div className="border-t pt-3">
-                <Label className="text-sm font-semibold mb-2 block">أو اختر تاريخ محدد:</Label>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
-                  <div className="space-y-2">
-                    <Label className="text-xs text-gray-600">من تاريخ</Label>
-                    <Input
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => {
-                        setStartDate(e.target.value);
-                        setSelectedQuickFilter('custom');
-                      }}
-                      className="h-9"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-xs text-gray-600">إلى تاريخ</Label>
-                    <Input
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => {
-                        setEndDate(e.target.value);
-                        setSelectedQuickFilter('custom');
-                      }}
-                      className="h-9"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-xs text-gray-600">العملة</Label>
-                    <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                      <SelectTrigger className="h-9">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">كل العملات</SelectItem>
-                        <SelectItem value="IQD">IQD</SelectItem>
-                        <SelectItem value="USD">USD</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Button 
-                      onClick={handleSearch} 
-                      className="w-full h-9 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-                    >
-                      🔍 بحث
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              }
+            />
               
               {/* Inquiry-specific filters */}
               {activeTab === 'inquiry' && (
