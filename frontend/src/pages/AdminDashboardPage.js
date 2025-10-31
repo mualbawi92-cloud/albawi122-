@@ -299,48 +299,6 @@ const AdminDashboardPage = () => {
         </div>
 
         {/* Agents List */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader className="bg-gradient-to-l from-purple-50 to-purple-100 border-b-4 border-purple-500">
-          </Card>
-
-          {/* Total Debit */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-red-100 rounded-xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-red-700">
-                    💸 إجمالي الحركات المدينة لجميع الصيارف
-                  </p>
-                  <p className="text-4xl font-bold text-red-600">
-                    {totals.totalDebit.toLocaleString()}
-                  </p>
-                  <p className="text-xs text-red-600">د.ع</p>
-                </div>
-                <div className="text-6xl text-red-500/30">⬆️</div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Net Balance */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-blue-700">
-                    ⚖️ إجمالي الرصيد الصافي
-                  </p>
-                  <p className="text-4xl font-bold text-blue-600">
-                    {totals.netBalance.toLocaleString()}
-                  </p>
-                  <p className="text-xs text-blue-600">د.ع</p>
-                </div>
-                <div className="text-6xl text-blue-500/30">💰</div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Agents Table */}
         <Card className="border-0 shadow-lg rounded-xl">
           <CardHeader className="bg-white border-b rounded-t-xl">
             <CardTitle className="text-2xl font-bold text-gray-900">
