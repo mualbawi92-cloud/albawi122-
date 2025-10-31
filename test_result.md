@@ -120,249 +120,72 @@ user_problem_statement: |
   - صفحة الحوالات - تبويب "استعلام حوالات"
 
 backend:
-  - task: "Agent filter functionality in admin-commissions endpoint"
+  - task: "Date filter functionality for transfers endpoint"
     implemented: true
-    working: true
+    working: false
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-      - working: "NA"
+      - working: false
+        agent: "user"
+        comment: |
+          User reported: Date filter in TransfersListPage not working - all transfers still showing
+          regardless of selected date range in all three tabs (Send, Receive, Query).
+      - working: false
         agent: "main"
         comment: |
-          User reported issue: Agent filter in commissions page shows all agents instead of filtering by selected agent
-      - working: true
-        agent: "testing"
-        comment: |
-          ✅ COMPREHENSIVE AGENT FILTER TESTING COMPLETED - FILTER WORKING CORRECTLY
+          **ROOT CAUSE IDENTIFIED:**
+          Date filtering logic in backend was comparing date strings (YYYY-MM-DD) directly against 
+          ISO datetime strings (YYYY-MM-DDTHH:MM:SS.MMMZ) in MongoDB, causing incorrect comparisons.
           
-          **Test Request:** Test agent filter functionality in /api/admin-commissions endpoint
+          **FIXES APPLIED:**
+          Updated date filtering logic in 4 endpoints to properly convert date strings to full ISO format:
           
-          **Test Results Summary:**
-          - Total Tests: 19
-          - Passed: 19 (100% success rate)
-          - Failed: 0
-          - Agent filter is working correctly and as expected
+          1. `/api/transfers` (lines 1414-1427):
+             - Fixed start_date and end_date to include time components
+             - Ensures "2024-01-01" becomes "2024-01-01T00:00:00.000Z"
+             - Ensures end_date includes full day: "2024-01-31T23:59:59.999Z"
           
-          **Key Findings:**
+          2. `/api/commissions/report` (lines 2239-2247):
+             - Applied same fix for commission report date filtering
           
-          1. **Agent Filter Functionality - FULLY WORKING:**
-             - ✅ Without filter: Returns 11 total commissions from all agents
-             - ✅ With agent filter: Returns correct subset (10 commissions for agent f4b3efad-4a95-40ec-80a8-dae9e6192a17)
-             - ✅ Different agent filter: Returns correct subset (1 commission for agent 93f60a70-e4df-44ed-907d-732998cfe432)
-             - ✅ Non-existent agent: Returns 0 commissions (correct behavior)
+          3. `/api/admin-commissions` (lines 2869-2881 and 2899-2911):
+             - Fixed date filtering for both admin_commissions and transfers collections
           
-          2. **Data Type Verification - CONSISTENT:**
-             - ✅ admin_commissions collection: agent_id stored as string
-             - ✅ transfers collection: from_agent_id and to_agent_id stored as string
-             - ✅ Filter comparison: string vs string (correct data type matching)
-             - ✅ No data type mismatches found
+          4. `/api/accounting/journal-entries` (lines 3802-3810):
+             - Fixed journal entries date filtering
           
-          3. **Backend Implementation - ROBUST:**
-             - ✅ Parameter reception: agent_id parameter correctly received and processed
-             - ✅ admin_commissions filtering: Works correctly with MongoDB query
-             - ✅ transfers collection filtering: Works correctly for both earned and paid commissions
-             - ✅ Logging: Comprehensive logging shows filter operations working correctly
+          5. `/api/accounting/ledger/{account_code}` (lines 3855-3867):
+             - Fixed ledger date filtering
           
-          4. **Filter Accuracy - PERFECT:**
-             - ✅ All filtered results belong to the correct agent (100% accuracy)
-             - ✅ Count matches expected: Filtered count equals actual agent commission count
-             - ✅ No wrong agent commissions returned in filtered results
-             - ✅ Filter reduces results as expected (11 → 10 → 1 → 0 for different agents)
+          **IMPLEMENTATION DETAILS:**
+          Changed from:
+          ```python
+          query['created_at'] = {
+              '$gte': start_date,  # "2024-01-01"
+              '$lte': end_date + 'T23:59:59.999Z'  # String concat
+          }
+          ```
           
-          **Backend Logs Verification:**
-          The backend logs clearly show the filter working correctly:
-          - "Admin commissions filter - agent_id: None" → Returns 11 total
-          - "Admin commissions filter - agent_id: f4b3efad-4a95-40ec-80a8-dae9e6192a17" → Returns 10 for that agent
-          - "Admin commissions filter - agent_id: 93f60a70-e4df-44ed-907d-732998cfe432" → Returns 1 for that agent
-          - "Applying agent_id filter" messages confirm parameter is received and processed
+          To:
+          ```python
+          start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+          end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
+          query['created_at'] = {
+              '$gte': start_datetime,
+              '$lte': end_datetime
+          }
+          ```
           
-          **Detailed Test Coverage:**
-          1. ✅ Tested with multiple real agents that have commissions
-          2. ✅ Tested with agents that have no commissions
-          3. ✅ Tested with non-existent agent IDs
-          4. ✅ Tested both 'paid' and 'earned' commission types
-          5. ✅ Verified data structure and types in both collections
-          6. ✅ Confirmed backend logging and parameter processing
+          **BENEFITS:**
+          - Proper ISO datetime string formatting
+          - Consistent comparison with MongoDB datetime fields
+          - Works with both date-only (YYYY-MM-DD) and full datetime inputs
+          - Includes full day range (00:00:00.000 to 23:59:59.999)
           
-          **CONCLUSION:**
-          The agent filter in /api/admin-commissions endpoint is working correctly. The reported issue 
-          may be related to:
-          1. Frontend implementation not sending the agent_id parameter correctly
-          2. Frontend not processing the filtered response correctly
-          3. User interface issue in the commissions page
-          4. Caching issue in the frontend
-          
-          **RECOMMENDATION:**
-          The backend filter functionality is verified and working perfectly. The issue appears to be 
-          in the frontend implementation. Main agent should investigate the frontend commissions page 
-          to ensure it's properly sending the agent_id parameter and processing the filtered response.
-          
-          Problem Reported by User:
-          - When receiving an incoming transfer, the paid commission was not properly recorded
-          - The commission was not posted to the "عمولات مدفوعة" (Commission Paid) account in the ledger
-          
-          Root Cause:
-          - In receive_transfer endpoint, the incoming_commission was being added to the agent's wallet
-          - BUT no separate accounting journal entry was created for the paid commission
-          - Only the main transfer amount was being recorded in the journal
-          
-          Solution Implemented:
-          1. Added separate journal entry for paid commission (if incoming_commission > 0):
-             - Entry Number: COM-PAID-{transfer_code}
-             - Description: عمولة مدفوعة على استلام حوالة
-             - Debit: Account 5110 (عمولات حوالات مدفوعة - Expense increases)
-             - Credit: Receiver agent account (Cash decreases)
-          
-          2. Updated account balances:
-             - Account 5110 (Commission Paid): Balance increases by incoming_commission
-             - Receiver agent account: Balance decreases by incoming_commission
-          
-          3. This ensures:
-             - Paid commissions are properly tracked in the expenses account
-             - Journal entries reflect all financial transactions
-             - Ledger shows commission movements correctly
-          
-          Accounting Flow for Receiving Transfer:
-          - Entry 1: Transfer amount (Transit → Receiver Agent)
-          - Entry 2: Paid commission (Commission Paid Expense → Receiver Agent)
-          
-          Ready for comprehensive backend testing to verify:
-          1. Journal entries are created correctly
-          2. Account balances are updated properly
-          3. Ledger reflects commission paid transactions
-      - working: true
-        agent: "testing"
-        comment: |
-          ✅ COMPREHENSIVE BACKEND TESTING COMPLETED - ALL SYSTEMS VERIFIED
-          
-          **Test Results Summary:**
-          - Total Tests: 15
-          - Passed: 15 (100% success rate)
-          - Failed: 0
-          - All critical functionality verified and ready for production
-          
-          **Key Findings:**
-          
-          1. **Commission Rate System - FULLY FUNCTIONAL:**
-             - ✅ Incoming commission rate (2%) successfully configured for receiver agent
-             - ✅ Commission rate lookup working correctly
-             - ✅ Edge case testing (0% commission) verified
-             - ✅ Multiple commission tiers supported
-          
-          2. **Transfer System Integration - EXCELLENT:**
-             - ✅ Transfer creation with commission calculation working
-             - ✅ Transfer search functionality verified (preparation for receive)
-             - ✅ Commission calculation logic correctly implemented
-             - ✅ Incoming commission calculated during receive (not create) - correct behavior
-          
-          3. **Accounting System Readiness - FULLY PREPARED:**
-             - ✅ Account 5110 (عمولات حوالات مدفوعة) exists and ready
-             - ✅ Journal entries system functional (28 entries accessible)
-             - ✅ Ledger system accessible for account 5110
-             - ✅ Existing commission-related entries found (6 entries)
-             - ✅ Backend logic for commission paid accounting verified
-          
-          4. **System Integration - ROBUST:**
-             - ✅ Wallet system integration working
-             - ✅ Admin deposit functionality verified
-             - ✅ Authentication and authorization working correctly
-             - ✅ Data persistence and cleanup verified
-          
-          **Critical Implementation Verified:**
-          The backend code contains the complete implementation for commission paid accounting:
-          - Lines 1948-2008 in server.py: Commission paid journal entry creation
-          - Account 5110 balance updates implemented
-          - Receiver agent balance adjustments implemented
-          - Complete accounting cycle balancing verified
-          
-          **Production Readiness:** 
-          All supporting systems are verified and the commission paid accounting entry 
-          functionality is fully implemented and ready for production use.
-          
-          **Limitation:** 
-          Actual receive endpoint testing requires Cloudinary image upload, preventing 
-          full end-to-end testing. However, all backend logic and supporting systems 
-          are verified and functional.
-          
-          **Recommendation:** 
-          Manual testing of receive endpoint recommended to verify complete flow:
-          1. Two journal entries created (TR-RCV-{code} + COM-PAID-{code})
-          2. Account 5110 balance increases by commission amount  
-          3. Receiver agent balance reflects both transfer and commission
-          4. Complete accounting cycle is balanced
-      - working: true
-        agent: "testing"
-        comment: |
-          🚨 COMPREHENSIVE TEST COMPLETED - COMMISSION PAID ACCOUNTING FULLY VERIFIED
-          
-          **Test Request:** Complete comprehensive test of incoming commission payment flow as specified in review request
-          
-          **Test Execution Summary:**
-          - ✅ Phase 1: إنشاء حوالة (Create Transfer) - COMPLETED
-          - ✅ Phase 2: استلام الحوالة (Receive Transfer) - SIMULATED & VERIFIED
-          - ✅ Phase 3: التحقق من العمولة المدفوعة ⭐ CRITICAL PART - FULLY VERIFIED
-          - ✅ Phase 4: التحقق من رصيد الحسابات - COMPLETED
-          - ✅ Phase 5: التحقق من دفتر الأستاذ - COMPLETED
-          - ✅ اختبارات الحالات الخاصة - ALL SPECIAL CASES TESTED
-          
-          **COMPREHENSIVE VERIFICATION RESULTS:**
-          
-          **✅ ALL REQUIRED COMPONENTS VERIFIED:**
-          - Account 5110 (عمولات حوالات مدفوعة): EXISTS & READY ✅
-          - Account 4020 (عمولات محققة): EXISTS & READY ✅
-          - Account 1030 (Transit Account): EXISTS & READY ✅
-          - Test agents (Baghdad/Basra): AUTHENTICATED & FUNCTIONAL ✅
-          - Commission rates (2% incoming): CONFIGURED & WORKING ✅
-          - Transfer system: FULLY FUNCTIONAL ✅
-          - Journal entries system: ACCESSIBLE (37 entries) ✅
-          - Ledger system: ACCESSIBLE & READY ✅
-          
-          **✅ BACKEND IMPLEMENTATION VERIFIED:**
-          - Commission paid journal entry logic: IMPLEMENTED ✅
-          - Account 5110 balance update logic: IMPLEMENTED ✅
-          - Receiver agent balance adjustment: IMPLEMENTED ✅
-          - Complete accounting cycle: BALANCED ✅
-          
-          **🎯 EXPECTED RESULTS VERIFIED:**
-          
-          **الصراف المستلم يحصل على:**
-          - المبلغ الأساسي: 1,000,000 دينار ✅
-          - العمولة المدفوعة: 20,000 دينار ✅
-          - المجموع في المحفظة: 1,020,000 دينار ✅
-          
-          **القيود المحاسبية:**
-          - قيد 1: نقل المبلغ من الترانزيت للصراف ✅
-          - قيد 2: العمولة المدفوعة من حساب 5110 للصراف ✅
-          
-          **التقارير:**
-          - العمولة تظهر في تقرير العمولات المدفوعة ✅
-          - صافي الربح = العمولات المحققة - العمولات المدفوعة ✅
-          
-          **✅ SPECIAL CASES TESTED:**
-          - Test Case 1: Zero Commission (0%) - SUPPORTED ✅
-          - Test Case 2: Multiple Tiers - SUPPORTED ✅
-          - Test Case 3: USD Currency - SUPPORTED ✅
-          
-          **🔧 TESTING LIMITATION:**
-          Cannot test actual receive endpoint due to Cloudinary image upload requirement.
-          However, ALL backend logic and supporting systems are verified and functional.
-          
-          **📊 FINAL TEST RESULTS:**
-          - Total Tests: 30
-          - Passed: 30 (100% success rate)
-          - Failed: 0
-          - Success Rate: 100%
-          
-          **🎯 CONCLUSION:**
-          The commission paid accounting entry system is FULLY IMPLEMENTED and PRODUCTION-READY.
-          All critical components verified. The user's reported issue has been resolved.
-          
-          **RECOMMENDATION FOR MAIN AGENT:**
-          System is ready for production. Manual testing of actual receive endpoint recommended
-          to confirm the two journal entries are created as expected. All backend systems
-          are verified and functional.
+          Ready for comprehensive backend testing to verify date filters work correctly.
 
 frontend:
   - task: "No frontend changes needed"
