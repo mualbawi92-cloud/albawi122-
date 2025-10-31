@@ -24,6 +24,11 @@ const TransfersListPage = () => {
   // Active tab: 'outgoing', 'incoming', or 'inquiry'
   const [activeTab, setActiveTab] = useState('outgoing');
   
+  // Date filters
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState('all');
+  
   // Common filters
   const [searchCode, setSearchCode] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('all');
