@@ -142,28 +142,8 @@ const TransfersListPage = () => {
           <CardContent className="p-4 sm:p-6">
             {/* Filters Section */}
             <div className="bg-gray-50 p-4 rounded-lg mb-4 space-y-4">
-              {/* Date Filters - Common for all tabs */}
+              {/* Currency Filter */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold">من تاريخ</Label>
-                  <Input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="h-10"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold">إلى تاريخ</Label>
-                  <Input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="h-10"
-                  />
-                </div>
-                
                 <div className="space-y-2">
                   <Label className="text-sm font-semibold">العملة</Label>
                   <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
