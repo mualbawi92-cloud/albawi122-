@@ -79,6 +79,13 @@ const TransfersListPage = () => {
     setStartDate(start);
     setEndDate(end);
     setSelectedQuickFilter(filterType);
+    // Auto-search after quick filter selection
+    setTimeout(() => fetchTransfers(), 100);
+  };
+  
+  // Function to handle manual search
+  const handleSearch = () => {
+    fetchTransfers();
   };
 
   const fetchTransfers = async () => {
