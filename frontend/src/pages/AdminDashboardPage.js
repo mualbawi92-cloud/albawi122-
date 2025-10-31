@@ -297,27 +297,8 @@ const AdminDashboardPage = () => {
             </CardContent>
           </Card>
         </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold text-green-700">
-                    💯 إجمالي المكتملة
-                  </p>
-                  <p className="text-4xl font-bold text-green-600">
-                    {transferStats.totalCompleted}
-                  </p>
-                </div>
-                <div className="text-5xl text-green-500/30">📊</div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
-        {/* Transit Account Card */}
-        {transitData && (
-          <Card 
-            className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl cursor-pointer hover:shadow-xl transition-shadow"
-            onClick={() => navigate('/transit-account')}
-          >
+        {/* Agents List */}
             <CardHeader className="pb-3">
               <CardTitle className="text-xl font-bold text-purple-900 flex items-center justify-between">
                 <span>🏦 حساب الحوالات الواردة لم تُسلَّم (الترانزيت)</span>
