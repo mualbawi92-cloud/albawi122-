@@ -5,8 +5,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
+import { Checkbox } from '../components/ui/checkbox';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
 
@@ -20,18 +22,21 @@ const TransfersListPage = () => {
   const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Active tab: 'outgoing' or 'incoming'
+  // Active tab: 'outgoing', 'incoming', or 'inquiry'
   const [activeTab, setActiveTab] = useState('outgoing');
   
-  // Initialize filters from URL query params
-  const [filter, setFilter] = useState({ 
-    status: searchParams.get('status') || '', 
-    direction: searchParams.get('direction') || '' 
-  });
-  const [searchCode, setSearchCode] = useState('');
+  // Date filters
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  
+  // Inquiry filters
+  const [searchCode, setSearchCode] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('all');
+  const [selectedStatuses, setSelectedStatuses] = useState({
+    outgoing: true,
+    completed: true,
+    cancelled: false
+  });
 
   useEffect(() => {
     // Update filters if URL params change
