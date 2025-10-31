@@ -3800,14 +3800,18 @@ async def get_journal_entries(
     query = {'is_cancelled': False}
     
     if start_date and end_date:
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
         query['date'] = {
-            '$gte': start_date,
-            '$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date
+            '$gte': start_datetime,
+            '$lte': end_datetime
         }
     elif start_date:
-        query['date'] = {'$gte': start_date}
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        query['date'] = {'$gte': start_datetime}
     elif end_date:
-        query['date'] = {'$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date}
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
+        query['date'] = {'$lte': end_datetime}
     
     # Calculate skip for pagination
     skip = (page - 1) * limit
@@ -3849,14 +3853,18 @@ async def get_account_ledger(
     # Build query
     query = {'is_cancelled': False}
     if start_date and end_date:
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
         query['date'] = {
-            '$gte': start_date,
-            '$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date
+            '$gte': start_datetime,
+            '$lte': end_datetime
         }
     elif start_date:
-        query['date'] = {'$gte': start_date}
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        query['date'] = {'$gte': start_datetime}
     elif end_date:
-        query['date'] = {'$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date}
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
+        query['date'] = {'$lte': end_datetime}
     
     # Calculate skip for pagination
     skip = (page - 1) * limit
