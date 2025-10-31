@@ -2901,14 +2901,18 @@ async def get_admin_commissions(
     query_transfers = {'status': 'completed'}
     
     if start_date and end_date:
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
         query_transfers['created_at'] = {
-            '$gte': start_date,
-            '$lte': end_date + 'T23:59:59.999Z'
+            '$gte': start_datetime,
+            '$lte': end_datetime
         }
     elif start_date:
-        query_transfers['created_at'] = {'$gte': start_date}
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        query_transfers['created_at'] = {'$gte': start_datetime}
     elif end_date:
-        query_transfers['created_at'] = {'$lte': end_date + 'T23:59:59.999Z'}
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
+        query_transfers['created_at'] = {'$lte': end_datetime}
     
     if currency:
         query_transfers['currency'] = currency
