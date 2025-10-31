@@ -1412,14 +1412,19 @@ async def get_transfers(
     
     # Date range filter
     if start_date and end_date:
+        # Convert date strings to ISO format for proper comparison
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
         query['created_at'] = {
-            '$gte': start_date,
-            '$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date
+            '$gte': start_datetime,
+            '$lte': end_datetime
         }
     elif start_date:
-        query['created_at'] = {'$gte': start_date}
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        query['created_at'] = {'$gte': start_datetime}
     elif end_date:
-        query['created_at'] = {'$lte': end_date + 'T23:59:59.999Z' if 'T' not in end_date else end_date}
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
+        query['created_at'] = {'$lte': end_datetime}
     
     # Currency filter
     if currency:
