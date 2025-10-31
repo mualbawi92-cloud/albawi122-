@@ -42,7 +42,43 @@ const TransfersListPage = () => {
 
   useEffect(() => {
     fetchTransfers();
-  }, [activeTab, selectedCurrency, statusFilters]);
+  }, [activeTab, startDate, endDate, selectedCurrency, statusFilters]);
+
+  // Function to handle quick date filters
+  const handleQuickFilter = (filterType) => {
+    const today = new Date();
+    let start = '';
+    let end = today.toISOString().split('T')[0];
+    
+    switch(filterType) {
+      case 'today':
+        start = today.toISOString().split('T')[0];
+        break;
+      case 'last7':
+        const last7 = new Date();
+        last7.setDate(today.getDate() - 7);
+        start = last7.toISOString().split('T')[0];
+        break;
+      case 'last30':
+        const last30 = new Date();
+        last30.setDate(today.getDate() - 30);
+        start = last30.toISOString().split('T')[0];
+        break;
+      case 'thisMonth':
+        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+        start = firstDay.toISOString().split('T')[0];
+        break;
+      case 'all':
+      default:
+        start = '';
+        end = '';
+        break;
+    }
+    
+    setStartDate(start);
+    setEndDate(end);
+    setSelectedQuickFilter(filterType);
+  };
 
   const fetchTransfers = async () => {
     try {
