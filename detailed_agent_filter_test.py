@@ -10,7 +10,7 @@ import json
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://fintrack-system-3.preview.emergentagent.com/api"
+BASE_URL = "https://xchange-hub-1.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
 
 class DetailedAgentFilterTester:
