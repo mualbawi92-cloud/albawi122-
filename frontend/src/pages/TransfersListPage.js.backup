@@ -1,0 +1,309 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Badge } from '../components/ui/badge';
+import { Checkbox } from '../components/ui/checkbox';
+import { toast } from 'sonner';
+import Navbar from '../components/Navbar';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+const TransfersListPage = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const [transfers, setTransfers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Active tab: 'outgoing', 'incoming', or 'inquiry'
+  const [activeTab, setActiveTab] = useState('outgoing');
+  
+  // Date filters
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  
+  // Inquiry filters
+  const [searchCode, setSearchCode] = useState('');
+  const [selectedCurrency, setSelectedCurrency] = useState('all');
+  const [selectedStatuses, setSelectedStatuses] = useState({
+    outgoing: true,
+    completed: true,
+    cancelled: false
+  });
+
+  useEffect(() => {
+    // Update filters if URL params change
+    const statusParam = searchParams.get('status') || '';
+    const directionParam = searchParams.get('direction') || '';
+    setFilter({ status: statusParam, direction: directionParam });
+  }, [searchParams]);
+
+  useEffect(() => {
+    // Set default dates (last 30 days)
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    setStartDate(thirtyDaysAgo.toISOString().split('T')[0]);
+    setEndDate(today.toISOString().split('T')[0]);
+    
+    fetchTransfers();
+  }, [activeTab, startDate, endDate, selectedCurrency, selectedStatuses]);
+
+  const fetchTransfers = async () => {
+    try {
+      const params = new URLSearchParams();
+      
+      // Add date filters
+      if (startDate) params.append('start_date', startDate);
+      if (endDate) params.append('end_date', endDate);
+      
+      // Add currency filter
+      if (selectedCurrency !== 'all') params.append('currency', selectedCurrency);
+      
+      // Tab-specific filters
+      if (activeTab === 'outgoing') {
+        // Outgoing: all statuses for user's outgoing transfers
+        params.append('direction', 'outgoing');
+      } else if (activeTab === 'incoming') {
+        // Incoming: only pending transfers
+        params.append('direction', 'incoming');
+        params.append('status', 'pending');
+      } else if (activeTab === 'inquiry') {
+        // Inquiry: multiple statuses based on checkboxes
+        // Don't set direction - show all transfers
+        // Backend will filter based on user role
+      }
+
+      const response = await axios.get(`${API}/transfers?${params}`);
+      let fetchedTransfers = response.data;
+      
+      // For inquiry tab, apply status filters
+      if (activeTab === 'inquiry') {
+        fetchedTransfers = fetchedTransfers.filter(t => {
+          // Check if transfer matches selected statuses
+          if (t.status === 'pending' && !selectedStatuses.outgoing) return false;
+          if (t.status === 'completed' && !selectedStatuses.completed) return false;
+          if (t.status === 'cancelled' && !selectedStatuses.cancelled) return false;
+          return true;
+        });
+      }
+      
+      // Search by code
+      if (searchCode) {
+        fetchedTransfers = fetchedTransfers.filter(t => 
+          t.transfer_code?.toLowerCase().includes(searchCode.toLowerCase()) ||
+          t.id?.toLowerCase().includes(searchCode.toLowerCase())
+        );
+      }
+      
+      setTransfers(fetchedTransfers);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching transfers:', error);
+      toast.error('خطأ في تحميل الحوالات');
+      setLoading(false);
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const statusMap = {
+      pending: { label: 'قيد الانتظار', className: 'bg-yellow-100 text-yellow-800' },
+      completed: { label: 'مكتمل', className: 'bg-green-100 text-green-800' },
+      cancelled: { label: 'ملغى', className: 'bg-red-100 text-red-800' }
+    };
+    const config = statusMap[status] || { label: status, className: '' };
+    return <Badge className={config.className}>{config.label}</Badge>;
+  };
+
+  const filteredTransfers = transfers.filter(t => {
+    // Filter by search code
+    if (searchCode && !t.transfer_code.toLowerCase().includes(searchCode.toLowerCase())) {
+      return false;
+    }
+    
+    // Filter by tab (direction)
+    if (activeTab === 'outgoing') {
+      // Outgoing: transfers sent by current user
+      return t.from_agent_id === user?.id;
+    } else if (activeTab === 'incoming') {
+      // Incoming: pending transfers that current user can receive
+      // (not sent by current user and status is pending)
+      return t.from_agent_id !== user?.id && t.status === 'pending';
+    }
+    
+    return true;
+  });
+
+  return (
+    <div className="min-h-screen bg-background" data-testid="transfers-list-page">
+      <Navbar />
+      <div className="container mx-auto p-3 sm:p-6">
+        <Card className="shadow-xl mb-4 sm:mb-6">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-2xl sm:text-3xl text-primary">الحوالات</CardTitle>
+          </CardHeader>
+          
+          {/* Tabs */}
+          <div className="border-b-2 px-4 sm:px-6">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveTab('outgoing')}
+                className={`px-6 py-3 font-bold text-lg transition-all ${
+                  activeTab === 'outgoing'
+                    ? 'border-b-4 border-primary text-primary bg-primary/5'
+                    : 'text-muted-foreground hover:text-primary'
+                }`}
+              >
+                📤 إرسال حوالة
+              </button>
+              <button
+                onClick={() => setActiveTab('incoming')}
+                className={`px-6 py-3 font-bold text-lg transition-all ${
+                  activeTab === 'incoming'
+                    ? 'border-b-4 border-primary text-primary bg-primary/5'
+                    : 'text-muted-foreground hover:text-primary'
+                }`}
+              >
+                📥 تسليم حوالة
+              </button>
+            </div>
+          </div>
+          
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+              <Input
+                placeholder="بحث برمز الحوالة..."
+                value={searchCode}
+                onChange={(e) => setSearchCode(e.target.value)}
+                className="h-10"
+                data-testid="search-transfer-input"
+              />
+              
+              <Input
+                type="date"
+                placeholder="من تاريخ"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="h-10"
+              />
+              
+              <Input
+                type="date"
+                placeholder="إلى تاريخ"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="h-10"
+              />
+              
+              <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="العملة" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">كل العملات</SelectItem>
+                  <SelectItem value="IQD">IQD</SelectItem>
+                  <SelectItem value="USD">USD</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={filter.status || ""} onValueChange={(value) => setFilter({ ...filter, status: value || "" })}>
+                <SelectTrigger className="h-10" data-testid="status-filter">
+                  <SelectValue placeholder="الحالة" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value=" ">كل الحالات</SelectItem>
+                  <SelectItem value="pending">قيد الانتظار</SelectItem>
+                  <SelectItem value="completed">مكتمل</SelectItem>
+                  <SelectItem value="cancelled">ملغى</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Action Button - Shows different button based on active tab */}
+            {activeTab === 'outgoing' ? (
+              <Button
+                onClick={() => navigate('/transfers/create')}
+                className="bg-secondary hover:bg-secondary/90 text-primary font-bold mb-4"
+                data-testid="create-new-transfer-btn"
+              >
+                ➕ حوالة جديدة
+              </Button>
+            ) : (
+              <Button
+                onClick={() => navigate('/quick-receive')}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold mb-4"
+                data-testid="quick-receive-transfer-btn"
+              >
+                ➕ تسليم حوالة جديدة
+              </Button>
+            )}
+
+            {loading ? (
+              <div className="text-center py-12 text-xl">جاري التحميل...</div>
+            ) : filteredTransfers.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">لا توجد حوالات</div>
+            ) : (
+              <div className="space-y-3">
+                {filteredTransfers.map((transfer) => (
+                  <div
+                    key={transfer.id}
+                    data-testid={`transfer-item-${transfer.transfer_code}`}
+                    className="flex items-center justify-between p-5 bg-muted/30 rounded-xl hover:shadow-lg transition-all cursor-pointer border-r-4 border-r-secondary"
+                    onClick={() => navigate(`/transfers/${transfer.id}`)}
+                  >
+                    <div className="space-y-2">
+                      <p className="text-xl font-bold text-primary">{transfer.transfer_code}</p>
+                      <p className="text-sm text-muted-foreground">
+                        من: {transfer.sender_name}
+                      </p>
+                      {transfer.receiver_name && (
+                        <p className="text-sm text-muted-foreground">
+                          إلى: {transfer.receiver_name} ({transfer.to_governorate})
+                        </p>
+                      )}
+                      {!transfer.receiver_name && (
+                        <p className="text-sm text-muted-foreground">
+                          إلى: {transfer.to_governorate}
+                        </p>
+                      )}
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(transfer.created_at).toLocaleDateString('ar-IQ', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                    <div className="text-left space-y-2">
+                      <p className="text-2xl font-bold text-secondary">{transfer.amount.toLocaleString()} {transfer.currency || 'IQD'}</p>
+                      <p className="text-sm text-gray-600">
+                        نسبة العمولة: <span className="font-bold text-primary">
+                          {transfer.commission_percentage !== undefined && transfer.commission_percentage !== null 
+                            ? `${transfer.commission_percentage}%` 
+                            : '0%'}
+                        </span>
+                      </p>
+                      {getStatusBadge(transfer.status)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default TransfersListPage;
