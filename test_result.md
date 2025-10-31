@@ -216,7 +216,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Agent filter functionality in admin-commissions endpoint"
+    - "Date filter functionality for transfers endpoint"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
