@@ -19,6 +19,10 @@ const AdminDashboardPage = () => {
   const [allTransfers, setAllTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [transitData, setTransitData] = useState(null);
+  
+  // Date filters
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     if (user?.role !== 'admin') {
@@ -26,8 +30,23 @@ const AdminDashboardPage = () => {
       navigate('/dashboard');
       return;
     }
+    
+    // Set default dates (last 30 days)
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    setStartDate(thirtyDaysAgo.toISOString().split('T')[0]);
+    setEndDate(today.toISOString().split('T')[0]);
+    
     fetchData();
   }, [user, navigate]);
+  
+  useEffect(() => {
+    if (startDate && endDate) {
+      fetchData();
+    }
+  }, [startDate, endDate]);
 
   const fetchData = async () => {
     try {
@@ -36,8 +55,12 @@ const AdminDashboardPage = () => {
       const agentsData = agentsRes.data;
       setAgents(agentsData);
 
-      // Get all transfers
-      const transfersRes = await axios.get(`${API}/transfers`);
+      // Get all transfers with date filter
+      const params = new URLSearchParams();
+      if (startDate) params.append('start_date', startDate);
+      if (endDate) params.append('end_date', endDate);
+      
+      const transfersRes = await axios.get(`${API}/transfers?${params}`);
       setAllTransfers(transfersRes.data);
 
       // Get statement for each agent
