@@ -805,3 +805,423 @@ agent_communication:
          issue can be reproduced and check browser network tab for API calls
       
       **Backend filter is verified and working perfectly - issue is in frontend implementation.**
+
+
+#====================================================================================================
+# MISSING FEATURES & ENHANCEMENTS - Complete System Requirements
+#====================================================================================================
+
+# This section contains a comprehensive list of missing features identified from the full system 
+# requirements document. These are organized by priority and should be implemented systematically.
+
+## 🔴 CRITICAL PRIORITY (High Impact, Core Functionality)
+
+### 1. Central Currency Exchange Rate Management System ❌
+**Status:** Not Implemented
+**Priority:** Critical
+**Description:**
+  - Central dashboard for managing exchange rates (buy/sell rates for each currency)
+  - Manual rate updates with timestamp tracking
+  - Import rates from CSV or external API
+  - Rate validity period and last update tracking
+  - Add `Currencies` table to database schema
+
+**Required Components:**
+  - Backend: 
+    * New table: `currencies` (id, code, name_ar, name_en, buy_rate_iqd, sell_rate_iqd, last_update, updated_by)
+    * API endpoints: GET/POST/PUT /api/currencies
+    * API endpoint: POST /api/currencies/import (CSV upload)
+  - Frontend:
+    * New page: CurrencyManagementPage.js
+    * Features: Add, Edit, Delete rates
+    * CSV import functionality
+    * Rate history tracking
+
+**Accounting Impact:**
+  - Required for accurate FX gain/loss calculation
+  - Essential for proper valuation of foreign currency holdings
+
+---
+
+### 2. FX Spot Transactions (Cash Exchange Operations) ⚠️
+**Status:** Partially Implemented (Only credit sales exist)
+**Priority:** Critical
+**Current State:** ExchangeOperationsPage exists but limited to "بيع آجل" only
+**Description:**
+  - **BUY FX (نقدي):** Customer sells foreign currency, receives IQD
+  - **SELL FX (نقدي):** Customer buys foreign currency, pays IQD
+  - Calculate spread profit (difference between buy/sell rates)
+  - Automatic accounting entries for spot transactions
+  - Real-time inventory tracking of foreign currency in cash boxes
+
+**Required Enhancements:**
+  - Modify ExchangeOperationsPage to support:
+    * نقدي (Spot/Cash) transactions
+    * بيع آجل (Credit Sales) - already exists
+    * شراء آجل (Credit Purchases) - new
+  - Add transaction type selector (نقدي/آجل)
+  - Implement automatic journal entries for each type
+  - Track FX inventory in CashBoxes
+
+**Database Changes:**
+  - Add `transaction_mode` field to exchange_operations: 'spot' or 'credit'
+  - Add `settlement_date` for credit transactions
+  - Link to customer_id for credit tracking
+
+**Accounting Entries Example (Spot BUY):**
+  ```
+  Customer sells 100 USD at buy rate 1500 IQD
+  DR: Cash Box - USD (1020)        100 USD
+  CR: Cash Box - IQD (1010)        150,000 IQD
+  ```
+
+**Related Pending Task:**
+  - "Modify exchange operations to *only* support بيع آجل" → Should be EXPANDED to support all types
+
+---
+
+### 3. Complete KYC (Know Your Customer) System ❌
+**Status:** Not Implemented
+**Priority:** Critical (Compliance Requirement)
+**Current State:** Customer data embedded in transfers only (sender_name, receiver_name)
+**Description:**
+  - Separate `Customers` table with complete profile
+  - Upload and store KYC documents (ID photos, proof of address)
+  - Encrypt KYC files in storage
+  - Verification status workflow (Pending → Verified → Rejected)
+  - Daily/monthly transaction limits per customer
+  - Sanctions list checking (optional API integration)
+  - Customer management interface
+
+**Required Components:**
+  - Backend:
+    * New table: `customers` (id, name_ar, name_en, id_type, id_number, dob, address, phone, email, kyc_status, kyc_docs_path, created_at, verified_at, verified_by)
+    * New table: `customer_limits` (customer_id, daily_limit_iqd, monthly_limit_iqd, current_daily_usage, current_monthly_usage)
+    * New table: `kyc_documents` (id, customer_id, doc_type, file_path, encrypted, uploaded_at)
+    * API endpoints: Full CRUD for /api/customers
+    * File upload endpoint: POST /api/customers/{id}/documents
+    * Verification endpoint: PATCH /api/customers/{id}/verify
+  - Frontend:
+    * CustomersListPage.js
+    * CustomerProfilePage.js
+    * KYCVerificationPage.js (Admin only)
+    * Document upload component
+  - Security:
+    * Encrypt uploaded files (AES-256)
+    * Secure file storage path
+    * Access logs for viewing KYC data
+
+**Integration Points:**
+  - Link transfers to customer_id instead of just names
+  - Check limits before creating transfer
+  - AML reporting based on customer activity
+
+---
+
+### 4. Two-Factor Authentication (2FA) ❌
+**Status:** Not Implemented
+**Priority:** High (Security Requirement)
+**Current State:** JWT authentication only
+**Description:**
+  - Enable 2FA for Admin and Accountant roles
+  - Support OTP via SMS or Authenticator app (TOTP)
+  - Backup codes for account recovery
+
+**Required Components:**
+  - Backend:
+    * Add to users table: `two_fa_enabled`, `two_fa_secret`, `backup_codes`
+    * Endpoints: POST /api/auth/2fa/enable, POST /api/auth/2fa/verify
+    * Library: speakeasy (Node.js) or pyotp (Python)
+  - Frontend:
+    * 2FA setup page in SettingsPage
+    * QR code display for Authenticator setup
+    * OTP input on login page
+  - Optional: SMS integration via Twilio or local SMS gateway
+
+---
+
+## 🟡 IMPORTANT PRIORITY (Essential for Operations)
+
+### 5. Multiple Cash Boxes Management ⚠️
+**Status:** Partially Implemented (Agent wallets exist)
+**Priority:** Important
+**Current State:** Agent wallets track balances, but no central cash boxes
+**Description:**
+  - Separate `CashBoxes` table for each physical cash box
+  - Track balance per currency per box
+  - Cash transfer between boxes with journal entries
+  - End-of-day cash box reconciliation
+  - Physical count vs system balance comparison
+
+**Required Components:**
+  - Backend:
+    * New table: `cash_boxes` (id, name, location, currency_id, current_balance, last_reconciled_at)
+    * New table: `cash_box_transactions` (id, box_id, type, amount, reference, created_at)
+    * Endpoints: /api/cashboxes (CRUD)
+    * Endpoint: POST /api/cashboxes/transfer (move cash between boxes)
+    * Endpoint: POST /api/cashboxes/{id}/reconcile
+  - Frontend:
+    * CashBoxesPage.js
+    * CashBoxReconciliationPage.js
+
+**Accounting Integration:**
+  - Link all FX transactions to specific cash box
+  - Journal entries for cash box transfers
+
+---
+
+### 6. Receipt and Document Printing ❌
+**Status:** Not Implemented
+**Priority:** Important
+**Description:**
+  - Print receipt for FX transactions
+  - Print receipt for transfers (send/receive)
+  - Print customer account statement
+  - Customizable print templates
+
+**Required Components:**
+  - Backend:
+    * Endpoint: GET /api/transactions/{id}/receipt (returns PDF or HTML)
+    * PDF generation library: jsPDF or ReportLab
+  - Frontend:
+    * Print button on transaction details pages
+    * Print preview modal
+    * Template customization in admin settings
+
+---
+
+### 7. Daily Cash Summary Report ❌
+**Status:** Not Implemented
+**Priority:** Important
+**Description:**
+  - Daily report showing opening balance, transactions, closing balance per cash box
+  - Per currency breakdown
+  - Comparison with physical count
+
+**Required Components:**
+  - Backend:
+    * Endpoint: GET /api/reports/daily-cash?date=YYYY-MM-DD
+    * Aggregate data from cash_boxes and transactions
+  - Frontend:
+    * DailyCashReportPage.js
+    * Export to PDF/Excel
+
+---
+
+### 8. FX Gain/Loss Report ❌
+**Status:** Not Implemented
+**Priority:** Important
+**Description:**
+  - Report showing profit/loss from exchange rate spreads
+  - Calculate based on buy rate vs sell rate
+  - Per currency breakdown
+  - Realized vs unrealized gains
+
+**Required Components:**
+  - Backend:
+    * Endpoint: GET /api/reports/fx-gains?start_date&end_date
+    * Calculate: (sell_rate - buy_rate) × volume
+  - Frontend:
+    * FXGainsReportPage.js
+
+---
+
+### 9. Complete Settings Page for Agents ⚠️
+**Status:** Partially Implemented
+**Priority:** Important
+**Pending Task:** "Complete frontend logic in SettingsPage.js to restrict agents from changing display_name and governorate"
+**Description:**
+  - Allow agents to change: username, address, phone, password
+  - Restrict agents from changing: display_name, governorate, role
+  - Show current wallet limits (read-only for agents)
+
+---
+
+### 10. Edit Agent Wallet Limits (Admin) ⚠️
+**Status:** Not Implemented
+**Priority:** Important
+**Pending Task:** "Complete the frontend implementation for editing agent wallet limits on EditAgentPage"
+**Pending Task:** "Update UserUpdate Pydantic model with wallet_limit_iqd and wallet_limit_usd fields"
+**Description:**
+  - Admin can edit agent wallet limits
+  - Show warning if limit increase requires approval
+  - Log all limit changes in audit log
+
+---
+
+### 11. Cancelled Transfers Page ⚠️
+**Status:** Page exists but empty
+**Priority:** Important
+**Pending Task:** "Populate CancelledTransfersPage.js with data and UI"
+**Description:**
+  - Display all cancelled transfers with cancellation reason
+  - Show who cancelled and when
+  - Filter by date, agent, currency
+
+---
+
+### 12. Cancel Transit Transfers ⚠️
+**Status:** Not Implemented
+**Priority:** Important
+**Pending Task:** "Address the user's request: اريد تقوم بالغاء حوالات ترانزيت"
+**Description:**
+  - Admin ability to cancel transfers stuck in transit
+  - Return funds to sender (without commission)
+  - Update transit account balance
+  - Record cancellation reason
+
+---
+
+## 🟢 NICE TO HAVE (Future Enhancements)
+
+### 13. Bank Reconciliation ❌
+**Status:** Not Implemented
+**Priority:** Nice to Have
+**Description:**
+  - Import bank statements (CSV/Excel)
+  - Match transactions with system records
+  - Identify discrepancies
+  - Record reconciliation adjustments
+
+---
+
+### 14. Period Closing (Daily/Monthly) ❌
+**Status:** Not Implemented
+**Priority:** Nice to Have
+**Description:**
+  - Daily closing of cash boxes and accounts
+  - Monthly closing of accounting books
+  - Prevent modifications to closed periods
+  - Generate closing report
+
+---
+
+### 15. CSV/API Price Import ❌
+**Status:** Not Implemented
+**Priority:** Nice to Have
+**Description:**
+  - Automate exchange rate updates from external sources
+  - Support for Central Bank API or forex data providers
+  - Scheduled automatic updates
+
+---
+
+### 16. AML Transaction Reports ❌
+**Status:** Not Implemented
+**Priority:** Nice to Have (Compliance)
+**Description:**
+  - Report transactions above threshold
+  - Suspicious activity patterns
+  - Exportable format for regulatory authorities
+
+---
+
+### 17. Nostro/Vostro Accounts ❌
+**Status:** Not Implemented
+**Priority:** Nice to Have
+**Description:**
+  - Track funds held with correspondent banks
+  - Account 1100: "عملات لدى المراسلين"
+  - Reconciliation with correspondent statements
+
+---
+
+### 18. Enhanced AI Monitoring ⚠️
+**Status:** Basic monitoring exists
+**Priority:** Nice to Have
+**Pending Task:** "Implement specific 'Further AI monitoring features (e.g., detecting agents taking extra money, abnormal wallet patterns)'"
+**Description:**
+  - Detect agents taking extra commissions
+  - Abnormal wallet balance patterns
+  - Suspicious transfer patterns
+  - Automated alerts to admin
+
+---
+
+## 📝 IMPLEMENTATION NOTES
+
+### Database Schema Additions Required:
+1. `currencies` - Exchange rate management
+2. `customers` - Full KYC profiles
+3. `customer_limits` - Transaction limits
+4. `kyc_documents` - Document storage
+5. `cash_boxes` - Physical cash box tracking
+6. `cash_box_transactions` - Cash movement logs
+7. `exchange_transactions` - FX spot/credit operations (expand existing)
+8. Add fields to `users`: `two_fa_enabled`, `two_fa_secret`, `backup_codes`
+
+### New Backend Endpoints Required:
+- /api/currencies/* (CRUD + import)
+- /api/customers/* (Full CRUD + KYC)
+- /api/customers/{id}/documents (File upload)
+- /api/cashboxes/* (CRUD + reconciliation)
+- /api/auth/2fa/* (Setup + verification)
+- /api/reports/daily-cash
+- /api/reports/fx-gains
+- /api/reports/aml-suspicious
+
+### New Frontend Pages Required:
+1. CurrencyManagementPage.js
+2. CustomersListPage.js
+3. CustomerProfilePage.js
+4. KYCVerificationPage.js
+5. CashBoxesPage.js
+6. CashBoxReconciliationPage.js
+7. DailyCashReportPage.js
+8. FXGainsReportPage.js
+9. BankReconciliationPage.js
+10. PeriodClosingPage.js
+
+### Security Enhancements Required:
+- File encryption for KYC documents
+- 2FA implementation
+- Enhanced audit logging for sensitive operations
+- Role-based restrictions on exports/prints
+
+---
+
+## 🎯 RECOMMENDED IMPLEMENTATION ROADMAP
+
+### Phase 1: Core FX Operations (4-6 weeks)
+1. ✅ **CURRENT WORK:** Fix date filtering in transfers page
+2. Currency rate management system
+3. Complete FX spot transactions (buy/sell cash)
+4. Multiple cash boxes management
+5. Daily cash summary report
+6. Receipt printing
+
+### Phase 2: Compliance & Security (3-4 weeks)
+7. Complete KYC system
+8. Customer limits and tracking
+9. 2FA implementation
+10. Enhanced audit logging
+11. Document encryption
+
+### Phase 3: Advanced Features (3-4 weeks)
+12. FX gain/loss reporting
+13. Bank reconciliation
+14. Period closing
+15. AML reports
+16. Enhanced AI monitoring
+
+### Phase 4: Refinements (2-3 weeks)
+17. Nostro/Vostro accounts
+18. API/CSV price import
+19. Complete all pending UI tasks
+20. Performance optimization
+21. Comprehensive testing
+
+---
+
+## ⚠️ CRITICAL NOTES FOR IMPLEMENTATION
+
+1. **Do NOT break existing functionality** while adding new features
+2. **Test thoroughly** after each feature addition using backend/frontend testing agents
+3. **Update test_result.md** after implementing each feature
+4. **Maintain backward compatibility** for existing data
+5. **Get user confirmation** before major architectural changes
+6. **Prioritize based on user feedback** - user may want different order
+
+---
+
+**END OF MISSING FEATURES DOCUMENTATION**
