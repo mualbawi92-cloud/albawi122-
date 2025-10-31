@@ -299,55 +299,8 @@ const AdminDashboardPage = () => {
         </div>
 
         {/* Agents List */}
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-bold text-purple-900 flex items-center justify-between">
-                <span>🏦 حساب الحوالات الواردة لم تُسلَّم (الترانزيت)</span>
-                <span className="text-sm font-normal text-purple-700">اضغط للتفاصيل</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white/60 p-4 rounded-lg">
-                  <p className="text-sm text-purple-700 mb-1">الرصيد بالدينار</p>
-                  <p className="text-3xl font-bold text-purple-900">
-                    {transitData.balance_iqd?.toLocaleString() || 0} IQD
-                  </p>
-                </div>
-                <div className="bg-white/60 p-4 rounded-lg">
-                  <p className="text-sm text-purple-700 mb-1">الرصيد بالدولار</p>
-                  <p className="text-3xl font-bold text-purple-900">
-                    {transitData.balance_usd?.toLocaleString() || 0} USD
-                  </p>
-                </div>
-                <div className="bg-white/60 p-4 rounded-lg">
-                  <p className="text-sm text-purple-700 mb-1">الحوالات المعلقة</p>
-                  <p className="text-3xl font-bold text-purple-900">
-                    {transitData.pending_transfers_count || 0}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Total Credit */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-green-700">
-                    💵 إجمالي الحركات الدائنة لجميع الصيارف
-                  </p>
-                  <p className="text-4xl font-bold text-green-600">
-                    {totals.totalCredit.toLocaleString()}
-                  </p>
-                  <p className="text-xs text-green-600">د.ع</p>
-                </div>
-                <div className="text-6xl text-green-500/30">⬇️</div>
-              </div>
-            </CardContent>
+        <Card className="border-0 shadow-lg">
+          <CardHeader className="bg-gradient-to-l from-purple-50 to-purple-100 border-b-4 border-purple-500">
           </Card>
 
           {/* Total Debit */}
