@@ -2238,11 +2238,13 @@ async def get_commissions_report(
     
     # Date range filter
     if start_date:
-        query['created_at'] = {'$gte': start_date}
+        start_datetime = start_date if 'T' in start_date else f"{start_date}T00:00:00.000Z"
+        query['created_at'] = {'$gte': start_datetime}
     if end_date:
+        end_datetime = end_date if 'T' in end_date else f"{end_date}T23:59:59.999Z"
         if 'created_at' not in query:
             query['created_at'] = {}
-        query['created_at']['$lte'] = end_date
+        query['created_at']['$lte'] = end_datetime
     
     # Get all transfers matching criteria
     transfers = await db.transfers.find(query, {'_id': 0}).sort('created_at', -1).to_list(10000)
