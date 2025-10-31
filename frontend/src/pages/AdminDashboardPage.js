@@ -193,61 +193,110 @@ const AdminDashboardPage = () => {
         </div>
 
         {/* Transfer Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Completed Today */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Completed Transfers (Delivered) */}
+          <Card 
+            className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 rounded-xl cursor-pointer hover:shadow-xl transition-shadow"
+            onClick={() => navigate('/transfers?status=completed')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="space-y-1">
+                  <p className="text-sm font-bold text-green-800">
+                    ✅ إجمالي الحوالات المسلّمة
+                  </p>
+                  <p className="text-5xl font-bold text-green-600">
+                    {transferStats.completed.count}
+                  </p>
+                </div>
+                <div className="text-6xl text-green-500/30">📦</div>
+              </div>
+              <div className="space-y-2 border-t border-green-200 pt-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-green-700">IQD:</span>
+                  <span className="text-lg font-bold text-green-800">
+                    {transferStats.completed.iqd.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-green-700">USD:</span>
+                  <span className="text-lg font-bold text-green-800">
+                    {transferStats.completed.usd.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Pending Transfers (Ready to Deliver) */}
+          <Card 
+            className="border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl cursor-pointer hover:shadow-xl transition-shadow"
+            onClick={() => navigate('/transfers?status=pending')}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="space-y-1">
+                  <p className="text-sm font-bold text-yellow-800">
+                    ⏳ إجمالي الحوالات الجاهزة للتسليم
+                  </p>
+                  <p className="text-5xl font-bold text-yellow-600">
+                    {transferStats.pending.count}
+                  </p>
+                </div>
+                <div className="text-6xl text-yellow-500/30">📋</div>
+              </div>
+              <div className="space-y-2 border-t border-yellow-200 pt-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-yellow-700">IQD:</span>
+                  <span className="text-lg font-bold text-yellow-800">
+                    {transferStats.pending.iqd.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-yellow-700">USD:</span>
+                  <span className="text-lg font-bold text-yellow-800">
+                    {transferStats.pending.usd.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Transit Account Balance */}
           <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
                 <div className="space-y-1">
-                  <p className="text-xs font-semibold text-blue-700">
-                    📅 الحوالات المكتملة اليوم
+                  <p className="text-sm font-bold text-blue-800">
+                    💰 الرصيد المتاح
                   </p>
-                  <p className="text-4xl font-bold text-blue-600">
-                    {transferStats.completedToday}
+                  <p className="text-3xl font-bold text-blue-600">
+                    حساب الترانزيت
                   </p>
                 </div>
-                <div className="text-5xl text-blue-500/30">✅</div>
+                <div className="text-6xl text-blue-500/30">💳</div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Cancelled */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-red-100 rounded-xl">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold text-red-700">
-                    🚫 الحوالات الملغية
-                  </p>
-                  <p className="text-4xl font-bold text-red-600">
-                    {transferStats.cancelled}
-                  </p>
+              {transitData ? (
+                <div className="space-y-2 border-t border-blue-200 pt-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-blue-700">IQD:</span>
+                    <span className="text-lg font-bold text-blue-800">
+                      {transitData.balance_iqd?.toLocaleString() || 0}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-blue-700">USD:</span>
+                    <span className="text-lg font-bold text-blue-800">
+                      {transitData.balance_usd?.toLocaleString() || 0}
+                    </span>
+                  </div>
                 </div>
-                <div className="text-5xl text-red-500/30">❌</div>
-              </div>
+              ) : (
+                <p className="text-sm text-blue-600">لا توجد بيانات</p>
+              )}
             </CardContent>
           </Card>
-
-          {/* Pending */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold text-yellow-700">
-                    ⏳ الحوالات قيد الانتظار
-                  </p>
-                  <p className="text-4xl font-bold text-yellow-600">
-                    {transferStats.pending}
-                  </p>
-                </div>
-                <div className="text-5xl text-yellow-500/30">⌛</div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Total Completed */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
-            <CardContent className="p-5">
+        </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-xs font-semibold text-green-700">
