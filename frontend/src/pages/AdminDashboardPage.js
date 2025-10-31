@@ -203,16 +203,41 @@ const AdminDashboardPage = () => {
         
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
                 🏦 لوحة التحكم – الصيارف المسجلة
               </h1>
               <p className="text-gray-600 mt-2">إدارة ومراقبة جميع الصيارف والحوالات</p>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-600">المدير</p>
-              <p className="text-lg font-bold text-gray-900">{user?.display_name}</p>
+            
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6">
+              {/* Date Filters */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="space-y-1">
+                  <Label className="text-sm font-semibold">من تاريخ</Label>
+                  <Input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="h-10"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-sm font-semibold">إلى تاريخ</Label>
+                  <Input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="h-10"
+                  />
+                </div>
+              </div>
+              
+              <div className="text-right">
+                <p className="text-sm text-gray-600">المدير</p>
+                <p className="text-lg font-bold text-gray-900">{user?.display_name}</p>
+              </div>
             </div>
           </div>
         </div>
