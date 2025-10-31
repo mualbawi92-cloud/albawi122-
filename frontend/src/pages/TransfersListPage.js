@@ -41,8 +41,9 @@ const TransfersListPage = () => {
   });
 
   useEffect(() => {
+    // Only fetch on tab change or initial load
     fetchTransfers();
-  }, [activeTab, startDate, endDate, selectedCurrency, statusFilters]);
+  }, [activeTab]);
 
   // Function to handle quick date filters
   const handleQuickFilter = (filterType) => {
