@@ -91,32 +91,42 @@ const AdminDashboardPage = () => {
     };
   };
 
-  // Calculate transfer statistics
+  // Calculate transfer statistics with amounts
   const calculateTransferStats = () => {
-    const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // Completed transfers (delivered)
+    const completedTransfers = allTransfers.filter(t => t.status === 'completed');
+    const completedCount = completedTransfers.length;
+    const completedIQD = completedTransfers
+      .filter(t => t.receiving_currency === 'IQD')
+      .reduce((sum, t) => sum + (t.receiving_amount || 0), 0);
+    const completedUSD = completedTransfers
+      .filter(t => t.receiving_currency === 'USD')
+      .reduce((sum, t) => sum + (t.receiving_amount || 0), 0);
     
-    const completedToday = allTransfers.filter(t => 
-      t.status === 'completed' && new Date(t.completed_at) >= todayStart
-    ).length;
+    // Pending transfers (ready to deliver)
+    const pendingTransfers = allTransfers.filter(t => t.status === 'pending');
+    const pendingCount = pendingTransfers.length;
+    const pendingIQD = pendingTransfers
+      .filter(t => t.receiving_currency === 'IQD')
+      .reduce((sum, t) => sum + (t.receiving_amount || 0), 0);
+    const pendingUSD = pendingTransfers
+      .filter(t => t.receiving_currency === 'USD')
+      .reduce((sum, t) => sum + (t.receiving_amount || 0), 0);
     
-    const cancelled = allTransfers.filter(t => 
-      t.status === 'cancelled'
-    ).length;
-    
-    const pending = allTransfers.filter(t => 
-      t.status === 'pending'
-    ).length;
-    
-    const totalCompleted = allTransfers.filter(t => 
-      t.status === 'completed'
-    ).length;
+    const cancelled = allTransfers.filter(t => t.status === 'cancelled').length;
     
     return {
-      completedToday,
+      completed: {
+        count: completedCount,
+        iqd: completedIQD,
+        usd: completedUSD
+      },
+      pending: {
+        count: pendingCount,
+        iqd: pendingIQD,
+        usd: pendingUSD
+      },
       cancelled,
-      pending,
-      totalCompleted,
       total: allTransfers.length
     };
   };
