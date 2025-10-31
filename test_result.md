@@ -224,6 +224,69 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
+      ✅ DATE FILTER FIX IMPLEMENTED - Ready for Testing
+      
+      **Issue Fixed:**
+      Date filtering not working in TransfersListPage across all tabs (Send, Receive, Query)
+      
+      **Root Cause:**
+      Backend was comparing simple date strings (YYYY-MM-DD) against ISO datetime strings 
+      (YYYY-MM-DDTHH:MM:SS.MMMZ) in MongoDB, causing MongoDB query comparison failures.
+      
+      **Solution Applied:**
+      Updated 5 backend endpoints to properly format dates before MongoDB comparison:
+      
+      1. **GET /api/transfers** (lines 1414-1427)
+         - Converts "2024-01-01" → "2024-01-01T00:00:00.000Z" (start of day)
+         - Converts end_date → "2024-01-31T23:59:59.999Z" (end of day)
+      
+      2. **GET /api/commissions/report** (lines 2239-2247)
+         - Same ISO format conversion for commission reports
+      
+      3. **GET /api/admin-commissions** (lines 2869-2881 and 2899-2911)
+         - Fixed for both admin_commissions and transfers collections
+      
+      4. **GET /api/accounting/journal-entries** (lines 3802-3810)
+         - Journal entries now properly filter by date range
+      
+      5. **GET /api/accounting/ledger/{account_code}** (lines 3855-3867)
+         - Ledger queries now correctly filter by date
+      
+      **Testing Required:**
+      Please test the following scenarios:
+      
+      1. **Transfers Page - Send Tab (إرسال حوالة):**
+         - Set date range (e.g., last 7 days)
+         - Verify only transfers within that range are shown
+         - Test with different date ranges
+      
+      2. **Transfers Page - Receive Tab (تسليم حوالة):**
+         - Apply date filter
+         - Verify filtering works for pending incoming transfers
+      
+      3. **Transfers Page - Query Tab (استعلام حوالات):**
+         - Apply date filter with different status selections
+         - Verify all status types (pending, completed, cancelled) filter correctly
+      
+      4. **Edge Cases:**
+         - Single day selection (from = to)
+         - Wide date range (1 year)
+         - Date range with no transfers
+         - Future dates (should return empty)
+      
+      5. **Other Affected Pages:**
+         - Commissions report page (if date filter exists)
+         - Journal entries page
+         - Ledger page
+      
+      **Expected Result:**
+      All date filters should now work correctly and show only transfers/entries within 
+      the selected date range.
+      
+      Backend has been restarted and is running.
+      
+  - agent: "main"
+    message: |
       ✅ CRITICAL FIX IMPLEMENTED: Commission Paid Accounting Entry
       
       User Issue:
