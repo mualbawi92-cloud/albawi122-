@@ -242,6 +242,79 @@ const WalletManagementPage = () => {
             </form>
           </CardContent>
         </Card>
+        
+        {/* Receipt Dialog */}
+        <Dialog open={showReceiptDialog} onOpenChange={setShowReceiptDialog}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl text-center">إيصال إضافة رصيد</DialogTitle>
+              <DialogDescription className="text-center">
+                تم إضافة الرصيد بنجاح للصراف
+              </DialogDescription>
+            </DialogHeader>
+            
+            {receiptData && (
+              <div className="space-y-4 p-4 bg-accent/30 rounded-lg">
+                <div className="flex justify-between items-center py-2 border-b">
+                  <span className="font-bold text-muted-foreground">رقم المعاملة:</span>
+                  <span className="font-mono text-sm">{receiptData.transaction_id}</span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2 border-b">
+                  <span className="font-bold text-muted-foreground">الصراف:</span>
+                  <span className="font-semibold">{receiptData.agent_name}</span>
+                </div>
+                
+                {receiptData.agent_governorate && (
+                  <div className="flex justify-between items-center py-2 border-b">
+                    <span className="font-bold text-muted-foreground">المحافظة:</span>
+                    <span>{receiptData.agent_governorate}</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between items-center py-2 border-b">
+                  <span className="font-bold text-muted-foreground">المبلغ المضاف:</span>
+                  <span className="font-bold text-xl text-green-600">
+                    {receiptData.amount.toLocaleString()} {receiptData.currency}
+                  </span>
+                </div>
+                
+                {receiptData.note && (
+                  <div className="flex justify-between items-center py-2 border-b">
+                    <span className="font-bold text-muted-foreground">الملاحظة:</span>
+                    <span className="text-sm">{receiptData.note}</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between items-center py-2 border-b">
+                  <span className="font-bold text-muted-foreground">تم بواسطة:</span>
+                  <span>{receiptData.admin_name}</span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <span className="font-bold text-muted-foreground">التاريخ والوقت:</span>
+                  <span className="text-sm">{receiptData.date}</span>
+                </div>
+              </div>
+            )}
+            
+            <DialogFooter className="flex gap-2 sm:gap-3">
+              <Button
+                onClick={handlePrintReceipt}
+                className="flex-1 bg-primary hover:bg-primary/90"
+              >
+                🖨️ طباعة الإيصال
+              </Button>
+              <Button
+                onClick={() => setShowReceiptDialog(false)}
+                variant="outline"
+                className="flex-1"
+              >
+                إغلاق
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
