@@ -1,30 +1,51 @@
 #!/usr/bin/env python3
 """
-🚨 اختبار فلتر الصراف في endpoint العمولات
+🚨 COMPREHENSIVE WALLET DEPOSIT TESTING
 
-**المشكلة المبلغ عنها:**
-عند اختيار صراف واحد في صفحة العمولات، يعرض النظام جميع الصرافين بدلاً من الصراف المحدد فقط.
+**Test Focus:** `/api/wallet/deposit` endpoint
 
-**الاختبارات المطلوبة:**
+**Test Scenarios:**
 
-1. اختبر endpoint `/api/admin-commissions` مع التالي:
-   - `type=paid&start_date=2024-01-01&end_date=2025-12-31` (بدون agent_id)
-   - `type=paid&start_date=2024-01-01&end_date=2025-12-31&agent_id=<any_valid_agent_id>` (مع agent_id محدد)
-   - قارن النتائج: هل عدد العمولات يختلف؟
+1. **Authentication Testing:**
+   - Try deposit without authentication (expect 403)
+   - Try deposit with agent authentication (expect 403)
+   - Try deposit with admin authentication (expect success)
 
-2. تحقق من:
-   - هل يتم استقبال `agent_id` parameter في Backend؟
-   - هل الفلترة تعمل على `admin_commissions` collection؟
-   - هل الفلترة تعمل على `transfers` collection (البيانات القديمة)؟
+2. **Validation Testing:**
+   - Try deposit with amount = 0 (expect 400 error)
+   - Try deposit with negative amount (expect 400 error)
+   - Try deposit with invalid currency (expect 400 error)
+   - Try deposit with non-existent user_id (expect 404 error)
 
-3. تحقق من البيانات:
-   - اعرض عينة من `agent_id` في `admin_commissions`
-   - اعرض عينة من `from_agent_id` و `to_agent_id` في `transfers`
-   - تأكد من تطابق أنواع البيانات (string vs string)
+3. **Successful Deposit Testing:**
+   - Admin successfully deposits IQD to an agent
+   - Admin successfully deposits USD to an agent
+   - Verify response includes transaction_id
+   - Verify response has success: true
 
-4. اعرض logs Backend المتعلقة بـ:
-   - `Admin commissions filter`
-   - `Comparing agent_id`
+4. **Balance Verification:**
+   - Check agent balance before deposit
+   - Perform deposit
+   - Check agent balance after deposit
+   - Verify balance increased by exact deposit amount
+
+5. **Transaction Logging:**
+   - Query /api/wallet/transactions after deposit
+   - Verify transaction appears with correct details
+   - Verify transaction_id matches
+   - Verify transaction_type is 'deposit'
+   - Verify admin info is logged
+
+**Admin Credentials:**
+username: admin
+password: admin123
+
+**Testing Requirements:**
+- Test with existing agents in the system
+- Verify all validation rules
+- Check that transaction_id is properly generated
+- Ensure wallet balances update correctly
+- Verify transaction logging is complete
 """
 
 import requests
