@@ -179,21 +179,21 @@ const Navbar = () => {
                 💳 إدارة المحافظ
               </Button>
             )}
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => navigate('/notifications')}
-                variant="ghost"
-                className="text-white hover:bg-white/10 font-bold text-sm relative"
-                data-testid="nav-notifications"
-              >
-                🔔 الإشعارات
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </Button>
-            )}
+            
+            {/* Notifications Button - Available for both admin and agents */}
+            <Button
+              onClick={() => navigate('/notifications')}
+              variant="ghost"
+              className="text-white hover:bg-white/10 font-bold text-sm relative"
+              data-testid="nav-notifications"
+            >
+              🔔 الإشعارات
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </Button>
             
             {/* Accounting Dropdown Menu */}
             {user?.role === 'admin' && (
