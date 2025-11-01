@@ -8,8 +8,6 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import Navbar from '../components/Navbar';
 import { toast } from 'sonner';
-import PrintButton from '../components/PrintButton';
-import AccountingReport from '../components/AccountingReport';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
