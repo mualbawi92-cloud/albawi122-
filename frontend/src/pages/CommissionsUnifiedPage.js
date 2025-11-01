@@ -40,22 +40,14 @@ const CommissionsUnifiedPage = () => {
       return;
     }
     
-    // Set default dates (last 30 days)
-    const today = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(today.getDate() - 30);
-    
-    setStartDate(thirtyDaysAgo.toISOString().split('T')[0]);
-    setEndDate(today.toISOString().split('T')[0]);
-    
     fetchAgents();
   }, [user, navigate]);
 
-  useEffect(() => {
+  const handleSearch = () => {
     if (startDate && endDate) {
       fetchCommissions();
     }
-  }, [startDate, endDate, selectedAgent, selectedCurrency]);
+  };
 
   const fetchAgents = async () => {
     try {
