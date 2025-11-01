@@ -127,6 +127,14 @@ backend:
     stuck_count: 0
     priority: "high"
     needs_retesting: false
+  
+  - task: "Wallet deposit endpoint functionality"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
     status_history:
       - working: false
         agent: "user"
