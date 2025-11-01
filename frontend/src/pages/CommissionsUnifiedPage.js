@@ -23,6 +23,7 @@ const CommissionsUnifiedPage = () => {
   // Filters
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState('all');
   const [selectedAgent, setSelectedAgent] = useState('all');
   const [selectedCurrency, setSelectedCurrency] = useState('all');
   
