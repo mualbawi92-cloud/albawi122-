@@ -126,77 +126,10 @@ const LedgerPage = () => {
               </div>
             </div>
 
-            <div className="mt-4 flex gap-2">
-              <Button onClick={fetchLedger} disabled={loading || !selectedAccount} className="flex-1 md:flex-none">
+            <div className="mt-4">
+              <Button onClick={fetchLedger} disabled={loading || !selectedAccount} className="w-full md:w-auto">
                 {loading ? 'جاري التحميل...' : '🔍 عرض دفتر الأستاذ'}
               </Button>
-              
-              {accountDetails && ledgerEntries.length > 0 && (
-                <PrintButton
-                  componentToPrint={
-                    <AccountingReport
-                      title="📊 دفتر الأستاذ"
-                      subtitle={`${accountDetails.code} - ${accountDetails.name_ar}`}
-                      dateRange={startDate && endDate ? `من ${startDate} إلى ${endDate}` : 'كل الفترات'}
-                      summary={[
-                        { 
-                          label: 'رمز الحساب', 
-                          value: accountDetails.code,
-                          color: '#dbeafe',
-                          borderColor: '#3b82f6',
-                          textColor: '#1e40af'
-                        },
-                        { 
-                          label: 'الفئة', 
-                          value: accountDetails.category,
-                          color: '#fef3c7',
-                          borderColor: '#f59e0b',
-                          textColor: '#92400e'
-                        },
-                        { 
-                          label: 'الرصيد الحالي', 
-                          value: `${accountDetails.balance?.toLocaleString() || 0} ${accountDetails.currency || 'IQD'}`,
-                          color: '#d1fae5',
-                          borderColor: '#10b981',
-                          textColor: '#059669'
-                        }
-                      ]}
-                      data={ledgerEntries}
-                      columns={[
-                        { 
-                          header: 'التاريخ', 
-                          field: 'date', 
-                          render: (val) => new Date(val).toLocaleDateString('ar-IQ') 
-                        },
-                        { header: 'رقم القيد', field: 'entry_number' },
-                        { header: 'البيان', field: 'description' },
-                        { 
-                          header: 'الرصيد', 
-                          field: 'balance', 
-                          align: 'center', 
-                          bold: true,
-                          render: (val) => val?.toLocaleString() || '0',
-                          color: (val) => val > 0 ? '#047857' : val < 0 ? '#dc2626' : '#1e293b'
-                        },
-                        { 
-                          header: 'المدين (خروج)', 
-                          field: 'debit', 
-                          align: 'center',
-                          render: (val) => val > 0 ? val.toLocaleString() : '-'
-                        },
-                        { 
-                          header: 'الدائن (دخول)', 
-                          field: 'credit', 
-                          align: 'center',
-                          render: (val) => val > 0 ? val.toLocaleString() : '-'
-                        }
-                      ]}
-                    />
-                  }
-                  buttonText="🖨️ طباعة"
-                  fileName={`ledger-${accountDetails.code}-${new Date().toISOString().split('T')[0]}.pdf`}
-                />
-              )}
             </div>
           </CardContent>
         </Card>
