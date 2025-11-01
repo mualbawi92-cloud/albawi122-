@@ -47,6 +47,37 @@ const WalletPage = () => {
     const config = typeMap[type] || { label: type, className: 'bg-gray-100 text-gray-800' };
     return <Badge className={config.className}>{config.label}</Badge>;
   };
+  
+  const handlePrintReceipt = (transaction) => {
+    // Prepare deposit data for receipt
+    const depositData = {
+      transaction_id: transaction.id,
+      amount: transaction.amount,
+      currency: transaction.currency,
+      note: transaction.note,
+      created_at: transaction.created_at
+    };
+    
+    // Prepare agent data (current user)
+    const agentData = {
+      display_name: user?.display_name || user?.username,
+      username: user?.username,
+      governorate: user?.governorate,
+      phone_number: user?.phone_number
+    };
+    
+    // Prepare admin data
+    const adminData = {
+      display_name: transaction.added_by_admin_name || 'الإدارة',
+      username: 'admin'
+    };
+    
+    // Generate and print receipt
+    const receiptHTML = generateWalletDepositReceiptHTML(depositData, agentData, adminData);
+    printDocument(receiptHTML, 'إيصال إيداع المحفظة');
+    
+    toast.success('جاري طباعة الإيصال...');
+  };
 
   if (loading) {
     return (
