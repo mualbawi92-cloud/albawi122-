@@ -3,8 +3,10 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
+import { printDocument, generateWalletDepositReceiptHTML } from '../utils/printUtils';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
