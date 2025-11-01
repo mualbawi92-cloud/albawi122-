@@ -543,6 +543,7 @@ metadata:
 test_plan:
   current_focus:
     - "Wallet deposit receipt feature"
+    - "Agent wallet receipt printing feature"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
