@@ -203,6 +203,103 @@ const CommissionsUnifiedPage = () => {
           <div className="text-center py-12">جاري التحميل...</div>
         ) : (
           <>
+            {/* Print Button Row */}
+            {(paidCommissions.length > 0 || earnedCommissions.length > 0) && (
+              <div className="flex justify-end mb-4">
+                <PrintButton
+                  componentToPrint={
+                    <AccountingReport
+                      title="💰 تقرير العمولات الموحد"
+                      subtitle="العمولات المدفوعة والمحققة"
+                      dateRange={startDate && endDate ? `من ${startDate} إلى ${endDate}` : ''}
+                      summary={[
+                        { 
+                          label: 'العمولات المدفوعة (IQD)', 
+                          value: formatCurrency(totalPaidIQD, 'IQD'),
+                          color: '#fee2e2',
+                          borderColor: '#ef4444',
+                          textColor: '#991b1b'
+                        },
+                        { 
+                          label: 'العمولات المدفوعة (USD)', 
+                          value: formatCurrency(totalPaidUSD, 'USD'),
+                          color: '#fee2e2',
+                          borderColor: '#ef4444',
+                          textColor: '#991b1b'
+                        },
+                        { 
+                          label: 'العمولات المحققة (IQD)', 
+                          value: formatCurrency(totalEarnedIQD, 'IQD'),
+                          color: '#d1fae5',
+                          borderColor: '#10b981',
+                          textColor: '#059669'
+                        },
+                        { 
+                          label: 'العمولات المحققة (USD)', 
+                          value: formatCurrency(totalEarnedUSD, 'USD'),
+                          color: '#d1fae5',
+                          borderColor: '#10b981',
+                          textColor: '#059669'
+                        },
+                        { 
+                          label: 'صافي الربح (IQD)', 
+                          value: formatCurrency(totalEarnedIQD - totalPaidIQD, 'IQD'),
+                          color: '#dbeafe',
+                          borderColor: '#3b82f6',
+                          textColor: '#1e40af'
+                        },
+                        { 
+                          label: 'صافي الربح (USD)', 
+                          value: formatCurrency(totalEarnedUSD - totalPaidUSD, 'USD'),
+                          color: '#dbeafe',
+                          borderColor: '#3b82f6',
+                          textColor: '#1e40af'
+                        }
+                      ]}
+                      data={[
+                        ...paidCommissions.map(c => ({
+                          type: '🔻 مدفوعة',
+                          date: c.created_at,
+                          agent: c.agent_name || '-',
+                          transfer_code: c.transfer_code || '-',
+                          amount: c.amount,
+                          currency: c.currency
+                        })),
+                        ...earnedCommissions.map(c => ({
+                          type: '💰 محققة',
+                          date: c.created_at,
+                          agent: c.agent_name || '-',
+                          transfer_code: c.transfer_code || '-',
+                          amount: c.amount,
+                          currency: c.currency
+                        }))
+                      ]}
+                      columns={[
+                        { header: 'النوع', field: 'type' },
+                        { 
+                          header: 'التاريخ', 
+                          field: 'date', 
+                          render: (val) => new Date(val).toLocaleDateString('ar-IQ') 
+                        },
+                        { header: 'الصراف', field: 'agent' },
+                        { header: 'رقم الحوالة', field: 'transfer_code' },
+                        { 
+                          header: 'المبلغ', 
+                          field: 'amount', 
+                          align: 'center',
+                          bold: true,
+                          render: (val, row) => `${val?.toLocaleString() || 0} ${row.currency}`
+                        }
+                      ]}
+                    />
+                  }
+                  buttonText="🖨️ طباعة التقرير"
+                  fileName={`commissions-unified-${new Date().toISOString().split('T')[0]}.pdf`}
+                  buttonVariant="default"
+                />
+              </div>
+            )}
+            
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Paid Commissions */}
