@@ -1,47 +1,28 @@
-import React, { useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
+import React, { useState } from 'react';
 import { Button } from './ui/button';
+import { Dialog, DialogContent } from './ui/dialog';
 
 /**
  * PrintButton Component
- * Reusable print button that can print any React component
- * 
- * Usage:
- * <PrintButton
- *   componentToPrint={<YourComponent data={data} />}
- *   buttonText="طباعة"
- *   fileName="document.pdf"
- * />
+ * Simple print button using window.print()
  */
 const PrintButton = ({ 
   componentToPrint, 
   buttonText = "🖨️ طباعة", 
   buttonVariant = "outline",
   buttonClassName = "",
-  fileName = "document",
   disabled = false 
 }) => {
-  const componentRef = useRef();
+  const [showPrintPreview, setShowPrintPreview] = useState(false);
 
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: fileName,
-    pageStyle: `
-      @page {
-        size: A4;
-        margin: 20mm;
-      }
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-        }
-        .no-print {
-          display: none !important;
-        }
-      }
-    `
-  });
+  const handlePrint = () => {
+    setShowPrintPreview(true);
+    // Wait for dialog to render then print
+    setTimeout(() => {
+      window.print();
+      setShowPrintPreview(false);
+    }, 500);
+  };
 
   return (
     <>
@@ -54,12 +35,34 @@ const PrintButton = ({
         {buttonText}
       </Button>
       
-      {/* Hidden component for printing */}
-      <div style={{ display: 'none' }}>
-        <div ref={componentRef}>
-          {componentToPrint}
-        </div>
-      </div>
+      {/* Print Dialog */}
+      {showPrintPreview && (
+        <Dialog open={showPrintPreview} onOpenChange={setShowPrintPreview}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto print-content">
+            <style>{`
+              @media print {
+                body * {
+                  visibility: hidden;
+                }
+                .print-content, .print-content * {
+                  visibility: visible;
+                }
+                .print-content {
+                  position: absolute;
+                  left: 0;
+                  top: 0;
+                  width: 100%;
+                }
+                /* Hide dialog close button when printing */
+                button[aria-label="Close"] {
+                  display: none !important;
+                }
+              }
+            `}</style>
+            {componentToPrint}
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };
