@@ -11,6 +11,8 @@ import { Badge } from '../components/ui/badge';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
 import { formatAmountInWords } from '../utils/arabicNumbers';
+import PrintButton from '../components/PrintButton';
+import TransferReceipt from '../components/TransferReceipt';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
