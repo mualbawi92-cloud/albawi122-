@@ -660,7 +660,7 @@ class WalletDepositTester:
         
         return True
     
-    def test_transfer_flow_with_transit(self):
+    def print_test_summary(self):
         """Test complete transfer flow with transit account integration"""
         print("\n=== Testing Transfer Flow with Transit Account ===")
         
