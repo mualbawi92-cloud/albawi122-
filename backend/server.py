@@ -2131,6 +2131,16 @@ async def receive_transfer(
         logger.error(f"Error creating journal entry for receiving transfer: {str(e)}")
     # ============ END ACCOUNTING ENTRY ============
     
+    # Create notification for receiver agent
+    await create_notification(
+        title="✅ تم استلام حوالة بنجاح",
+        message=f"تم استلام حوالة رقم {transfer['transfer_code']} بمبلغ {transfer['amount']:,.0f} {transfer['currency']}\nالمرسل: {transfer.get('sender_name', 'غير معروف')}\nالمستلم: {transfer.get('receiver_name', 'غير معروف')}",
+        severity="low",
+        user_id=current_user['id'],
+        related_transfer_id=transfer_id,
+        notification_type="transfer_received"
+    )
+    
     # Notify via WebSocket
     await sio.emit('transfer_completed', {'transfer_id': transfer_id})
     
