@@ -183,65 +183,64 @@ const TransfersListPage = () => {
               }
             />
               
-              {/* Inquiry-specific filters */}
-              {activeTab === 'inquiry' && (
-                <>
-                  <div className="border-t pt-4">
-                    <Label className="text-sm font-semibold mb-3 block">نوع الحوالة:</Label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <Checkbox
-                          id="pending"
-                          checked={statusFilters.pending}
-                          onCheckedChange={(checked) => 
-                            setStatusFilters({ ...statusFilters, pending: checked })
-                          }
-                        />
-                        <label htmlFor="pending" className="text-sm font-medium cursor-pointer">
-                          قيد الانتظار (صادرة)
-                        </label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <Checkbox
-                          id="completed"
-                          checked={statusFilters.completed}
-                          onCheckedChange={(checked) => 
-                            setStatusFilters({ ...statusFilters, completed: checked })
-                          }
-                        />
-                        <label htmlFor="completed" className="text-sm font-medium cursor-pointer">
-                          مسلّمة
-                        </label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <Checkbox
-                          id="cancelled"
-                          checked={statusFilters.cancelled}
-                          onCheckedChange={(checked) => 
-                            setStatusFilters({ ...statusFilters, cancelled: checked })
-                          }
-                        />
-                        <label htmlFor="cancelled" className="text-sm font-medium cursor-pointer">
-                          ملغاة
-                        </label>
-                      </div>
+            {/* Inquiry-specific filters */}
+            {activeTab === 'inquiry' && (
+              <div className="bg-gray-50 p-4 rounded-lg mt-4 space-y-4">
+                <div>
+                  <Label className="text-sm font-semibold mb-3 block">نوع الحوالة:</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="flex items-center space-x-2 space-x-reverse">
+                      <Checkbox
+                        id="pending"
+                        checked={statusFilters.pending}
+                        onCheckedChange={(checked) => 
+                          setStatusFilters({ ...statusFilters, pending: checked })
+                        }
+                      />
+                      <label htmlFor="pending" className="text-sm font-medium cursor-pointer">
+                        قيد الانتظار (صادرة)
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 space-x-reverse">
+                      <Checkbox
+                        id="completed"
+                        checked={statusFilters.completed}
+                        onCheckedChange={(checked) => 
+                          setStatusFilters({ ...statusFilters, completed: checked })
+                        }
+                      />
+                      <label htmlFor="completed" className="text-sm font-medium cursor-pointer">
+                        مسلّمة
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 space-x-reverse">
+                      <Checkbox
+                        id="cancelled"
+                        checked={statusFilters.cancelled}
+                        onCheckedChange={(checked) => 
+                          setStatusFilters({ ...statusFilters, cancelled: checked })
+                        }
+                      />
+                      <label htmlFor="cancelled" className="text-sm font-medium cursor-pointer">
+                        ملغاة
+                      </label>
                     </div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label className="text-sm font-semibold">بحث برقم الحوالة</Label>
-                    <Input
-                      placeholder="أدخل رقم الحوالة..."
-                      value={searchCode}
-                      onChange={(e) => setSearchCode(e.target.value)}
-                      className="h-10"
-                    />
-                  </div>
-                </>
-              )}
-            </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold">بحث برقم الحوالة</Label>
+                  <Input
+                    placeholder="أدخل رقم الحوالة..."
+                    value={searchCode}
+                    onChange={(e) => setSearchCode(e.target.value)}
+                    className="h-10"
+                  />
+                </div>
+              </div>
+            )}
             
             {/* Action Buttons */}
             {activeTab === 'outgoing' && (
