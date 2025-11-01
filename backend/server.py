@@ -3206,12 +3206,18 @@ async def analyze_and_notify_if_suspicious(transfer_data: dict):
 async def get_notifications(
     unread_only: bool = False,
     limit: int = 50,
-    current_user: dict = Depends(require_admin)
+    current_user: dict = Depends(get_current_user)
 ):
     """
-    Get notifications for admin
+    Get notifications for current user (admin or agent)
     """
     query = {}
+    
+    # If agent, only show their notifications
+    if current_user['role'] == 'agent':
+        query['user_id'] = current_user['id']
+    # Admin sees all notifications
+    
     if unread_only:
         query['is_read'] = False
     
@@ -3220,26 +3226,36 @@ async def get_notifications(
     for notif in notifications:
         notif.pop('_id', None)
     
+    # Count unread for current user
+    unread_query = {'is_read': False}
+    if current_user['role'] == 'agent':
+        unread_query['user_id'] = current_user['id']
+    
     return {
         "notifications": notifications,
-        "unread_count": await db.notifications.count_documents({'is_read': False})
+        "unread_count": await db.notifications.count_documents(unread_query)
     }
 
 @api_router.patch("/notifications/{notification_id}/mark-read")
 async def mark_notification_read(
     notification_id: str,
-    current_user: dict = Depends(require_admin)
+    current_user: dict = Depends(get_current_user)
 ):
     """
     Mark notification as read
     """
+    # Build query - agents can only mark their own notifications
+    query = {'id': notification_id}
+    if current_user['role'] == 'agent':
+        query['user_id'] = current_user['id']
+    
     result = await db.notifications.update_one(
-        {'id': notification_id},
+        query,
         {'$set': {'is_read': True}}
     )
     
     if result.modified_count == 0:
-        raise HTTPException(status_code=404, detail="Notification not found")
+        raise HTTPException(status_code=404, detail="Notification not found or no permission")
     
     return {"message": "Notification marked as read"}
 
