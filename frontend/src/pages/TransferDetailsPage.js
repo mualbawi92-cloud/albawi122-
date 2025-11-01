@@ -253,14 +253,31 @@ const TransferDetailsPage = () => {
       <div className="container mx-auto p-6 max-w-4xl">
         <Card className="shadow-2xl">
           <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
                 <CardTitle className="text-3xl text-primary mb-2" data-testid="transfer-code">{transfer.transfer_code}</CardTitle>
                 <CardDescription className="text-base">تفاصيل الحوالة</CardDescription>
               </div>
-              {getStatusBadge(transfer.status)}
+              <div className="flex items-center gap-3">
+                {/* Print Button */}
+                <PrintButton
+                  componentToPrint={
+                    <TransferReceipt 
+                      transfer={transfer} 
+                      agentInfo={user}
+                      type={transfer.status === 'completed' ? 'receive' : 'send'}
+                    />
+                  }
+                  buttonText="🖨️ طباعة الإيصال"
+                  fileName={`transfer-${transfer.transfer_code}.pdf`}
+                  buttonVariant="outline"
+                  buttonClassName="bg-white hover:bg-gray-50"
+                />
+                {getStatusBadge(transfer.status)}
+              </div>
             </div>
           </CardHeader>
+
           <CardContent className="pt-6 space-y-6">
             {/* Transfer Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
