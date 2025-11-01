@@ -18,8 +18,8 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: '#0A2342',
-        secondary: '#D4AF37',
+        primary: '#D4AF37',  // Golden color
+        secondary: '#0A2342',  // Dark blue (was primary)
         background: '#F4F4F4',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
