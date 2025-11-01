@@ -333,7 +333,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Date filter functionality for transfers endpoint"
+    - "Wallet deposit receipt feature"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
