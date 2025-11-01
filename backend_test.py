@@ -643,33 +643,22 @@ class WalletDepositTester:
             self.log_result("Agent Access Restriction", False, f"Error: {str(e)}")
     
     def run_all_tests(self):
-        """Test GET /api/wallet/transactions"""
-        print("\n=== Testing Wallet Transactions ===")
+        """Run all wallet deposit tests"""
+        print("🚨 STARTING COMPREHENSIVE WALLET DEPOSIT TESTING")
+        print("=" * 80)
         
-        try:
-            response = self.make_request('GET', '/wallet/transactions', token=self.agent_baghdad_token)
-            if response.status_code == 200:
-                data = response.json()
-                if isinstance(data, list):
-                    self.log_result("Wallet Transactions", True, f"Retrieved {len(data)} transactions")
-                    
-                    # Check if recent deposit appears
-                    deposit_found = any(t.get('transaction_type') == 'deposit' and 
-                                      t.get('amount') == 10000 for t in data)
-                    if deposit_found:
-                        self.log_result("Recent Deposit in Transactions", True, "Recent deposit found in transaction history")
-                    else:
-                        self.log_result("Recent Deposit in Transactions", False, "Recent deposit not found in transaction history")
-                    
-                    return data
-                else:
-                    self.log_result("Wallet Transactions", False, "Response is not a list", data)
-            else:
-                self.log_result("Wallet Transactions", False, f"Failed with status {response.status_code}", response.text)
-        except Exception as e:
-            self.log_result("Wallet Transactions", False, f"Error: {str(e)}")
+        # Step 1: Authentication
+        if not self.test_authentication():
+            print("❌ Authentication failed - cannot continue")
+            return False
         
-        return None
+        # Step 2: Run comprehensive wallet deposit tests
+        self.test_wallet_deposit_comprehensive()
+        
+        # Step 3: Print summary
+        self.print_test_summary()
+        
+        return True
     
     def test_transfer_flow_with_transit(self):
         """Test complete transfer flow with transit account integration"""
