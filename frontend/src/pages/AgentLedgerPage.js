@@ -124,6 +124,7 @@ const AgentLedgerPage = () => {
                         title="📊 دفتر الأستاذ الخاص"
                         subtitle={`${user?.display_name}`}
                         dateRange={`من ${dateFrom} إلى ${dateTo}`}
+                        currentUser={user}
                         summary={[
                           { 
                             label: 'رصيد المحفظة (IQD)', 
