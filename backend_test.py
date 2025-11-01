@@ -642,7 +642,7 @@ class WalletDepositTester:
         except Exception as e:
             self.log_result("Agent Access Restriction", False, f"Error: {str(e)}")
     
-    def test_wallet_transactions(self):
+    def run_all_tests(self):
         """Test GET /api/wallet/transactions"""
         print("\n=== Testing Wallet Transactions ===")
         
