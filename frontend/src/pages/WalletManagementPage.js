@@ -121,7 +121,16 @@ const WalletManagementPage = () => {
   const handlePrintReceipt = () => {
     if (!receiptData) return;
     
-    const receiptHTML = generateWalletDepositReceiptHTML(receiptData);
+    const agent = agents.find(a => a.id === formData.user_id);
+    const depositDetails = {
+      transaction_id: receiptData.transaction_id,
+      amount: receiptData.amount,
+      currency: receiptData.currency,
+      note: receiptData.note,
+      created_at: new Date().toISOString()
+    };
+    
+    const receiptHTML = generateWalletDepositReceiptHTML(depositDetails, agent || { display_name: receiptData.agent_name }, user);
     printDocument(receiptHTML, 'إيصال إضافة رصيد');
   };
 
