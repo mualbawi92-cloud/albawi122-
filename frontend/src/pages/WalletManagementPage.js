@@ -356,12 +356,6 @@ const WalletManagementPage = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-              >
-                إغلاق
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );
