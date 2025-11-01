@@ -258,6 +258,17 @@ const TransferDetailsPage = () => {
                 <CardDescription className="text-base">تفاصيل الحوالة</CardDescription>
               </div>
               <div className="flex items-center gap-3">
+                {/* Print Button */}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const html = generateTransferReceiptHTML(transfer, user, user);
+                    printDocument(html, `إيصال حوالة ${transfer.transfer_code}`);
+                  }}
+                  className="bg-white hover:bg-gray-50"
+                >
+                  🖨️ طباعة الإيصال
+                </Button>
                 {getStatusBadge(transfer.status)}
               </div>
             </div>
