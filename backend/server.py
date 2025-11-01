@@ -2321,6 +2321,15 @@ async def add_wallet_deposit(deposit: WalletDeposit, current_user: dict = Depend
         'currency': deposit.currency
     })
     
+    # Create notification for agent
+    await create_notification(
+        title="💰 تم إضافة رصيد لمحفظتك",
+        message=f"تم إضافة {deposit.amount:,.0f} {deposit.currency} إلى محفظتك من قبل {current_user['display_name']}.\n\n{deposit.note or ''}",
+        severity="low",
+        user_id=deposit.user_id,
+        notification_type="wallet_deposit"
+    )
+    
     return {'success': True, 'transaction_id': transaction_id}
 
 @api_router.get("/wallet/transactions", response_model=List[WalletTransaction])
