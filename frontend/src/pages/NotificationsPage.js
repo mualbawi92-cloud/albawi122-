@@ -18,13 +18,8 @@ const NotificationsPage = () => {
   const [filter, setFilter] = useState('all'); // all, unread
 
   useEffect(() => {
-    if (user?.role !== 'admin') {
-      toast.error('صلاحية الوصول مرفوضة');
-      navigate('/dashboard');
-      return;
-    }
     fetchNotifications();
-  }, [user, navigate, filter]);
+  }, [filter]);
 
   const fetchNotifications = async () => {
     setLoading(true);
