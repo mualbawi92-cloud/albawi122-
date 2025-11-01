@@ -365,10 +365,10 @@ frontend:
   - task: "Wallet deposit receipt feature"
     implemented: true
     working: true
-    file: "frontend/src/pages/WalletManagementPage.js"
+    file: "frontend/src/pages/WalletManagementPage.js, frontend/src/pages/WalletPage.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: false
         agent: "user"
