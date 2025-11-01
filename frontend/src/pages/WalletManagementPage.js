@@ -254,70 +254,108 @@ const WalletManagementPage = () => {
         
         {/* Receipt Dialog */}
         <Dialog open={showReceiptDialog} onOpenChange={setShowReceiptDialog}>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[700px]">
             <DialogHeader>
-              <DialogTitle className="text-2xl text-center">إيصال إضافة رصيد</DialogTitle>
-              <DialogDescription className="text-center">
-                تم إضافة الرصيد بنجاح للصراف
+              <DialogTitle className="text-2xl text-center font-bold text-primary">
+                ✅ تم إضافة الرصيد بنجاح
+              </DialogTitle>
+              <DialogDescription className="text-center text-base">
+                إيصال إضافة رصيد للصراف
               </DialogDescription>
             </DialogHeader>
             
             {receiptData && (
-              <div className="space-y-4 p-4 bg-accent/30 rounded-lg">
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-bold text-muted-foreground">رقم المعاملة:</span>
-                  <span className="font-mono text-sm">{receiptData.transaction_id}</span>
+              <div className="space-y-4">
+                {/* Success Banner */}
+                <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 text-center">
+                  <div className="text-4xl mb-2">💰</div>
+                  <p className="text-green-800 font-bold text-lg">
+                    تمت الإضافة بنجاح!
+                  </p>
                 </div>
                 
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-bold text-muted-foreground">الصراف:</span>
-                  <span className="font-semibold">{receiptData.agent_name}</span>
-                </div>
-                
-                {receiptData.agent_governorate && (
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="font-bold text-muted-foreground">المحافظة:</span>
-                    <span>{receiptData.agent_governorate}</span>
+                {/* Receipt Details */}
+                <div className="space-y-3 p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200">
+                  <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                    <span className="font-bold text-gray-700">📋 رقم المعاملة:</span>
+                    <span className="font-mono text-sm bg-white px-3 py-1 rounded border border-gray-300">
+                      {receiptData.transaction_id.substring(0, 8)}...
+                    </span>
                   </div>
-                )}
-                
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-bold text-muted-foreground">المبلغ المضاف:</span>
-                  <span className="font-bold text-xl text-green-600">
-                    {receiptData.amount.toLocaleString()} {receiptData.currency}
-                  </span>
-                </div>
-                
-                {receiptData.note && (
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="font-bold text-muted-foreground">الملاحظة:</span>
-                    <span className="text-sm">{receiptData.note}</span>
+                  
+                  <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                    <span className="font-bold text-gray-700">👤 الصراف:</span>
+                    <span className="font-semibold text-lg">{receiptData.agent_name}</span>
                   </div>
-                )}
-                
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-bold text-muted-foreground">تم بواسطة:</span>
-                  <span>{receiptData.admin_name}</span>
+                  
+                  {receiptData.agent_governorate && (
+                    <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                      <span className="font-bold text-gray-700">📍 المحافظة:</span>
+                      <span className="font-semibold">{receiptData.agent_governorate}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-between items-center py-3 bg-green-100 rounded-lg px-3 border-2 border-green-300">
+                    <span className="font-bold text-green-800 text-lg">💵 المبلغ المضاف:</span>
+                    <span className="font-bold text-2xl text-green-700">
+                      {receiptData.amount.toLocaleString()} {receiptData.currency}
+                    </span>
+                  </div>
+                  
+                  {receiptData.note && (
+                    <div className="py-2 border-b border-blue-200">
+                      <span className="font-bold text-gray-700 block mb-1">📝 الملاحظة:</span>
+                      <span className="text-sm bg-white px-3 py-2 rounded block">{receiptData.note}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                    <span className="font-bold text-gray-700">👔 تم بواسطة:</span>
+                    <span className="font-semibold">{receiptData.admin_name}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center py-2">
+                    <span className="font-bold text-gray-700">📅 التاريخ والوقت:</span>
+                    <span className="text-sm font-semibold">{receiptData.date}</span>
+                  </div>
                 </div>
                 
-                <div className="flex justify-between items-center py-2">
-                  <span className="font-bold text-muted-foreground">التاريخ والوقت:</span>
-                  <span className="text-sm">{receiptData.date}</span>
+                {/* Quick Info */}
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+                  <p className="text-yellow-800 text-sm">
+                    ⚠️ يمكنك طباعة هذا الإيصال أو حفظه للسجلات
+                  </p>
                 </div>
               </div>
             )}
             
-            <DialogFooter className="flex gap-2 sm:gap-3">
+            <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4">
               <Button
                 onClick={handlePrintReceipt}
-                className="flex-1 bg-primary hover:bg-primary/90"
+                className="flex-1 bg-primary hover:bg-primary/90 h-12 text-base font-bold"
               >
                 🖨️ طباعة الإيصال
               </Button>
               <Button
+                onClick={() => {
+                  handlePrintReceipt();
+                  setShowReceiptDialog(false);
+                }}
+                variant="secondary"
+                className="flex-1 h-12 text-base font-bold"
+              >
+                🖨️ طباعة وإغلاق
+              </Button>
+              <Button
                 onClick={() => setShowReceiptDialog(false)}
                 variant="outline"
-                className="flex-1"
+                className="flex-1 h-12 text-base"
+              >
+                إغلاق
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
               >
                 إغلاق
               </Button>
