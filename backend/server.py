@@ -3158,18 +3158,32 @@ async def check_delayed_transfers():
     
     return delayed_transfers
 
-async def create_notification(title: str, message: str, severity: str, related_transfer_id: str = None, related_agent_id: str = None):
+async def create_notification(
+    title: str, 
+    message: str, 
+    severity: str, 
+    related_transfer_id: str = None, 
+    related_agent_id: str = None,
+    user_id: str = None,
+    notification_type: str = 'system',
+    ai_analysis: str = None
+):
     """
-    Create a notification for admin
+    Create a notification for admin or specific user
     severity: low, medium, high, critical
+    notification_type: wallet_deposit, new_transfer, transfer_received, duplicate_transfer, 
+                      name_mismatch, id_verification_failed, suspicious_activity, ai_warning, system
     """
     notification = {
         'id': str(uuid.uuid4()),
         'title': title,
         'message': message,
         'severity': severity,
+        'type': notification_type,
         'related_transfer_id': related_transfer_id,
         'related_agent_id': related_agent_id,
+        'user_id': user_id,  # If None, notification is for admin. If set, for specific user
+        'ai_analysis': ai_analysis,
         'is_read': False,
         'created_at': datetime.now(timezone.utc).isoformat()
     }
