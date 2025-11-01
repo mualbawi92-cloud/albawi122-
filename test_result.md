@@ -483,6 +483,56 @@ frontend:
           **PRODUCTION READINESS:** ✅ The wallet deposit feature is fully functional and ready for production use. All test scenarios from the review request completed successfully with 100% pass rate.
           
           **NO ISSUES FOUND:** The implementation is solid and meets all requirements with proper error handling, authentication, security, and data integrity.
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ **AGENT WALLET RECEIPT PRINTING FEATURE ADDED**
+          
+          **User Request:**
+          اريد تسويلي طباعه الايصاله مالت المحافظ - تسمحلي ان اطبع الايصال خاص بمحفظه 
+          بعد اتمام عمليه تحويل الفلوس الى الصيرفات
+          
+          User wants agents to be able to print their own wallet deposit receipts.
+          
+          **Implementation (frontend/src/pages/WalletPage.js):**
+          
+          1. Added Print Functionality:
+             - Import printDocument and generateWalletDepositReceiptHTML from printUtils
+             - Created handlePrintReceipt function
+             - Collects transaction data, agent data, and admin data
+             - Generates professional receipt using existing utility
+          
+          2. UI Enhancement:
+             - Added "🖨️ طباعة الإيصال" button for each deposit transaction
+             - Button only appears for 'deposit' type transactions
+             - Button styled with primary colors and hover effects
+             - Responsive design (works on mobile and desktop)
+          
+          3. Receipt Content:
+             - Transaction ID for tracking
+             - Agent information (name, username, governorate, phone)
+             - Deposit amount and currency
+             - Note/description
+             - Admin who performed the deposit
+             - Date and timestamp
+             - Professional A4 format with logo/header/footer
+          
+          **Features:**
+          - ✅ Agent can view all wallet transactions
+          - ✅ Print button visible only for deposit transactions
+          - ✅ One-click printing with professional receipt
+          - ✅ Receipt includes all necessary details
+          - ✅ Uses existing print utility for consistency
+          - ✅ Toast notification on print trigger
+          
+          **User Flow:**
+          1. Agent opens "محفظتي" (My Wallet) page
+          2. Views list of all transactions
+          3. For each deposit, sees "طباعة الإيصال" button
+          4. Clicks button to print deposit receipt
+          5. Print dialog opens with formatted receipt
+          
+          Ready for frontend testing to verify agent can print receipts from wallet page.
 
 metadata:
   created_by: "main_agent"
