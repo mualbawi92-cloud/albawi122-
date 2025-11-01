@@ -69,6 +69,21 @@ const NotificationsPage = () => {
         return 'ℹ️';
     }
   };
+  
+  const getNotificationTypeIcon = (type) => {
+    const typeIcons = {
+      'wallet_deposit': '💰',
+      'new_transfer': '📥',
+      'transfer_received': '✅',
+      'duplicate_transfer': '🔄',
+      'name_mismatch': '❌',
+      'id_verification_failed': '🆔',
+      'suspicious_activity': '🔍',
+      'ai_warning': '🤖',
+      'system': '⚙️'
+    };
+    return typeIcons[type] || '🔔';
+  };
 
   if (loading) {
     return (
