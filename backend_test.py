@@ -208,36 +208,439 @@ class WalletDepositTester:
         
         return None
     
-    def test_admin_deposit(self):
-        """Test POST /api/wallet/deposit (admin only)"""
-        print("\n=== Testing Admin Deposit Functionality ===")
+    def test_wallet_deposit_comprehensive(self):
+        """Comprehensive testing of wallet deposit functionality"""
+        print("\n🚨 COMPREHENSIVE WALLET DEPOSIT TESTING")
+        print("=" * 80)
+        print("Testing all aspects of /api/wallet/deposit endpoint")
+        print("=" * 80)
         
-        if not self.agent_baghdad_user_id:
-            self.log_result("Admin Deposit", False, "Agent user ID not available")
-            return False
+        # 1. Authentication Testing
+        print("\n--- 1. AUTHENTICATION TESTING ---")
+        self.test_deposit_authentication()
+        
+        # 2. Validation Testing
+        print("\n--- 2. VALIDATION TESTING ---")
+        self.test_deposit_validation()
+        
+        # 3. Successful Deposit Testing
+        print("\n--- 3. SUCCESSFUL DEPOSIT TESTING ---")
+        self.test_successful_deposits()
+        
+        # 4. Balance Verification
+        print("\n--- 4. BALANCE VERIFICATION ---")
+        self.test_balance_verification()
+        
+        # 5. Transaction Logging
+        print("\n--- 5. TRANSACTION LOGGING ---")
+        self.test_transaction_logging()
+        
+        return True
+    
+    def test_deposit_authentication(self):
+        """Test authentication requirements for deposit endpoint"""
+        print("\n1.1 Testing deposit without authentication...")
         
         deposit_data = {
             "user_id": self.agent_baghdad_user_id,
-            "amount": 10000,
+            "amount": 1000,
             "currency": "IQD",
-            "note": "Test deposit from automated testing"
+            "note": "Test without auth"
+        }
+        
+        try:
+            response = self.make_request('POST', '/wallet/deposit', json=deposit_data)
+            if response.status_code == 403:
+                self.log_result("Deposit Without Auth", True, "Correctly rejected unauthenticated request (403)")
+            else:
+                self.log_result("Deposit Without Auth", False, f"Expected 403, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Deposit Without Auth", False, f"Error: {str(e)}")
+        
+        print("\n1.2 Testing deposit with agent authentication...")
+        try:
+            response = self.make_request('POST', '/wallet/deposit', token=self.agent_baghdad_token, json=deposit_data)
+            if response.status_code == 403:
+                self.log_result("Deposit With Agent Auth", True, "Correctly rejected agent request (403)")
+            else:
+                self.log_result("Deposit With Agent Auth", False, f"Expected 403, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Deposit With Agent Auth", False, f"Error: {str(e)}")
+        
+        print("\n1.3 Testing deposit with admin authentication...")
+        try:
+            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and data.get('transaction_id'):
+                    self.log_result("Deposit With Admin Auth", True, f"Admin deposit successful. Transaction ID: {data.get('transaction_id')}")
+                else:
+                    self.log_result("Deposit With Admin Auth", False, "Response missing success or transaction_id", data)
+            else:
+                self.log_result("Deposit With Admin Auth", False, f"Admin deposit failed: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Deposit With Admin Auth", False, f"Error: {str(e)}")
+    
+    def test_deposit_validation(self):
+        """Test validation rules for deposit endpoint"""
+        print("\n2.1 Testing deposit with amount = 0...")
+        
+        deposit_data = {
+            "user_id": self.agent_baghdad_user_id,
+            "amount": 0,
+            "currency": "IQD",
+            "note": "Test zero amount"
+        }
+        
+        try:
+            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
+            if response.status_code == 400:
+                self.log_result("Zero Amount Validation", True, "Correctly rejected zero amount (400)")
+            else:
+                self.log_result("Zero Amount Validation", False, f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Zero Amount Validation", False, f"Error: {str(e)}")
+        
+        print("\n2.2 Testing deposit with negative amount...")
+        deposit_data["amount"] = -1000
+        
+        try:
+            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
+            if response.status_code == 400:
+                self.log_result("Negative Amount Validation", True, "Correctly rejected negative amount (400)")
+            else:
+                self.log_result("Negative Amount Validation", False, f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Negative Amount Validation", False, f"Error: {str(e)}")
+        
+        print("\n2.3 Testing deposit with invalid currency...")
+        deposit_data = {
+            "user_id": self.agent_baghdad_user_id,
+            "amount": 1000,
+            "currency": "EUR",
+            "note": "Test invalid currency"
+        }
+        
+        try:
+            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
+            if response.status_code == 400:
+                self.log_result("Invalid Currency Validation", True, "Correctly rejected invalid currency (400)")
+            else:
+                self.log_result("Invalid Currency Validation", False, f"Expected 400, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Invalid Currency Validation", False, f"Error: {str(e)}")
+        
+        print("\n2.4 Testing deposit with non-existent user_id...")
+        deposit_data = {
+            "user_id": "non-existent-user-id-12345",
+            "amount": 1000,
+            "currency": "IQD",
+            "note": "Test non-existent user"
+        }
+        
+        try:
+            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
+            if response.status_code == 404:
+                self.log_result("Non-existent User Validation", True, "Correctly rejected non-existent user (404)")
+            else:
+                self.log_result("Non-existent User Validation", False, f"Expected 404, got {response.status_code}")
+        except Exception as e:
+            self.log_result("Non-existent User Validation", False, f"Error: {str(e)}")
+    
+    def test_successful_deposits(self):
+        """Test successful deposit scenarios"""
+        print("\n3.1 Testing successful IQD deposit...")
+        
+        deposit_data = {
+            "user_id": self.agent_baghdad_user_id,
+            "amount": 50000,
+            "currency": "IQD",
+            "note": "Test IQD deposit - comprehensive testing"
         }
         
         try:
             response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
             if response.status_code == 200:
                 data = response.json()
-                if data.get('success'):
-                    self.log_result("Admin Deposit", True, f"Deposit successful. Transaction ID: {data.get('transaction_id')}")
-                    return True
+                if data.get('success') and data.get('transaction_id'):
+                    transaction_id = data.get('transaction_id')
+                    self.log_result("Successful IQD Deposit", True, f"IQD deposit successful. Transaction ID: {transaction_id}")
+                    
+                    # Store transaction ID for later verification
+                    self.iqd_transaction_id = transaction_id
                 else:
-                    self.log_result("Admin Deposit", False, "Deposit response indicates failure", data)
+                    self.log_result("Successful IQD Deposit", False, "Response missing required fields", data)
             else:
-                self.log_result("Admin Deposit", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Successful IQD Deposit", False, f"IQD deposit failed: {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Admin Deposit", False, f"Error: {str(e)}")
+            self.log_result("Successful IQD Deposit", False, f"Error: {str(e)}")
         
-        return False
+        print("\n3.2 Testing successful USD deposit...")
+        
+        deposit_data = {
+            "user_id": self.agent_basra_user_id,
+            "amount": 100,
+            "currency": "USD",
+            "note": "Test USD deposit - comprehensive testing"
+        }
+        
+        try:
+            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and data.get('transaction_id'):
+                    transaction_id = data.get('transaction_id')
+                    self.log_result("Successful USD Deposit", True, f"USD deposit successful. Transaction ID: {transaction_id}")
+                    
+                    # Store transaction ID for later verification
+                    self.usd_transaction_id = transaction_id
+                else:
+                    self.log_result("Successful USD Deposit", False, "Response missing required fields", data)
+            else:
+                self.log_result("Successful USD Deposit", False, f"USD deposit failed: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Successful USD Deposit", False, f"Error: {str(e)}")
+    
+    def test_balance_verification(self):
+        """Test balance verification after deposits"""
+        print("\n4.1 Verifying IQD balance increase...")
+        
+        # Get current balance for Baghdad agent
+        try:
+            response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
+            if response.status_code == 200:
+                balance_data = response.json()
+                current_iqd = balance_data.get('wallet_balance_iqd', 0)
+                
+                self.log_result("IQD Balance Check", True, f"Current IQD balance: {current_iqd:,}")
+                print(f"   Agent Baghdad IQD balance: {current_iqd:,}")
+                
+                # Verify balance increased (we deposited 50,000 IQD earlier)
+                if current_iqd >= 50000:
+                    self.log_result("IQD Balance Increase Verification", True, f"Balance shows deposit was processed (≥50,000)")
+                else:
+                    self.log_result("IQD Balance Increase Verification", False, f"Balance too low: {current_iqd}")
+            else:
+                self.log_result("IQD Balance Check", False, f"Could not get balance: {response.status_code}")
+        except Exception as e:
+            self.log_result("IQD Balance Check", False, f"Error: {str(e)}")
+        
+        print("\n4.2 Verifying USD balance increase...")
+        
+        # Get current balance for Basra agent
+        try:
+            response = self.make_request('GET', '/wallet/balance', token=self.agent_basra_token)
+            if response.status_code == 200:
+                balance_data = response.json()
+                current_usd = balance_data.get('wallet_balance_usd', 0)
+                
+                self.log_result("USD Balance Check", True, f"Current USD balance: {current_usd:,}")
+                print(f"   Agent Basra USD balance: {current_usd:,}")
+                
+                # Verify balance increased (we deposited 100 USD earlier)
+                if current_usd >= 100:
+                    self.log_result("USD Balance Increase Verification", True, f"Balance shows deposit was processed (≥100)")
+                else:
+                    self.log_result("USD Balance Increase Verification", False, f"Balance too low: {current_usd}")
+            else:
+                self.log_result("USD Balance Check", False, f"Could not get balance: {response.status_code}")
+        except Exception as e:
+            self.log_result("USD Balance Check", False, f"Error: {str(e)}")
+        
+        print("\n4.3 Testing precise balance verification with new deposit...")
+        
+        # Get exact balance before deposit
+        try:
+            response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
+            if response.status_code == 200:
+                before_balance = response.json()
+                before_iqd = before_balance.get('wallet_balance_iqd', 0)
+                
+                print(f"   Balance before deposit: {before_iqd:,} IQD")
+                
+                # Make a precise deposit
+                deposit_amount = 25000
+                deposit_data = {
+                    "user_id": self.agent_baghdad_user_id,
+                    "amount": deposit_amount,
+                    "currency": "IQD",
+                    "note": "Precise balance verification test"
+                }
+                
+                deposit_response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
+                if deposit_response.status_code == 200:
+                    deposit_result = deposit_response.json()
+                    transaction_id = deposit_result.get('transaction_id')
+                    
+                    # Wait a moment for database update
+                    time.sleep(1)
+                    
+                    # Check balance after deposit
+                    after_response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
+                    if after_response.status_code == 200:
+                        after_balance = after_response.json()
+                        after_iqd = after_balance.get('wallet_balance_iqd', 0)
+                        
+                        expected_balance = before_iqd + deposit_amount
+                        actual_increase = after_iqd - before_iqd
+                        
+                        print(f"   Balance after deposit: {after_iqd:,} IQD")
+                        print(f"   Expected increase: {deposit_amount:,} IQD")
+                        print(f"   Actual increase: {actual_increase:,} IQD")
+                        
+                        if abs(actual_increase - deposit_amount) < 0.01:
+                            self.log_result("Precise Balance Verification", True, f"Balance increased exactly by {deposit_amount:,} IQD")
+                        else:
+                            self.log_result("Precise Balance Verification", False, f"Expected +{deposit_amount:,}, got +{actual_increase:,}")
+                    else:
+                        self.log_result("Precise Balance Verification", False, "Could not get balance after deposit")
+                else:
+                    self.log_result("Precise Balance Verification", False, f"Deposit failed: {deposit_response.status_code}")
+            else:
+                self.log_result("Precise Balance Verification", False, "Could not get initial balance")
+        except Exception as e:
+            self.log_result("Precise Balance Verification", False, f"Error: {str(e)}")
+    
+    def test_transaction_logging(self):
+        """Test transaction logging functionality"""
+        print("\n5.1 Testing wallet transactions endpoint...")
+        
+        # Get transactions for Baghdad agent
+        try:
+            response = self.make_request('GET', '/wallet/transactions', token=self.agent_baghdad_token)
+            if response.status_code == 200:
+                transactions = response.json()
+                
+                if isinstance(transactions, list):
+                    self.log_result("Wallet Transactions Endpoint", True, f"Retrieved {len(transactions)} transactions")
+                    
+                    # Look for our test deposits
+                    deposit_transactions = [t for t in transactions if t.get('transaction_type') == 'deposit']
+                    
+                    print(f"   Total transactions: {len(transactions)}")
+                    print(f"   Deposit transactions: {len(deposit_transactions)}")
+                    
+                    if deposit_transactions:
+                        print("   Recent deposit transactions:")
+                        for i, txn in enumerate(deposit_transactions[:3]):  # Show first 3
+                            amount = txn.get('amount', 0)
+                            currency = txn.get('currency', 'N/A')
+                            admin_name = txn.get('added_by_admin_name', 'N/A')
+                            note = txn.get('note', 'N/A')
+                            created_at = txn.get('created_at', 'N/A')
+                            
+                            print(f"     {i+1}. {amount:,} {currency} by {admin_name}")
+                            print(f"        Note: {note}")
+                            print(f"        Date: {created_at}")
+                        
+                        self.log_result("Deposit Transaction Logging", True, f"Found {len(deposit_transactions)} deposit transactions")
+                    else:
+                        self.log_result("Deposit Transaction Logging", False, "No deposit transactions found")
+                else:
+                    self.log_result("Wallet Transactions Endpoint", False, "Response is not a list", transactions)
+            else:
+                self.log_result("Wallet Transactions Endpoint", False, f"Failed: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Wallet Transactions Endpoint", False, f"Error: {str(e)}")
+        
+        print("\n5.2 Verifying transaction details...")
+        
+        # Check if we have stored transaction IDs from earlier tests
+        if hasattr(self, 'iqd_transaction_id'):
+            try:
+                response = self.make_request('GET', '/wallet/transactions', token=self.agent_baghdad_token)
+                if response.status_code == 200:
+                    transactions = response.json()
+                    
+                    # Find our specific transaction
+                    target_txn = next((t for t in transactions if t.get('id') == self.iqd_transaction_id), None)
+                    
+                    if target_txn:
+                        print(f"   Found target transaction: {self.iqd_transaction_id}")
+                        
+                        # Verify all required fields
+                        required_fields = ['id', 'user_id', 'amount', 'currency', 'transaction_type', 
+                                         'added_by_admin_id', 'added_by_admin_name', 'created_at']
+                        
+                        missing_fields = [field for field in required_fields if field not in target_txn]
+                        
+                        if not missing_fields:
+                            # Verify specific values
+                            checks = []
+                            checks.append(("Transaction Type", target_txn.get('transaction_type') == 'deposit'))
+                            checks.append(("Amount", target_txn.get('amount') == 50000))
+                            checks.append(("Currency", target_txn.get('currency') == 'IQD'))
+                            checks.append(("Admin ID", target_txn.get('added_by_admin_id') == self.admin_user_id))
+                            
+                            all_correct = all(check[1] for check in checks)
+                            
+                            if all_correct:
+                                self.log_result("Transaction Details Verification", True, "All transaction details correct")
+                                
+                                print("   Transaction details:")
+                                print(f"     ID: {target_txn.get('id')}")
+                                print(f"     User: {target_txn.get('user_display_name')}")
+                                print(f"     Amount: {target_txn.get('amount'):,} {target_txn.get('currency')}")
+                                print(f"     Type: {target_txn.get('transaction_type')}")
+                                print(f"     Admin: {target_txn.get('added_by_admin_name')}")
+                                print(f"     Note: {target_txn.get('note')}")
+                                print(f"     Date: {target_txn.get('created_at')}")
+                            else:
+                                failed_checks = [check[0] for check in checks if not check[1]]
+                                self.log_result("Transaction Details Verification", False, f"Failed checks: {failed_checks}")
+                        else:
+                            self.log_result("Transaction Details Verification", False, f"Missing fields: {missing_fields}")
+                    else:
+                        self.log_result("Transaction Details Verification", False, f"Transaction {self.iqd_transaction_id} not found")
+                else:
+                    self.log_result("Transaction Details Verification", False, "Could not retrieve transactions")
+            except Exception as e:
+                self.log_result("Transaction Details Verification", False, f"Error: {str(e)}")
+        else:
+            print("   No stored transaction ID for verification")
+        
+        print("\n5.3 Testing admin access to all transactions...")
+        
+        # Test admin can see transactions for specific user
+        try:
+            params = {'user_id': self.agent_baghdad_user_id}
+            response = self.make_request('GET', '/wallet/transactions', token=self.admin_token, params=params)
+            if response.status_code == 200:
+                admin_view_transactions = response.json()
+                
+                if isinstance(admin_view_transactions, list):
+                    self.log_result("Admin Transaction Access", True, f"Admin can view {len(admin_view_transactions)} transactions for specific user")
+                else:
+                    self.log_result("Admin Transaction Access", False, "Admin response not a list")
+            else:
+                self.log_result("Admin Transaction Access", False, f"Admin access failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Admin Transaction Access", False, f"Error: {str(e)}")
+        
+        print("\n5.4 Testing agent access restriction...")
+        
+        # Test agent cannot see other agent's transactions
+        try:
+            params = {'user_id': self.agent_basra_user_id}  # Baghdad agent trying to see Basra transactions
+            response = self.make_request('GET', '/wallet/transactions', token=self.agent_baghdad_token, params=params)
+            if response.status_code == 200:
+                agent_restricted_transactions = response.json()
+                
+                # Should only see own transactions, not the requested user's
+                if isinstance(agent_restricted_transactions, list):
+                    # Check if any transaction belongs to the other agent
+                    other_agent_txns = [t for t in agent_restricted_transactions if t.get('user_id') == self.agent_basra_user_id]
+                    
+                    if not other_agent_txns:
+                        self.log_result("Agent Access Restriction", True, "Agent correctly restricted to own transactions")
+                    else:
+                        self.log_result("Agent Access Restriction", False, f"Agent can see {len(other_agent_txns)} transactions from other agent")
+                else:
+                    self.log_result("Agent Access Restriction", False, "Unexpected response format")
+            else:
+                self.log_result("Agent Access Restriction", False, f"Agent access test failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Agent Access Restriction", False, f"Error: {str(e)}")
     
     def test_wallet_transactions(self):
         """Test GET /api/wallet/transactions"""
