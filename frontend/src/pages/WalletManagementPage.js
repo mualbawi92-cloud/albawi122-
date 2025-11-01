@@ -64,14 +64,39 @@ const WalletManagementPage = () => {
 
     setLoading(true);
     try {
-      await axios.post(`${API}/wallet/deposit`, {
+      const response = await axios.post(`${API}/wallet/deposit`, {
         user_id: formData.user_id,
         amount: parseFloat(formData.amount),
         currency: formData.currency,
         note: formData.note || undefined
       });
       
+      // Capture transaction_id from response
+      const transactionId = response.data.transaction_id;
+      const agent = agents.find(a => a.id === formData.user_id);
+      
+      // Prepare receipt data
+      setReceiptData({
+        transaction_id: transactionId,
+        agent_name: agent?.display_name || 'غير معروف',
+        agent_governorate: agent?.governorate || '',
+        amount: parseFloat(formData.amount),
+        currency: formData.currency,
+        note: formData.note || 'إضافة رصيد من قبل الإدارة',
+        admin_name: user?.display_name || 'الإدارة',
+        date: new Date().toLocaleString('ar-IQ', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      });
+      
       toast.success('تم إضافة الرصيد بنجاح');
+      
+      // Show receipt dialog
+      setShowReceiptDialog(true);
       
       // Reset form
       setFormData({
@@ -81,6 +106,9 @@ const WalletManagementPage = () => {
         note: ''
       });
       
+      // Refresh agents to show updated balance
+      fetchAgents();
+      
     } catch (error) {
       console.error('Error adding deposit:', error);
       const message = error.response?.data?.detail || 'حدث خطأ أثناء إضافة الرصيد';
@@ -88,6 +116,13 @@ const WalletManagementPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+  
+  const handlePrintReceipt = () => {
+    if (!receiptData) return;
+    
+    const receiptHTML = generateWalletDepositReceiptHTML(receiptData);
+    printDocument(receiptHTML, 'إيصال إضافة رصيد');
   };
 
   const selectedAgent = agents.find(a => a.id === formData.user_id);
