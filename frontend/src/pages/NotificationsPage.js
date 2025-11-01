@@ -146,7 +146,8 @@ const NotificationsPage = () => {
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-2xl">{getSeverityIcon(notification.severity)}</span>
+                        <span className="text-2xl">{getNotificationTypeIcon(notification.type)}</span>
+                        <span className="text-xl">{getSeverityIcon(notification.severity)}</span>
                         <CardTitle className="text-lg">{notification.title}</CardTitle>
                         {!notification.is_read && (
                           <span className="px-2 py-1 bg-primary text-white text-xs rounded-full">
@@ -157,6 +158,17 @@ const NotificationsPage = () => {
                       <CardDescription className="text-base whitespace-pre-line">
                         {notification.message}
                       </CardDescription>
+                      
+                      {/* AI Analysis Badge */}
+                      {notification.ai_analysis && (
+                        <div className="mt-3 p-3 bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-lg">🤖</span>
+                            <span className="font-semibold text-purple-700">تحليل الذكاء الاصطناعي:</span>
+                          </div>
+                          <p className="text-sm text-gray-700">{notification.ai_analysis}</p>
+                        </div>
+                      )}
                     </div>
                     {!notification.is_read && (
                       <Button
