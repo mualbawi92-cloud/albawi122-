@@ -387,3 +387,110 @@ export const generateAccountingReportHTML = (title, subtitle, dateRange, summary
     </div>
   `;
 };
+
+/**
+ * Generate Wallet Deposit Receipt HTML
+ */
+export const generateWalletDepositReceiptHTML = (depositData, agent, admin) => {
+  const formatCurrency = (amount, currency = 'IQD') => {
+    return `${amount?.toLocaleString() || 0} ${currency}`;
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleString('ar-IQ');
+  };
+
+  const printDate = new Date().toLocaleString('ar-IQ');
+
+  return `
+    <div class="header">
+      <div style="font-size: 36px; margin-bottom: 10px;">💼</div>
+      <h1 style="font-size: 24px; margin: 0;">نظام إدارة الحوالات المالية</h1>
+    </div>
+
+    <div class="header-info">
+      <div><strong>📅 تاريخ الطباعة:</strong> ${printDate}</div>
+      <div><strong>👤 المدير:</strong> ${admin?.display_name || admin?.username || 'الإدارة'}</div>
+    </div>
+
+    <h2 style="text-align: center; margin-bottom: 20px;">
+      💰 إيصال إضافة رصيد
+    </h2>
+
+    <div style="background: #d1fae5; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; border: 2px solid #10b981;">
+      <div style="font-size: 12px; color: #065f46; margin-bottom: 5px;"><strong>رقم العملية</strong></div>
+      <div style="font-size: 20px; font-weight: bold; color: #047857; letter-spacing: 1px;">
+        ${depositData.transaction_id || '-'}
+      </div>
+    </div>
+
+    <h3>📋 تفاصيل الإضافة</h3>
+    <table>
+      <tr>
+        <td style="width: 35%; font-weight: bold; background: #f9fafb;">التاريخ والوقت</td>
+        <td>${formatDate(depositData.created_at)}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; background: #f9fafb;">المبلغ المضاف</td>
+        <td style="font-size: 18px; font-weight: bold; color: #059669;">
+          ${formatCurrency(depositData.amount, depositData.currency)}
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; background: #f9fafb;">العملة</td>
+        <td>${depositData.currency}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; background: #f9fafb;">الملاحظات</td>
+        <td>${depositData.note || '-'}</td>
+      </tr>
+    </table>
+
+    <h3 style="margin-top: 20px;">👤 معلومات الصراف</h3>
+    <table>
+      <tr>
+        <td style="width: 35%; font-weight: bold; background: #f9fafb;">الاسم</td>
+        <td>${agent?.display_name || '-'}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; background: #f9fafb;">اسم المستخدم</td>
+        <td>${agent?.username || '-'}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; background: #f9fafb;">المحافظة</td>
+        <td>${agent?.governorate || '-'}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; background: #f9fafb;">الهاتف</td>
+        <td>${agent?.phone_number || '-'}</td>
+      </tr>
+    </table>
+
+    <h3 style="margin-top: 20px;">🏢 معلومات المدير المسؤول</h3>
+    <table>
+      <tr>
+        <td style="width: 35%; font-weight: bold; background: #f9fafb;">الاسم</td>
+        <td>${admin?.display_name || '-'}</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold; background: #f9fafb;">اسم المستخدم</td>
+        <td>${admin?.username || '-'}</td>
+      </tr>
+    </table>
+
+    <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 20px 0; border: 2px solid #f59e0b;">
+      <p style="text-align: center; font-size: 14px; color: #92400e; margin: 0; font-weight: bold;">
+        ⚠️ يرجى التأكد من استلام المبلغ المذكور أعلاه
+      </p>
+    </div>
+
+    <div class="footer">
+      <p style="margin-bottom: 5px;">هذا الإيصال صادر إلكترونياً ولا يحتاج إلى ختم أو توقيع</p>
+      <p style="font-weight: bold; color: #1e40af; margin: 5px 0;">
+        تمت الطباعة بواسطة نظام الحوالات
+      </p>
+      <p style="font-size: 11px;">© ${new Date().getFullYear()} جميع الحقوق محفوظة</p>
+    </div>
+  `;
+};
