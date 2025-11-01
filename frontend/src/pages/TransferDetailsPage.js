@@ -265,12 +265,11 @@ const TransferDetailsPage = () => {
                     <TransferReceipt 
                       transfer={transfer} 
                       agentInfo={user}
+                      currentUser={user}
                       type={transfer.status === 'completed' ? 'receive' : 'send'}
                     />
                   }
                   buttonText="🖨️ طباعة الإيصال"
-                  fileName={`transfer-${transfer.transfer_code}.pdf`}
-                  buttonVariant="outline"
                   buttonClassName="bg-white hover:bg-gray-50"
                 />
                 {getStatusBadge(transfer.status)}
