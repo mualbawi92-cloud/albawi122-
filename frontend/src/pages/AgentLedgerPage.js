@@ -108,14 +108,58 @@ const AgentLedgerPage = () => {
                 />
               </div>
               
-              <div className="flex items-end">
+              <div className="flex items-end gap-2">
                 <Button
                   onClick={fetchLedgerData}
                   disabled={loading}
-                  className="w-full h-12 bg-blue-600 hover:bg-blue-700"
+                  className="flex-1 h-12 bg-blue-600 hover:bg-blue-700"
                 >
                   {loading ? 'جاري التحميل...' : '🔍 عرض'}
                 </Button>
+                
+                {ledgerData && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const html = generateAccountingReportHTML(
+                        '📊 دفتر الأستاذ الخاص',
+                        `${user?.display_name}`,
+                        `من ${dateFrom} إلى ${dateTo}`,
+                        [
+                          { 
+                            label: 'رصيد المحفظة (IQD)', 
+                            value: `${ledgerData.wallet_balance_iqd?.toLocaleString() || 0} IQD`,
+                            color: '#dbeafe',
+                            borderColor: '#3b82f6',
+                            textColor: '#1e40af'
+                          },
+                          { 
+                            label: 'رصيد المحفظة (USD)', 
+                            value: `${ledgerData.wallet_balance_usd?.toLocaleString() || 0} USD`,
+                            color: '#d1fae5',
+                            borderColor: '#10b981',
+                            textColor: '#059669'
+                          }
+                        ],
+                        ledgerData.transactions || [],
+                        [
+                          { header: 'التاريخ', field: 'date', render: (val) => new Date(val).toLocaleDateString('ar-IQ') },
+                          { header: 'النوع', field: 'type' },
+                          { header: 'الوصف', field: 'description' },
+                          { header: 'الرصيد', field: 'balance', align: 'center', bold: true, render: (val, row) => `${val?.toLocaleString() || 0} ${row.currency}` },
+                          { header: 'المدين', field: 'debit', align: 'center', render: (val, row) => val > 0 ? `${val.toLocaleString()} ${row.currency}` : '-' },
+                          { header: 'الدائن', field: 'credit', align: 'center', render: (val, row) => val > 0 ? `${val.toLocaleString()} ${row.currency}` : '-' }
+                        ],
+                        user
+                      );
+                      printDocument(html, `دفتر أستاذ ${user?.username}`);
+                    }}
+                    className="h-12 px-4"
+                    disabled={!ledgerData}
+                  >
+                    🖨️ طباعة
+                  </Button>
+                )}
               </div>
             </div>
 
