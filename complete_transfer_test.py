@@ -9,7 +9,7 @@ import time
 from io import BytesIO
 
 # Configuration
-BASE_URL = "https://xchange-hub-1.preview.emergentagent.com/api"
+BASE_URL = "https://rapidprint.preview.emergentagent.com/api"
 AGENT_CREDENTIALS = {"username": "agent_baghdad", "password": "agent123"}
 
 def test_complete_transfer_flow():

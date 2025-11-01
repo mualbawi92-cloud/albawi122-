@@ -8,7 +8,7 @@ import json
 from datetime import datetime, timedelta
 
 # Configuration
-BASE_URL = "https://xchange-hub-1.preview.emergentagent.com/api"
+BASE_URL = "https://rapidprint.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
 
 class RemainingEndpointsTest:
