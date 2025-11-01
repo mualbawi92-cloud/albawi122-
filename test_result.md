@@ -270,6 +270,60 @@ frontend:
           - Sends dates in YYYY-MM-DD format to backend
           - Implements proper date range selection (from/to)
           - Works across all three tabs (Send, Receive, Query)
+  
+  - task: "Wallet deposit receipt feature"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/WalletManagementPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: |
+          User reported: عند إضافة رصيد للصرافين، المبلغ لا يضاف بشكل صحيح
+          ولا يوجد إيصال قابل للطباعة يمكن إرساله للصراف
+      - working: true
+        agent: "main"
+        comment: |
+          **IMPLEMENTATION COMPLETED:**
+          
+          Added complete receipt feature to WalletManagementPage:
+          
+          1. State Management:
+             - showReceiptDialog: Controls receipt display
+             - receiptData: Stores transaction details
+          
+          2. Enhanced Deposit Flow:
+             - Captures transaction_id from backend response
+             - Collects all necessary data (agent info, amount, currency, admin)
+             - Shows receipt dialog immediately after successful deposit
+             - Refreshes agent list to display updated balance
+          
+          3. Receipt Dialog:
+             - Shows transaction ID for tracking
+             - Displays agent details and governorate
+             - Shows amount in large green text
+             - Includes admin name and timestamp
+             - Professional Arabic RTL design
+          
+          4. Print Functionality:
+             - Print button triggers generateWalletDepositReceiptHTML
+             - Uses existing printUtils.js utility
+             - Generates A4 formatted receipt
+             - Includes logo, header, footer
+             - Professional layout for records
+          
+          **Features:**
+          - ✅ Receipt appears automatically after deposit
+          - ✅ All transaction details captured
+          - ✅ Printable formatted receipt
+          - ✅ Admin and agent information included
+          - ✅ Transaction ID for tracking
+          - ✅ Updated balance visible after refresh
+          
+          Ready for frontend testing to verify receipt display and print functionality.
 
 metadata:
   created_by: "main_agent"
