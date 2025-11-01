@@ -1319,6 +1319,66 @@ agent_communication:
       
       Ready for testing!
   
+  - agent: "main"
+    message: |
+      ✅ AGENT WALLET RECEIPT PRINTING FEATURE ADDED
+      
+      **User Request:**
+      اريد تسويلي طباعه الايصاله مالت المحافظ 
+      تسمحلي ان اطبع الايصال خاص بمحفظه بعد اتمام عمليه تحويل الفلوس الى الصيرفات
+      
+      **Translation:**
+      User wants agents to be able to print their own deposit receipts after money 
+      transfer to their wallet is completed.
+      
+      **Implementation (frontend/src/pages/WalletPage.js):**
+      
+      1. Added Print Button for Deposits:
+         - Button appears next to each deposit transaction in wallet page
+         - Only visible for transactions with type='deposit'
+         - Styled with primary colors "🖨️ طباعة الإيصال"
+      
+      2. Print Functionality:
+         - handlePrintReceipt function collects transaction data
+         - Extracts agent info from current user context
+         - Extracts admin info from transaction
+         - Generates professional receipt using printUtils
+         - Opens print dialog automatically
+      
+      3. Receipt Content:
+         - Transaction ID
+         - Agent name, username, governorate, phone
+         - Deposit amount and currency
+         - Note/description
+         - Admin who made the deposit
+         - Date and time
+         - Professional A4 format
+      
+      **User Flow:**
+      1. Agent logs in and opens "محفظتي" (My Wallet) page
+      2. Views transaction history (last 50 transactions)
+      3. For each deposit transaction, sees "طباعة الإيصال" button
+      4. Clicks button → receipt opens in new window → auto-prints
+      5. Agent can print as many copies as needed
+      
+      **Features:**
+      - ✅ One-click print from wallet page
+      - ✅ Professional receipt format
+      - ✅ All transaction details included
+      - ✅ Works for any deposit transaction
+      - ✅ Toast notification confirms print action
+      - ✅ Responsive design (mobile & desktop)
+      
+      **Testing Required:**
+      1. Login as agent (not admin)
+      2. Navigate to "محفظتي" from sidebar
+      3. Verify deposit transactions show print button
+      4. Click print button on any deposit
+      5. Verify receipt opens with correct information
+      6. Verify receipt prints properly
+      
+      Ready for frontend testing!
+  
   - agent: "testing"
     message: |
       ✅ **COMPREHENSIVE WALLET DEPOSIT TESTING COMPLETED - ALL CRITICAL TESTS PASSED**
