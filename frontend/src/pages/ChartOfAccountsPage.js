@@ -313,11 +313,65 @@ const ChartOfAccountsPage = () => {
                   دليل الحسابات والتقارير المحاسبية
                 </CardDescription>
               </div>
-              {activeTab === 'accounts' && (
-                <Button onClick={() => setShowAddDialog(true)} className="w-full sm:w-auto">
-                  ➕ إضافة حساب جديد
-                </Button>
-              )}
+              <div className="flex gap-2 flex-wrap">
+                {activeTab === 'accounts' && accounts.length > 0 && (
+                  <PrintButton
+                    componentToPrint={
+                      <AccountingReport
+                        title="📚 دليل الحسابات"
+                        subtitle="جميع الحسابات المحاسبية"
+                        summary={[
+                          { 
+                            label: 'عدد الحسابات', 
+                            value: filteredAccounts.length,
+                            color: '#dbeafe',
+                            borderColor: '#3b82f6',
+                            textColor: '#1e40af'
+                          },
+                          { 
+                            label: 'إجمالي الأرصدة (IQD)', 
+                            value: filteredAccounts.filter(a => a.currency === 'IQD').reduce((sum, a) => sum + (a.balance || 0), 0).toLocaleString(),
+                            color: '#d1fae5',
+                            borderColor: '#10b981',
+                            textColor: '#059669'
+                          },
+                          { 
+                            label: 'إجمالي الأرصدة (USD)', 
+                            value: filteredAccounts.filter(a => a.currency === 'USD').reduce((sum, a) => sum + (a.balance || 0), 0).toLocaleString(),
+                            color: '#fef3c7',
+                            borderColor: '#f59e0b',
+                            textColor: '#92400e'
+                          }
+                        ]}
+                        data={filteredAccounts}
+                        columns={[
+                          { header: 'رمز الحساب', field: 'code', bold: true },
+                          { header: 'اسم الحساب', field: 'name_ar' },
+                          { header: 'الاسم بالإنجليزية', field: 'name_en' },
+                          { header: 'الفئة', field: 'category' },
+                          { header: 'العملة', field: 'currency', align: 'center' },
+                          { 
+                            header: 'الرصيد', 
+                            field: 'balance', 
+                            align: 'center', 
+                            bold: true,
+                            render: (val, row) => `${val?.toLocaleString() || 0} ${row.currency}`,
+                            color: (val) => val > 0 ? '#047857' : val < 0 ? '#dc2626' : '#64748b'
+                          }
+                        ]}
+                      />
+                    }
+                    buttonText="🖨️ طباعة الدليل"
+                    fileName={`chart-of-accounts-${new Date().toISOString().split('T')[0]}.pdf`}
+                    buttonVariant="outline"
+                  />
+                )}
+                {activeTab === 'accounts' && (
+                  <Button onClick={() => setShowAddDialog(true)} className="w-full sm:w-auto">
+                    ➕ إضافة حساب جديد
+                  </Button>
+                )}
+              </div>
             </div>
           </CardHeader>
         </Card>
