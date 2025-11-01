@@ -257,19 +257,6 @@ const TransferDetailsPage = () => {
                 <CardDescription className="text-base">تفاصيل الحوالة</CardDescription>
               </div>
               <div className="flex items-center gap-3">
-                {/* Print Button */}
-                <PrintButton
-                  componentToPrint={
-                    <TransferReceipt 
-                      transfer={transfer} 
-                      agentInfo={user}
-                      currentUser={user}
-                      type={transfer.status === 'completed' ? 'receive' : 'send'}
-                    />
-                  }
-                  buttonText="🖨️ طباعة الإيصال"
-                  buttonClassName="bg-white hover:bg-gray-50"
-                />
                 {getStatusBadge(transfer.status)}
               </div>
             </div>
