@@ -141,9 +141,9 @@ const WalletPage = () => {
                 {transactions.map((tx) => (
                   <div
                     key={tx.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border border-border rounded-lg hover:bg-accent/50 transition-colors gap-3"
                   >
-                    <div className="flex-1 mb-2 sm:mb-0">
+                    <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         {getTransactionBadge(tx.transaction_type)}
                         <span className={`font-bold text-base sm:text-lg ${tx.amount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -156,9 +156,7 @@ const WalletPage = () => {
                           بواسطة: {tx.added_by_admin_name}
                         </p>
                       )}
-                    </div>
-                    <div className="text-left sm:text-right">
-                      <p className="text-xs sm:text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                         {new Date(tx.created_at).toLocaleDateString('ar-IQ', {
                           year: 'numeric',
                           month: 'long',
@@ -168,6 +166,18 @@ const WalletPage = () => {
                         })}
                       </p>
                     </div>
+                    
+                    {/* Print Button for Deposits */}
+                    {tx.transaction_type === 'deposit' && (
+                      <Button
+                        onClick={() => handlePrintReceipt(tx)}
+                        variant="outline"
+                        size="sm"
+                        className="bg-primary/10 hover:bg-primary/20 border-primary/30 text-primary font-semibold whitespace-nowrap"
+                      >
+                        🖨️ طباعة الإيصال
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>
