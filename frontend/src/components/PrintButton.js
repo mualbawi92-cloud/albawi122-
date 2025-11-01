@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Button } from './ui/button';
 
 /**
- * PrintButton Component
+ * PrintButton Component  
  * Simple and effective print button
  */
 const PrintButton = ({ 
@@ -13,7 +13,7 @@ const PrintButton = ({
   buttonClassName = "",
   disabled = false 
 }) => {
-  const printRef = useRef();
+  const rootRef = useRef(null);
 
   const handlePrint = () => {
     // Create print container if it doesn't exist
@@ -58,16 +58,17 @@ const PrintButton = ({
       document.head.appendChild(printStyles);
     }
 
-    // Render the component to print
-    ReactDOM.render(componentToPrint, printContainer, () => {
-      // Trigger print after component renders
+    // Create root and render
+    if (!rootRef.current) {
+      rootRef.current = createRoot(printContainer);
+    }
+    
+    rootRef.current.render(componentToPrint);
+    
+    // Trigger print after short delay to ensure rendering
+    setTimeout(() => {
       window.print();
-      
-      // Clean up after printing
-      setTimeout(() => {
-        ReactDOM.unmountComponentAtNode(printContainer);
-      }, 1000);
-    });
+    }, 300);
   };
 
   return (
