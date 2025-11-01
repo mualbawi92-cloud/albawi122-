@@ -121,10 +121,67 @@ const JournalPage = () => {
                 />
               </div>
 
-              <div className="space-y-2 flex items-end">
-                <Button onClick={fetchEntries} disabled={loading} className="w-full">
+              <div className="space-y-2 flex items-end gap-2">
+                <Button onClick={fetchEntries} disabled={loading} className="flex-1">
                   {loading ? 'جاري البحث...' : '🔍 بحث'}
                 </Button>
+                
+                {entries.length > 0 && (
+                  <PrintButton
+                    componentToPrint={
+                      <AccountingReport
+                        title="📖 دفتر اليومية"
+                        subtitle="جميع القيود المحاسبية"
+                        dateRange={startDate && endDate ? `من ${startDate} إلى ${endDate}` : 'كل الفترات'}
+                        summary={[
+                          { 
+                            label: 'عدد القيود', 
+                            value: entries.length,
+                            color: '#dbeafe',
+                            borderColor: '#3b82f6',
+                            textColor: '#1e40af'
+                          },
+                          { 
+                            label: 'إجمالي المدين', 
+                            value: entries.reduce((sum, e) => sum + (e.total_debit || 0), 0).toLocaleString(),
+                            color: '#fee2e2',
+                            borderColor: '#ef4444',
+                            textColor: '#991b1b'
+                          },
+                          { 
+                            label: 'إجمالي الدائن', 
+                            value: entries.reduce((sum, e) => sum + (e.total_credit || 0), 0).toLocaleString(),
+                            color: '#d1fae5',
+                            borderColor: '#10b981',
+                            textColor: '#059669'
+                          }
+                        ]}
+                        data={entries.flatMap(entry => 
+                          entry.lines?.map((line, idx) => ({
+                            entry_number: idx === 0 ? entry.entry_number : '',
+                            date: idx === 0 ? entry.date : '',
+                            description: idx === 0 ? entry.description : '',
+                            account_code: line.account_code,
+                            account_name: line.account_name || '-',
+                            debit: line.debit,
+                            credit: line.credit
+                          })) || []
+                        )}
+                        columns={[
+                          { header: 'رقم القيد', field: 'entry_number' },
+                          { header: 'التاريخ', field: 'date', render: (val) => val ? new Date(val).toLocaleDateString('ar-IQ') : '' },
+                          { header: 'البيان', field: 'description' },
+                          { header: 'رمز الحساب', field: 'account_code' },
+                          { header: 'اسم الحساب', field: 'account_name' },
+                          { header: 'مدين', field: 'debit', align: 'center', render: (val) => val > 0 ? val.toLocaleString() : '-' },
+                          { header: 'دائن', field: 'credit', align: 'center', render: (val) => val > 0 ? val.toLocaleString() : '-' }
+                        ]}
+                      />
+                    }
+                    buttonText="🖨️"
+                    fileName={`journal-${new Date().toISOString().split('T')[0]}.pdf`}
+                  />
+                )}
               </div>
             </div>
           </CardContent>
