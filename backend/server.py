@@ -1382,6 +1382,35 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'sender_name': transfer_data.sender_name
     }, room=f"gov_{transfer_data.to_governorate}")
     
+    # Create notification for specific agent or all agents in governorate
+    if transfer_data.to_agent_id:
+        # Notify specific agent
+        await create_notification(
+            title="📥 حوالة جديدة وصلت لك",
+            message=f"حوالة جديدة رقم {transfer_code} بمبلغ {transfer_data.amount:,.0f} {transfer_data.currency}\nالمرسل: {transfer_data.sender_name}\nالمستلم: {transfer_data.receiver_name}",
+            severity="low",
+            user_id=transfer_data.to_agent_id,
+            related_transfer_id=transfer_id,
+            notification_type="new_transfer"
+        )
+    else:
+        # Notify all agents in the governorate
+        agents_in_gov = await db.users.find({
+            'governorate': transfer_data.to_governorate,
+            'role': 'agent',
+            'is_active': True
+        }).to_list(length=None)
+        
+        for agent in agents_in_gov:
+            await create_notification(
+                title="📥 حوالة جديدة في محافظتك",
+                message=f"حوالة جديدة رقم {transfer_code} بمبلغ {transfer_data.amount:,.0f} {transfer_data.currency}\nالمرسل: {transfer_data.sender_name}\nالمستلم: {transfer_data.receiver_name}\nالمحافظة: {transfer_data.to_governorate}",
+                severity="low",
+                user_id=agent['id'],
+                related_transfer_id=transfer_id,
+                notification_type="new_transfer"
+            )
+    
     transfer_doc.pop('_id', None)
     transfer_doc.pop('pin_hash', None)
     transfer_doc['pin'] = pin  # Return PIN only once
