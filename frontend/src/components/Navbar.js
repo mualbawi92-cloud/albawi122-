@@ -20,7 +20,7 @@ const Navbar = () => {
   const [mobileAgentCommissionsOpen, setMobileAgentCommissionsOpen] = useState(false);
 
   useEffect(() => {
-    if (user?.role === 'admin') {
+    if (user) {
       fetchUnreadCount();
       // Poll every 30 seconds
       const interval = setInterval(fetchUnreadCount, 30000);
