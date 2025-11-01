@@ -1380,6 +1380,118 @@ agent_communication:
       
       Ready for frontend testing!
   
+  - agent: "main"
+    message: |
+      ✅ NOTIFICATIONS SYSTEM ENHANCED FOR AGENTS
+      
+      **User Request:**
+      اريد تضيف خاصيه الإشعارات في قائمه الصيرافين والإشعارات مدعومه بذكاء الاصطناعي
+      وتجي إشعارات بحوالات جديده وصلت لصيرفه
+      واشعارات لمن المدير يحول فلوس الى محفظه الصراف
+      
+      **Implementation Summary:**
+      
+      ### Backend Changes (server.py):
+      
+      1. **Updated create_notification function:**
+         - Added user_id parameter for agent-specific notifications
+         - Added notification_type parameter (wallet_deposit, new_transfer, etc.)
+         - Added ai_analysis parameter for AI insights
+         - Supports both admin and agent notifications
+      
+      2. **Updated /api/notifications endpoint:**
+         - Changed from admin-only to support all users
+         - Agents see only their notifications
+         - Admin sees all notifications
+         - Proper filtering by user_id
+      
+      3. **Updated /api/notifications/{id}/mark-read endpoint:**
+         - Agents can only mark their own notifications
+         - Admin can mark any notification
+         - Security: role-based access control
+      
+      4. **Added Notification Triggers:**
+         
+         a. **Wallet Deposit Notification:**
+            - Sent to agent when admin adds funds to wallet
+            - Type: wallet_deposit
+            - Includes amount, currency, admin name
+            - Severity: low
+         
+         b. **New Transfer Notification:**
+            - Sent when new transfer arrives for agent
+            - Sent to specific agent OR all agents in governorate
+            - Type: new_transfer  
+            - Includes transfer code, amount, sender/receiver names
+            - Severity: low
+         
+         c. **Transfer Received Notification:**
+            - Sent when agent successfully receives/completes transfer
+            - Type: transfer_received
+            - Includes transfer details and confirmation
+            - Severity: low
+      
+      ### Frontend Changes:
+      
+      1. **NotificationsPage.js:**
+         - Removed admin-only restriction
+         - Added getNotificationTypeIcon() for different notification types
+         - Added AI analysis display section (purple gradient box)
+         - Enhanced UI with type-specific icons
+         - Responsive design
+      
+      2. **Navbar.js:**
+         - Changed fetchUnreadCount() to work for all users (not just admin)
+         - Notification bell shows unread count for agents too
+         - Auto-refresh every 30 seconds
+      
+      ### Notification Types Supported:
+      - 💰 wallet_deposit: Wallet deposit from admin
+      - 📥 new_transfer: New transfer arrived
+      - ✅ transfer_received: Transfer successfully received
+      - 🔄 duplicate_transfer: Suspicious duplicate detected
+      - ❌ name_mismatch: Name verification failed
+      - 🆔 id_verification_failed: ID verification failed
+      - 🔍 suspicious_activity: AI detected suspicious activity
+      - 🤖 ai_warning: AI warning
+      - ⚙️ system: System notification
+      
+      ### Features Implemented:
+      - ✅ Agent-specific notifications
+      - ✅ Notification bell with unread count
+      - ✅ Auto-refresh every 30 seconds
+      - ✅ Mark as read functionality
+      - ✅ Filter: All / Unread
+      - ✅ Type-specific icons
+      - ✅ AI analysis display section (ready for AI integration)
+      - ✅ Severity-based colors (critical, high, medium, low)
+      - ✅ Link to related transfers
+      - ✅ Real-time via WebSocket (already existed)
+      
+      ### AI Integration Ready:
+      The system is now ready for AI integration. Awaiting user response on:
+      1. Which AI model to use (OpenAI GPT-4o / Claude Sonnet 4 / Gemini 2.0)
+      2. Emergent LLM Key or custom API key
+      3. When to trigger AI analysis (real-time or periodic)
+      
+      **AI Features to be Added (pending user confirmation):**
+      - 🤖 Duplicate transfer detection
+      - 🤖 Name mismatch detection
+      - 🤖 ID image verification with Vision AI
+      - 🤖 Suspicious pattern detection
+      - 🤖 Anomaly detection
+      
+      **Testing Required:**
+      1. Login as agent
+      2. Check notification bell shows count
+      3. Click on notifications page
+      4. Verify notifications display correctly
+      5. Test with admin adding wallet funds
+      6. Test with new transfers arriving
+      7. Test mark as read functionality
+      
+      Ready for testing!
+  
   - agent: "testing"
     message: |
       ✅ **COMPREHENSIVE WALLET DEPOSIT TESTING COMPLETED - ALL CRITICAL TESTS PASSED**
