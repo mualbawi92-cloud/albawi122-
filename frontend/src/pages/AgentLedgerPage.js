@@ -109,14 +109,80 @@ const AgentLedgerPage = () => {
                 />
               </div>
               
-              <div className="flex items-end">
+              <div className="flex items-end gap-2 md:col-span-1">
                 <Button
                   onClick={fetchLedgerData}
                   disabled={loading}
-                  className="w-full h-12 bg-blue-600 hover:bg-blue-700"
+                  className="flex-1 h-12 bg-blue-600 hover:bg-blue-700"
                 >
                   {loading ? 'جاري التحميل...' : '🔍 عرض'}
                 </Button>
+                {ledgerData && (
+                  <PrintButton
+                    componentToPrint={
+                      <AccountingReport
+                        title="📊 دفتر الأستاذ الخاص"
+                        subtitle={`${user?.display_name}`}
+                        dateRange={`من ${dateFrom} إلى ${dateTo}`}
+                        summary={[
+                          { 
+                            label: 'رصيد المحفظة (IQD)', 
+                            value: `${ledgerData.wallet_balance_iqd?.toLocaleString() || 0} IQD`,
+                            color: '#dbeafe',
+                            borderColor: '#3b82f6',
+                            textColor: '#1e40af'
+                          },
+                          { 
+                            label: 'رصيد المحفظة (USD)', 
+                            value: `${ledgerData.wallet_balance_usd?.toLocaleString() || 0} USD`,
+                            color: '#d1fae5',
+                            borderColor: '#10b981',
+                            textColor: '#059669'
+                          },
+                          { 
+                            label: 'العمولات المحققة (IQD)', 
+                            value: `${ledgerData.earned_commission_iqd?.toLocaleString() || 0} IQD`,
+                            color: '#fef3c7',
+                            borderColor: '#f59e0b',
+                            textColor: '#92400e'
+                          },
+                          { 
+                            label: 'العمولات المدفوعة (IQD)', 
+                            value: `${ledgerData.paid_commission_iqd?.toLocaleString() || 0} IQD`,
+                            color: '#fee2e2',
+                            borderColor: '#ef4444',
+                            textColor: '#991b1b'
+                          }
+                        ]}
+                        data={ledgerData.transactions || []}
+                        columns={[
+                          { header: 'التاريخ', field: 'date', render: (val) => new Date(val).toLocaleDateString('ar-IQ') },
+                          { header: 'النوع', field: 'type', render: (val) => {
+                            const types = {
+                              'outgoing': '📤 صادرة',
+                              'incoming': '📥 واردة',
+                              'commission_earned': '💰 عمولة محققة',
+                              'commission_paid': '🔻 عمولة مدفوعة',
+                              'journal_entry': '📝 قيد يومي'
+                            };
+                            return types[val] || val;
+                          }},
+                          { header: 'الوصف', field: 'description' },
+                          { header: 'الرصيد', field: 'balance', align: 'center', bold: true, 
+                            render: (val, row) => `${val?.toLocaleString() || 0} ${row.currency}` },
+                          { header: 'المدين (خروج)', field: 'debit', align: 'center', 
+                            render: (val, row) => val > 0 ? `${val.toLocaleString()} ${row.currency}` : '-' },
+                          { header: 'الدائن (دخول)', field: 'credit', align: 'center',
+                            render: (val, row) => val > 0 ? `${val.toLocaleString()} ${row.currency}` : '-' }
+                        ]}
+                      />
+                    }
+                    buttonText="🖨️"
+                    fileName={`agent-ledger-${user?.username}-${dateFrom}-to-${dateTo}.pdf`}
+                    buttonClassName="h-12 px-4"
+                    disabled={!ledgerData}
+                  />
+                )}
               </div>
             </div>
 
