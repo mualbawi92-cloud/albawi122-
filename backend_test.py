@@ -972,9 +972,99 @@ class WalletDepositTester:
         
         return None
     
-    # Removed commission testing methods - focus is now on Transit Account System
+    def run_all_tests(self):
+        """Run all wallet deposit tests"""
+        print("🚨 STARTING COMPREHENSIVE WALLET DEPOSIT TESTING")
+        print("=" * 80)
+        
+        # Step 1: Authentication
+        if not self.test_authentication():
+            print("❌ Authentication failed - cannot continue")
+            return False
+        
+        # Step 2: Run comprehensive wallet deposit tests
+        self.test_wallet_deposit_comprehensive()
+        
+        # Step 3: Print summary
+        self.print_test_summary()
+        
+        return True
     
-    def test_agent_filter_in_commissions_endpoint(self):
+    def print_test_summary(self):
+        """Print comprehensive test summary"""
+        print("\n" + "=" * 80)
+        print("🚨 WALLET DEPOSIT TESTING SUMMARY")
+        print("=" * 80)
+        
+        total_tests = len(self.test_results)
+        passed_tests = len([r for r in self.test_results if r['success']])
+        failed_tests = total_tests - passed_tests
+        
+        print(f"Total Tests: {total_tests}")
+        print(f"Passed: {passed_tests} ✅")
+        print(f"Failed: {failed_tests} ❌")
+        print(f"Success Rate: {(passed_tests/total_tests*100):.1f}%")
+        
+        if failed_tests > 0:
+            print(f"\n❌ FAILED TESTS ({failed_tests}):")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"   - {result['test']}: {result['message']}")
+        
+        print(f"\n✅ PASSED TESTS ({passed_tests}):")
+        for result in self.test_results:
+            if result['success']:
+                print(f"   - {result['test']}: {result['message']}")
+        
+        # Critical findings
+        print(f"\n🎯 CRITICAL FINDINGS:")
+        
+        auth_tests = [r for r in self.test_results if 'Auth' in r['test']]
+        auth_passed = len([r for r in auth_tests if r['success']])
+        print(f"   Authentication Security: {auth_passed}/{len(auth_tests)} tests passed")
+        
+        validation_tests = [r for r in self.test_results if 'Validation' in r['test']]
+        validation_passed = len([r for r in validation_tests if r['success']])
+        print(f"   Input Validation: {validation_passed}/{len(validation_tests)} tests passed")
+        
+        deposit_tests = [r for r in self.test_results if 'Deposit' in r['test'] and 'Successful' in r['test']]
+        deposit_passed = len([r for r in deposit_tests if r['success']])
+        print(f"   Deposit Functionality: {deposit_passed}/{len(deposit_tests)} tests passed")
+        
+        balance_tests = [r for r in self.test_results if 'Balance' in r['test']]
+        balance_passed = len([r for r in balance_tests if r['success']])
+        print(f"   Balance Management: {balance_passed}/{len(balance_tests)} tests passed")
+        
+        transaction_tests = [r for r in self.test_results if 'Transaction' in r['test']]
+        transaction_passed = len([r for r in transaction_tests if r['success']])
+        print(f"   Transaction Logging: {transaction_passed}/{len(transaction_tests)} tests passed")
+        
+        print("\n" + "=" * 80)
+        
+        if failed_tests == 0:
+            print("🎉 ALL TESTS PASSED - WALLET DEPOSIT FEATURE IS FULLY FUNCTIONAL!")
+        else:
+            print("⚠️  SOME TESTS FAILED - REVIEW ISSUES ABOVE")
+        
+        print("=" * 80)
+
+def main():
+    """Main execution function"""
+    tester = WalletDepositTester()
+    
+    try:
+        success = tester.run_all_tests()
+        return success
+    except KeyboardInterrupt:
+        print("\n\n⚠️ Testing interrupted by user")
+        return False
+    except Exception as e:
+        print(f"\n\n❌ Testing failed with error: {str(e)}")
+        return False
+
+if __name__ == "__main__":
+    success = main()
+    exit(0 if success else 1)
         """🚨 اختبار فلتر الصراف في endpoint العمولات"""
         print("\n🚨 اختبار فلتر الصراف في endpoint العمولات")
         print("=" * 80)
