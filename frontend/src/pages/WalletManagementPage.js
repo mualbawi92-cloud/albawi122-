@@ -20,6 +20,8 @@ const WalletManagementPage = () => {
   const navigate = useNavigate();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showReceiptDialog, setShowReceiptDialog] = useState(false);
+  const [receiptData, setReceiptData] = useState(null);
   const [formData, setFormData] = useState({
     user_id: '',
     amount: '',
