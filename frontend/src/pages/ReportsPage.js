@@ -141,14 +141,83 @@ const ReportsPage = () => {
                 )}
               </div>
 
-              <div className="space-y-2 flex items-end">
+              <div className="flex items-end gap-2">
                 <Button 
                   onClick={fetchReports} 
                   disabled={loading}
-                  className="w-full"
+                  className="flex-1"
                 >
                   {loading ? 'جاري التحميل...' : '📊 عرض التقرير'}
                 </Button>
+                
+                {commissionsReport && agentsReport && (
+                  <PrintButton
+                    componentToPrint={
+                      <AccountingReport
+                        title="📊 تقرير العمولات"
+                        subtitle={`تقرير ${reportType === 'daily' ? 'يومي' : reportType === 'monthly' ? 'شهري' : 'سنوي'}`}
+                        dateRange={selectedDate}
+                        summary={[
+                          { 
+                            label: 'إجمالي العمولات المحققة (IQD)', 
+                            value: `${commissionsReport.earned?.iqd?.toLocaleString() || 0} IQD`,
+                            color: '#d1fae5',
+                            borderColor: '#10b981',
+                            textColor: '#059669'
+                          },
+                          { 
+                            label: 'إجمالي العمولات المحققة (USD)', 
+                            value: `${commissionsReport.earned?.usd?.toLocaleString() || 0} USD`,
+                            color: '#d1fae5',
+                            borderColor: '#10b981',
+                            textColor: '#059669'
+                          },
+                          { 
+                            label: 'إجمالي العمولات المدفوعة (IQD)', 
+                            value: `${commissionsReport.paid?.iqd?.toLocaleString() || 0} IQD`,
+                            color: '#fee2e2',
+                            borderColor: '#ef4444',
+                            textColor: '#991b1b'
+                          },
+                          { 
+                            label: 'صافي الربح (IQD)', 
+                            value: `${commissionsReport.net?.iqd?.toLocaleString() || 0} IQD`,
+                            color: '#dbeafe',
+                            borderColor: '#3b82f6',
+                            textColor: '#1e40af'
+                          }
+                        ]}
+                        data={agentsReport}
+                        columns={[
+                          { header: 'اسم الصراف', field: 'display_name', bold: true },
+                          { header: 'عدد الحوالات الصادرة', field: 'outgoing_count', align: 'center' },
+                          { header: 'عدد الحوالات الواردة', field: 'incoming_count', align: 'center' },
+                          { 
+                            header: 'العمولات المحققة (IQD)', 
+                            field: 'earned_commission_iqd', 
+                            align: 'center',
+                            render: (val) => val?.toLocaleString() || '0'
+                          },
+                          { 
+                            header: 'العمولات المدفوعة (IQD)', 
+                            field: 'paid_commission_iqd', 
+                            align: 'center',
+                            render: (val) => val?.toLocaleString() || '0'
+                          },
+                          { 
+                            header: 'صافي العمولات (IQD)', 
+                            field: 'net_commission_iqd', 
+                            align: 'center',
+                            bold: true,
+                            render: (val) => val?.toLocaleString() || '0'
+                          }
+                        ]}
+                      />
+                    }
+                    buttonText="🖨️"
+                    fileName={`commissions-report-${selectedDate}.pdf`}
+                  />
+                )}
               </div>
             </div>
           </CardContent>
