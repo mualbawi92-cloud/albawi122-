@@ -3510,7 +3510,7 @@ async def get_account(account_code: str, current_user: dict = Depends(require_ad
     """
     Get specific account details and balance
     """
-    account = await db.accounts.find_one({'code': account_code})
+    account = await db.chart_of_accounts.find_one({'code': account_code})
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
     
