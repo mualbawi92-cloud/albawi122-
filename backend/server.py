@@ -3466,8 +3466,16 @@ async def get_chart_of_accounts(current_user: dict = Depends(require_admin)):
     """
     accounts = await db.chart_of_accounts.find({'is_active': True}).sort('code', 1).to_list(length=None)
     
+    # Add default values for any missing fields
     for acc in accounts:
         acc.pop('_id', None)
+        # Ensure all required fields have default values
+        acc['balance_iqd'] = acc.get('balance_iqd', 0)
+        acc['balance_usd'] = acc.get('balance_usd', 0)
+        acc['name'] = acc.get('name', acc.get('name_ar', 'حساب بدون اسم'))
+        acc['code'] = acc.get('code', 'N/A')
+        acc['type'] = acc.get('type', acc.get('category', 'غير محدد'))
+        acc['is_active'] = acc.get('is_active', True)
     
     return {"accounts": accounts}
 
