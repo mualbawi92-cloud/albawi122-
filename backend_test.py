@@ -770,7 +770,7 @@ class ChartOfAccountsInitializeTester:
     def print_test_summary(self):
         """Print comprehensive test summary"""
         print("\n" + "=" * 80)
-        print("🚨 CHART OF ACCOUNTS & LEDGER TESTING SUMMARY")
+        print("🚨 CHART OF ACCOUNTS INITIALIZATION FIX VERIFICATION SUMMARY")
         print("=" * 80)
         
         total_tests = len(self.test_results)
