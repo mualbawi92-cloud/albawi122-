@@ -176,12 +176,6 @@ const ChartOfAccountsPage = () => {
       toast.error('خطأ في فلترة الحسابات');
     }
   };
-        acc.code.includes(searchTerm)
-      );
-    }
-
-    setFilteredAccounts(filtered);
-  };
 
   const handleAddAccount = async () => {
     // Validation
