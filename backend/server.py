@@ -5088,6 +5088,62 @@ async def create_currency_revaluation(
         'message': 'تمت عملية التقويم بنجاح'
     }
 
+@api_router.post("/sync-agents-to-chart")
+async def sync_agents_to_chart_of_accounts(current_user: dict = Depends(require_admin)):
+    """
+    يقوم بمزامنة حسابات الصرافين مع الدليل المحاسبي
+    Admin only
+    """
+    
+    # Get all active agents
+    agents = await db.users.find({'role': 'agent', 'is_active': True}).to_list(length=None)
+    
+    synced_count = 0
+    updated_count = 0
+    
+    for agent in agents:
+        agent_id = agent['id']
+        
+        # Check if account already exists
+        existing = await db.chart_of_accounts.find_one({'code': agent_id})
+        
+        if existing:
+            # Update existing account
+            await db.chart_of_accounts.update_one(
+                {'code': agent_id},
+                {'$set': {
+                    'name': f"{agent['display_name']} - {agent.get('governorate', 'صيرفة')}",
+                    'balance_iqd': agent.get('wallet_balance_iqd', 0),
+                    'balance_usd': agent.get('wallet_balance_usd', 0),
+                    'updated_at': datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            updated_count += 1
+        else:
+            # Create new account
+            account_doc = {
+                'code': agent_id,
+                'name': f"{agent['display_name']} - {agent.get('governorate', 'صيرفة')}",
+                'type': 'حسابات الصرافة',
+                'category': 'assets',
+                'balance_iqd': agent.get('wallet_balance_iqd', 0),
+                'balance_usd': agent.get('wallet_balance_usd', 0),
+                'is_active': True,
+                'agent_id': agent_id,
+                'created_at': datetime.now(timezone.utc).isoformat()
+            }
+            
+            await db.chart_of_accounts.insert_one(account_doc)
+            synced_count += 1
+    
+    return {
+        'success': True,
+        'synced': synced_count,
+        'updated': updated_count,
+        'total': synced_count + updated_count,
+        'message': f'تمت مزامنة {synced_count + updated_count} حساب صيرفة'
+    }
+
 @api_router.get("/currency-revaluations")
 async def get_currency_revaluations(
     account_code: Optional[str] = None,
