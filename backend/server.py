@@ -3485,7 +3485,7 @@ async def create_account(account_data: AccountCreate, current_user: dict = Depen
     Create a new account
     """
     # Check if code already exists
-    existing = await db.accounts.find_one({'code': account_data.code})
+    existing = await db.chart_of_accounts.find_one({'code': account_data.code})
     if existing:
         raise HTTPException(status_code=400, detail="Account code already exists")
     
@@ -3493,12 +3493,14 @@ async def create_account(account_data: AccountCreate, current_user: dict = Depen
         'id': str(uuid.uuid4()),
         **account_data.model_dump(),
         'balance': 0.0,
+        'balance_iqd': 0.0,
+        'balance_usd': 0.0,
         'is_active': True,
         'created_at': datetime.now(timezone.utc).isoformat(),
         'updated_at': datetime.now(timezone.utc).isoformat()
     }
     
-    await db.accounts.insert_one(account)
+    await db.chart_of_accounts.insert_one(account)
     account.pop('_id', None)
     
     return account
