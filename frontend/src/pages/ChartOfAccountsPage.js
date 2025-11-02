@@ -241,27 +241,6 @@ const ChartOfAccountsPage = () => {
       setLoading(false);
     }
   };
-    }
-
-    try {
-      await axios.post(`${API}/accounting/accounts`, newAccount);
-      toast.success('تم إضافة الحساب بنجاح');
-      setShowAddDialog(false);
-      setNewAccount({
-        code: '',
-        name_ar: '',
-        name_en: '',
-        category: 'أصول',
-        parent_code: '',
-        currency: 'IQD'
-      });
-      fetchAccounts();
-    } catch (error) {
-      console.error('Error adding account:', error);
-      const errorMsg = error.response?.data?.detail || 'خطأ في إضافة الحساب';
-      toast.error(errorMsg);
-    }
-  };
 
   const handleDeleteClick = (account) => {
     setAccountToDelete(account);
