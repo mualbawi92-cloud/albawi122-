@@ -125,51 +125,60 @@ class ChartOfAccountsInitializeTester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
     
-    def test_wallet_balance_endpoint(self):
-        """Test GET /api/wallet/balance"""
-        print("\n=== Testing Wallet Balance Endpoint ===")
+    def test_initialize_accounts_endpoint(self):
+        """Test POST /api/accounting/initialize - HIGH PRIORITY"""
+        print("\n=== Scenario 1: Initialize Default Accounts (HIGH PRIORITY) ===")
         
         try:
-            response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
+            response = self.make_request('POST', '/accounting/initialize', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                if 'wallet_balance_iqd' in data and 'wallet_balance_usd' in data:
-                    self.log_result("Wallet Balance Endpoint", True, 
-                                  f"Balance retrieved: IQD={data['wallet_balance_iqd']}, USD={data['wallet_balance_usd']}")
+                
+                # Check response structure
+                if 'inserted' in data and 'updated' in data and 'total' in data:
+                    inserted = data.get('inserted', 0)
+                    updated = data.get('updated', 0)
+                    total = data.get('total', 0)
+                    
+                    self.log_result("Initialize Accounts", True, 
+                                  f"Initialize successful - Inserted: {inserted}, Updated: {updated}, Total: {total}")
+                    
+                    # Store results for later verification
+                    self.initialize_results = data
                     return data
                 else:
-                    self.log_result("Wallet Balance Endpoint", False, "Missing wallet balance fields", data)
+                    self.log_result("Initialize Accounts", False, "Invalid response structure", data)
             else:
-                self.log_result("Wallet Balance Endpoint", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Initialize Accounts", False, f"Initialize failed: {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Wallet Balance Endpoint", False, f"Error: {str(e)}")
+            self.log_result("Initialize Accounts", False, f"Error: {str(e)}")
         
         return None
     
-    def test_dashboard_stats(self):
-        """Test GET /api/dashboard/stats includes wallet balances"""
-        print("\n=== Testing Dashboard Stats ===")
+    def test_initialize_accounts_idempotent(self):
+        """Test that initialize can be called multiple times without failing"""
+        print("\n=== Testing Initialize Idempotency ===")
         
         try:
-            response = self.make_request('GET', '/dashboard/stats', token=self.agent_baghdad_token)
+            # Call initialize again
+            response = self.make_request('POST', '/accounting/initialize', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                required_fields = ['pending_incoming', 'pending_outgoing', 'completed_today', 
-                                 'total_amount_today', 'wallet_balance_iqd', 'wallet_balance_usd']
                 
-                missing_fields = [field for field in required_fields if field not in data]
-                if not missing_fields:
-                    self.log_result("Dashboard Stats", True, 
-                                  f"All required fields present. Wallet: IQD={data['wallet_balance_iqd']}, USD={data['wallet_balance_usd']}")
-                    return data
-                else:
-                    self.log_result("Dashboard Stats", False, f"Missing fields: {missing_fields}", data)
+                # Should not fail, might have 0 inserted but some updated
+                inserted = data.get('inserted', 0)
+                updated = data.get('updated', 0)
+                total = data.get('total', 0)
+                
+                self.log_result("Initialize Idempotency", True, 
+                              f"Second initialize call successful - Inserted: {inserted}, Updated: {updated}, Total: {total}")
+                return True
             else:
-                self.log_result("Dashboard Stats", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Initialize Idempotency", False, f"Second initialize failed: {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Dashboard Stats", False, f"Error: {str(e)}")
+            self.log_result("Initialize Idempotency", False, f"Error: {str(e)}")
         
-        return None
+        return False
     
     def test_chart_of_accounts_comprehensive(self):
         """Comprehensive testing of Chart of Accounts and Ledger functionality"""
