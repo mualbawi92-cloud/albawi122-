@@ -818,9 +818,9 @@ class ChartOfAccountsInitializeTester:
         critical_failures = [r for r in self.test_results if not r['success'] and ('CRITICAL' in r['message'] or 'Ledger' in r['test'])]
         
         if failed_tests == 0:
-            print("🎉 ALL TESTS PASSED - CHART OF ACCOUNTS & LEDGER FIXES ARE WORKING!")
+            print("🎉 ALL TESTS PASSED - CHART OF ACCOUNTS INITIALIZATION FIXES ARE WORKING!")
         elif critical_failures:
-            print("🚨 CRITICAL ISSUES FOUND - COLLECTION MIGRATION MAY HAVE FAILED!")
+            print("🚨 CRITICAL ISSUES FOUND - INITIALIZATION FIX MAY HAVE FAILED!")
             for failure in critical_failures:
                 print(f"   ❌ {failure['test']}: {failure['message']}")
         else:
