@@ -5144,6 +5144,75 @@ async def sync_agents_to_chart_of_accounts(current_user: dict = Depends(require_
         'message': f'تمت مزامنة {synced_count + updated_count} حساب صيرفة'
     }
 
+@api_router.post("/initialize-sample-accounts")
+async def initialize_sample_accounts(current_user: dict = Depends(require_admin)):
+    """
+    إنشاء حسابات تجريبية في الدليل المحاسبي
+    للاختبار فقط - Admin only
+    """
+    
+    sample_accounts = [
+        {
+            'code': '1001',
+            'name': 'الخزينة - دينار',
+            'type': 'assets',
+            'category': 'current_assets',
+            'balance_iqd': 10000000,
+            'balance_usd': 0,
+            'is_active': True
+        },
+        {
+            'code': '1002',
+            'name': 'الخزينة - دولار',
+            'type': 'assets',
+            'category': 'current_assets',
+            'balance_iqd': 0,
+            'balance_usd': 5000,
+            'is_active': True
+        },
+        {
+            'code': '2001',
+            'name': 'صيرفة كربلاء',
+            'type': 'assets',
+            'category': 'accounts_receivable',
+            'balance_iqd': 5000000,
+            'balance_usd': 2000,
+            'is_active': True
+        },
+        {
+            'code': '2002',
+            'name': 'صيرفة بغداد',
+            'type': 'assets',
+            'category': 'accounts_receivable',
+            'balance_iqd': 3000000,
+            'balance_usd': 1500,
+            'is_active': True
+        },
+        {
+            'code': '2003',
+            'name': 'صيرفة البصرة',
+            'type': 'assets',
+            'category': 'accounts_receivable',
+            'balance_iqd': 2000000,
+            'balance_usd': 1000,
+            'is_active': True
+        }
+    ]
+    
+    created_count = 0
+    for acc in sample_accounts:
+        existing = await db.chart_of_accounts.find_one({'code': acc['code']})
+        if not existing:
+            acc['created_at'] = datetime.now(timezone.utc).isoformat()
+            await db.chart_of_accounts.insert_one(acc)
+            created_count += 1
+    
+    return {
+        'success': True,
+        'created': created_count,
+        'message': f'تم إنشاء {created_count} حساب تجريبي'
+    }
+
 @api_router.get("/currency-revaluations")
 async def get_currency_revaluations(
     account_code: Optional[str] = None,
