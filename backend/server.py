@@ -3528,7 +3528,7 @@ async def get_trial_balance(
     Shows all accounts with debit and credit totals
     """
     # Get all accounts
-    accounts = await db.accounts.find({'is_active': True}).sort('code', 1).to_list(length=None)
+    accounts = await db.chart_of_accounts.find({'is_active': True}).sort('code', 1).to_list(length=None)
     
     # Build query for journal entries
     query = {'is_cancelled': False}
