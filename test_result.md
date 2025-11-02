@@ -132,6 +132,151 @@ user_problem_statement: |
   - تقارير المحاسبة (trial-balance, income-statement, balance-sheet) تقرأ من المجموعة الخاطئة
 
 backend:
+  - task: "Fix Chart of Accounts endpoints to use chart_of_accounts collection"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **CRITICAL FIX IMPLEMENTED - Backend Collection Migration**
+          
+          **Problem Identified:**
+          All Chart of Accounts and Ledger endpoints were using `db.accounts` instead of `db.chart_of_accounts`,
+          causing data to be stored/retrieved from the wrong MongoDB collection.
+          
+          **Endpoints Fixed:**
+          
+          1. **POST /api/accounting/accounts** (Lines 3482-3505):
+             - Changed: `db.accounts.find_one` → `db.chart_of_accounts.find_one`
+             - Changed: `db.accounts.insert_one` → `db.chart_of_accounts.insert_one`
+             - Added: balance_iqd, balance_usd fields (0.0) for consistency
+          
+          2. **GET /api/accounting/accounts/{account_code}** (Lines 3506-3518):
+             - Changed: `db.accounts.find_one` → `db.chart_of_accounts.find_one`
+          
+          3. **GET /api/accounting/reports/trial-balance** (Lines 3520-3531):
+             - Changed: `db.accounts.find` → `db.chart_of_accounts.find`
+          
+          4. **GET /api/accounting/ledger/{account_code}** (Lines 3965-3980):
+             - Changed: `db.accounts.find_one` → `db.chart_of_accounts.find_one`
+             - Updated comment: "using chart_of_accounts"
+          
+          5. **GET /api/accounting/reports/income-statement** (Lines 3597-3615):
+             - Changed: `db.accounts.find` → `db.chart_of_accounts.find` (2 occurrences)
+          
+          6. **GET /api/accounting/reports/balance-sheet** (Lines 3685-3708):
+             - Changed: `db.accounts.find` → `db.chart_of_accounts.find` (3 occurrences)
+          
+          7. **POST /api/accounting/initialize-chart-of-accounts** (Lines 3399-3461):
+             - Changed: `db.accounts.count_documents` → `db.chart_of_accounts.count_documents`
+             - Changed: `db.accounts.insert_one` → `db.chart_of_accounts.insert_one`
+             - Added: balance_iqd, balance_usd fields (0.0) for all default accounts
+          
+          **Impact:**
+          - All COA endpoints now read/write to the correct collection
+          - Ledger page will now correctly load account data
+          - Reports will show accurate account information
+          - New accounts will be created in the correct location
+          
+          **Ready for Testing:**
+          - Test account creation (POST)
+          - Test account retrieval (GET)
+          - Test ledger loading for any account
+          - Test all accounting reports (trial balance, income statement, balance sheet)
+  
+  - task: "Update agent registration to auto-create COA account"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **AGENT-COA INTEGRATION IMPLEMENTED**
+          
+          **Modified Endpoint:** POST /api/register (Lines 870-907)
+          
+          **Changes Applied:**
+          
+          1. **Collection Migration:**
+             - Changed: `db.accounts.find` → `db.chart_of_accounts.find`
+             - Changed: `db.accounts.insert_one` → `db.chart_of_accounts.insert_one`
+          
+          2. **Improved Account Code Generation:**
+             - Old logic: `last_code + 1` (simple increment)
+             - New logic: `2000 + next_seq` (proper sequential numbering)
+             - Ensures codes follow pattern: 2001, 2002, 2003...
+             - Handles empty category case (starts from 2001)
+          
+          3. **Enhanced Account Fields:**
+             - Added: `name` field (combined name with governorate)
+             - Added: `name_ar` field (Arabic name with governorate)
+             - Added: `name_en` field (English name with governorate)
+             - Added: `type` field (matches category)
+             - Added: `balance_iqd` field (0.0)
+             - Added: `balance_usd` field (0.0)
+             - Format: "صيرفة [اسم] - [محافظة]"
+          
+          4. **Better Logging:**
+             - Success: Shows generated account code
+             - Error: Logs failure details
+          
+          **Expected Behavior:**
+          When a new agent is registered:
+          1. System finds highest code in "شركات الصرافة" category
+          2. Generates next sequential code (e.g., 2001, 2002, 2003)
+          3. Creates account in chart_of_accounts with agent's info
+          4. Account appears in COA page immediately
+          5. Agent can be selected in ledger page
+          
+          **Ready for Testing:**
+          - Register new agent
+          - Verify account created in chart_of_accounts
+          - Check account code follows sequential pattern
+          - Verify account appears in COA page
+          - Test ledger loading for new agent account
+  
+  - task: "Update AccountCreate Pydantic model"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **PYDANTIC MODEL UPDATED**
+          
+          **Modified Model:** AccountCreate (Lines 574-582)
+          
+          **Fields Added:**
+          - `name: Optional[str]` - General name field
+          - `type: Optional[str]` - Account type (matches category)
+          - `notes: Optional[str]` - Optional notes/description
+          
+          **Existing Fields:**
+          - `code: str` - Account code (required)
+          - `name_ar: str` - Arabic name (required)
+          - `name_en: str` - English name (required)
+          - `category: str` - Account category (required)
+          - `parent_code: Optional[str]` - Parent account code
+          - `currency: str` - Currency (default: "IQD")
+          
+          **Impact:**
+          - Backend now accepts `name`, `type`, and `notes` from frontend
+          - Validation will pass for complete account creation requests
+          - No breaking changes to existing functionality
+  
   - task: "Date filter functionality for transfers endpoint"
     implemented: true
     working: true
