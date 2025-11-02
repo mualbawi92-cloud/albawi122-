@@ -382,6 +382,32 @@ backend:
           - Backend now accepts `name`, `type`, and `notes` from frontend
           - Validation will pass for complete account creation requests
           - No breaking changes to existing functionality
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ **PYDANTIC MODEL UPDATES WORKING CORRECTLY**
+          
+          **Test Results:**
+          - ✅ Account Creation: Successfully created account with all new fields
+          - ✅ Field Validation: All optional fields (name, type, notes) accepted
+          - ✅ Backward Compatibility: Existing required fields still work
+          - ✅ Data Storage: All fields properly stored in chart_of_accounts collection
+          
+          **Verified Fields:**
+          - ✅ name: "Test Account" - Accepted and stored
+          - ✅ type: "شركات الصرافة" - Accepted and stored  
+          - ✅ notes: null - Optional field handled correctly
+          - ✅ name_ar: "حساب تجريبي" - Required field working
+          - ✅ name_en: "Test Account" - Required field working
+          - ✅ category: "شركات الصرافة" - Required field working
+          
+          **Account Created Successfully:**
+          - Code: 2010
+          - All fields properly validated and stored
+          - Account accessible via GET /api/accounting/accounts/2010
+          - Account accessible via GET /api/accounting/ledger/2010
+          
+          **PRODUCTION READY:** AccountCreate Pydantic model updates are fully functional.
   
   - task: "Date filter functionality for transfers endpoint"
     implemented: true
