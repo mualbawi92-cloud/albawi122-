@@ -796,25 +796,21 @@ class ChartOfAccountsInitializeTester:
         # Critical findings
         print(f"\n🎯 CRITICAL FINDINGS:")
         
-        coa_tests = [r for r in self.test_results if 'Account' in r['test'] or 'COA' in r['test']]
-        coa_passed = len([r for r in coa_tests if r['success']])
-        print(f"   Chart of Accounts: {coa_passed}/{len(coa_tests)} tests passed")
+        initialize_tests = [r for r in self.test_results if 'Initialize' in r['test']]
+        initialize_passed = len([r for r in initialize_tests if r['success']])
+        print(f"   Initialize Endpoint: {initialize_passed}/{len(initialize_tests)} tests passed")
         
-        ledger_tests = [r for r in self.test_results if 'Ledger' in r['test']]
-        ledger_passed = len([r for r in ledger_tests if r['success']])
-        print(f"   Ledger Functionality: {ledger_passed}/{len(ledger_tests)} tests passed")
+        system_account_tests = [r for r in self.test_results if 'System Account' in r['test']]
+        system_account_passed = len([r for r in system_account_tests if r['success']])
+        print(f"   System Accounts Access: {system_account_passed}/{len(system_account_tests)} tests passed")
         
-        agent_tests = [r for r in self.test_results if 'Agent' in r['test'] and 'Registration' in r['test']]
-        agent_passed = len([r for r in agent_tests if r['success']])
-        print(f"   Agent Registration: {agent_passed}/{len(agent_tests)} tests passed")
+        trial_balance_tests = [r for r in self.test_results if 'Trial Balance' in r['test']]
+        trial_balance_passed = len([r for r in trial_balance_tests if r['success']])
+        print(f"   Trial Balance Report: {trial_balance_passed}/{len(trial_balance_tests)} tests passed")
         
-        report_tests = [r for r in self.test_results if 'Report' in r['test']]
-        report_passed = len([r for r in report_tests if r['success']])
-        print(f"   Accounting Reports: {report_passed}/{len(report_tests)} tests passed")
-        
-        flow_tests = [r for r in self.test_results if 'Flow' in r['test'] or 'Consistency' in r['test']]
+        flow_tests = [r for r in self.test_results if 'Complete Flow' in r['test']]
         flow_passed = len([r for r in flow_tests if r['success']])
-        print(f"   Complete Flows: {flow_passed}/{len(flow_tests)} tests passed")
+        print(f"   Complete Flow: {flow_passed}/{len(flow_tests)} tests passed")
         
         print("\n" + "=" * 80)
         
