@@ -180,32 +180,31 @@ class ChartOfAccountsInitializeTester:
         
         return False
     
-    def test_chart_of_accounts_comprehensive(self):
-        """Comprehensive testing of Chart of Accounts and Ledger functionality"""
-        print("\n🚨 COMPREHENSIVE CHART OF ACCOUNTS & LEDGER TESTING")
+    def test_chart_of_accounts_initialize_fix(self):
+        """Test Chart of Accounts Initialize endpoint fix verification"""
+        print("\n🚨 CHART OF ACCOUNTS INITIALIZATION FIX VERIFICATION")
         print("=" * 80)
-        print("Testing Chart of Accounts endpoints after collection migration fix")
+        print("Testing Initialize endpoint and Trial Balance Report fixes")
         print("=" * 80)
         
-        # 1. Chart of Accounts Endpoints Testing
-        print("\n--- 1. CHART OF ACCOUNTS ENDPOINTS TESTING ---")
-        self.test_coa_endpoints()
+        # Scenario 1: Initialize Default Accounts (HIGH PRIORITY)
+        print("\n--- SCENARIO 1: INITIALIZE DEFAULT ACCOUNTS ---")
+        self.test_initialize_accounts_endpoint()
         
-        # 2. Ledger Endpoint Testing
-        print("\n--- 2. LEDGER ENDPOINT TESTING ---")
-        self.test_ledger_endpoints()
+        # Test idempotency
+        self.test_initialize_accounts_idempotent()
         
-        # 3. Agent Registration with Auto-COA
-        print("\n--- 3. AGENT REGISTRATION WITH AUTO-COA ---")
-        self.test_agent_registration_coa()
+        # Scenario 2: Verify System Accounts Created
+        print("\n--- SCENARIO 2: VERIFY SYSTEM ACCOUNTS CREATED ---")
+        self.test_system_accounts_accessible()
         
-        # 4. Accounting Reports Testing
-        print("\n--- 4. ACCOUNTING REPORTS TESTING ---")
-        self.test_accounting_reports()
+        # Scenario 3: Trial Balance Report (Should Work Now)
+        print("\n--- SCENARIO 3: TRIAL BALANCE REPORT ---")
+        self.test_trial_balance_report()
         
-        # 5. Comprehensive Scenarios Testing
-        print("\n--- 5. COMPREHENSIVE SCENARIOS TESTING ---")
-        self.test_comprehensive_scenarios()
+        # Scenario 4: Verify Complete Flow
+        print("\n--- SCENARIO 4: COMPLETE FLOW VERIFICATION ---")
+        self.test_complete_flow_verification()
         
         return True
     
