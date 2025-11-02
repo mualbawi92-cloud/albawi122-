@@ -300,6 +300,14 @@ const Navbar = () => {
               >
                 💱 عمليات الصرف
               </Button>
+              <Button
+                onClick={() => navigate('/currency-revaluation')}
+                variant="ghost"
+                className="text-white hover:bg-white/10 font-bold text-sm"
+                data-testid="nav-currency-revaluation"
+              >
+                💱 تقويم قطع لحساب
+              </Button>
             )}
             <Button
               onClick={() => navigate('/settings')}
