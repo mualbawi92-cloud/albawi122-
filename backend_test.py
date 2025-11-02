@@ -1,67 +1,58 @@
 #!/usr/bin/env python3
 """
-🚨 COMPREHENSIVE CHART OF ACCOUNTS & LEDGER TESTING
+🚨 CHART OF ACCOUNTS INITIALIZATION FIX VERIFICATION
 
-**Test Focus:** Chart of Accounts and Ledger endpoints after collection migration fix
+**Test Focus:** Chart of Accounts Initialize endpoint fix verification
 
-**Critical Fixes to Test:**
+**Critical Fixes Applied:**
 
-1. **Chart of Accounts Endpoints (HIGH PRIORITY):**
-   - POST /api/accounting/accounts - Create new account
-   - GET /api/accounting/accounts - List all accounts
-   - GET /api/accounting/accounts/{account_code} - Get specific account
-   - Verify all use `chart_of_accounts` collection
+1. **Modified /api/accounting/initialize endpoint:**
+   - Changed from "fail if exists" to "upsert" mode
+   - Now inserts only missing accounts
+   - Updates existing accounts with missing fields (balance_iqd, balance_usd, name, type)
+   - Returns: {inserted: count, updated: count, total: count}
 
-2. **Ledger Endpoint (HIGH PRIORITY):**
-   - GET /api/accounting/ledger/{account_code}
-   - Must successfully load ledger for any account from COA
-   - Should handle accounts with no entries gracefully
-
-3. **Agent Registration with Auto-COA (MEDIUM PRIORITY):**
-   - POST /api/register - Create new agent
-   - Verify account auto-created in chart_of_accounts
-   - Check account code follows pattern: 2001, 2002, 2003...
-   - Verify account includes governorate in name
-
-4. **Accounting Reports (MEDIUM PRIORITY):**
-   - GET /api/accounting/reports/trial-balance
-   - GET /api/accounting/reports/income-statement
-   - GET /api/accounting/reports/balance-sheet
-   - All must use chart_of_accounts collection
+2. **Fixed Trial Balance Report:**
+   - Added null checks for name_ar and name_en fields
+   - Gracefully handles accounts with missing Arabic/English names
+   - Uses fallback values: name_ar defaults to 'name' field or 'حساب بدون اسم'
 
 **Test Scenarios:**
 
-**Scenario 1: Create Account**
-- POST /api/accounting/accounts
-- Body: {code: "2010", name: "Test Account", name_ar: "حساب تجريبي", name_en: "Test Account", category: "شركات الصرافة", type: "شركات الصرافة"}
-- Expected: 200/201, account created in chart_of_accounts
+**Scenario 1: Initialize Default Accounts (HIGH PRIORITY)**
+- POST /api/accounting/initialize
+- Expected: 200, creates missing system accounts (1030, 4020, 5110, etc.)
+- Should not fail if some accounts already exist
+- Should return counts: inserted, updated, total
 
-**Scenario 2: Get All Accounts**
-- GET /api/accounting/accounts
-- Expected: 200, returns accounts array from chart_of_accounts
+**Scenario 2: Verify System Accounts Created**
+After initialize:
+- GET /api/accounting/ledger/1030 (Transit Account)
+- GET /api/accounting/ledger/4020 (Earned Commissions)
+- GET /api/accounting/ledger/5110 (Paid Commissions)
+- Expected: All should return 200 (not 404)
 
-**Scenario 3: Get Ledger (Should Work Now)**
-- First get an account code from /api/accounting/accounts
-- Then GET /api/accounting/ledger/{that_code}
-- Expected: 200, returns ledger data (even if empty entries)
-- Should NOT return 404 "الحساب غير موجود"
+**Scenario 3: Trial Balance Report (Should Work Now)**
+- GET /api/accounting/reports/trial-balance
+- Expected: 200, returns account list without KeyError
+- Should handle accounts with and without name_ar field
 
-**Scenario 4: Create Agent**
-- POST /api/register
-- Body: Include all agent fields (username, password, display_name, governorate, phone, role="agent")
-- Expected: Agent created AND account auto-created in chart_of_accounts
-- Verify: GET /api/accounting/accounts returns the new agent account
+**Scenario 4: Verify Complete Flow**
+1. Initialize accounts
+2. Get all accounts
+3. Load ledger for each system account
+4. Generate trial balance
+5. All should succeed
 
 **Admin Credentials:**
 username: admin
 password: admin123
 
 **Success Criteria:**
-- ✅ No 404 errors for existing accounts
-- ✅ Ledger loads for any COA account
-- ✅ New accounts appear in GET /api/accounting/accounts
-- ✅ Agent registration creates COA account
-- ✅ All reports return data from chart_of_accounts
+- ✅ Initialize endpoint works (doesn't fail on existing accounts)
+- ✅ System accounts (1030, 4020, 5110) accessible via ledger
+- ✅ Trial balance report returns 200 (no KeyError)
+- ✅ All accounting reports work correctly
 """
 
 import requests
