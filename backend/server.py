@@ -5229,41 +5229,9 @@ async def create_currency_revaluation(
     
     await db.currency_revaluations.insert_one(revaluation_doc)
     
-    # Update account balances
-    current_balance_iqd = account.get('balance_iqd', 0)
-    current_balance_usd = account.get('balance_usd', 0)
+    # Update agent wallet balances (already done above in the new code)
     
-    if revaluation_data.direction == 'iqd_to_usd':
-        if revaluation_data.operation_type == 'debit':
-            new_balance_iqd = current_balance_iqd - revaluation_data.amount
-            new_balance_usd = current_balance_usd + equivalent_amount
-        else:
-            new_balance_iqd = current_balance_iqd + revaluation_data.amount
-            new_balance_usd = current_balance_usd - equivalent_amount
-    else:
-        if revaluation_data.operation_type == 'debit':
-            new_balance_usd = current_balance_usd - revaluation_data.amount
-            new_balance_iqd = current_balance_iqd + equivalent_amount
-        else:
-            new_balance_usd = current_balance_usd + revaluation_data.amount
-            new_balance_iqd = current_balance_iqd - equivalent_amount
-    
-    await db.chart_of_accounts.update_one(
-        {'code': revaluation_data.account_code},
-        {'$set': {
-            'balance_iqd': new_balance_iqd,
-            'balance_usd': new_balance_usd,
-            'updated_at': datetime.now(timezone.utc).isoformat()
-        }}
-    )
-    
-    # Log audit
-    await log_audit(None, current_user['id'], 'currency_revaluation', {
-        'account_code': revaluation_data.account_code,
-        'amount': revaluation_data.amount,
-        'direction': revaluation_data.direction,
-        'exchange_rate': revaluation_data.exchange_rate
-    })
+    # Log audit (already done above in the new code)
     
     revaluation_doc.pop('_id', None)
     return {
