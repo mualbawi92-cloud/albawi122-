@@ -693,7 +693,7 @@ class ChartOfAccountsTester:
     def print_test_summary(self):
         """Print comprehensive test summary"""
         print("\n" + "=" * 80)
-        print("🚨 WALLET DEPOSIT TESTING SUMMARY")
+        print("🚨 CHART OF ACCOUNTS & LEDGER TESTING SUMMARY")
         print("=" * 80)
         
         total_tests = len(self.test_results)
@@ -719,30 +719,37 @@ class ChartOfAccountsTester:
         # Critical findings
         print(f"\n🎯 CRITICAL FINDINGS:")
         
-        auth_tests = [r for r in self.test_results if 'Auth' in r['test']]
-        auth_passed = len([r for r in auth_tests if r['success']])
-        print(f"   Authentication Security: {auth_passed}/{len(auth_tests)} tests passed")
+        coa_tests = [r for r in self.test_results if 'Account' in r['test'] or 'COA' in r['test']]
+        coa_passed = len([r for r in coa_tests if r['success']])
+        print(f"   Chart of Accounts: {coa_passed}/{len(coa_tests)} tests passed")
         
-        validation_tests = [r for r in self.test_results if 'Validation' in r['test']]
-        validation_passed = len([r for r in validation_tests if r['success']])
-        print(f"   Input Validation: {validation_passed}/{len(validation_tests)} tests passed")
+        ledger_tests = [r for r in self.test_results if 'Ledger' in r['test']]
+        ledger_passed = len([r for r in ledger_tests if r['success']])
+        print(f"   Ledger Functionality: {ledger_passed}/{len(ledger_tests)} tests passed")
         
-        deposit_tests = [r for r in self.test_results if 'Deposit' in r['test'] and 'Successful' in r['test']]
-        deposit_passed = len([r for r in deposit_tests if r['success']])
-        print(f"   Deposit Functionality: {deposit_passed}/{len(deposit_tests)} tests passed")
+        agent_tests = [r for r in self.test_results if 'Agent' in r['test'] and 'Registration' in r['test']]
+        agent_passed = len([r for r in agent_tests if r['success']])
+        print(f"   Agent Registration: {agent_passed}/{len(agent_tests)} tests passed")
         
-        balance_tests = [r for r in self.test_results if 'Balance' in r['test']]
-        balance_passed = len([r for r in balance_tests if r['success']])
-        print(f"   Balance Management: {balance_passed}/{len(balance_tests)} tests passed")
+        report_tests = [r for r in self.test_results if 'Report' in r['test']]
+        report_passed = len([r for r in report_tests if r['success']])
+        print(f"   Accounting Reports: {report_passed}/{len(report_tests)} tests passed")
         
-        transaction_tests = [r for r in self.test_results if 'Transaction' in r['test']]
-        transaction_passed = len([r for r in transaction_tests if r['success']])
-        print(f"   Transaction Logging: {transaction_passed}/{len(transaction_tests)} tests passed")
+        flow_tests = [r for r in self.test_results if 'Flow' in r['test'] or 'Consistency' in r['test']]
+        flow_passed = len([r for r in flow_tests if r['success']])
+        print(f"   Complete Flows: {flow_passed}/{len(flow_tests)} tests passed")
         
         print("\n" + "=" * 80)
         
+        # Check for critical issues
+        critical_failures = [r for r in self.test_results if not r['success'] and ('CRITICAL' in r['message'] or 'Ledger' in r['test'])]
+        
         if failed_tests == 0:
-            print("🎉 ALL TESTS PASSED - WALLET DEPOSIT FEATURE IS FULLY FUNCTIONAL!")
+            print("🎉 ALL TESTS PASSED - CHART OF ACCOUNTS & LEDGER FIXES ARE WORKING!")
+        elif critical_failures:
+            print("🚨 CRITICAL ISSUES FOUND - COLLECTION MIGRATION MAY HAVE FAILED!")
+            for failure in critical_failures:
+                print(f"   ❌ {failure['test']}: {failure['message']}")
         else:
             print("⚠️  SOME TESTS FAILED - REVIEW ISSUES ABOVE")
         
