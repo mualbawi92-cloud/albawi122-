@@ -249,49 +249,79 @@ class ChartOfAccountsTester:
         
         return True
     
-    def test_deposit_authentication(self):
-        """Test authentication requirements for deposit endpoint"""
-        print("\n1.1 Testing deposit without authentication...")
+    def test_coa_endpoints(self):
+        """Test Chart of Accounts endpoints"""
+        print("\n1.1 Testing GET /api/accounting/accounts...")
         
-        deposit_data = {
-            "user_id": self.agent_baghdad_user_id,
-            "amount": 1000,
-            "currency": "IQD",
-            "note": "Test without auth"
+        try:
+            response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+            if response.status_code == 200:
+                accounts = response.json()
+                if isinstance(accounts, list):
+                    self.log_result("Get All Accounts", True, f"Retrieved {len(accounts)} accounts from chart_of_accounts")
+                    self.existing_accounts = accounts
+                    
+                    # Show some account details
+                    if accounts:
+                        print(f"   Sample accounts:")
+                        for i, acc in enumerate(accounts[:3]):
+                            code = acc.get('code', 'N/A')
+                            name_ar = acc.get('name_ar', 'N/A')
+                            category = acc.get('category', 'N/A')
+                            print(f"     {i+1}. {code}: {name_ar} ({category})")
+                else:
+                    self.log_result("Get All Accounts", False, "Response is not a list", accounts)
+            else:
+                self.log_result("Get All Accounts", False, f"Failed with status {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Get All Accounts", False, f"Error: {str(e)}")
+        
+        print("\n1.2 Testing POST /api/accounting/accounts (Create Account)...")
+        
+        # Create a test account
+        test_account = {
+            "code": "2010",
+            "name": "Test Account",
+            "name_ar": "حساب تجريبي",
+            "name_en": "Test Account",
+            "category": "شركات الصرافة",
+            "type": "شركات الصرافة"
         }
         
         try:
-            response = self.make_request('POST', '/wallet/deposit', json=deposit_data)
-            if response.status_code == 403:
-                self.log_result("Deposit Without Auth", True, "Correctly rejected unauthenticated request (403)")
-            else:
-                self.log_result("Deposit Without Auth", False, f"Expected 403, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Deposit Without Auth", False, f"Error: {str(e)}")
-        
-        print("\n1.2 Testing deposit with agent authentication...")
-        try:
-            response = self.make_request('POST', '/wallet/deposit', token=self.agent_baghdad_token, json=deposit_data)
-            if response.status_code == 403:
-                self.log_result("Deposit With Agent Auth", True, "Correctly rejected agent request (403)")
-            else:
-                self.log_result("Deposit With Agent Auth", False, f"Expected 403, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Deposit With Agent Auth", False, f"Error: {str(e)}")
-        
-        print("\n1.3 Testing deposit with admin authentication...")
-        try:
-            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
-            if response.status_code == 200:
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
+            if response.status_code in [200, 201]:
                 data = response.json()
-                if data.get('success') and data.get('transaction_id'):
-                    self.log_result("Deposit With Admin Auth", True, f"Admin deposit successful. Transaction ID: {data.get('transaction_id')}")
-                else:
-                    self.log_result("Deposit With Admin Auth", False, "Response missing success or transaction_id", data)
+                self.log_result("Create Account", True, f"Account created successfully: {test_account['code']}")
+                self.test_account_code = test_account['code']
             else:
-                self.log_result("Deposit With Admin Auth", False, f"Admin deposit failed: {response.status_code}", response.text)
+                # Check if account already exists
+                if response.status_code == 400 and "موجود" in response.text:
+                    self.log_result("Create Account", True, f"Account {test_account['code']} already exists (expected)")
+                    self.test_account_code = test_account['code']
+                else:
+                    self.log_result("Create Account", False, f"Failed with status {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Deposit With Admin Auth", False, f"Error: {str(e)}")
+            self.log_result("Create Account", False, f"Error: {str(e)}")
+        
+        print("\n1.3 Testing GET /api/accounting/accounts/{account_code}...")
+        
+        # Test getting specific account
+        if hasattr(self, 'test_account_code'):
+            try:
+                response = self.make_request('GET', f'/accounting/accounts/{self.test_account_code}', token=self.admin_token)
+                if response.status_code == 200:
+                    account = response.json()
+                    if account.get('code') == self.test_account_code:
+                        self.log_result("Get Specific Account", True, f"Retrieved account {self.test_account_code} successfully")
+                    else:
+                        self.log_result("Get Specific Account", False, f"Wrong account returned", account)
+                else:
+                    self.log_result("Get Specific Account", False, f"Failed with status {response.status_code}", response.text)
+            except Exception as e:
+                self.log_result("Get Specific Account", False, f"Error: {str(e)}")
+        else:
+            self.log_result("Get Specific Account", False, "No test account code available")
     
     def test_deposit_validation(self):
         """Test validation rules for deposit endpoint"""
