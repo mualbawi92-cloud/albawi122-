@@ -15,12 +15,14 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const CATEGORIES = [
-  { value: 'أصول', label: 'أصول (Assets)' },
-  { value: 'التزامات', label: 'التزامات (Liabilities)' },
-  { value: 'حقوق الملكية', label: 'حقوق الملكية (Equity)' },
-  { value: 'إيرادات', label: 'إيرادات (Revenues)' },
-  { value: 'مصاريف', label: 'مصاريف (Expenses)' },
-  { value: 'شركات الصرافة', label: 'شركات الصرافة (Exchange Companies)' }
+  { value: 'شركات الصرافة', label: 'شركات الصرافة', codePrefix: '2' },
+  { value: 'الزبائن', label: 'الزبائن', codePrefix: '3' },
+  { value: 'الأرباح والخسائر', label: 'الأرباح والخسائر', codePrefix: '4' },
+  { value: 'المصروفات', label: 'المصروفات', codePrefix: '5' },
+  { value: 'البنوك', label: 'البنوك', codePrefix: '6' },
+  { value: 'الصناديق', label: 'الصناديق', codePrefix: '7' },
+  { value: 'أصول', label: 'الأصول', codePrefix: '1' },
+  { value: 'التزامات', label: 'الالتزامات', codePrefix: '8' }
 ];
 
 const CURRENCIES = ['IQD', 'USD'];
