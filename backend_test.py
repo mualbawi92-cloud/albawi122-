@@ -1,51 +1,67 @@
 #!/usr/bin/env python3
 """
-🚨 COMPREHENSIVE WALLET DEPOSIT TESTING
+🚨 COMPREHENSIVE CHART OF ACCOUNTS & LEDGER TESTING
 
-**Test Focus:** `/api/wallet/deposit` endpoint
+**Test Focus:** Chart of Accounts and Ledger endpoints after collection migration fix
+
+**Critical Fixes to Test:**
+
+1. **Chart of Accounts Endpoints (HIGH PRIORITY):**
+   - POST /api/accounting/accounts - Create new account
+   - GET /api/accounting/accounts - List all accounts
+   - GET /api/accounting/accounts/{account_code} - Get specific account
+   - Verify all use `chart_of_accounts` collection
+
+2. **Ledger Endpoint (HIGH PRIORITY):**
+   - GET /api/accounting/ledger/{account_code}
+   - Must successfully load ledger for any account from COA
+   - Should handle accounts with no entries gracefully
+
+3. **Agent Registration with Auto-COA (MEDIUM PRIORITY):**
+   - POST /api/register - Create new agent
+   - Verify account auto-created in chart_of_accounts
+   - Check account code follows pattern: 2001, 2002, 2003...
+   - Verify account includes governorate in name
+
+4. **Accounting Reports (MEDIUM PRIORITY):**
+   - GET /api/accounting/reports/trial-balance
+   - GET /api/accounting/reports/income-statement
+   - GET /api/accounting/reports/balance-sheet
+   - All must use chart_of_accounts collection
 
 **Test Scenarios:**
 
-1. **Authentication Testing:**
-   - Try deposit without authentication (expect 403)
-   - Try deposit with agent authentication (expect 403)
-   - Try deposit with admin authentication (expect success)
+**Scenario 1: Create Account**
+- POST /api/accounting/accounts
+- Body: {code: "2010", name: "Test Account", name_ar: "حساب تجريبي", name_en: "Test Account", category: "شركات الصرافة", type: "شركات الصرافة"}
+- Expected: 200/201, account created in chart_of_accounts
 
-2. **Validation Testing:**
-   - Try deposit with amount = 0 (expect 400 error)
-   - Try deposit with negative amount (expect 400 error)
-   - Try deposit with invalid currency (expect 400 error)
-   - Try deposit with non-existent user_id (expect 404 error)
+**Scenario 2: Get All Accounts**
+- GET /api/accounting/accounts
+- Expected: 200, returns accounts array from chart_of_accounts
 
-3. **Successful Deposit Testing:**
-   - Admin successfully deposits IQD to an agent
-   - Admin successfully deposits USD to an agent
-   - Verify response includes transaction_id
-   - Verify response has success: true
+**Scenario 3: Get Ledger (Should Work Now)**
+- First get an account code from /api/accounting/accounts
+- Then GET /api/accounting/ledger/{that_code}
+- Expected: 200, returns ledger data (even if empty entries)
+- Should NOT return 404 "الحساب غير موجود"
 
-4. **Balance Verification:**
-   - Check agent balance before deposit
-   - Perform deposit
-   - Check agent balance after deposit
-   - Verify balance increased by exact deposit amount
-
-5. **Transaction Logging:**
-   - Query /api/wallet/transactions after deposit
-   - Verify transaction appears with correct details
-   - Verify transaction_id matches
-   - Verify transaction_type is 'deposit'
-   - Verify admin info is logged
+**Scenario 4: Create Agent**
+- POST /api/register
+- Body: Include all agent fields (username, password, display_name, governorate, phone, role="agent")
+- Expected: Agent created AND account auto-created in chart_of_accounts
+- Verify: GET /api/accounting/accounts returns the new agent account
 
 **Admin Credentials:**
 username: admin
 password: admin123
 
-**Testing Requirements:**
-- Test with existing agents in the system
-- Verify all validation rules
-- Check that transaction_id is properly generated
-- Ensure wallet balances update correctly
-- Verify transaction logging is complete
+**Success Criteria:**
+- ✅ No 404 errors for existing accounts
+- ✅ Ledger loads for any COA account
+- ✅ New accounts appear in GET /api/accounting/accounts
+- ✅ Agent registration creates COA account
+- ✅ All reports return data from chart_of_accounts
 """
 
 import requests
