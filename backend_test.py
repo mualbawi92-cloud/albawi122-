@@ -106,7 +106,7 @@ class ChartOfAccountsInitializeTester:
             raise
     
     def test_authentication(self):
-        """Test admin and agent authentication, create agents if needed"""
+        """Test admin authentication"""
         print("\n=== Testing Authentication ===")
         
         # Test admin login
@@ -117,54 +117,13 @@ class ChartOfAccountsInitializeTester:
                 self.admin_token = data['access_token']
                 self.admin_user_id = data['user']['id']
                 self.log_result("Admin Login", True, f"Admin authenticated successfully")
+                return True
             else:
                 self.log_result("Admin Login", False, f"Admin login failed: {response.status_code}", response.text)
                 return False
         except Exception as e:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
-        
-        # Try to login as agent_baghdad with different passwords
-        agent_baghdad_authenticated = False
-        for password in POSSIBLE_PASSWORDS:
-            try:
-                credentials = {"username": "agent_baghdad", "password": password}
-                response = self.make_request('POST', '/login', json=credentials)
-                if response.status_code == 200:
-                    data = response.json()
-                    self.agent_baghdad_token = data['access_token']
-                    self.agent_baghdad_user_id = data['user']['id']
-                    self.log_result("Agent Baghdad Login", True, f"Agent Baghdad authenticated with password: {password}")
-                    agent_baghdad_authenticated = True
-                    break
-            except Exception as e:
-                continue
-        
-        if not agent_baghdad_authenticated:
-            self.log_result("Agent Baghdad Login", False, "Could not authenticate with any common password")
-            return False
-        
-        # Try to login as agent_basra with different passwords
-        agent_basra_authenticated = False
-        for password in POSSIBLE_PASSWORDS:
-            try:
-                credentials = {"username": "agent_basra", "password": password}
-                response = self.make_request('POST', '/login', json=credentials)
-                if response.status_code == 200:
-                    data = response.json()
-                    self.agent_basra_token = data['access_token']
-                    self.agent_basra_user_id = data['user']['id']
-                    self.log_result("Agent Basra Login", True, f"Agent Basra authenticated with password: {password}")
-                    agent_basra_authenticated = True
-                    break
-            except Exception as e:
-                continue
-        
-        if not agent_basra_authenticated:
-            self.log_result("Agent Basra Login", False, "Could not authenticate with any common password")
-            return False
-        
-        return True
     
     def test_wallet_balance_endpoint(self):
         """Test GET /api/wallet/balance"""
