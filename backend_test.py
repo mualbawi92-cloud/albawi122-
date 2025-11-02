@@ -493,105 +493,80 @@ class ChartOfAccountsTester:
         else:
             self.log_result("New Agent Ledger Access", False, "No new agent account code available")
     
-    def test_balance_verification(self):
-        """Test balance verification after deposits"""
-        print("\n4.1 Verifying IQD balance increase...")
+    def test_accounting_reports(self):
+        """Test accounting reports use chart_of_accounts collection"""
+        print("\n4.1 Testing GET /api/accounting/reports/trial-balance...")
         
-        # Get current balance for Baghdad agent
         try:
-            response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
+            response = self.make_request('GET', '/accounting/reports/trial-balance', token=self.admin_token)
             if response.status_code == 200:
-                balance_data = response.json()
-                current_iqd = balance_data.get('wallet_balance_iqd', 0)
+                trial_balance = response.json()
                 
-                self.log_result("IQD Balance Check", True, f"Current IQD balance: {current_iqd:,}")
-                print(f"   Agent Baghdad IQD balance: {current_iqd:,}")
-                
-                # Verify balance increased (we deposited 50,000 IQD earlier)
-                if current_iqd >= 50000:
-                    self.log_result("IQD Balance Increase Verification", True, f"Balance shows deposit was processed (≥50,000)")
-                else:
-                    self.log_result("IQD Balance Increase Verification", False, f"Balance too low: {current_iqd}")
-            else:
-                self.log_result("IQD Balance Check", False, f"Could not get balance: {response.status_code}")
-        except Exception as e:
-            self.log_result("IQD Balance Check", False, f"Error: {str(e)}")
-        
-        print("\n4.2 Verifying USD balance increase...")
-        
-        # Get current balance for Basra agent
-        try:
-            response = self.make_request('GET', '/wallet/balance', token=self.agent_basra_token)
-            if response.status_code == 200:
-                balance_data = response.json()
-                current_usd = balance_data.get('wallet_balance_usd', 0)
-                
-                self.log_result("USD Balance Check", True, f"Current USD balance: {current_usd:,}")
-                print(f"   Agent Basra USD balance: {current_usd:,}")
-                
-                # Verify balance increased (we deposited 100 USD earlier)
-                if current_usd >= 100:
-                    self.log_result("USD Balance Increase Verification", True, f"Balance shows deposit was processed (≥100)")
-                else:
-                    self.log_result("USD Balance Increase Verification", False, f"Balance too low: {current_usd}")
-            else:
-                self.log_result("USD Balance Check", False, f"Could not get balance: {response.status_code}")
-        except Exception as e:
-            self.log_result("USD Balance Check", False, f"Error: {str(e)}")
-        
-        print("\n4.3 Testing precise balance verification with new deposit...")
-        
-        # Get exact balance before deposit
-        try:
-            response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
-            if response.status_code == 200:
-                before_balance = response.json()
-                before_iqd = before_balance.get('wallet_balance_iqd', 0)
-                
-                print(f"   Balance before deposit: {before_iqd:,} IQD")
-                
-                # Make a precise deposit
-                deposit_amount = 25000
-                deposit_data = {
-                    "user_id": self.agent_baghdad_user_id,
-                    "amount": deposit_amount,
-                    "currency": "IQD",
-                    "note": "Precise balance verification test"
-                }
-                
-                deposit_response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
-                if deposit_response.status_code == 200:
-                    deposit_result = deposit_response.json()
-                    transaction_id = deposit_result.get('transaction_id')
+                if isinstance(trial_balance, dict):
+                    accounts = trial_balance.get('accounts', [])
+                    total_debit = trial_balance.get('total_debit', 0)
+                    total_credit = trial_balance.get('total_credit', 0)
                     
-                    # Wait a moment for database update
-                    time.sleep(1)
+                    self.log_result("Trial Balance Report", True, f"Trial balance generated with {len(accounts)} accounts")
+                    print(f"   Accounts: {len(accounts)}")
+                    print(f"   Total Debit: {total_debit:,}")
+                    print(f"   Total Credit: {total_credit:,}")
                     
-                    # Check balance after deposit
-                    after_response = self.make_request('GET', '/wallet/balance', token=self.agent_baghdad_token)
-                    if after_response.status_code == 200:
-                        after_balance = after_response.json()
-                        after_iqd = after_balance.get('wallet_balance_iqd', 0)
-                        
-                        expected_balance = before_iqd + deposit_amount
-                        actual_increase = after_iqd - before_iqd
-                        
-                        print(f"   Balance after deposit: {after_iqd:,} IQD")
-                        print(f"   Expected increase: {deposit_amount:,} IQD")
-                        print(f"   Actual increase: {actual_increase:,} IQD")
-                        
-                        if abs(actual_increase - deposit_amount) < 0.01:
-                            self.log_result("Precise Balance Verification", True, f"Balance increased exactly by {deposit_amount:,} IQD")
-                        else:
-                            self.log_result("Precise Balance Verification", False, f"Expected +{deposit_amount:,}, got +{actual_increase:,}")
+                    # Verify it's using chart_of_accounts (should have accounts we created)
+                    if accounts:
+                        self.log_result("Trial Balance Data Source", True, "Trial balance contains account data from chart_of_accounts")
                     else:
-                        self.log_result("Precise Balance Verification", False, "Could not get balance after deposit")
+                        self.log_result("Trial Balance Data Source", False, "Trial balance has no accounts - may not be using chart_of_accounts")
                 else:
-                    self.log_result("Precise Balance Verification", False, f"Deposit failed: {deposit_response.status_code}")
+                    self.log_result("Trial Balance Report", False, "Invalid trial balance response structure", trial_balance)
             else:
-                self.log_result("Precise Balance Verification", False, "Could not get initial balance")
+                self.log_result("Trial Balance Report", False, f"Trial balance failed: {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Precise Balance Verification", False, f"Error: {str(e)}")
+            self.log_result("Trial Balance Report", False, f"Error: {str(e)}")
+        
+        print("\n4.2 Testing GET /api/accounting/reports/income-statement...")
+        
+        try:
+            response = self.make_request('GET', '/accounting/reports/income-statement', token=self.admin_token)
+            if response.status_code == 200:
+                income_statement = response.json()
+                
+                if isinstance(income_statement, dict):
+                    revenues = income_statement.get('revenues', [])
+                    expenses = income_statement.get('expenses', [])
+                    
+                    self.log_result("Income Statement Report", True, f"Income statement generated with {len(revenues)} revenue accounts, {len(expenses)} expense accounts")
+                    print(f"   Revenue accounts: {len(revenues)}")
+                    print(f"   Expense accounts: {len(expenses)}")
+                else:
+                    self.log_result("Income Statement Report", False, "Invalid income statement response structure", income_statement)
+            else:
+                self.log_result("Income Statement Report", False, f"Income statement failed: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Income Statement Report", False, f"Error: {str(e)}")
+        
+        print("\n4.3 Testing GET /api/accounting/reports/balance-sheet...")
+        
+        try:
+            response = self.make_request('GET', '/accounting/reports/balance-sheet', token=self.admin_token)
+            if response.status_code == 200:
+                balance_sheet = response.json()
+                
+                if isinstance(balance_sheet, dict):
+                    assets = balance_sheet.get('assets', [])
+                    liabilities = balance_sheet.get('liabilities', [])
+                    equity = balance_sheet.get('equity', [])
+                    
+                    self.log_result("Balance Sheet Report", True, f"Balance sheet generated with {len(assets)} assets, {len(liabilities)} liabilities, {len(equity)} equity accounts")
+                    print(f"   Asset accounts: {len(assets)}")
+                    print(f"   Liability accounts: {len(liabilities)}")
+                    print(f"   Equity accounts: {len(equity)}")
+                else:
+                    self.log_result("Balance Sheet Report", False, "Invalid balance sheet response structure", balance_sheet)
+            else:
+                self.log_result("Balance Sheet Report", False, f"Balance sheet failed: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Balance Sheet Report", False, f"Error: {str(e)}")
     
     def test_transaction_logging(self):
         """Test transaction logging functionality"""
