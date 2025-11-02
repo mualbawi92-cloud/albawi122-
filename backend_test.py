@@ -830,7 +830,7 @@ class ChartOfAccountsInitializeTester:
 
 def main():
     """Main execution function"""
-    tester = ChartOfAccountsTester()
+    tester = ChartOfAccountsInitializeTester()
     
     try:
         success = tester.run_all_tests()
