@@ -178,9 +178,69 @@ const ChartOfAccountsPage = () => {
 
   const handleAddAccount = async () => {
     // Validation
-    if (!newAccount.code || !newAccount.name_ar || !newAccount.name_en) {
+    if (!newAccount.name || !newAccount.category) {
       toast.error('يرجى ملء جميع الحقول المطلوبة');
       return;
+    }
+
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Get category info
+      const categoryInfo = CATEGORIES.find(c => c.value === newAccount.category);
+      const codePrefix = categoryInfo?.codePrefix || '9';
+      
+      // Get existing accounts in this category to generate next code
+      const existingInCategory = accounts.filter(acc => 
+        acc.code && acc.code.startsWith(codePrefix)
+      );
+      
+      // Find the highest number in this category
+      let maxNumber = 0;
+      existingInCategory.forEach(acc => {
+        const num = parseInt(acc.code);
+        if (!isNaN(num) && num > maxNumber) {
+          maxNumber = num;
+        }
+      });
+      
+      // Generate new code: prefix + next number (e.g., 2001, 2002, etc.)
+      const newCode = `${codePrefix}${String(maxNumber + 1).padStart(3, '0')}`;
+      
+      // Create account
+      const response = await axios.post(`${API}/accounting/accounts`, {
+        code: newCode,
+        name: newAccount.name,
+        type: newAccount.category,
+        category: newAccount.category,
+        notes: newAccount.notes,
+        balance_iqd: 0,
+        balance_usd: 0,
+        is_active: true
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      toast.success(`✅ تمت إضافة الحساب بنجاح إلى ${newAccount.category}`);
+      
+      // Reset form
+      setNewAccount({
+        name: '',
+        category: 'شركات الصرافة',
+        notes: ''
+      });
+      setShowAddDialog(false);
+      
+      // Refresh accounts
+      fetchAccounts();
+    } catch (error) {
+      console.error('Error adding account:', error);
+      toast.error(error.response?.data?.detail || 'حدث خطأ أثناء إضافة الحساب');
+    } finally {
+      setLoading(false);
+    }
+  };
     }
 
     try {
