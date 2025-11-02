@@ -247,6 +247,10 @@ class ChartOfAccountsTester:
         print("\n--- 4. ACCOUNTING REPORTS TESTING ---")
         self.test_accounting_reports()
         
+        # 5. Comprehensive Scenarios Testing
+        print("\n--- 5. COMPREHENSIVE SCENARIOS TESTING ---")
+        self.test_comprehensive_scenarios()
+        
         return True
     
     def test_coa_endpoints(self):
