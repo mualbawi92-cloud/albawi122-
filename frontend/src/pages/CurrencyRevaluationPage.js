@@ -48,9 +48,20 @@ const CurrencyRevaluationPage = () => {
       const response = await axios.get(`${API}/api/accounting/accounts`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setAccounts(response.data);
+      
+      // Handle both array and object responses
+      if (Array.isArray(response.data)) {
+        setAccounts(response.data);
+      } else if (response.data.accounts && Array.isArray(response.data.accounts)) {
+        setAccounts(response.data.accounts);
+      } else {
+        console.error('Unexpected accounts format:', response.data);
+        setAccounts([]);
+        toast.error('خطأ في تحميل الحسابات');
+      }
     } catch (error) {
       console.error('Error fetching accounts:', error);
+      setAccounts([]);
       toast.error('خطأ في جلب الحسابات');
     }
   };
