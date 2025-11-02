@@ -639,6 +639,49 @@ class ExchangeOperationCreate(BaseModel):
     notes: Optional[str] = None
 
 # ============================================
+# Currency Revaluation Models
+# ============================================
+
+class ExchangeRateDaily(BaseModel):
+    """Daily exchange rate for IQD/USD"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    rate: float  # سعر الصرف (كم دينار مقابل دولار واحد)
+    date: str  # تاريخ السعر
+    set_by_admin: str  # اسم المدير
+    created_at: str
+
+class ExchangeRateDailyCreate(BaseModel):
+    rate: float
+    date: Optional[str] = None  # إذا لم يُحدد، يستخدم تاريخ اليوم
+
+class CurrencyRevaluation(BaseModel):
+    """عملية تقويم قطع لحساب العميل"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    account_code: str  # رمز حساب العميل من chart_of_accounts
+    account_name: str  # اسم الحساب
+    amount: float  # المبلغ الأساسي المدخل
+    currency: str  # العملة الأساسية (IQD أو USD)
+    exchange_rate: float  # سعر الصرف المستخدم
+    equivalent_amount: float  # المبلغ المقابل بعد التحويل
+    operation_type: str  # "debit" أو "credit"
+    direction: str  # "iqd_to_usd" أو "usd_to_iqd"
+    journal_entry_id: str  # رقم القيد المحاسبي المرتبط
+    notes: Optional[str] = None
+    created_by: str  # المدير الذي نفذ العملية
+    created_at: str
+
+class CurrencyRevaluationCreate(BaseModel):
+    account_code: str
+    amount: float
+    currency: str  # "IQD" or "USD"
+    exchange_rate: float
+    operation_type: str  # "debit" or "credit"
+    direction: str  # "iqd_to_usd" or "usd_to_iqd"
+    notes: Optional[str] = None
+
+# ============================================
 
 class UserCreate(BaseModel):
     username: str
