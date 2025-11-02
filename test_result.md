@@ -499,6 +499,76 @@ backend:
           **Production Ready:** ✅ All date filters verified and functional
 
 frontend:
+  - task: "Fix ChartOfAccountsPage error handling and account number generation"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/ChartOfAccountsPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **FRONTEND FIXES IMPLEMENTED**
+          
+          **Problem 1: Object Rendering Error**
+          - Issue: "Objects are not valid as a React child" when displaying API error
+          - Root Cause: API returns error object like {type: "...", msg: "...", ...}
+          - Solution: Enhanced error extraction in handleAddAccount function (Lines 244-250)
+          
+          **Error Handling Fix:**
+          ```javascript
+          const errorDetail = error.response?.data?.detail;
+          const errorMsg = typeof errorDetail === 'string' 
+            ? errorDetail 
+            : errorDetail?.msg || 'حدث خطأ أثناء إضافة الحساب';
+          toast.error(errorMsg);
+          ```
+          
+          **Problem 2: Account Number Generation**
+          - Old Logic: Used string concatenation with padStart
+          - New Logic: Proper mathematical calculation
+          - Formula: `(section_code * 1000) + sequential_number`
+          
+          **Number Generation Implementation (Lines 190-213):**
+          1. Extract numeric part after prefix from existing codes
+          2. Find highest sequential number in category
+          3. Generate: `(parseInt(codePrefix) * 1000) + nextSeq`
+          4. Examples:
+             - Category 2 (شركات الصرافة): 2001, 2002, 2003
+             - Category 3 (الزبائن): 3001, 3002, 3003
+             - Category 4 (الأرباح والخسائر): 4001, 4002
+          
+          **Enhanced API Request (Lines 215-227):**
+          - Added: `name` field (general name)
+          - Added: `name_ar` field (Arabic name)
+          - Added: `name_en` field (English name)
+          - Added: `type` field (matches category)
+          - Code sent as string for consistency
+          
+          **Success Message Improvement:**
+          - Old: Shows category name
+          - New: Shows generated account code (e.g., "تمت إضافة الحساب بنجاح برقم 2004")
+          
+          **Category Configuration (Lines 17-26):**
+          Each category has a codePrefix for number generation:
+          - شركات الصرافة: 2 → codes 2001-2999
+          - الزبائن: 3 → codes 3001-3999
+          - الأرباح والخسائر: 4 → codes 4001-4999
+          - المصروفات: 5 → codes 5001-5999
+          - البنوك: 6 → codes 6001-6999
+          - الصناديق: 7 → codes 7001-7999
+          - أصول: 1 → codes 1001-1999
+          - التزامات: 8 → codes 8001-8999
+          
+          **Ready for Testing:**
+          - Test account creation in each category
+          - Verify sequential numbering
+          - Test error message display (duplicate code, validation errors)
+          - Verify account appears in list after creation
+          - Check account details display correctly
+  
   - task: "TransfersListPage date filter UI (already implemented)"
     implemented: true
     working: "NA"
