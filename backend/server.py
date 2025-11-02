@@ -4921,13 +4921,9 @@ async def create_currency_revaluation(
     if revaluation_data.direction == 'iqd_to_usd':
         # من دينار إلى دولار
         equivalent_amount = revaluation_data.amount / revaluation_data.exchange_rate
-        source_currency = 'IQD'
-        target_currency = 'USD'
     else:
         # من دولار إلى دينار
         equivalent_amount = revaluation_data.amount * revaluation_data.exchange_rate
-        source_currency = 'USD'
-        target_currency = 'IQD'
     
     # Create revaluation record
     revaluation_id = str(uuid.uuid4())
