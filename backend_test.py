@@ -208,6 +208,128 @@ class ChartOfAccountsInitializeTester:
         
         return True
     
+    def test_system_accounts_accessible(self):
+        """Test that system accounts (1030, 4020, 5110) are accessible via ledger"""
+        print("\n=== Scenario 2: Verify System Accounts Created ===")
+        
+        for account_code in self.system_accounts:
+            try:
+                response = self.make_request('GET', f'/accounting/ledger/{account_code}', token=self.admin_token)
+                if response.status_code == 200:
+                    ledger_data = response.json()
+                    account_info = ledger_data.get('account', {})
+                    account_name = account_info.get('name_ar', account_info.get('name', 'Unknown'))
+                    
+                    self.log_result(f"System Account {account_code} Access", True, 
+                                  f"Account {account_code} ({account_name}) accessible via ledger")
+                elif response.status_code == 404:
+                    self.log_result(f"System Account {account_code} Access", False, 
+                                  f"❌ CRITICAL: Account {account_code} returns 404 - not created by initialize")
+                else:
+                    self.log_result(f"System Account {account_code} Access", False, 
+                                  f"Account {account_code} failed: {response.status_code}")
+            except Exception as e:
+                self.log_result(f"System Account {account_code} Access", False, f"Error: {str(e)}")
+    
+    def test_trial_balance_report(self):
+        """Test Trial Balance Report with null safety fixes"""
+        print("\n=== Scenario 3: Trial Balance Report (Should Work Now) ===")
+        
+        try:
+            response = self.make_request('GET', '/accounting/reports/trial-balance', token=self.admin_token)
+            if response.status_code == 200:
+                trial_balance = response.json()
+                
+                if isinstance(trial_balance, dict):
+                    accounts = trial_balance.get('accounts', [])
+                    total_debit = trial_balance.get('total_debit', 0)
+                    total_credit = trial_balance.get('total_credit', 0)
+                    
+                    self.log_result("Trial Balance Report", True, 
+                                  f"✅ Trial balance generated successfully with {len(accounts)} accounts")
+                    
+                    print(f"   Accounts: {len(accounts)}")
+                    print(f"   Total Debit: {total_debit:,}")
+                    print(f"   Total Credit: {total_credit:,}")
+                    
+                    # Check for accounts with missing name_ar (should be handled gracefully)
+                    accounts_with_missing_names = 0
+                    for account in accounts:
+                        if not account.get('name_ar'):
+                            accounts_with_missing_names += 1
+                    
+                    if accounts_with_missing_names > 0:
+                        self.log_result("Trial Balance Null Safety", True, 
+                                      f"✅ Handled {accounts_with_missing_names} accounts with missing name_ar gracefully")
+                    else:
+                        self.log_result("Trial Balance Null Safety", True, 
+                                      "✅ All accounts have name_ar field")
+                    
+                    return trial_balance
+                else:
+                    self.log_result("Trial Balance Report", False, "Invalid trial balance response structure", trial_balance)
+            elif response.status_code == 500:
+                # Check if it's the KeyError we're trying to fix
+                error_text = response.text
+                if 'KeyError' in error_text and 'name_ar' in error_text:
+                    self.log_result("Trial Balance Report", False, 
+                                  "❌ CRITICAL: Still getting KeyError for name_ar - fix not working")
+                else:
+                    self.log_result("Trial Balance Report", False, f"Trial balance 500 error: {error_text}")
+            else:
+                self.log_result("Trial Balance Report", False, f"Trial balance failed: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_result("Trial Balance Report", False, f"Error: {str(e)}")
+        
+        return None
+    
+    def test_complete_flow_verification(self):
+        """Test complete flow: Initialize → Get Accounts → Load Ledgers → Generate Reports"""
+        print("\n=== Scenario 4: Complete Flow Verification ===")
+        
+        # Step 1: Get all accounts
+        try:
+            response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+            if response.status_code == 200:
+                accounts = response.json()
+                account_count = len(accounts)
+                self.log_result("Complete Flow - Get Accounts", True, f"Retrieved {account_count} accounts")
+                
+                # Step 2: Test ledger access for system accounts
+                system_accounts_accessible = 0
+                for account_code in self.system_accounts:
+                    ledger_response = self.make_request('GET', f'/accounting/ledger/{account_code}', token=self.admin_token)
+                    if ledger_response.status_code == 200:
+                        system_accounts_accessible += 1
+                
+                if system_accounts_accessible == len(self.system_accounts):
+                    self.log_result("Complete Flow - System Ledgers", True, 
+                                  f"✅ All {len(self.system_accounts)} system accounts accessible")
+                else:
+                    self.log_result("Complete Flow - System Ledgers", False, 
+                                  f"❌ Only {system_accounts_accessible}/{len(self.system_accounts)} system accounts accessible")
+                
+                # Step 3: Test trial balance
+                trial_response = self.make_request('GET', '/accounting/reports/trial-balance', token=self.admin_token)
+                if trial_response.status_code == 200:
+                    self.log_result("Complete Flow - Trial Balance", True, "✅ Trial balance report working")
+                    
+                    # Complete flow success
+                    if system_accounts_accessible == len(self.system_accounts):
+                        self.log_result("Complete Flow Success", True, 
+                                      "✅ COMPLETE FLOW SUCCESS: Initialize → Accounts → Ledgers → Reports all working")
+                    else:
+                        self.log_result("Complete Flow Success", False, 
+                                      "❌ Complete flow partially failed - some system accounts inaccessible")
+                else:
+                    self.log_result("Complete Flow - Trial Balance", False, f"Trial balance failed: {trial_response.status_code}")
+                    self.log_result("Complete Flow Success", False, "❌ Complete flow failed at trial balance step")
+            else:
+                self.log_result("Complete Flow - Get Accounts", False, f"Get accounts failed: {response.status_code}")
+                self.log_result("Complete Flow Success", False, "❌ Complete flow failed at get accounts step")
+        except Exception as e:
+            self.log_result("Complete Flow Success", False, f"❌ Complete flow error: {str(e)}")
+
     def test_coa_endpoints(self):
         """Test Chart of Accounts endpoints"""
         print("\n1.1 Testing GET /api/accounting/accounts...")
