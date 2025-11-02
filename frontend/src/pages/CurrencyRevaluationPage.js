@@ -208,22 +208,22 @@ const CurrencyRevaluationPage = () => {
           <CardContent className="space-y-4 mt-4">
             {/* Account Selection */}
             <div>
-              <label className="block text-sm font-medium mb-2">🧾 اسم الحساب (العميل)</label>
+              <label className="block text-sm font-medium mb-2">🧾 اسم الحساب</label>
               <select
                 value={formData.account_code}
                 onChange={(e) => setFormData({ ...formData, account_code: e.target.value })}
                 className="w-full p-3 border rounded-lg text-base"
               >
-                <option value="">اختر الحساب...</option>
+                <option value="">اختر الحساب من الدليل المحاسبي...</option>
                 {accounts.map((account) => (
                   <option key={account.code} value={account.code}>
-                    {account.name} ({account.code})
+                    {account.name} - {account.code}
                   </option>
                 ))}
               </select>
               {formData.account_code && (
                 <p className="text-xs text-gray-500 mt-1">
-                  الحساب المختار: {accounts.find(a => a.code === formData.account_code)?.name}
+                  الحساب المختار: {accounts.find(a => a.code === formData.account_code)?.name} - {formData.account_code}
                 </p>
               )}
             </div>
