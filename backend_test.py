@@ -678,8 +678,8 @@ class ChartOfAccountsTester:
             print("❌ Authentication failed - cannot continue")
             return False
         
-        # Step 2: Run comprehensive wallet deposit tests
-        self.test_wallet_deposit_comprehensive()
+        # Step 2: Run comprehensive chart of accounts tests
+        self.test_chart_of_accounts_comprehensive()
         
         # Step 3: Print summary
         self.print_test_summary()
