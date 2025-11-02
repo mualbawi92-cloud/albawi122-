@@ -3692,17 +3692,17 @@ async def get_balance_sheet(
     Shows assets, liabilities, and equity at a specific date
     """
     # Get accounts by category
-    asset_accounts = await db.accounts.find({
+    asset_accounts = await db.chart_of_accounts.find({
         'category': 'أصول',
         'is_active': True
     }).to_list(length=None)
     
-    liability_accounts = await db.accounts.find({
+    liability_accounts = await db.chart_of_accounts.find({
         'category': 'التزامات',
         'is_active': True
     }).to_list(length=None)
     
-    equity_accounts = await db.accounts.find({
+    equity_accounts = await db.chart_of_accounts.find({
         'category': 'حقوق الملكية',
         'is_active': True
     }).to_list(length=None)
