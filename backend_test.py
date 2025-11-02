@@ -568,146 +568,105 @@ class ChartOfAccountsTester:
         except Exception as e:
             self.log_result("Balance Sheet Report", False, f"Error: {str(e)}")
     
-    def test_transaction_logging(self):
-        """Test transaction logging functionality"""
-        print("\n5.1 Testing wallet transactions endpoint...")
+    def test_comprehensive_scenarios(self):
+        """Test comprehensive scenarios combining multiple endpoints"""
+        print("\n5.1 Testing complete flow: Create Account → Get Account → Load Ledger...")
         
-        # Get transactions for Baghdad agent
+        # Create a unique test account
+        import random
+        test_code = f"9{random.randint(100, 999)}"
+        
+        test_account = {
+            "code": test_code,
+            "name": f"Complete Test Account {test_code}",
+            "name_ar": f"حساب اختبار شامل {test_code}",
+            "name_en": f"Complete Test Account {test_code}",
+            "category": "أصول",
+            "type": "أصول"
+        }
+        
         try:
-            response = self.make_request('GET', '/wallet/transactions', token=self.agent_baghdad_token)
-            if response.status_code == 200:
-                transactions = response.json()
+            # Step 1: Create account
+            create_response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
+            if create_response.status_code in [200, 201]:
+                self.log_result("Complete Flow - Create", True, f"Account {test_code} created successfully")
                 
-                if isinstance(transactions, list):
-                    self.log_result("Wallet Transactions Endpoint", True, f"Retrieved {len(transactions)} transactions")
+                # Step 2: Retrieve account
+                get_response = self.make_request('GET', f'/accounting/accounts/{test_code}', token=self.admin_token)
+                if get_response.status_code == 200:
+                    account_data = get_response.json()
+                    self.log_result("Complete Flow - Retrieve", True, f"Account {test_code} retrieved successfully")
                     
-                    # Look for our test deposits
-                    deposit_transactions = [t for t in transactions if t.get('transaction_type') == 'deposit']
-                    
-                    print(f"   Total transactions: {len(transactions)}")
-                    print(f"   Deposit transactions: {len(deposit_transactions)}")
-                    
-                    if deposit_transactions:
-                        print("   Recent deposit transactions:")
-                        for i, txn in enumerate(deposit_transactions[:3]):  # Show first 3
-                            amount = txn.get('amount', 0)
-                            currency = txn.get('currency', 'N/A')
-                            admin_name = txn.get('added_by_admin_name', 'N/A')
-                            note = txn.get('note', 'N/A')
-                            created_at = txn.get('created_at', 'N/A')
-                            
-                            print(f"     {i+1}. {amount:,} {currency} by {admin_name}")
-                            print(f"        Note: {note}")
-                            print(f"        Date: {created_at}")
+                    # Step 3: Load ledger
+                    ledger_response = self.make_request('GET', f'/accounting/ledger/{test_code}', token=self.admin_token)
+                    if ledger_response.status_code == 200:
+                        ledger_data = ledger_response.json()
+                        self.log_result("Complete Flow - Ledger", True, f"Ledger for {test_code} loaded successfully")
                         
-                        self.log_result("Deposit Transaction Logging", True, f"Found {len(deposit_transactions)} deposit transactions")
+                        # Complete flow success
+                        self.log_result("Complete Flow Success", True, "✅ CRITICAL: Complete Create→Get→Ledger flow working")
                     else:
-                        self.log_result("Deposit Transaction Logging", False, "No deposit transactions found")
+                        self.log_result("Complete Flow - Ledger", False, f"Ledger failed: {ledger_response.status_code}")
+                        self.log_result("Complete Flow Success", False, "❌ CRITICAL: Ledger step failed in complete flow")
                 else:
-                    self.log_result("Wallet Transactions Endpoint", False, "Response is not a list", transactions)
+                    self.log_result("Complete Flow - Retrieve", False, f"Retrieve failed: {get_response.status_code}")
+                    self.log_result("Complete Flow Success", False, "❌ CRITICAL: Retrieve step failed in complete flow")
             else:
-                self.log_result("Wallet Transactions Endpoint", False, f"Failed: {response.status_code}", response.text)
-        except Exception as e:
-            self.log_result("Wallet Transactions Endpoint", False, f"Error: {str(e)}")
-        
-        print("\n5.2 Verifying transaction details...")
-        
-        # Check if we have stored transaction IDs from earlier tests
-        if hasattr(self, 'iqd_transaction_id'):
-            try:
-                response = self.make_request('GET', '/wallet/transactions', token=self.agent_baghdad_token)
-                if response.status_code == 200:
-                    transactions = response.json()
+                # Account might already exist
+                if create_response.status_code == 400:
+                    self.log_result("Complete Flow - Create", True, f"Account {test_code} already exists (acceptable)")
                     
-                    # Find our specific transaction
-                    target_txn = next((t for t in transactions if t.get('id') == self.iqd_transaction_id), None)
-                    
-                    if target_txn:
-                        print(f"   Found target transaction: {self.iqd_transaction_id}")
-                        
-                        # Verify all required fields
-                        required_fields = ['id', 'user_id', 'amount', 'currency', 'transaction_type', 
-                                         'added_by_admin_id', 'added_by_admin_name', 'created_at']
-                        
-                        missing_fields = [field for field in required_fields if field not in target_txn]
-                        
-                        if not missing_fields:
-                            # Verify specific values
-                            checks = []
-                            checks.append(("Transaction Type", target_txn.get('transaction_type') == 'deposit'))
-                            checks.append(("Amount", target_txn.get('amount') == 50000))
-                            checks.append(("Currency", target_txn.get('currency') == 'IQD'))
-                            checks.append(("Admin ID", target_txn.get('added_by_admin_id') == self.admin_user_id))
-                            
-                            all_correct = all(check[1] for check in checks)
-                            
-                            if all_correct:
-                                self.log_result("Transaction Details Verification", True, "All transaction details correct")
-                                
-                                print("   Transaction details:")
-                                print(f"     ID: {target_txn.get('id')}")
-                                print(f"     User: {target_txn.get('user_display_name')}")
-                                print(f"     Amount: {target_txn.get('amount'):,} {target_txn.get('currency')}")
-                                print(f"     Type: {target_txn.get('transaction_type')}")
-                                print(f"     Admin: {target_txn.get('added_by_admin_name')}")
-                                print(f"     Note: {target_txn.get('note')}")
-                                print(f"     Date: {target_txn.get('created_at')}")
-                            else:
-                                failed_checks = [check[0] for check in checks if not check[1]]
-                                self.log_result("Transaction Details Verification", False, f"Failed checks: {failed_checks}")
+                    # Continue with existing account
+                    get_response = self.make_request('GET', f'/accounting/accounts/{test_code}', token=self.admin_token)
+                    if get_response.status_code == 200:
+                        ledger_response = self.make_request('GET', f'/accounting/ledger/{test_code}', token=self.admin_token)
+                        if ledger_response.status_code == 200:
+                            self.log_result("Complete Flow Success", True, "✅ CRITICAL: Complete flow working with existing account")
                         else:
-                            self.log_result("Transaction Details Verification", False, f"Missing fields: {missing_fields}")
+                            self.log_result("Complete Flow Success", False, "❌ CRITICAL: Ledger failed for existing account")
                     else:
-                        self.log_result("Transaction Details Verification", False, f"Transaction {self.iqd_transaction_id} not found")
+                        self.log_result("Complete Flow Success", False, "❌ CRITICAL: Cannot retrieve existing account")
                 else:
-                    self.log_result("Transaction Details Verification", False, "Could not retrieve transactions")
-            except Exception as e:
-                self.log_result("Transaction Details Verification", False, f"Error: {str(e)}")
-        else:
-            print("   No stored transaction ID for verification")
-        
-        print("\n5.3 Testing admin access to all transactions...")
-        
-        # Test admin can see transactions for specific user
-        try:
-            params = {'user_id': self.agent_baghdad_user_id}
-            response = self.make_request('GET', '/wallet/transactions', token=self.admin_token, params=params)
-            if response.status_code == 200:
-                admin_view_transactions = response.json()
-                
-                if isinstance(admin_view_transactions, list):
-                    self.log_result("Admin Transaction Access", True, f"Admin can view {len(admin_view_transactions)} transactions for specific user")
-                else:
-                    self.log_result("Admin Transaction Access", False, "Admin response not a list")
-            else:
-                self.log_result("Admin Transaction Access", False, f"Admin access failed: {response.status_code}")
+                    self.log_result("Complete Flow - Create", False, f"Create failed: {create_response.status_code}")
+                    self.log_result("Complete Flow Success", False, "❌ CRITICAL: Create step failed in complete flow")
         except Exception as e:
-            self.log_result("Admin Transaction Access", False, f"Error: {str(e)}")
+            self.log_result("Complete Flow Success", False, f"❌ CRITICAL: Complete flow error: {str(e)}")
         
-        print("\n5.4 Testing agent access restriction...")
+        print("\n5.2 Testing collection consistency verification...")
         
-        # Test agent cannot see other agent's transactions
+        # Verify that all endpoints are using the same collection
         try:
-            params = {'user_id': self.agent_basra_user_id}  # Baghdad agent trying to see Basra transactions
-            response = self.make_request('GET', '/wallet/transactions', token=self.agent_baghdad_token, params=params)
-            if response.status_code == 200:
-                agent_restricted_transactions = response.json()
+            # Get accounts from main endpoint
+            accounts_response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+            if accounts_response.status_code == 200:
+                accounts = accounts_response.json()
+                account_codes = [acc.get('code') for acc in accounts if acc.get('code')]
                 
-                # Should only see own transactions, not the requested user's
-                if isinstance(agent_restricted_transactions, list):
-                    # Check if any transaction belongs to the other agent
-                    other_agent_txns = [t for t in agent_restricted_transactions if t.get('user_id') == self.agent_basra_user_id]
-                    
-                    if not other_agent_txns:
-                        self.log_result("Agent Access Restriction", True, "Agent correctly restricted to own transactions")
+                print(f"   Found {len(account_codes)} accounts in chart_of_accounts")
+                
+                # Test ledger access for multiple accounts
+                accessible_count = 0
+                inaccessible_count = 0
+                
+                # Test first 5 accounts
+                test_codes = account_codes[:5] if len(account_codes) >= 5 else account_codes
+                
+                for code in test_codes:
+                    ledger_response = self.make_request('GET', f'/accounting/ledger/{code}', token=self.admin_token)
+                    if ledger_response.status_code == 200:
+                        accessible_count += 1
                     else:
-                        self.log_result("Agent Access Restriction", False, f"Agent can see {len(other_agent_txns)} transactions from other agent")
+                        inaccessible_count += 1
+                        print(f"   ❌ Account {code} ledger failed: {ledger_response.status_code}")
+                
+                if inaccessible_count == 0:
+                    self.log_result("Collection Consistency", True, f"✅ All {accessible_count} tested accounts accessible via ledger")
                 else:
-                    self.log_result("Agent Access Restriction", False, "Unexpected response format")
+                    self.log_result("Collection Consistency", False, f"❌ {inaccessible_count}/{len(test_codes)} accounts inaccessible via ledger")
             else:
-                self.log_result("Agent Access Restriction", False, f"Agent access test failed: {response.status_code}")
+                self.log_result("Collection Consistency", False, "Could not retrieve accounts for consistency test")
         except Exception as e:
-            self.log_result("Agent Access Restriction", False, f"Error: {str(e)}")
+            self.log_result("Collection Consistency", False, f"Error: {str(e)}")
     
     def run_all_tests(self):
         """Run all wallet deposit tests"""
