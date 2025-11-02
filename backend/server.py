@@ -4836,8 +4836,8 @@ async def get_current_exchange_rate(current_user: dict = Depends(get_current_use
     rate_doc.pop('_id', None)
     return rate_doc
 
-@api_router.get("/exchange-rates")
-async def get_exchange_rates(
+@api_router.get("/exchange-rates/history")
+async def get_exchange_rates_history(
     limit: int = 30,
     current_user: dict = Depends(get_current_user)
 ):
