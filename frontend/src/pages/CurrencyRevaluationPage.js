@@ -46,26 +46,31 @@ const CurrencyRevaluationPage = () => {
     try {
       const token = localStorage.getItem('token');
       
-      // Fetch agents (صرافين) instead of chart of accounts
-      const response = await axios.get(`${API}/api/users?role=agent`, {
+      // Fetch from chart of accounts (same as used in journal/ledger)
+      const response = await axios.get(`${API}/api/accounting/accounts`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Transform agents to account format
-      const agentAccounts = response.data
-        .filter(agent => agent.is_active !== false)
-        .map(agent => ({
-          code: agent.id,
-          name: `${agent.display_name} - صيرفة`,
-          balance_iqd: agent.wallet_balance_iqd || 0,
-          balance_usd: agent.wallet_balance_usd || 0
-        }));
+      // Handle response - accounts might be in response.data.accounts or response.data
+      let accountsList = [];
+      if (Array.isArray(response.data)) {
+        accountsList = response.data;
+      } else if (response.data.accounts && Array.isArray(response.data.accounts)) {
+        accountsList = response.data.accounts;
+      }
       
-      setAccounts(agentAccounts);
+      // Filter only active accounts
+      const activeAccounts = accountsList.filter(acc => acc.is_active !== false);
+      
+      setAccounts(activeAccounts);
+      
+      if (activeAccounts.length === 0) {
+        toast.error('لا توجد حسابات في الدليل المحاسبي');
+      }
     } catch (error) {
       console.error('Error fetching accounts:', error);
       setAccounts([]);
-      toast.error('خطأ في جلب حسابات الصيرفة');
+      toast.error('خطأ في جلب الحسابات من الدليل المحاسبي');
     }
   };
 
