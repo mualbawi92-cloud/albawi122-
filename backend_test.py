@@ -396,59 +396,102 @@ class ChartOfAccountsTester:
             except Exception as e:
                 self.log_result(f"Ledger {code}", False, f"Error testing {code}: {str(e)}")
     
-    def test_successful_deposits(self):
-        """Test successful deposit scenarios"""
-        print("\n3.1 Testing successful IQD deposit...")
+    def test_agent_registration_coa(self):
+        """Test agent registration creates COA account automatically"""
+        print("\n3.1 Testing agent registration with auto-COA creation...")
         
-        deposit_data = {
-            "user_id": self.agent_baghdad_user_id,
-            "amount": 50000,
-            "currency": "IQD",
-            "note": "Test IQD deposit - comprehensive testing"
+        # Create a unique test agent
+        import random
+        test_suffix = random.randint(1000, 9999)
+        
+        agent_data = {
+            "username": f"test_agent_{test_suffix}",
+            "password": "test123456",
+            "display_name": f"صيرفة الاختبار {test_suffix}",
+            "governorate": "بغداد",
+            "phone": f"07901234{test_suffix}",
+            "role": "agent"
         }
         
         try:
-            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
+            # First, get current account count
+            accounts_before_response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+            accounts_before_count = 0
+            if accounts_before_response.status_code == 200:
+                accounts_before = accounts_before_response.json()
+                accounts_before_count = len(accounts_before)
+                print(f"   Accounts before registration: {accounts_before_count}")
+            
+            # Register the agent
+            response = self.make_request('POST', '/register', token=self.admin_token, json=agent_data)
             if response.status_code == 200:
-                data = response.json()
-                if data.get('success') and data.get('transaction_id'):
-                    transaction_id = data.get('transaction_id')
-                    self.log_result("Successful IQD Deposit", True, f"IQD deposit successful. Transaction ID: {transaction_id}")
+                agent_result = response.json()
+                agent_id = agent_result.get('id')
+                
+                self.log_result("Agent Registration", True, f"Agent {agent_data['username']} registered successfully")
+                
+                # Wait a moment for account creation
+                time.sleep(1)
+                
+                # Check if COA account was created
+                accounts_after_response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+                if accounts_after_response.status_code == 200:
+                    accounts_after = accounts_after_response.json()
+                    accounts_after_count = len(accounts_after)
                     
-                    # Store transaction ID for later verification
-                    self.iqd_transaction_id = transaction_id
-                else:
-                    self.log_result("Successful IQD Deposit", False, "Response missing required fields", data)
-            else:
-                self.log_result("Successful IQD Deposit", False, f"IQD deposit failed: {response.status_code}", response.text)
-        except Exception as e:
-            self.log_result("Successful IQD Deposit", False, f"Error: {str(e)}")
-        
-        print("\n3.2 Testing successful USD deposit...")
-        
-        deposit_data = {
-            "user_id": self.agent_basra_user_id,
-            "amount": 100,
-            "currency": "USD",
-            "note": "Test USD deposit - comprehensive testing"
-        }
-        
-        try:
-            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('success') and data.get('transaction_id'):
-                    transaction_id = data.get('transaction_id')
-                    self.log_result("Successful USD Deposit", True, f"USD deposit successful. Transaction ID: {transaction_id}")
+                    print(f"   Accounts after registration: {accounts_after_count}")
                     
-                    # Store transaction ID for later verification
-                    self.usd_transaction_id = transaction_id
+                    if accounts_after_count > accounts_before_count:
+                        self.log_result("Auto-COA Creation", True, f"COA account automatically created (+{accounts_after_count - accounts_before_count})")
+                        
+                        # Find the new account
+                        new_accounts = [acc for acc in accounts_after if acc not in accounts_before]
+                        if new_accounts:
+                            new_account = new_accounts[0]
+                            account_code = new_account.get('code')
+                            account_name = new_account.get('name_ar', new_account.get('name'))
+                            
+                            print(f"   New account: {account_code} - {account_name}")
+                            
+                            # Verify account code pattern (should be 200X)
+                            if account_code and account_code.startswith('20') and len(account_code) == 4:
+                                self.log_result("Account Code Pattern", True, f"Account code {account_code} follows pattern 200X")
+                            else:
+                                self.log_result("Account Code Pattern", False, f"Account code {account_code} doesn't follow expected pattern")
+                            
+                            # Verify governorate in name
+                            if agent_data['governorate'] in account_name:
+                                self.log_result("Governorate in Name", True, f"Governorate '{agent_data['governorate']}' included in account name")
+                            else:
+                                self.log_result("Governorate in Name", False, f"Governorate not found in account name: {account_name}")
+                            
+                            # Store for ledger testing
+                            self.new_agent_account_code = account_code
+                        else:
+                            self.log_result("Auto-COA Creation", False, "Could not identify the new account")
+                    else:
+                        self.log_result("Auto-COA Creation", False, f"No new accounts created (before: {accounts_before_count}, after: {accounts_after_count})")
                 else:
-                    self.log_result("Successful USD Deposit", False, "Response missing required fields", data)
+                    self.log_result("Auto-COA Creation", False, "Could not retrieve accounts after registration")
             else:
-                self.log_result("Successful USD Deposit", False, f"USD deposit failed: {response.status_code}", response.text)
+                self.log_result("Agent Registration", False, f"Agent registration failed: {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Successful USD Deposit", False, f"Error: {str(e)}")
+            self.log_result("Agent Registration", False, f"Error: {str(e)}")
+        
+        print("\n3.2 Testing ledger access for new agent account...")
+        
+        # Test that the new agent account can be accessed via ledger
+        if hasattr(self, 'new_agent_account_code'):
+            try:
+                response = self.make_request('GET', f'/accounting/ledger/{self.new_agent_account_code}', token=self.admin_token)
+                if response.status_code == 200:
+                    self.log_result("New Agent Ledger Access", True, f"New agent account {self.new_agent_account_code} accessible via ledger")
+                else:
+                    self.log_result("New Agent Ledger Access", False, f"New agent account ledger failed: {response.status_code}")
+            except Exception as e:
+                self.log_result("New Agent Ledger Access", False, f"Error: {str(e)}")
+        else:
+            self.log_result("New Agent Ledger Access", False, "No new agent account code available")
     
     def test_balance_verification(self):
         """Test balance verification after deposits"""
