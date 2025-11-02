@@ -573,9 +573,12 @@ class Account(BaseModel):
 
 class AccountCreate(BaseModel):
     code: str
+    name: Optional[str] = None
     name_ar: str
     name_en: str
     category: str
+    type: Optional[str] = None
+    notes: Optional[str] = None
     parent_code: Optional[str] = None
     currency: str = "IQD"
 
