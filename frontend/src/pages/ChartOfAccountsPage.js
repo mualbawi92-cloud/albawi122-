@@ -894,109 +894,75 @@ const ChartOfAccountsPage = () => {
 
         {/* Add Account Dialog */}
         <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle>➕ إضافة حساب جديد</DialogTitle>
+              <DialogTitle className="text-2xl">➕ إضافة حساب جديد</DialogTitle>
               <DialogDescription>
                 أضف حساباً جديداً إلى الدليل المحاسبي
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>رمز الحساب *</Label>
-                  <Input
-                    placeholder="1010"
-                    value={newAccount.code}
-                    onChange={(e) => setNewAccount({ ...newAccount, code: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>العملة</Label>
-                  <Select 
-                    value={newAccount.currency} 
-                    onValueChange={(val) => setNewAccount({ ...newAccount, currency: val })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CURRENCIES.map(curr => (
-                        <SelectItem key={curr} value={curr}>{curr}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
+              {/* Account Name */}
               <div className="space-y-2">
-                <Label>الاسم بالعربي *</Label>
+                <Label className="text-base font-bold">🧾 اسم الحساب *</Label>
                 <Input
-                  placeholder="صندوق نقد"
-                  value={newAccount.name_ar}
-                  onChange={(e) => setNewAccount({ ...newAccount, name_ar: e.target.value })}
+                  placeholder="مثال: صيرفة كربلاء"
+                  value={newAccount.name}
+                  onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })}
+                  className="text-base p-3"
                 />
               </div>
 
+              {/* Category */}
               <div className="space-y-2">
-                <Label>الاسم بالإنجليزي *</Label>
-                <Input
-                  placeholder="Cash"
-                  value={newAccount.name_en}
-                  onChange={(e) => setNewAccount({ ...newAccount, name_en: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>الفئة *</Label>
+                <Label className="text-base font-bold">🏷️ فئة الحساب / القسم *</Label>
                 <Select 
                   value={newAccount.category} 
                   onValueChange={(val) => setNewAccount({ ...newAccount, category: val })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-base p-3">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {CATEGORIES.map(cat => (
-                      <SelectItem key={cat.value} value={cat.value}>
+                      <SelectItem key={cat.value} value={cat.value} className="text-base">
                         {cat.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <p className="text-xs text-gray-500">
+                  سيتم إنشاء رقم الحساب تلقائياً حسب القسم المختار
+                </p>
               </div>
 
+              {/* Notes */}
               <div className="space-y-2">
-                <Label>الحساب الرئيسي (اختياري)</Label>
-                <Select 
-                  value={newAccount.parent_code} 
-                  onValueChange={(val) => setNewAccount({ ...newAccount, parent_code: val })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="بدون حساب رئيسي" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">بدون حساب رئيسي</SelectItem>
-                    {accounts
-                      .filter(acc => !acc.parent_code) // Only root accounts can be parents
-                      .map(acc => (
-                        <SelectItem key={acc.code} value={acc.code}>
-                          {acc.code} - {acc.name_ar}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <Label className="text-base font-bold">💬 ملاحظات (اختياري)</Label>
+                <Input
+                  placeholder="أي ملاحظات إضافية..."
+                  value={newAccount.notes}
+                  onChange={(e) => setNewAccount({ ...newAccount, notes: e.target.value })}
+                  className="text-base p-3"
+                />
               </div>
             </div>
 
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+            <DialogFooter className="gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowAddDialog(false)}
+                className="flex-1"
+              >
                 إلغاء
               </Button>
-              <Button onClick={handleAddAccount}>
-                ✅ إضافة
+              <Button 
+                onClick={handleAddAccount}
+                disabled={loading}
+                className="flex-1 bg-green-600 hover:bg-green-700"
+              >
+                {loading ? '⏳ جاري الحفظ...' : '✅ حفظ'}
               </Button>
             </DialogFooter>
           </DialogContent>
