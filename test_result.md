@@ -769,8 +769,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Wallet deposit receipt feature"
-    - "Agent wallet receipt printing feature"
+    - "Fix Chart of Accounts endpoints to use chart_of_accounts collection"
+    - "Update agent registration to auto-create COA account"
+    - "Fix ChartOfAccountsPage error handling and account number generation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
