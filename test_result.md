@@ -188,6 +188,85 @@ backend:
           - Test account retrieval (GET)
           - Test ledger loading for any account
           - Test all accounting reports (trial balance, income statement, balance sheet)
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ **CRITICAL ISSUES FOUND - PARTIAL COLLECTION MIGRATION**
+          
+          **Test Results Summary:**
+          - Total Tests: 23
+          - Passed: 14 (60.9% success rate)
+          - Failed: 9 (39.1% failure rate)
+          
+          **✅ WORKING COMPONENTS:**
+          
+          1. **Chart of Accounts CRUD Operations:**
+             - ✅ POST /api/accounting/accounts - Successfully creates accounts in chart_of_accounts
+             - ✅ GET /api/accounting/accounts/{code} - Successfully retrieves specific accounts
+             - ✅ GET /api/accounting/accounts - Returns accounts (but with wrong structure)
+          
+          2. **Ledger Access for New Accounts:**
+             - ✅ Newly created accounts (2010, 9960) accessible via ledger endpoint
+             - ✅ Complete flow: Create Account → Get Account → Load Ledger works
+          
+          3. **Some Accounting Reports:**
+             - ✅ Income Statement Report - Working (0 accounts found)
+             - ✅ Balance Sheet Report - Working (0 accounts found)
+          
+          **❌ CRITICAL ISSUES IDENTIFIED:**
+          
+          1. **Missing Default Accounts in chart_of_accounts:**
+             - ❌ Account 1030 (Transit Account) - Returns 404 "الحساب غير موجود"
+             - ❌ Account 2001 (First Exchange Company) - Returns 404
+             - ❌ Account 4020 (Earned Commissions) - Returns 404
+             - ❌ Account 5110 (Paid Commissions) - Returns 404
+             - **Impact:** Core system accounts not accessible via ledger
+          
+          2. **Data Inconsistency Issues:**
+             - ❌ Old agent accounts have UUID codes instead of proper account codes
+             - ❌ Old accounts missing name_ar field causing trial balance to crash
+             - ❌ Trial Balance Report returns 500 error due to KeyError: 'name_ar'
+          
+          3. **Agent Registration Auto-COA:**
+             - ✅ Agent registration works and creates account in chart_of_accounts
+             - ✅ New account follows proper pattern (2011) and includes governorate
+             - ❌ But GET /api/accounting/accounts returns wrong structure (wrapped in "accounts" key)
+          
+          **ROOT CAUSE ANALYSIS:**
+          
+          The collection migration was **partially successful**:
+          - ✅ New accounts are correctly created in chart_of_accounts collection
+          - ✅ New accounts are accessible via ledger endpoint
+          - ❌ Default system accounts (1030, 4020, 5110) were not migrated to chart_of_accounts
+          - ❌ Old agent accounts have data structure inconsistencies
+          
+          **IMMEDIATE FIXES NEEDED:**
+          
+          1. **Create Missing Default Accounts:**
+             ```sql
+             POST /api/accounting/accounts:
+             - {code: "1030", name_ar: "الحوالات الواردة لم تُسلَّم", category: "أصول"}
+             - {code: "4020", name_ar: "عمولات محققة", category: "إيرادات"}  
+             - {code: "5110", name_ar: "عمولات حوالات مدفوعة", category: "مصاريف"}
+             ```
+          
+          2. **Fix Trial Balance Report:**
+             - Add null checks for name_ar field in trial balance endpoint
+             - Handle accounts with missing Arabic names gracefully
+          
+          3. **Fix GET /api/accounting/accounts Response Structure:**
+             - Should return direct array, not wrapped in "accounts" key
+             - Or update frontend to handle new structure
+          
+          **VERIFICATION NEEDED:**
+          - After creating default accounts, test ledger access for 1030, 4020, 5110
+          - Test trial balance report after fixing name_ar issue
+          - Verify all accounting reports use chart_of_accounts collection
+          
+          **CONCLUSION:**
+          The collection migration is **70% complete**. Core CRUD operations work for new accounts,
+          but system accounts and legacy data need attention. The ledger endpoint correctly uses
+          chart_of_accounts for new accounts but fails for missing default accounts.
   
   - task: "Update agent registration to auto-create COA account"
     implemented: true
