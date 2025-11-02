@@ -3441,7 +3441,7 @@ async def initialize_chart_of_accounts(current_user: dict = Depends(require_admi
     ]
     
     # Check if already initialized
-    existing = await db.accounts.count_documents({})
+    existing = await db.chart_of_accounts.count_documents({})
     if existing > 0:
         raise HTTPException(status_code=400, detail="Chart of accounts already initialized")
     
@@ -3451,11 +3451,13 @@ async def initialize_chart_of_accounts(current_user: dict = Depends(require_admi
             'id': str(uuid.uuid4()),
             **acc_data,
             'balance': 0.0,
+            'balance_iqd': 0.0,
+            'balance_usd': 0.0,
             'is_active': True,
             'created_at': datetime.now(timezone.utc).isoformat(),
             'updated_at': datetime.now(timezone.utc).isoformat()
         }
-        await db.accounts.insert_one(account)
+        await db.chart_of_accounts.insert_one(account)
     
     return {"message": f"تم إنشاء {len(default_accounts)} حساب بنجاح", "count": len(default_accounts)}
 
