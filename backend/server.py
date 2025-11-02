@@ -4892,14 +4892,201 @@ async def create_currency_revaluation(
     current_user: dict = Depends(require_admin)
 ):
     """
-    Execute currency revaluation operation for a customer account
-    تنفيذ عملية تقويم قطع لحساب العميل
+    Execute currency revaluation operation for a customer account (agent/صيرفة)
+    تنفيذ عملية تقويم قطع لحساب الصيرفة
     """
     
-    # Validate account exists
-    account = await db.chart_of_accounts.find_one({'code': revaluation_data.account_code})
-    if not account:
-        raise HTTPException(status_code=404, detail="Account not found")
+    # Get agent/user account
+    agent = await db.users.find_one({'id': revaluation_data.account_code})
+    if not agent:
+        raise HTTPException(status_code=404, detail="Agent account not found")
+    
+    # Validate inputs
+    if revaluation_data.amount <= 0:
+        raise HTTPException(status_code=400, detail="Amount must be positive")
+    
+    if revaluation_data.exchange_rate <= 0:
+        raise HTTPException(status_code=400, detail="Exchange rate must be positive")
+    
+    if revaluation_data.currency not in ['IQD', 'USD']:
+        raise HTTPException(status_code=400, detail="Currency must be IQD or USD")
+    
+    if revaluation_data.operation_type not in ['debit', 'credit']:
+        raise HTTPException(status_code=400, detail="Operation type must be debit or credit")
+    
+    if revaluation_data.direction not in ['iqd_to_usd', 'usd_to_iqd']:
+        raise HTTPException(status_code=400, detail="Direction must be iqd_to_usd or usd_to_iqd")
+    
+    # Calculate equivalent amount
+    if revaluation_data.direction == 'iqd_to_usd':
+        # من دينار إلى دولار
+        equivalent_amount = revaluation_data.amount / revaluation_data.exchange_rate
+    else:
+        # من دولار إلى دينار
+        equivalent_amount = revaluation_data.amount * revaluation_data.exchange_rate
+    
+    # Create revaluation record
+    revaluation_id = str(uuid.uuid4())
+    
+    # Create journal entry
+    journal_entry_id = str(uuid.uuid4())
+    
+    account_name = f"{agent['display_name']} - صيرفة"
+    
+    # Determine debit/credit based on operation type and direction
+    if revaluation_data.direction == 'iqd_to_usd':
+        # من دينار إلى دولار (الزبون يشتري دولار)
+        if revaluation_data.operation_type == 'debit':
+            # خصم دينار (مدين)، إضافة دولار (دائن)
+            debit_entry = {
+                'account_code': revaluation_data.account_code,
+                'account_name': account_name,
+                'debit': revaluation_data.amount,
+                'credit': 0,
+                'currency': 'IQD',
+                'description': f'تقويم قطع - خصم {revaluation_data.amount:,.0f} دينار'
+            }
+            credit_entry = {
+                'account_code': revaluation_data.account_code,
+                'account_name': account_name,
+                'debit': 0,
+                'credit': equivalent_amount,
+                'currency': 'USD',
+                'description': f'تقويم قطع - إضافة {equivalent_amount:,.2f} دولار'
+            }
+        else:
+            # إضافة دينار (دائن)، خصم دولار (مدين)
+            credit_entry = {
+                'account_code': revaluation_data.account_code,
+                'account_name': account_name,
+                'debit': 0,
+                'credit': revaluation_data.amount,
+                'currency': 'IQD',
+                'description': f'تقويم قطع - إضافة {revaluation_data.amount:,.0f} دينار'
+            }
+            debit_entry = {
+                'account_code': revaluation_data.account_code,
+                'account_name': account_name,
+                'debit': equivalent_amount,
+                'credit': 0,
+                'currency': 'USD',
+                'description': f'تقويم قطع - خصم {equivalent_amount:,.2f} دولار'
+            }
+    else:
+        # من دولار إلى دينار (الزبون يبيع دولار)
+        if revaluation_data.operation_type == 'debit':
+            # خصم دولار (مدين)، إضافة دينار (دائن)
+            debit_entry = {
+                'account_code': revaluation_data.account_code,
+                'account_name': account_name,
+                'debit': revaluation_data.amount,
+                'credit': 0,
+                'currency': 'USD',
+                'description': f'تقويم قطع - خصم {revaluation_data.amount:,.2f} دولار'
+            }
+            credit_entry = {
+                'account_code': revaluation_data.account_code,
+                'account_name': account_name,
+                'debit': 0,
+                'credit': equivalent_amount,
+                'currency': 'IQD',
+                'description': f'تقويم قطع - إضافة {equivalent_amount:,.0f} دينار'
+            }
+        else:
+            # إضافة دولار (دائن)، خصم دينار (مدين)
+            credit_entry = {
+                'account_code': revaluation_data.account_code,
+                'account_name': account_name,
+                'debit': 0,
+                'credit': revaluation_data.amount,
+                'currency': 'USD',
+                'description': f'تقويم قطع - إضافة {revaluation_data.amount:,.2f} دولار'
+            }
+            debit_entry = {
+                'account_code': revaluation_data.account_code,
+                'account_name': account_name,
+                'debit': equivalent_amount,
+                'credit': 0,
+                'currency': 'IQD',
+                'description': f'تقويم قطع - خصم {equivalent_amount:,.0f} دينار'
+            }
+    
+    # Create journal entry
+    journal_entry = {
+        'id': journal_entry_id,
+        'date': datetime.now(timezone.utc).isoformat(),
+        'description': f'تقويم قطع - {account_name} - {revaluation_data.direction.replace("_", " إلى ")}',
+        'entries': [debit_entry, credit_entry],
+        'created_by': current_user['display_name'],
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'reference_type': 'currency_revaluation',
+        'reference_id': revaluation_id
+    }
+    
+    await db.journal_entries.insert_one(journal_entry)
+    
+    # Create revaluation record
+    revaluation_doc = {
+        'id': revaluation_id,
+        'account_code': revaluation_data.account_code,
+        'account_name': account_name,
+        'amount': revaluation_data.amount,
+        'currency': revaluation_data.currency,
+        'exchange_rate': revaluation_data.exchange_rate,
+        'equivalent_amount': equivalent_amount,
+        'operation_type': revaluation_data.operation_type,
+        'direction': revaluation_data.direction,
+        'journal_entry_id': journal_entry_id,
+        'notes': revaluation_data.notes,
+        'created_by': current_user['display_name'],
+        'created_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.currency_revaluations.insert_one(revaluation_doc)
+    
+    # Update agent wallet balances
+    current_balance_iqd = agent.get('wallet_balance_iqd', 0)
+    current_balance_usd = agent.get('wallet_balance_usd', 0)
+    
+    if revaluation_data.direction == 'iqd_to_usd':
+        if revaluation_data.operation_type == 'debit':
+            new_balance_iqd = current_balance_iqd - revaluation_data.amount
+            new_balance_usd = current_balance_usd + equivalent_amount
+        else:
+            new_balance_iqd = current_balance_iqd + revaluation_data.amount
+            new_balance_usd = current_balance_usd - equivalent_amount
+    else:
+        if revaluation_data.operation_type == 'debit':
+            new_balance_usd = current_balance_usd - revaluation_data.amount
+            new_balance_iqd = current_balance_iqd + equivalent_amount
+        else:
+            new_balance_usd = current_balance_usd + revaluation_data.amount
+            new_balance_iqd = current_balance_iqd - equivalent_amount
+    
+    await db.users.update_one(
+        {'id': revaluation_data.account_code},
+        {'$set': {
+            'wallet_balance_iqd': new_balance_iqd,
+            'wallet_balance_usd': new_balance_usd,
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    # Log audit
+    await log_audit(None, current_user['id'], 'currency_revaluation', {
+        'account_code': revaluation_data.account_code,
+        'amount': revaluation_data.amount,
+        'direction': revaluation_data.direction,
+        'exchange_rate': revaluation_data.exchange_rate
+    })
+    
+    revaluation_doc.pop('_id', None)
+    return {
+        'success': True,
+        'revaluation': revaluation_doc,
+        'journal_entry_id': journal_entry_id,
+        'message': 'تمت عملية التقويم بنجاح'
+    }
     
     # Validate inputs
     if revaluation_data.amount <= 0:
