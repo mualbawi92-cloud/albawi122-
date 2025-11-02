@@ -136,18 +136,46 @@ const ChartOfAccountsPage = () => {
   };
 
   const filterAccounts = () => {
-    let filtered = accounts;
-
-    // Filter by category
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(acc => acc.category === selectedCategory);
+    // Safety check
+    if (!Array.isArray(accounts)) {
+      console.error('filterAccounts: accounts is not an array');
+      setFilteredAccounts([]);
+      return;
     }
+    
+    try {
+      let filtered = accounts.filter(acc => acc && acc.code); // Filter out invalid accounts
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(acc => 
-        acc.name_ar.includes(searchTerm) ||
-        acc.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      // Filter by category
+      if (selectedCategory !== 'all') {
+        filtered = filtered.filter(acc => 
+          (acc.category === selectedCategory) || (acc.type === selectedCategory)
+        );
+      }
+
+      // Filter by search term
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        filtered = filtered.filter(acc => {
+          const nameAr = getAccountProperty(acc, 'name_ar', '');
+          const nameEn = getAccountProperty(acc, 'name_en', '');
+          const name = getAccountProperty(acc, 'name', '');
+          const code = getAccountProperty(acc, 'code', '');
+          
+          return nameAr.includes(searchTerm) ||
+                 nameEn.toLowerCase().includes(searchLower) ||
+                 name.includes(searchTerm) ||
+                 code.includes(searchTerm);
+        });
+      }
+
+      setFilteredAccounts(filtered);
+    } catch (error) {
+      console.error('Error in filterAccounts:', error);
+      setFilteredAccounts([]);
+      toast.error('خطأ في فلترة الحسابات');
+    }
+  };
         acc.code.includes(searchTerm)
       );
     }
