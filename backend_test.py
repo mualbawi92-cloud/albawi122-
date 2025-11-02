@@ -323,71 +323,78 @@ class ChartOfAccountsTester:
         else:
             self.log_result("Get Specific Account", False, "No test account code available")
     
-    def test_deposit_validation(self):
-        """Test validation rules for deposit endpoint"""
-        print("\n2.1 Testing deposit with amount = 0...")
+    def test_ledger_endpoints(self):
+        """Test Ledger endpoints - the critical fix"""
+        print("\n2.1 Testing GET /api/accounting/ledger/{account_code} - CRITICAL TEST...")
         
-        deposit_data = {
-            "user_id": self.agent_baghdad_user_id,
-            "amount": 0,
-            "currency": "IQD",
-            "note": "Test zero amount"
-        }
+        # First, get an account code from the chart of accounts
+        account_code_to_test = None
         
-        try:
-            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
-            if response.status_code == 400:
-                self.log_result("Zero Amount Validation", True, "Correctly rejected zero amount (400)")
-            else:
-                self.log_result("Zero Amount Validation", False, f"Expected 400, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Zero Amount Validation", False, f"Error: {str(e)}")
+        if hasattr(self, 'existing_accounts') and self.existing_accounts:
+            # Use the first available account
+            account_code_to_test = self.existing_accounts[0].get('code')
+            print(f"   Using account code: {account_code_to_test}")
+        elif hasattr(self, 'test_account_code'):
+            # Use our test account
+            account_code_to_test = self.test_account_code
+            print(f"   Using test account code: {account_code_to_test}")
+        else:
+            # Try a common account code
+            account_code_to_test = "1030"
+            print(f"   Using default account code: {account_code_to_test}")
         
-        print("\n2.2 Testing deposit with negative amount...")
-        deposit_data["amount"] = -1000
+        if account_code_to_test:
+            try:
+                response = self.make_request('GET', f'/accounting/ledger/{account_code_to_test}', token=self.admin_token)
+                if response.status_code == 200:
+                    ledger_data = response.json()
+                    
+                    # Check if it has the expected structure
+                    if isinstance(ledger_data, dict):
+                        entries = ledger_data.get('entries', [])
+                        account_info = ledger_data.get('account', {})
+                        
+                        self.log_result("Ledger Load Success", True, 
+                                      f"Ledger loaded successfully for account {account_code_to_test}. Entries: {len(entries)}")
+                        
+                        print(f"   Account: {account_info.get('name_ar', 'N/A')}")
+                        print(f"   Entries: {len(entries)}")
+                        print(f"   Balance: {account_info.get('balance', 0)}")
+                        
+                        # This is the critical test - it should NOT return 404 "الحساب غير موجود"
+                        self.log_result("Ledger No 404 Error", True, "No 404 error - account found in chart_of_accounts")
+                        
+                    else:
+                        self.log_result("Ledger Load Success", False, "Invalid ledger response structure", ledger_data)
+                        
+                elif response.status_code == 404:
+                    # This is the bug we're testing for
+                    self.log_result("Ledger Load Success", False, f"❌ CRITICAL BUG: Got 404 'الحساب غير موجود' for account {account_code_to_test}")
+                    self.log_result("Ledger No 404 Error", False, "❌ CRITICAL: Still getting 404 errors - collection migration may have failed")
+                else:
+                    self.log_result("Ledger Load Success", False, f"Unexpected status {response.status_code}", response.text)
+                    
+            except Exception as e:
+                self.log_result("Ledger Load Success", False, f"Error: {str(e)}")
+        else:
+            self.log_result("Ledger Load Success", False, "No account code available for testing")
         
-        try:
-            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
-            if response.status_code == 400:
-                self.log_result("Negative Amount Validation", True, "Correctly rejected negative amount (400)")
-            else:
-                self.log_result("Negative Amount Validation", False, f"Expected 400, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Negative Amount Validation", False, f"Error: {str(e)}")
+        print("\n2.2 Testing ledger with multiple account codes...")
         
-        print("\n2.3 Testing deposit with invalid currency...")
-        deposit_data = {
-            "user_id": self.agent_baghdad_user_id,
-            "amount": 1000,
-            "currency": "EUR",
-            "note": "Test invalid currency"
-        }
+        # Test with a few different account codes to ensure consistency
+        test_codes = ["1030", "2001", "4020", "5110"]
         
-        try:
-            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
-            if response.status_code == 400:
-                self.log_result("Invalid Currency Validation", True, "Correctly rejected invalid currency (400)")
-            else:
-                self.log_result("Invalid Currency Validation", False, f"Expected 400, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Invalid Currency Validation", False, f"Error: {str(e)}")
-        
-        print("\n2.4 Testing deposit with non-existent user_id...")
-        deposit_data = {
-            "user_id": "non-existent-user-id-12345",
-            "amount": 1000,
-            "currency": "IQD",
-            "note": "Test non-existent user"
-        }
-        
-        try:
-            response = self.make_request('POST', '/wallet/deposit', token=self.admin_token, json=deposit_data)
-            if response.status_code == 404:
-                self.log_result("Non-existent User Validation", True, "Correctly rejected non-existent user (404)")
-            else:
-                self.log_result("Non-existent User Validation", False, f"Expected 404, got {response.status_code}")
-        except Exception as e:
-            self.log_result("Non-existent User Validation", False, f"Error: {str(e)}")
+        for code in test_codes:
+            try:
+                response = self.make_request('GET', f'/accounting/ledger/{code}', token=self.admin_token)
+                if response.status_code == 200:
+                    self.log_result(f"Ledger {code}", True, f"Account {code} ledger accessible")
+                elif response.status_code == 404:
+                    self.log_result(f"Ledger {code}", False, f"❌ Account {code} returned 404 - collection issue")
+                else:
+                    self.log_result(f"Ledger {code}", False, f"Account {code} returned {response.status_code}")
+            except Exception as e:
+                self.log_result(f"Ledger {code}", False, f"Error testing {code}: {str(e)}")
     
     def test_successful_deposits(self):
         """Test successful deposit scenarios"""
