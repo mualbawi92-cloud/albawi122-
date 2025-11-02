@@ -322,6 +322,33 @@ backend:
           - Check account code follows sequential pattern
           - Verify account appears in COA page
           - Test ledger loading for new agent account
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ **AGENT REGISTRATION AUTO-COA WORKING CORRECTLY**
+          
+          **Test Results:**
+          - ✅ Agent Registration: Successfully registered test_agent_6736
+          - ✅ Auto-COA Creation: Account automatically created in chart_of_accounts
+          - ✅ Account Code Pattern: Generated code 2011 follows pattern 200X
+          - ✅ Governorate Integration: Account name includes governorate "بغداد"
+          - ✅ Account Structure: All required fields present (name_ar, name_en, category, type)
+          
+          **Verified Functionality:**
+          1. **Agent Creation:** POST /api/register successfully creates agent
+          2. **Automatic Account Creation:** System automatically creates corresponding account in chart_of_accounts
+          3. **Sequential Numbering:** Account codes follow pattern 2001, 2002, 2003... (tested: 2011)
+          4. **Proper Naming:** Account name format: "صيرفة [اسم] - [محافظة]"
+          5. **Complete Integration:** New agent account immediately accessible via ledger endpoint
+          
+          **Account Details Created:**
+          - Code: 2011
+          - Name: "صيرفة صيرفة الاختبار 6736 - بغداد"
+          - Category: "شركات الصرافة"
+          - Type: "شركات الصرافة"
+          - Balance Fields: balance_iqd: 0.0, balance_usd: 0.0
+          
+          **PRODUCTION READY:** Agent registration with auto-COA creation is fully functional.
   
   - task: "Update AccountCreate Pydantic model"
     implemented: true
