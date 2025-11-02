@@ -3464,7 +3464,7 @@ async def get_chart_of_accounts(current_user: dict = Depends(require_admin)):
     """
     Get all accounts in chart of accounts
     """
-    accounts = await db.accounts.find({'is_active': True}).sort('code', 1).to_list(length=None)
+    accounts = await db.chart_of_accounts.find({'is_active': True}).sort('code', 1).to_list(length=None)
     
     for acc in accounts:
         acc.pop('_id', None)
