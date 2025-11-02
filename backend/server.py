@@ -3604,12 +3604,12 @@ async def get_income_statement(
     Shows revenues, expenses, and net profit/loss
     """
     # Get revenue and expense accounts
-    revenue_accounts = await db.accounts.find({
+    revenue_accounts = await db.chart_of_accounts.find({
         'category': 'إيرادات',
         'is_active': True
     }).to_list(length=None)
     
-    expense_accounts = await db.accounts.find({
+    expense_accounts = await db.chart_of_accounts.find({
         'category': 'مصاريف',
         'is_active': True
     }).to_list(length=None)
