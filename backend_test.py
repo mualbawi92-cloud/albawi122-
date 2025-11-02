@@ -224,32 +224,28 @@ class ChartOfAccountsTester:
         
         return None
     
-    def test_wallet_deposit_comprehensive(self):
-        """Comprehensive testing of wallet deposit functionality"""
-        print("\n🚨 COMPREHENSIVE WALLET DEPOSIT TESTING")
+    def test_chart_of_accounts_comprehensive(self):
+        """Comprehensive testing of Chart of Accounts and Ledger functionality"""
+        print("\n🚨 COMPREHENSIVE CHART OF ACCOUNTS & LEDGER TESTING")
         print("=" * 80)
-        print("Testing all aspects of /api/wallet/deposit endpoint")
+        print("Testing Chart of Accounts endpoints after collection migration fix")
         print("=" * 80)
         
-        # 1. Authentication Testing
-        print("\n--- 1. AUTHENTICATION TESTING ---")
-        self.test_deposit_authentication()
+        # 1. Chart of Accounts Endpoints Testing
+        print("\n--- 1. CHART OF ACCOUNTS ENDPOINTS TESTING ---")
+        self.test_coa_endpoints()
         
-        # 2. Validation Testing
-        print("\n--- 2. VALIDATION TESTING ---")
-        self.test_deposit_validation()
+        # 2. Ledger Endpoint Testing
+        print("\n--- 2. LEDGER ENDPOINT TESTING ---")
+        self.test_ledger_endpoints()
         
-        # 3. Successful Deposit Testing
-        print("\n--- 3. SUCCESSFUL DEPOSIT TESTING ---")
-        self.test_successful_deposits()
+        # 3. Agent Registration with Auto-COA
+        print("\n--- 3. AGENT REGISTRATION WITH AUTO-COA ---")
+        self.test_agent_registration_coa()
         
-        # 4. Balance Verification
-        print("\n--- 4. BALANCE VERIFICATION ---")
-        self.test_balance_verification()
-        
-        # 5. Transaction Logging
-        print("\n--- 5. TRANSACTION LOGGING ---")
-        self.test_transaction_logging()
+        # 4. Accounting Reports Testing
+        print("\n--- 4. ACCOUNTING REPORTS TESTING ---")
+        self.test_accounting_reports()
         
         return True
     
