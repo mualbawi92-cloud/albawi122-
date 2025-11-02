@@ -3976,8 +3976,8 @@ async def get_account_ledger(
     """
     Get ledger for a specific account (دفتر الأستاذ) with pagination
     """
-    # Verify account exists (using index)
-    account = await db.accounts.find_one({'code': account_code})
+    # Verify account exists (using chart_of_accounts)
+    account = await db.chart_of_accounts.find_one({'code': account_code})
     if not account:
         raise HTTPException(status_code=404, detail="الحساب غير موجود")
     
