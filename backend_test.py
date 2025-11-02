@@ -673,8 +673,8 @@ class ChartOfAccountsTester:
             self.log_result("Collection Consistency", False, f"Error: {str(e)}")
     
     def run_all_tests(self):
-        """Run all wallet deposit tests"""
-        print("🚨 STARTING COMPREHENSIVE WALLET DEPOSIT TESTING")
+        """Run all Chart of Accounts and Ledger tests"""
+        print("🚨 STARTING COMPREHENSIVE CHART OF ACCOUNTS & LEDGER TESTING")
         print("=" * 80)
         
         # Step 1: Authentication
