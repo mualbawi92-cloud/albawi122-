@@ -3593,8 +3593,7 @@ async def get_trial_balance(
             'code': account['code'],
             'name_ar': name_ar,
             'name_en': name_en,
-            'name_en': account['name_en'],
-            'category': account['category'],
+            'category': account.get('category', 'غير محدد'),
             'debit': 0,
             'credit': 0,
             'balance': 0
