@@ -3585,9 +3585,14 @@ async def get_trial_balance(
     # Calculate totals for each account
     account_totals = {}
     for account in accounts:
+        # Safely get account name with fallback
+        name_ar = account.get('name_ar', account.get('name', 'حساب بدون اسم'))
+        name_en = account.get('name_en', account.get('name', 'Unnamed Account'))
+        
         account_totals[account['code']] = {
             'code': account['code'],
-            'name_ar': account['name_ar'],
+            'name_ar': name_ar,
+            'name_en': name_en,
             'name_en': account['name_en'],
             'category': account['category'],
             'debit': 0,
