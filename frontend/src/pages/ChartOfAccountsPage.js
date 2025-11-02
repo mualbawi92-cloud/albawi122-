@@ -204,16 +204,36 @@ const ChartOfAccountsPage = () => {
   };
 
   const formatCurrency = (amount, currency = 'IQD') => {
-    return `${amount.toLocaleString()} ${currency}`;
+    // Defensive check - ensure amount is a number
+    const safeAmount = parseFloat(amount) || 0;
+    return `${safeAmount.toLocaleString()} ${currency || 'IQD'}`;
+  };
+  
+  // Safe getter for account properties
+  const getAccountProperty = (account, property, defaultValue = '') => {
+    try {
+      return account?.[property] ?? defaultValue;
+    } catch (error) {
+      console.warn(`Error accessing property ${property}:`, error);
+      return defaultValue;
+    }
   };
 
   const buildHierarchy = (accounts) => {
     // Group accounts by parent
     const accountMap = {};
     const roots = [];
+    
+    // Safety check for accounts array
+    if (!Array.isArray(accounts)) {
+      console.error('buildHierarchy: accounts is not an array', accounts);
+      return [];
+    }
 
     accounts.forEach(acc => {
-      accountMap[acc.code] = { ...acc, children: [] };
+      if (acc && acc.code) {
+        accountMap[acc.code] = { ...acc, children: [] };
+      }
     });
 
     accounts.forEach(acc => {
