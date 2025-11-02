@@ -248,71 +248,112 @@ const ChartOfAccountsPage = () => {
   };
 
   const renderAccountRow = (account, level = 0) => {
-    const indent = level * 40; // 40px per level
-    const hasChildren = account.children && account.children.length > 0;
-    const isParent = !account.parent_code;
+    // Safety check - ensure account exists
+    if (!account || !account.code) {
+      console.warn('Invalid account in renderAccountRow:', account);
+      return null;
+    }
+    
+    try {
+      const indent = level * 40; // 40px per level
+      const hasChildren = account.children && account.children.length > 0;
+      const isParent = !account.parent_code;
+      
+      // Safe access to account properties with defaults
+      const accountCode = getAccountProperty(account, 'code', 'N/A');
+      const accountNameAr = getAccountProperty(account, 'name_ar', getAccountProperty(account, 'name', 'حساب بدون اسم'));
+      const accountNameEn = getAccountProperty(account, 'name_en', '');
+      const accountCategory = getAccountProperty(account, 'category', getAccountProperty(account, 'type', 'غير محدد'));
+      
+      // Handle balance - support both old (balance) and new (balance_iqd/balance_usd) formats
+      const balanceIqd = parseFloat(account.balance_iqd) || parseFloat(account.balance) || 0;
+      const balanceUsd = parseFloat(account.balance_usd) || 0;
+      const currency = getAccountProperty(account, 'currency', 'IQD');
 
-    return (
-      <React.Fragment key={account.code}>
-        <div 
-          className={`
-            border-b hover:bg-gray-50 transition-colors
-            ${isParent ? 'bg-gray-100 font-bold' : ''}
-          `}
-        >
-          <div className="grid grid-cols-12 gap-2 items-center p-3">
-            {/* Code */}
-            <div className="col-span-2" style={{ paddingRight: `${indent}px` }}>
-              <span className={`${hasChildren ? 'font-bold text-primary' : ''}`}>
-                {account.code}
-              </span>
-            </div>
+      return (
+        <React.Fragment key={accountCode}>
+          <div 
+            className={`
+              border-b hover:bg-gray-50 transition-colors
+              ${isParent ? 'bg-gray-100 font-bold' : ''}
+            `}
+          >
+            <div className="grid grid-cols-12 gap-2 items-center p-3">
+              {/* Code */}
+              <div className="col-span-2" style={{ paddingRight: `${indent}px` }}>
+                <span className={`${hasChildren ? 'font-bold text-primary' : ''}`}>
+                  {accountCode}
+                </span>
+              </div>
 
-            {/* Name Arabic */}
-            <div className="col-span-3">
-              <span className={hasChildren ? 'font-bold' : ''}>
-                {account.name_ar}
-              </span>
-            </div>
+              {/* Name Arabic */}
+              <div className="col-span-3">
+                <span className={hasChildren ? 'font-bold' : ''}>
+                  {accountNameAr}
+                </span>
+              </div>
 
-            {/* Name English */}
-            <div className="col-span-2 text-sm text-muted-foreground">
-              {account.name_en}
-            </div>
+              {/* Name English */}
+              <div className="col-span-2 text-sm text-muted-foreground">
+                {accountNameEn}
+              </div>
 
-            {/* Category */}
-            <div className="col-span-2 text-sm">
-              <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-                {account.category}
-              </span>
-            </div>
+              {/* Category */}
+              <div className="col-span-2 text-sm">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                  {accountCategory}
+                </span>
+              </div>
 
-            {/* Balance */}
-            <div className="col-span-2 text-left font-bold">
-              <span className={account.balance > 0 ? 'text-green-700' : account.balance < 0 ? 'text-red-700' : ''}>
-                {account.balance.toLocaleString()} {account.currency}
-              </span>
-            </div>
+              {/* Balance */}
+              <div className="col-span-2 text-left font-bold">
+                <div className="space-y-1">
+                  {balanceIqd !== 0 && (
+                    <div className={balanceIqd > 0 ? 'text-green-700' : balanceIqd < 0 ? 'text-red-700' : ''}>
+                      {formatCurrency(balanceIqd, 'IQD')}
+                    </div>
+                  )}
+                  {balanceUsd !== 0 && (
+                    <div className={`text-sm ${balanceUsd > 0 ? 'text-green-600' : balanceUsd < 0 ? 'text-red-600' : ''}`}>
+                      {formatCurrency(balanceUsd, 'USD')}
+                    </div>
+                  )}
+                  {balanceIqd === 0 && balanceUsd === 0 && (
+                    <div className="text-gray-400">
+                      {formatCurrency(0, currency)}
+                    </div>
+                  )}
+                </div>
+              </div>
 
-            {/* Actions */}
-            <div className="col-span-1 flex justify-end">
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleDeleteClick(account)}
-                disabled={hasChildren}
-                title={hasChildren ? 'احذف الحسابات الفرعية أولاً' : 'حذف الحساب'}
-              >
-                🗑️
-              </Button>
+              {/* Actions */}
+              <div className="col-span-1 flex justify-end">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDeleteClick(account)}
+                  disabled={hasChildren}
+                  title={hasChildren ? 'احذف الحسابات الفرعية أولاً' : 'حذف الحساب'}
+                >
+                  🗑️
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Render children recursively */}
-        {hasChildren && account.children.map(child => renderAccountRow(child, level + 1))}
-      </React.Fragment>
-    );
+          {/* Render children recursively */}
+          {hasChildren && account.children.map(child => renderAccountRow(child, level + 1))}
+        </React.Fragment>
+      );
+    } catch (error) {
+      console.error('Error rendering account row:', error, account);
+      // Return a placeholder row instead of crashing
+      return (
+        <div key={account.code || Math.random()} className="border-b bg-red-50 p-3">
+          <span className="text-red-600">خطأ في عرض الحساب: {account.code || 'غير معروف'}</span>
+        </div>
+      );
+    }
   };
 
   const hierarchy = buildHierarchy(filteredAccounts);
