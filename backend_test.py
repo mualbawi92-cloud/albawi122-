@@ -757,7 +757,7 @@ class ChartOfAccountsTester:
 
 def main():
     """Main execution function"""
-    tester = WalletDepositTester()
+    tester = ChartOfAccountsTester()
     
     try:
         success = tester.run_all_tests()
