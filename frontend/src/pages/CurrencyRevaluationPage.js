@@ -45,24 +45,27 @@ const CurrencyRevaluationPage = () => {
   const fetchAccounts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/api/accounting/accounts`, {
+      
+      // Fetch agents (صرافين) instead of chart of accounts
+      const response = await axios.get(`${API}/api/users?role=agent`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Handle both array and object responses
-      if (Array.isArray(response.data)) {
-        setAccounts(response.data);
-      } else if (response.data.accounts && Array.isArray(response.data.accounts)) {
-        setAccounts(response.data.accounts);
-      } else {
-        console.error('Unexpected accounts format:', response.data);
-        setAccounts([]);
-        toast.error('خطأ في تحميل الحسابات');
-      }
+      // Transform agents to account format
+      const agentAccounts = response.data
+        .filter(agent => agent.is_active !== false)
+        .map(agent => ({
+          code: agent.id,
+          name: `${agent.display_name} - صيرفة`,
+          balance_iqd: agent.wallet_balance_iqd || 0,
+          balance_usd: agent.wallet_balance_usd || 0
+        }));
+      
+      setAccounts(agentAccounts);
     } catch (error) {
       console.error('Error fetching accounts:', error);
       setAccounts([]);
-      toast.error('خطأ في جلب الحسابات');
+      toast.error('خطأ في جلب حسابات الصيرفة');
     }
   };
 
