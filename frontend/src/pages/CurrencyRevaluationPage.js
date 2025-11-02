@@ -215,8 +215,20 @@ const CurrencyRevaluationPage = () => {
       <Navbar />
       <div className="container mx-auto p-4 sm:p-6">
         <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">💱 تقويم قطع لحساب</h1>
-          <p className="text-muted-foreground">تنفيذ عمليات التقويم بين الدينار والدولار</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">💱 تقويم قطع لحساب</h1>
+              <p className="text-muted-foreground">تنفيذ عمليات التقويم بين الدينار والدولار</p>
+            </div>
+            <Button
+              onClick={syncAgentsToChart}
+              disabled={loading}
+              variant="outline"
+              className="bg-blue-50 hover:bg-blue-100 border-blue-300"
+            >
+              🔄 مزامنة الصرافين
+            </Button>
+          </div>
         </div>
 
         {/* Form Card */}
