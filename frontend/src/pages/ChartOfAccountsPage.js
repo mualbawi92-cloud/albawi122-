@@ -39,12 +39,9 @@ const ChartOfAccountsPage = () => {
   // Add account dialog state
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newAccount, setNewAccount] = useState({
-    code: '',
-    name_ar: '',
-    name_en: '',
-    category: 'أصول',
-    parent_code: '',
-    currency: 'IQD'
+    name: '',
+    category: 'شركات الصرافة',
+    notes: ''
   });
 
   // Delete confirmation dialog
