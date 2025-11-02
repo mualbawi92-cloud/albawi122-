@@ -1406,6 +1406,94 @@ agent_communication:
 
   - agent: "testing"
     message: |
+      ✅ CHART OF ACCOUNTS & LEDGER TESTING COMPLETE - CRITICAL ISSUES IDENTIFIED
+      
+      **Test Focus:** Comprehensive testing of Chart of Accounts and Ledger endpoints after collection migration fix
+      
+      **Test Execution Summary:**
+      - Total Tests: 23
+      - Passed: 14 (60.9% success rate)  
+      - Failed: 9 (39.1% failure rate)
+      - **Collection migration is 70% complete with critical gaps**
+      
+      **🎯 CRITICAL FINDINGS:**
+      
+      **✅ WORKING COMPONENTS (Production Ready):**
+      
+      1. **Chart of Accounts CRUD Operations:**
+         - ✅ POST /api/accounting/accounts - Creates accounts in chart_of_accounts ✓
+         - ✅ GET /api/accounting/accounts/{code} - Retrieves specific accounts ✓
+         - ✅ Account creation with all new Pydantic model fields ✓
+      
+      2. **Agent Registration Auto-COA:**
+         - ✅ POST /api/register - Creates agent AND auto-creates COA account ✓
+         - ✅ Account code pattern: 2011 (follows 200X pattern) ✓
+         - ✅ Account naming: "صيرفة [اسم] - [محافظة]" ✓
+         - ✅ New agent accounts immediately accessible via ledger ✓
+      
+      3. **Ledger Access for New Accounts:**
+         - ✅ GET /api/accounting/ledger/2010 - Works for newly created accounts ✓
+         - ✅ Complete flow: Create Account → Get Account → Load Ledger ✓
+      
+      **❌ CRITICAL ISSUES REQUIRING IMMEDIATE ATTENTION:**
+      
+      1. **Missing Default System Accounts (HIGH PRIORITY):**
+         - ❌ Account 1030 (Transit Account) - Returns 404 "الحساب غير موجود"
+         - ❌ Account 4020 (Earned Commissions) - Returns 404 "الحساب غير موجود"  
+         - ❌ Account 5110 (Paid Commissions) - Returns 404 "الحساب غير موجود"
+         - ❌ Account 2001 (First Exchange Company) - Returns 404 "الحساب غير موجود"
+         
+         **Impact:** Core accounting functionality broken - transfers, commissions, reports fail
+      
+      2. **Trial Balance Report Crash (HIGH PRIORITY):**
+         - ❌ GET /api/accounting/reports/trial-balance returns 500 error
+         - ❌ Root cause: KeyError: 'name_ar' - old accounts missing Arabic names
+         - ❌ Legacy agent accounts have UUID codes and incomplete data structure
+      
+      3. **API Response Structure Issue (MEDIUM PRIORITY):**
+         - ❌ GET /api/accounting/accounts returns {"accounts": [...]} instead of direct array
+         - ❌ Test expected direct array, got wrapped object
+         - ❌ May cause frontend compatibility issues
+      
+      **🔧 IMMEDIATE FIXES REQUIRED:**
+      
+      **Priority 1: Create Missing Default Accounts**
+      ```bash
+      POST /api/accounting/accounts:
+      1. {code: "1030", name_ar: "الحوالات الواردة لم تُسلَّم", name_en: "Transit Account", category: "أصول"}
+      2. {code: "4020", name_ar: "عمولات محققة", name_en: "Earned Commissions", category: "إيرادات"}
+      3. {code: "5110", name_ar: "عمولات حوالات مدفوعة", name_en: "Paid Commissions", category: "مصاريف"}
+      ```
+      
+      **Priority 2: Fix Trial Balance Report**
+      - Add null checks for name_ar field in server.py line 3562
+      - Handle legacy accounts with missing Arabic names
+      
+      **Priority 3: Verify Collection Consistency**
+      - Ensure all accounting reports use chart_of_accounts collection
+      - Test ledger access after creating default accounts
+      
+      **📊 VERIFICATION TESTS NEEDED:**
+      
+      After implementing fixes, verify:
+      1. ✅ GET /api/accounting/ledger/1030 returns ledger data (not 404)
+      2. ✅ GET /api/accounting/ledger/4020 returns ledger data (not 404)  
+      3. ✅ GET /api/accounting/ledger/5110 returns ledger data (not 404)
+      4. ✅ GET /api/accounting/reports/trial-balance returns data (not 500)
+      5. ✅ All accounting reports show data from chart_of_accounts
+      
+      **🎯 CONCLUSION:**
+      
+      The collection migration is **partially successful**:
+      - ✅ New account creation and ledger access working perfectly
+      - ✅ Agent registration auto-COA creation working perfectly  
+      - ❌ Default system accounts missing from chart_of_accounts
+      - ❌ Legacy data causing report crashes
+      
+      **Next Steps:** Create missing default accounts and fix trial balance report to complete the migration.
+
+  - agent: "testing"
+    message: |
       🚨 COMPREHENSIVE TEST COMPLETED - COMMISSION PAID ACCOUNTING FULLY VERIFIED
       
       **Test Request:** Complete comprehensive test of incoming commission payment flow as specified in review request
