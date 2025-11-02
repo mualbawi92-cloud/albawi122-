@@ -750,8 +750,8 @@ class ChartOfAccountsInitializeTester:
             self.log_result("Collection Consistency", False, f"Error: {str(e)}")
     
     def run_all_tests(self):
-        """Run all Chart of Accounts and Ledger tests"""
-        print("🚨 STARTING COMPREHENSIVE CHART OF ACCOUNTS & LEDGER TESTING")
+        """Run all Chart of Accounts Initialize Fix tests"""
+        print("🚨 STARTING CHART OF ACCOUNTS INITIALIZATION FIX VERIFICATION")
         print("=" * 80)
         
         # Step 1: Authentication
@@ -759,8 +759,8 @@ class ChartOfAccountsInitializeTester:
             print("❌ Authentication failed - cannot continue")
             return False
         
-        # Step 2: Run comprehensive chart of accounts tests
-        self.test_chart_of_accounts_comprehensive()
+        # Step 2: Run chart of accounts initialize fix tests
+        self.test_chart_of_accounts_initialize_fix()
         
         # Step 3: Print summary
         self.print_test_summary()
