@@ -65,12 +65,32 @@ const CurrencyRevaluationPage = () => {
       setAccounts(activeAccounts);
       
       if (activeAccounts.length === 0) {
-        toast.error('لا توجد حسابات في الدليل المحاسبي');
+        toast.error('لا توجد حسابات في الدليل المحاسبي. اضغط على "مزامنة الصرافين" لإضافتهم.');
       }
     } catch (error) {
       console.error('Error fetching accounts:', error);
       setAccounts([]);
       toast.error('خطأ في جلب الحسابات من الدليل المحاسبي');
+    }
+  };
+  
+  const syncAgentsToChart = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`${API}/api/sync-agents-to-chart`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast.success(`تمت المزامنة بنجاح! ${response.data.total} حساب`);
+      
+      // Refresh accounts
+      fetchAccounts();
+    } catch (error) {
+      console.error('Error syncing:', error);
+      toast.error('خطأ في مزامنة الصرافين');
+    } finally {
+      setLoading(false);
     }
   };
 
