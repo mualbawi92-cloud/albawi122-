@@ -3449,26 +3449,54 @@ async def initialize_chart_of_accounts(current_user: dict = Depends(require_admi
         {"code": "5110", "name_ar": "عمولات حوالات مدفوعة", "name_en": "Transfer Commission Paid", "category": "مصاريف", "parent_code": "5100", "currency": "IQD"},
     ]
     
-    # Check if already initialized
-    existing = await db.chart_of_accounts.count_documents({})
-    if existing > 0:
-        raise HTTPException(status_code=400, detail="Chart of accounts already initialized")
+    # Upsert accounts (insert only if not exist)
+    inserted_count = 0
+    updated_count = 0
     
-    # Insert all accounts
     for acc_data in default_accounts:
-        account = {
-            'id': str(uuid.uuid4()),
-            **acc_data,
-            'balance': 0.0,
-            'balance_iqd': 0.0,
-            'balance_usd': 0.0,
-            'is_active': True,
-            'created_at': datetime.now(timezone.utc).isoformat(),
-            'updated_at': datetime.now(timezone.utc).isoformat()
-        }
-        await db.chart_of_accounts.insert_one(account)
+        # Check if account with this code already exists
+        existing = await db.chart_of_accounts.find_one({'code': acc_data['code']})
+        
+        if not existing:
+            # Insert new account
+            account = {
+                'id': str(uuid.uuid4()),
+                **acc_data,
+                'balance': 0.0,
+                'balance_iqd': 0.0,
+                'balance_usd': 0.0,
+                'is_active': True,
+                'created_at': datetime.now(timezone.utc).isoformat(),
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }
+            await db.chart_of_accounts.insert_one(account)
+            inserted_count += 1
+        else:
+            # Update existing account with new fields if missing
+            update_fields = {}
+            if 'balance_iqd' not in existing:
+                update_fields['balance_iqd'] = 0.0
+            if 'balance_usd' not in existing:
+                update_fields['balance_usd'] = 0.0
+            if 'name' not in existing and 'name_ar' in acc_data:
+                update_fields['name'] = acc_data['name_ar']
+            if 'type' not in existing and 'category' in acc_data:
+                update_fields['type'] = acc_data['category']
+            
+            if update_fields:
+                update_fields['updated_at'] = datetime.now(timezone.utc).isoformat()
+                await db.chart_of_accounts.update_one(
+                    {'code': acc_data['code']},
+                    {'$set': update_fields}
+                )
+                updated_count += 1
     
-    return {"message": f"تم إنشاء {len(default_accounts)} حساب بنجاح", "count": len(default_accounts)}
+    return {
+        "message": f"تم إنشاء {inserted_count} حساب جديد وتحديث {updated_count} حساب موجود",
+        "inserted": inserted_count,
+        "updated": updated_count,
+        "total": len(default_accounts)
+    }
 
 @api_router.get("/accounting/accounts")
 async def get_chart_of_accounts(current_user: dict = Depends(require_admin)):
