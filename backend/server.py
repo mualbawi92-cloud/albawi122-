@@ -870,36 +870,42 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
     # Create accounting entry for agent automatically
     if user_data.role == 'agent':
         try:
-            # Get the highest exchange company account code
-            exchange_accounts = await db.accounts.find({
+            # Get the highest exchange company account code from chart_of_accounts
+            exchange_accounts = await db.chart_of_accounts.find({
                 'category': 'شركات الصرافة',
                 'code': {'$regex': '^2\\d{3}$'}
             }).sort('code', -1).to_list(length=1)
             
             if exchange_accounts:
                 last_code = int(exchange_accounts[0]['code'])
+                next_seq = last_code - 2000 + 1  # Get sequence number and increment
             else:
-                last_code = 2000
+                next_seq = 1
             
-            account_code = str(last_code + 1)
+            # Generate account code: 2000 + next_seq (e.g., 2001, 2002, 2003...)
+            account_code = str(2000 + next_seq)
             
-            # Create account
+            # Create account in chart_of_accounts
             account = {
                 'id': f'acc_{user_id}',
                 'code': account_code,
-                'name_ar': f'صيرفة {user_data.display_name}',
-                'name_en': f'Exchange {user_data.display_name}',
+                'name': f'صيرفة {user_data.display_name} - {user_data.governorate}',
+                'name_ar': f'صيرفة {user_data.display_name} - {user_data.governorate}',
+                'name_en': f'Exchange {user_data.display_name} - {user_data.governorate}',
                 'category': 'شركات الصرافة',
+                'type': 'شركات الصرافة',
                 'parent_code': None,
                 'is_active': True,
                 'balance': 0,
+                'balance_iqd': 0.0,
+                'balance_usd': 0.0,
                 'currency': 'IQD',
                 'agent_id': user_id,
                 'created_at': datetime.now(timezone.utc).isoformat(),
                 'updated_at': datetime.now(timezone.utc).isoformat()
             }
             
-            await db.accounts.insert_one(account)
+            await db.chart_of_accounts.insert_one(account)
             logger.info(f"Created accounting entry {account_code} for agent {user_data.display_name}")
         except Exception as e:
             logger.error(f"Failed to create accounting entry for agent: {str(e)}")
