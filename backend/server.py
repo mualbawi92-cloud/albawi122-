@@ -1389,14 +1389,14 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 await db.journal_entries.insert_one(journal_entry_commission)
                 
                 # Update balances for commission
-                await db.accounts.update_one(
+                await db.chart_of_accounts.update_one(
                     {'code': sender_account['code']},
-                    {'$inc': {'balance': commission_amount}}
+                    {'$inc': {'balance': commission_amount, 'balance_iqd': commission_amount}}
                 )
                 
-                await db.accounts.update_one(
+                await db.chart_of_accounts.update_one(
                     {'code': '4020'},
-                    {'$inc': {'balance': commission_amount}}
+                    {'$inc': {'balance': -commission_amount, 'balance_iqd': -commission_amount}}
                 )
             
             logger.info(f"Created journal entry for transfer {transfer_code}")
