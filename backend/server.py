@@ -2229,15 +2229,15 @@ async def receive_transfer(
                 
                 # Update balances for commission
                 # عمولات مدفوعة (مصروف يزداد بالمدين)
-                await db.accounts.update_one(
+                await db.chart_of_accounts.update_one(
                     {'code': '5110'},
-                    {'$inc': {'balance': incoming_commission}}
+                    {'$inc': {'balance': incoming_commission, 'balance_iqd': incoming_commission}}
                 )
                 
                 # حساب المستلم (يقل بالدائن - لأنه أصل)
-                await db.accounts.update_one(
+                await db.chart_of_accounts.update_one(
                     {'code': receiver_account['code']},
-                    {'$inc': {'balance': -incoming_commission}}
+                    {'$inc': {'balance': -incoming_commission, 'balance_iqd': -incoming_commission}}
                 )
                 
                 logger.info(f"Created journal entry for paid commission on transfer {transfer['transfer_code']}")
