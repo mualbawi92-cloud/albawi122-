@@ -2161,23 +2161,23 @@ async def receive_transfer(
             await db.journal_entries.insert_one(journal_entry)
             
             # Update account balances
-            # Transit account increases (debit for assets)
-            await db.accounts.update_one(
+            # Transit account decreases (credit for assets - إخراج من الترانزيت)
+            await db.chart_of_accounts.update_one(
                 {'code': '1030'},
-                {'$inc': {'balance': transfer['amount']}}
+                {'$inc': {'balance': -transfer['amount'], 'balance_iqd': -transfer['amount']}}
             )
             
-            # Receiver account decreases (credit for assets - دفع نقدية)
-            await db.accounts.update_one(
+            # Receiver account increases (debit for assets - استلام نقدية من الترانزيت)
+            await db.chart_of_accounts.update_one(
                 {'code': receiver_account['code']},
-                {'$inc': {'balance': -transfer['amount']}}
+                {'$inc': {'balance': transfer['amount'], 'balance_iqd': transfer['amount']}}
             )
             
             logger.info(f"Created journal entry for receiving transfer {transfer['transfer_code']}")
             
             # قيد 2: العمولة المدفوعة (إذا وجدت)
             if incoming_commission > 0:
-                # Get or create paid commission account
+                # Get paid commission account from chart_of_accounts
                 paid_commission_account = await db.accounts.find_one({'code': '5110'})
                 if not paid_commission_account:
                     paid_commission_account = {
