@@ -571,6 +571,19 @@ class Account(BaseModel):
     created_at: str
     updated_at: str
 
+class CategoryCreate(BaseModel):
+    """Model for creating a new account category/section"""
+    name_ar: str
+    name_en: str
+    description: Optional[str] = None
+    is_system: bool = False  # True for system categories (agents, customers, etc.)
+
+class CategoryUpdate(BaseModel):
+    """Model for updating an existing category"""
+    name_ar: Optional[str] = None
+    name_en: Optional[str] = None
+    description: Optional[str] = None
+
 class AccountCreate(BaseModel):
     code: str
     name: Optional[str] = None
@@ -581,6 +594,13 @@ class AccountCreate(BaseModel):
     notes: Optional[str] = None
     parent_code: Optional[str] = None
     currency: str = "IQD"
+
+class AccountUpdate(BaseModel):
+    """Model for updating account name"""
+    name: Optional[str] = None
+    name_ar: Optional[str] = None
+    name_en: Optional[str] = None
+    notes: Optional[str] = None
 
 class JournalEntry(BaseModel):
     """Journal entry (قيد يومية)"""
