@@ -1750,15 +1750,15 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
             
             # Update account balances
             # Transit account increases (debit for assets)
-            await db.accounts.update_one(
+            await db.chart_of_accounts.update_one(
                 {'code': '1030'},
-                {'$inc': {'balance': transfer['amount']}}
+                {'$inc': {'balance': transfer['amount'], 'balance_iqd': transfer['amount']}}
             )
             
             # Sender account decreases (credit for assets - رد النقدية)
-            await db.accounts.update_one(
+            await db.chart_of_accounts.update_one(
                 {'code': sender_account['code']},
-                {'$inc': {'balance': -transfer['amount']}}
+                {'$inc': {'balance': -transfer['amount'], 'balance_iqd': -transfer['amount']}}
             )
             
             logger.info(f"Created reversal journal entry for cancelled transfer {transfer['transfer_code']}")
