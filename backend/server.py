@@ -3891,6 +3891,191 @@ async def delete_account(account_code: str, current_user: dict = Depends(require
     
     return {"message": "تم حذف الحساب بنجاح", "code": account_code}
 
+
+# ============================================
+# Account Categories Endpoints (أقسام الحسابات)
+# ============================================
+
+@api_router.get("/accounting/categories")
+async def get_categories(current_user: dict = Depends(require_admin)):
+    """
+    Get all account categories
+    """
+    categories = await db.account_categories.find({'is_active': True}).sort('code', 1).to_list(length=None)
+    
+    # Add account count for each category
+    for category in categories:
+        category.pop('_id', None)
+        # Count accounts in this category
+        account_count = await db.chart_of_accounts.count_documents({
+            'category': category['name_ar'],
+            'is_active': True
+        })
+        category['account_count'] = account_count
+    
+    return {"categories": categories}
+
+@api_router.post("/accounting/categories")
+async def create_category(category_data: CategoryCreate, current_user: dict = Depends(require_admin)):
+    """
+    Create a new account category
+    """
+    # Find the highest code to generate next one
+    existing = await db.account_categories.find().sort('code', -1).limit(1).to_list(1)
+    
+    if existing:
+        last_code = int(existing[0].get('code', '7'))
+        next_code = str(last_code + 1)
+    else:
+        next_code = '8'  # Start from 8 for user-created categories
+    
+    # Check if category name already exists
+    duplicate = await db.account_categories.find_one({
+        '$or': [
+            {'name_ar': category_data.name_ar},
+            {'name_en': category_data.name_en}
+        ]
+    })
+    
+    if duplicate:
+        raise HTTPException(status_code=400, detail="اسم القسم موجود مسبقاً")
+    
+    category = {
+        'id': str(uuid.uuid4()),
+        'code': next_code,
+        'name_ar': category_data.name_ar,
+        'name_en': category_data.name_en,
+        'description': category_data.description,
+        'is_system': category_data.is_system,
+        'is_active': True,
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'updated_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.account_categories.insert_one(category)
+    category.pop('_id', None)
+    category['account_count'] = 0
+    
+    return category
+
+@api_router.put("/accounting/categories/{category_id}")
+async def update_category(
+    category_id: str,
+    category_data: CategoryUpdate,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Update an existing category
+    """
+    # Check if category exists
+    category = await db.account_categories.find_one({'id': category_id})
+    if not category:
+        raise HTTPException(status_code=404, detail="القسم غير موجود")
+    
+    # Prevent editing system categories
+    if category.get('is_system', False):
+        raise HTTPException(status_code=400, detail="لا يمكن تعديل الأقسام الأساسية للنظام")
+    
+    # Prepare update data
+    update_data = {}
+    if category_data.name_ar:
+        update_data['name_ar'] = category_data.name_ar
+    if category_data.name_en:
+        update_data['name_en'] = category_data.name_en
+    if category_data.description is not None:
+        update_data['description'] = category_data.description
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="لا توجد بيانات للتحديث")
+    
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.account_categories.update_one(
+        {'id': category_id},
+        {'$set': update_data}
+    )
+    
+    # Get updated category
+    updated = await db.account_categories.find_one({'id': category_id})
+    updated.pop('_id', None)
+    
+    return updated
+
+@api_router.delete("/accounting/categories/{category_id}")
+async def delete_category(category_id: str, current_user: dict = Depends(require_admin)):
+    """
+    Delete a category (only if it has no accounts)
+    """
+    # Check if category exists
+    category = await db.account_categories.find_one({'id': category_id})
+    if not category:
+        raise HTTPException(status_code=404, detail="القسم غير موجود")
+    
+    # Prevent deleting system categories
+    if category.get('is_system', False):
+        raise HTTPException(status_code=400, detail="لا يمكن حذف الأقسام الأساسية للنظام")
+    
+    # Check if category has accounts
+    account_count = await db.chart_of_accounts.count_documents({
+        'category': category['name_ar'],
+        'is_active': True
+    })
+    
+    if account_count > 0:
+        raise HTTPException(
+            status_code=400,
+            detail=f"لا يمكن حذف القسم لأنه يحتوي على {account_count} حساب. يجب حذف الحسابات أولاً"
+        )
+    
+    # Delete the category
+    result = await db.account_categories.delete_one({'id': category_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=500, detail="فشل حذف القسم")
+    
+    return {"message": "تم حذف القسم بنجاح", "category_id": category_id}
+
+@api_router.patch("/accounting/accounts/{account_code}")
+async def update_account(
+    account_code: str,
+    account_data: AccountUpdate,
+    current_user: dict = Depends(require_admin)
+):
+    """
+    Update account name and details
+    """
+    # Check if account exists
+    account = await db.chart_of_accounts.find_one({'code': account_code})
+    if not account:
+        raise HTTPException(status_code=404, detail="الحساب غير موجود")
+    
+    # Prepare update data
+    update_data = {}
+    if account_data.name:
+        update_data['name'] = account_data.name
+    if account_data.name_ar:
+        update_data['name_ar'] = account_data.name_ar
+    if account_data.name_en:
+        update_data.name_en
+    if account_data.notes is not None:
+        update_data['notes'] = account_data.notes
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="لا توجد بيانات للتحديث")
+    
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.chart_of_accounts.update_one(
+        {'code': account_code},
+        {'$set': update_data}
+    )
+    
+    # Get updated account
+    updated = await db.chart_of_accounts.find_one({'code': account_code})
+    updated.pop('_id', None)
+    
+    return updated
+
 # ============================================
 # Journal Entry Endpoints (القيود المحاسبية)
 # ============================================
