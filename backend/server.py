@@ -1283,11 +1283,13 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                     'parent_code': None,
                     'is_active': True,
                     'balance': 0,
+                    'balance_iqd': 0,
+                    'balance_usd': 0,
                     'currency': 'IQD',
                     'created_at': datetime.now(timezone.utc).isoformat(),
                     'updated_at': datetime.now(timezone.utc).isoformat()
                 }
-                await db.accounts.insert_one(transit_account)
+                await db.chart_of_accounts.insert_one(transit_account)
             
             # Create journal entry for transfer
             # سنسجل قيدين منفصلين لوضوح أكثر
