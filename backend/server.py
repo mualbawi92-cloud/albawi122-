@@ -4056,7 +4056,7 @@ async def update_account(
     if account_data.name_ar:
         update_data['name_ar'] = account_data.name_ar
     if account_data.name_en:
-        update_data.name_en
+        update_data['name_en'] = account_data.name_en
     if account_data.notes is not None:
         update_data['notes'] = account_data.notes
     
