@@ -1326,20 +1326,20 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             await db.journal_entries.insert_one(journal_entry_transfer)
             
             # Update balances for transfer
-            await db.accounts.update_one(
+            await db.chart_of_accounts.update_one(
                 {'code': sender_account['code']},
-                {'$inc': {'balance': transfer_data.amount}}
+                {'$inc': {'balance': transfer_data.amount, 'balance_iqd': transfer_data.amount}}
             )
             
-            await db.accounts.update_one(
+            await db.chart_of_accounts.update_one(
                 {'code': '1030'},
-                {'$inc': {'balance': -transfer_data.amount}}
+                {'$inc': {'balance': -transfer_data.amount, 'balance_iqd': -transfer_data.amount}}
             )
             
             # قيد 2: العمولة فقط (إذا وجدت)
             if commission_amount > 0:
-                # Get or create earned commission account
-                commission_account = await db.accounts.find_one({'code': '4020'})
+                # Get earned commission account from chart_of_accounts
+                commission_account = await db.chart_of_accounts.find_one({'code': '4020'})
                 if not commission_account:
                     commission_account = {
                         'id': 'earned_commissions',
