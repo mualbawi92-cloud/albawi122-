@@ -1268,15 +1268,18 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         sender_account = await db.accounts.find_one({'agent_id': current_user['id']})
         
         if sender_account:
-            # Get or create Transit account
-            transit_account = await db.accounts.find_one({'code': '1030'})
+            # Get Transit account from chart_of_accounts
+            transit_account = await db.chart_of_accounts.find_one({'code': '1030'})
             if not transit_account:
+                # Create Transit account if not exists
                 transit_account = {
                     'id': 'transit_account',
                     'code': '1030',
-                    'name_ar': 'الحوالات الواردة لم تُسلَّم',
-                    'name_en': 'Transit Account',
-                    'category': 'أصول',
+                    'name': 'حساب الترانزيت - الحوالات الواردة لم تُسلم',
+                    'name_ar': 'حساب الترانزيت - الحوالات الواردة لم تُسلم',
+                    'name_en': 'Transit Account - Pending Transfers',
+                    'category': 'الأصول',
+                    'type': 'الأصول',
                     'parent_code': None,
                     'is_active': True,
                     'balance': 0,
