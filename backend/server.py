@@ -2178,22 +2178,26 @@ async def receive_transfer(
             # قيد 2: العمولة المدفوعة (إذا وجدت)
             if incoming_commission > 0:
                 # Get paid commission account from chart_of_accounts
-                paid_commission_account = await db.accounts.find_one({'code': '5110'})
+                paid_commission_account = await db.chart_of_accounts.find_one({'code': '5110'})
                 if not paid_commission_account:
                     paid_commission_account = {
                         'id': 'paid_commissions_transfer',
                         'code': '5110',
+                        'name': 'عمولات حوالات مدفوعة',
                         'name_ar': 'عمولات حوالات مدفوعة',
                         'name_en': 'Transfer Commission Paid',
-                        'category': 'مصاريف',
-                        'parent_code': '5100',
+                        'category': 'المصروفات',
+                        'type': 'المصروفات',
+                        'parent_code': None,
                         'is_active': True,
                         'balance': 0,
+                        'balance_iqd': 0,
+                        'balance_usd': 0,
                         'currency': 'IQD',
                         'created_at': datetime.now(timezone.utc).isoformat(),
                         'updated_at': datetime.now(timezone.utc).isoformat()
                     }
-                    await db.accounts.insert_one(paid_commission_account)
+                    await db.chart_of_accounts.insert_one(paid_commission_account)
                 
                 journal_entry_commission = {
                     'id': str(uuid.uuid4()),
