@@ -1344,17 +1344,21 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                     commission_account = {
                         'id': 'earned_commissions',
                         'code': '4020',
+                        'name': 'عمولات محققة',
                         'name_ar': 'عمولات محققة',
                         'name_en': 'Earned Commissions',
-                        'category': 'إيرادات',
+                        'category': 'الأرباح والخسائر',
+                        'type': 'الأرباح والخسائر',
                         'parent_code': None,
                         'is_active': True,
                         'balance': 0,
+                        'balance_iqd': 0,
+                        'balance_usd': 0,
                         'currency': 'IQD',
                         'created_at': datetime.now(timezone.utc).isoformat(),
                         'updated_at': datetime.now(timezone.utc).isoformat()
                     }
-                    await db.accounts.insert_one(commission_account)
+                    await db.chart_of_accounts.insert_one(commission_account)
                 
                 journal_entry_commission = {
                     'id': str(uuid.uuid4()),
