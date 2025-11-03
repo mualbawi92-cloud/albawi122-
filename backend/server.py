@@ -3892,6 +3892,113 @@ async def delete_account(account_code: str, current_user: dict = Depends(require
     return {"message": "تم حذف الحساب بنجاح", "code": account_code}
 
 
+@api_router.post("/accounting/initialize-categories")
+async def initialize_categories(current_user: dict = Depends(require_admin)):
+    """
+    Initialize default account categories
+    """
+    default_categories = [
+        {
+            "code": "1",
+            "name_ar": "الأصول",
+            "name_en": "Assets",
+            "description": "أصول الشركة من نقد وحسابات مدينة وغيرها",
+            "is_system": True
+        },
+        {
+            "code": "2",
+            "name_ar": "شركات الصرافة",
+            "name_en": "Exchange Companies",
+            "description": "حسابات الوكلاء والصرافين المسجلين في النظام",
+            "is_system": True
+        },
+        {
+            "code": "3",
+            "name_ar": "الزبائن",
+            "name_en": "Customers",
+            "description": "حسابات العملاء والزبائن",
+            "is_system": False
+        },
+        {
+            "code": "4",
+            "name_ar": "الأرباح والخسائر",
+            "name_en": "Profit and Loss",
+            "description": "الإيرادات والمصروفات",
+            "is_system": False
+        },
+        {
+            "code": "5",
+            "name_ar": "المصروفات",
+            "name_en": "Expenses",
+            "description": "مصروفات الشركة بما فيها العمولات المدفوعة",
+            "is_system": False
+        },
+        {
+            "code": "6",
+            "name_ar": "البنوك",
+            "name_en": "Banks",
+            "description": "حسابات البنوك",
+            "is_system": False
+        },
+        {
+            "code": "7",
+            "name_ar": "الصناديق",
+            "name_en": "Cash Accounts",
+            "description": "صناديق النقد",
+            "is_system": False
+        },
+        {
+            "code": "8",
+            "name_ar": "الالتزامات",
+            "name_en": "Liabilities",
+            "description": "التزامات الشركة",
+            "is_system": False
+        }
+    ]
+    
+    inserted_count = 0
+    updated_count = 0
+    
+    for cat_data in default_categories:
+        existing = await db.account_categories.find_one({'code': cat_data['code']})
+        
+        if not existing:
+            category = {
+                'id': str(uuid.uuid4()),
+                **cat_data,
+                'is_active': True,
+                'created_at': datetime.now(timezone.utc).isoformat(),
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }
+            await db.account_categories.insert_one(category)
+            inserted_count += 1
+        else:
+            # Update if needed
+            update_fields = {}
+            if 'name_ar' in cat_data:
+                update_fields['name_ar'] = cat_data['name_ar']
+            if 'name_en' in cat_data:
+                update_fields['name_en'] = cat_data['name_en']
+            if 'description' in cat_data:
+                update_fields['description'] = cat_data['description']
+            
+            if update_fields:
+                update_fields['updated_at'] = datetime.now(timezone.utc).isoformat()
+                await db.account_categories.update_one(
+                    {'code': cat_data['code']},
+                    {'$set': update_fields}
+                )
+                updated_count += 1
+    
+    return {
+        "message": f"تم إنشاء {inserted_count} قسم جديد وتحديث {updated_count} قسم موجود",
+        "inserted": inserted_count,
+        "updated": updated_count,
+        "total": len(default_categories)
+    }
+
+
+
 # ============================================
 # Account Categories Endpoints (أقسام الحسابات)
 # ============================================
