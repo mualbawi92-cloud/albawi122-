@@ -629,6 +629,17 @@ const Navbar = () => {
                     >
                       💰 العمولات
                     </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/commissions-management');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      ⚙️ إدارة العمولات
+                    </Button>
                   </div>
                 )}
               </div>
