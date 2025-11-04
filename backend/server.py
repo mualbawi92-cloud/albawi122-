@@ -5357,27 +5357,27 @@ async def create_currency_revaluation(
         if revaluation_data.direction == 'iqd_to_usd':
             # من دينار إلى دولار (يشتري دولار)
             if revaluation_data.operation_type == 'debit':
-            # خصم دينار (مدين)، إضافة دولار (دائن)
-            debit_entry = {
-                'account_code': revaluation_data.account_code,
-                'account_name': account_name,
-                'debit': revaluation_data.amount,
-                'credit': 0,
-                'currency': 'IQD',
-                'description': f'تقويم قطع - خصم {revaluation_data.amount:,.0f} دينار'
-            }
-            credit_entry = {
-                'account_code': revaluation_data.account_code,
-                'account_name': account_name,
-                'debit': 0,
-                'credit': equivalent_amount,
-                'currency': 'USD',
-                'description': f'تقويم قطع - إضافة {equivalent_amount:,.2f} دولار'
-            }
-        else:
-            # إضافة دينار (دائن)، خصم دولار (مدين)
-            credit_entry = {
-                'account_code': revaluation_data.account_code,
+                # خصم دينار (مدين)، إضافة دولار (دائن)
+                debit_entry = {
+                    'account_code': revaluation_data.account_code,
+                    'account_name': account_name,
+                    'debit': revaluation_data.amount,
+                    'credit': 0,
+                    'currency': 'IQD',
+                    'description': f'تقويم قطع - خصم {revaluation_data.amount:,.0f} دينار'
+                }
+                credit_entry = {
+                    'account_code': revaluation_data.account_code,
+                    'account_name': account_name,
+                    'debit': 0,
+                    'credit': equivalent_amount,
+                    'currency': 'USD',
+                    'description': f'تقويم قطع - إضافة {equivalent_amount:,.2f} دولار'
+                }
+            else:
+                # إضافة دينار (دائن)، خصم دولار (مدين)
+                credit_entry = {
+                    'account_code': revaluation_data.account_code,
                 'account_name': account_name,
                 'debit': 0,
                 'credit': revaluation_data.amount,
