@@ -53,6 +53,21 @@ const AddAgentPage = () => {
     wallet_limit_usd: ''
   });
 
+  // Fetch available accounts on mount
+  useEffect(() => {
+    fetchAvailableAccounts();
+  }, []);
+
+  const fetchAvailableAccounts = async () => {
+    try {
+      const response = await axios.get(`${API}/agents/available-accounts`);
+      setAccounts(response.data.accounts || []);
+    } catch (error) {
+      console.error('Error fetching accounts:', error);
+      toast.error('خطأ في تحميل الحسابات');
+    }
+  };
+
   // Check if user is admin
   if (user?.role !== 'admin') {
     navigate('/dashboard');
@@ -61,6 +76,13 @@ const AddAgentPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate required fields
+    if (!formData.account_code) {
+      toast.error('⚠️ يجب اختيار حساب مالي من قسم شركات الصرافة قبل حفظ الصراف');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -71,6 +93,7 @@ const AddAgentPage = () => {
         governorate: formData.governorate,
         phone: formData.phone,
         address: formData.address,
+        account_code: formData.account_code, // إجباري
         role: 'agent',
         wallet_limit_iqd: parseFloat(formData.wallet_limit_iqd) || 0,
         wallet_limit_usd: parseFloat(formData.wallet_limit_usd) || 0
