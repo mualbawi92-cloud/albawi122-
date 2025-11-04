@@ -714,6 +714,7 @@ class UserCreate(BaseModel):
     phone: str
     address: Optional[str] = None  # عنوان الصيرفة
     role: str = "agent"
+    account_code: Optional[str] = None  # رقم الحساب المحاسبي المرتبط (إجباري للصرافين)
     wallet_limit_iqd: float = 0.0  # حد أقصى للسحب بالدينار
     wallet_limit_usd: float = 0.0  # حد أقصى للسحب بالدولار
 
@@ -726,6 +727,7 @@ class User(BaseModel):
     governorate: Optional[str] = None
     phone: Optional[str] = None
     address: Optional[str] = None  # عنوان الصيرفة
+    account_code: Optional[str] = None  # رقم الحساب المحاسبي
     is_active: bool = True
     wallet_balance_iqd: float = 0.0
     wallet_balance_usd: float = 0.0
