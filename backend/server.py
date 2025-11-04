@@ -5314,26 +5314,27 @@ async def create_currency_revaluation(
     تنفيذ عملية تقويم قطع لحساب من الدليل المحاسبي
     """
     
-    # Get account from chart of accounts (same as used in journal/ledger)
-    account = await db.chart_of_accounts.find_one({'code': revaluation_data.account_code})
-    if not account:
-        raise HTTPException(status_code=404, detail="Account not found in chart of accounts")
-    
-    # Validate inputs
-    if revaluation_data.amount <= 0:
-        raise HTTPException(status_code=400, detail="Amount must be positive")
-    
-    if revaluation_data.exchange_rate <= 0:
-        raise HTTPException(status_code=400, detail="Exchange rate must be positive")
-    
-    if revaluation_data.currency not in ['IQD', 'USD']:
-        raise HTTPException(status_code=400, detail="Currency must be IQD or USD")
-    
-    if revaluation_data.operation_type not in ['debit', 'credit']:
-        raise HTTPException(status_code=400, detail="Operation type must be debit or credit")
-    
-    if revaluation_data.direction not in ['iqd_to_usd', 'usd_to_iqd']:
-        raise HTTPException(status_code=400, detail="Direction must be iqd_to_usd or usd_to_iqd")
+    try:
+        # Get account from chart of accounts (same as used in journal/ledger)
+        account = await db.chart_of_accounts.find_one({'code': revaluation_data.account_code})
+        if not account:
+            raise HTTPException(status_code=404, detail="الحساب غير موجود في الدليل المحاسبي")
+        
+        # Validate inputs
+        if revaluation_data.amount <= 0:
+            raise HTTPException(status_code=400, detail="المبلغ يجب أن يكون أكبر من صفر")
+        
+        if revaluation_data.exchange_rate <= 0:
+            raise HTTPException(status_code=400, detail="سعر الصرف يجب أن يكون أكبر من صفر")
+        
+        if revaluation_data.currency not in ['IQD', 'USD']:
+            raise HTTPException(status_code=400, detail="العملة يجب أن تكون IQD أو USD")
+        
+        if revaluation_data.operation_type not in ['debit', 'credit']:
+            raise HTTPException(status_code=400, detail="نوع العملية يجب أن يكون debit أو credit")
+        
+        if revaluation_data.direction not in ['iqd_to_usd', 'usd_to_iqd']:
+            raise HTTPException(status_code=400, detail="الاتجاه يجب أن يكون iqd_to_usd أو usd_to_iqd")
     
     # Calculate equivalent amount
     if revaluation_data.direction == 'iqd_to_usd':
