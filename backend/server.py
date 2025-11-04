@@ -5378,61 +5378,61 @@ async def create_currency_revaluation(
                 # إضافة دينار (دائن)، خصم دولار (مدين)
                 credit_entry = {
                     'account_code': revaluation_data.account_code,
-                'account_name': account_name,
-                'debit': 0,
-                'credit': revaluation_data.amount,
-                'currency': 'IQD',
-                'description': f'تقويم قطع - إضافة {revaluation_data.amount:,.0f} دينار'
-            }
-            debit_entry = {
-                'account_code': revaluation_data.account_code,
-                'account_name': account_name,
-                'debit': equivalent_amount,
-                'credit': 0,
-                'currency': 'USD',
-                'description': f'تقويم قطع - خصم {equivalent_amount:,.2f} دولار'
-            }
-    else:
-        # من دولار إلى دينار (يبيع دولار)
-        if revaluation_data.operation_type == 'debit':
-            # خصم دولار (مدين)، إضافة دينار (دائن)
-            debit_entry = {
-                'account_code': revaluation_data.account_code,
-                'account_name': account_name,
-                'debit': revaluation_data.amount,
-                'credit': 0,
-                'currency': 'USD',
-                'description': f'تقويم قطع - خصم {revaluation_data.amount:,.2f} دولار'
-            }
-            credit_entry = {
-                'account_code': revaluation_data.account_code,
-                'account_name': account_name,
-                'debit': 0,
-                'credit': equivalent_amount,
-                'currency': 'IQD',
-                'description': f'تقويم قطع - إضافة {equivalent_amount:,.0f} دينار'
-            }
+                    'account_name': account_name,
+                    'debit': 0,
+                    'credit': revaluation_data.amount,
+                    'currency': 'IQD',
+                    'description': f'تقويم قطع - إضافة {revaluation_data.amount:,.0f} دينار'
+                }
+                debit_entry = {
+                    'account_code': revaluation_data.account_code,
+                    'account_name': account_name,
+                    'debit': equivalent_amount,
+                    'credit': 0,
+                    'currency': 'USD',
+                    'description': f'تقويم قطع - خصم {equivalent_amount:,.2f} دولار'
+                }
         else:
-            # إضافة دولار (دائن)، خصم دينار (مدين)
-            credit_entry = {
-                'account_code': revaluation_data.account_code,
-                'account_name': account_name,
-                'debit': 0,
-                'credit': revaluation_data.amount,
-                'currency': 'USD',
-                'description': f'تقويم قطع - إضافة {revaluation_data.amount:,.2f} دولار'
-            }
-            debit_entry = {
-                'account_code': revaluation_data.account_code,
-                'account_name': account_name,
-                'debit': equivalent_amount,
-                'credit': 0,
-                'currency': 'IQD',
-                'description': f'تقويم قطع - خصم {equivalent_amount:,.0f} دينار'
-            }
-    
-    # Create journal entry with correct structure
-    journal_entry = {
+            # من دولار إلى دينار (يبيع دولار)
+            if revaluation_data.operation_type == 'debit':
+                # خصم دولار (مدين)، إضافة دينار (دائن)
+                debit_entry = {
+                    'account_code': revaluation_data.account_code,
+                    'account_name': account_name,
+                    'debit': revaluation_data.amount,
+                    'credit': 0,
+                    'currency': 'USD',
+                    'description': f'تقويم قطع - خصم {revaluation_data.amount:,.2f} دولار'
+                }
+                credit_entry = {
+                    'account_code': revaluation_data.account_code,
+                    'account_name': account_name,
+                    'debit': 0,
+                    'credit': equivalent_amount,
+                    'currency': 'IQD',
+                    'description': f'تقويم قطع - إضافة {equivalent_amount:,.0f} دينار'
+                }
+            else:
+                # إضافة دولار (دائن)، خصم دينار (مدين)
+                credit_entry = {
+                    'account_code': revaluation_data.account_code,
+                    'account_name': account_name,
+                    'debit': 0,
+                    'credit': revaluation_data.amount,
+                    'currency': 'USD',
+                    'description': f'تقويم قطع - إضافة {revaluation_data.amount:,.2f} دولار'
+                }
+                debit_entry = {
+                    'account_code': revaluation_data.account_code,
+                    'account_name': account_name,
+                    'debit': equivalent_amount,
+                    'credit': 0,
+                    'currency': 'IQD',
+                    'description': f'تقويم قطع - خصم {equivalent_amount:,.0f} دينار'
+                }
+        
+        # Create journal entry with correct structure
+        journal_entry = {
         'id': journal_entry_id,
         'entry_number': f'REV-{revaluation_id[:8]}',
         'date': datetime.now(timezone.utc).isoformat(),
