@@ -1344,7 +1344,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 'description': f'حوالة من {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {transfer_code}',
                 'lines': [
                     {
-                        'account_code': sender_account['code'],
+                        'account_code': sender_account_code,
                         'debit': transfer_data.amount,
                         'credit': 0
                     },
@@ -1367,7 +1367,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             
             # Update balances for transfer
             await db.chart_of_accounts.update_one(
-                {'code': sender_account['code']},
+                {'code': sender_account_code},
                 {'$inc': {'balance': transfer_data.amount, 'balance_iqd': transfer_data.amount}}
             )
             
