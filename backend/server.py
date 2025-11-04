@@ -1347,12 +1347,14 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                     {
                         'account_code': sender_account_code,
                         'debit': transfer_data.amount,
-                        'credit': 0
+                        'credit': 0,
+                        'currency': 'IQD'  # العملة
                     },
                     {
                         'account_code': '1030',
                         'debit': 0,
-                        'credit': transfer_data.amount
+                        'credit': transfer_data.amount,
+                        'currency': 'IQD'  # العملة
                     }
                 ],
                 'total_debit': transfer_data.amount,
