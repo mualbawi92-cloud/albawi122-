@@ -594,6 +594,7 @@ class AccountCreate(BaseModel):
     notes: Optional[str] = None
     parent_code: Optional[str] = None
     currency: str = "IQD"
+    currencies: Optional[list[str]] = ["IQD"]  # العملات المسموح بها للحساب
 
 class AccountUpdate(BaseModel):
     """Model for updating account name"""
