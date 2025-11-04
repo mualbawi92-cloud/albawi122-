@@ -5349,7 +5349,8 @@ async def create_currency_revaluation(
     # Create journal entry
     journal_entry_id = str(uuid.uuid4())
     
-    account_name = account['name']
+    # Get account name safely
+    account_name = account.get('name') or account.get('name_ar') or account.get('code', 'Unknown')
     
     # Determine debit/credit based on operation type and direction
     if revaluation_data.direction == 'iqd_to_usd':
