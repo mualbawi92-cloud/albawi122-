@@ -864,10 +864,42 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
     if not user_data.phone:
         raise HTTPException(status_code=400, detail="رقم الهاتف مطلوب")
     
+    # For agents, account_code is required
+    if user_data.role == 'agent' and not user_data.account_code:
+        raise HTTPException(
+            status_code=400, 
+            detail="⚠️ يجب اختيار حساب مالي من قسم شركات الصرافة قبل حفظ الصراف"
+        )
+    
     # Check if username exists
     existing = await db.users.find_one({'username': user_data.username})
     if existing:
         raise HTTPException(status_code=400, detail=f"اسم المستخدم '{user_data.username}' موجود مسبقاً")
+    
+    # For agents, validate account_code
+    if user_data.role == 'agent':
+        # Check if account exists in chart_of_accounts
+        account = await db.chart_of_accounts.find_one({'code': user_data.account_code})
+        if not account:
+            raise HTTPException(status_code=404, detail=f"الحساب {user_data.account_code} غير موجود")
+        
+        # Check if account is in "شركات الصرافة" category
+        if account.get('category') != 'شركات الصرافة':
+            raise HTTPException(
+                status_code=400,
+                detail="الحساب المختار يجب أن يكون من قسم شركات الصرافة"
+            )
+        
+        # Check if account is already linked to another agent (1:1 relationship)
+        existing_agent = await db.users.find_one({
+            'account_code': user_data.account_code,
+            'role': 'agent'
+        })
+        if existing_agent:
+            raise HTTPException(
+                status_code=400,
+                detail=f"الحساب {user_data.account_code} مرتبط بالفعل بصراف آخر: {existing_agent.get('display_name')}"
+            )
     
     user_id = str(uuid.uuid4())
     password_hash = bcrypt.hashpw(user_data.password.encode(), bcrypt.gensalt()).decode()
@@ -881,6 +913,7 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
         'governorate': user_data.governorate,
         'phone': user_data.phone,
         'address': user_data.address,
+        'account_code': user_data.account_code if user_data.role == 'agent' else None,
         'is_active': True,
         'wallet_balance_iqd': 0.0,
         'wallet_balance_usd': 0.0,
@@ -891,6 +924,24 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
     
     await db.users.insert_one(user_doc)
     await log_audit(None, current_user['id'], 'user_created', {'new_user_id': user_id})
+    
+    # Update the account with agent_id for reference
+    if user_data.role == 'agent' and user_data.account_code:
+        await db.chart_of_accounts.update_one(
+            {'code': user_data.account_code},
+            {
+                '$set': {
+                    'agent_id': user_id,
+                    'agent_name': user_data.display_name,
+                    'updated_at': datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        logger.info(f"Linked account {user_data.account_code} to agent {user_data.display_name}")
+    
+    user_doc.pop('_id', None)
+    user_doc.pop('password_hash', None)
+    return User(**user_doc)
     
     # Create accounting entry for agent automatically
     if user_data.role == 'agent':
