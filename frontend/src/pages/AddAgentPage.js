@@ -235,6 +235,39 @@ const AddAgentPage = () => {
                 />
               </div>
 
+              {/* Accounting Account Selection - REQUIRED */}
+              <div className="space-y-2 bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
+                <Label htmlFor="account_code" className="text-base font-bold text-red-600">
+                  🔗 الحساب المحاسبي المرتبط * (إجباري)
+                </Label>
+                <select
+                  id="account_code"
+                  data-testid="account-code-select"
+                  value={formData.account_code}
+                  onChange={(e) => setFormData({ ...formData, account_code: e.target.value })}
+                  required
+                  className="w-full border rounded-md p-3 text-base h-12"
+                >
+                  <option value="">اختر حساب من قسم شركات الصرافة</option>
+                  {accounts
+                    .filter(acc => !acc.is_linked) // فقط الحسابات غير المرتبطة
+                    .map(acc => (
+                      <option key={acc.code} value={acc.code}>
+                        [{acc.code}] {acc.name || acc.name_ar}
+                      </option>
+                    ))
+                  }
+                </select>
+                <p className="text-sm text-gray-600 mt-1">
+                  💡 يجب اختيار حساب من قسم "شركات الصرافة" لربطه بالصراف
+                </p>
+                {accounts.filter(acc => !acc.is_linked).length === 0 && (
+                  <p className="text-sm text-red-600 mt-1">
+                    ⚠️ لا توجد حسابات متاحة! يرجى إنشاء حساب جديد من الدليل المحاسبي أولاً
+                  </p>
+                )}
+              </div>
+
               {/* Wallet Limits */}
               <div className="space-y-2">
                 <Label htmlFor="wallet_limit_iqd" className="text-base font-bold">
