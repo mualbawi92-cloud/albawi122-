@@ -4420,11 +4420,17 @@ async def get_account_ledger(
     
     # Filter and transform entries containing this account
     ledger_entries = []
-    running_balance = 0
+    running_balance_iqd = 0
+    running_balance_usd = 0
     
     for entry in entries:
         for line in entry.get('lines', []):
             if line.get('account_code') == account_code:
+                # فلتر حسب العملة إذا تم تحديدها
+                line_currency = line.get('currency', 'IQD')
+                if currency and line_currency != currency:
+                    continue  # تجاهل هذا السطر إذا لم يطابق العملة المطلوبة
+                
                 debit = line.get('debit', 0)
                 credit = line.get('credit', 0)
                 
@@ -4435,15 +4441,22 @@ async def get_account_ledger(
                 else:
                     balance_change = credit - debit
                 
-                running_balance += balance_change
+                # Update running balance based on currency
+                if line_currency == 'IQD':
+                    running_balance_iqd += balance_change
+                    current_balance = running_balance_iqd
+                else:
+                    running_balance_usd += balance_change
+                    current_balance = running_balance_usd
                 
                 ledger_entries.append({
                     'date': entry['date'],
-                    'entry_number': entry['entry_number'],
-                    'description': entry['description'],
+                    'entry_number': entry.get('entry_number', 'N/A'),
+                    'description': entry.get('description', ''),
                     'debit': debit,
                     'credit': credit,
-                    'balance': running_balance
+                    'balance': current_balance,
+                    'currency': line_currency  # إضافة العملة
                 })
     
     account.pop('_id', None)
@@ -4452,7 +4465,9 @@ async def get_account_ledger(
         "account": account,
         "entries": ledger_entries,
         "total_entries": len(ledger_entries),
-        "current_balance": account.get('balance', 0)
+        "current_balance_iqd": running_balance_iqd,
+        "current_balance_usd": running_balance_usd,
+        "filtered_currency": currency
     }
 
 @api_router.patch("/accounting/journal-entries/{entry_id}")
