@@ -5511,6 +5511,17 @@ async def create_currency_revaluation(
         'journal_entry_id': journal_entry_id,
         'message': 'تمت عملية التقويم بنجاح'
     }
+    
+    except HTTPException as he:
+        # Re-raise HTTP exceptions as-is
+        raise he
+    except Exception as e:
+        # Log the error for debugging
+        logger.error(f"Error in currency revaluation: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"حدث خطأ أثناء تنفيذ العملية: {str(e)}"
+        )
 
 @api_router.post("/sync-agents-to-chart")
 async def sync_agents_to_chart_of_accounts(current_user: dict = Depends(require_admin)):
