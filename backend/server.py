@@ -4380,12 +4380,13 @@ async def get_account_ledger(
     account_code: str,
     start_date: str = None,
     end_date: str = None,
+    currency: str = None,  # فلتر العملة: IQD, USD, أو None للكل
     page: int = 1,
     limit: int = 100,
     current_user: dict = Depends(require_admin)
 ):
     """
-    Get ledger for a specific account (دفتر الأستاذ) with pagination
+    Get ledger for a specific account (دفتر الأستاذ) with pagination and currency filter
     """
     # Verify account exists (using chart_of_accounts)
     account = await db.chart_of_accounts.find_one({'code': account_code})
