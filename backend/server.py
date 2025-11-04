@@ -5508,10 +5508,10 @@ async def create_currency_revaluation(
         return {
             'success': True,
             'revaluation': revaluation_doc,
-        'journal_entry_id': journal_entry_id,
-        'message': 'تمت عملية التقويم بنجاح'
-    }
-    
+            'journal_entry_id': journal_entry_id,
+            'message': 'تمت عملية التقويم بنجاح'
+        }
+        
     except HTTPException as he:
         # Re-raise HTTP exceptions as-is
         raise he
