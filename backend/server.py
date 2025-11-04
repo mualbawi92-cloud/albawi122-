@@ -5430,16 +5430,20 @@ async def create_currency_revaluation(
                 'description': f'تقويم قطع - خصم {equivalent_amount:,.0f} دينار'
             }
     
-    # Create journal entry
+    # Create journal entry with correct structure
     journal_entry = {
         'id': journal_entry_id,
+        'entry_number': f'REV-{revaluation_id[:8]}',
         'date': datetime.now(timezone.utc).isoformat(),
         'description': f'تقويم قطع - {account_name} - {revaluation_data.direction.replace("_", " → ")}',
-        'entries': [debit_entry, credit_entry],
-        'created_by': current_user['display_name'],
+        'lines': [debit_entry, credit_entry],  # Changed from 'entries' to 'lines'
+        'total_debit': debit_entry['debit'] + credit_entry['debit'],
+        'total_credit': debit_entry['credit'] + credit_entry['credit'],
+        'created_by': current_user['id'],
         'created_at': datetime.now(timezone.utc).isoformat(),
         'reference_type': 'currency_revaluation',
-        'reference_id': revaluation_id
+        'reference_id': revaluation_id,
+        'is_cancelled': False
     }
     
     await db.journal_entries.insert_one(journal_entry)
