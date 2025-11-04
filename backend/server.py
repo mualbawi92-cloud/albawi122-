@@ -5355,8 +5355,8 @@ async def create_currency_revaluation(
         
         # Determine debit/credit based on operation type and direction
         if revaluation_data.direction == 'iqd_to_usd':
-        # من دينار إلى دولار (يشتري دولار)
-        if revaluation_data.operation_type == 'debit':
+            # من دينار إلى دولار (يشتري دولار)
+            if revaluation_data.operation_type == 'debit':
             # خصم دينار (مدين)، إضافة دولار (دائن)
             debit_entry = {
                 'account_code': revaluation_data.account_code,
