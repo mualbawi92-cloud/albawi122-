@@ -5352,9 +5352,9 @@ async def create_currency_revaluation(
         
         # Get account name safely
         account_name = account.get('name') or account.get('name_ar') or account.get('code', 'Unknown')
-    
-    # Determine debit/credit based on operation type and direction
-    if revaluation_data.direction == 'iqd_to_usd':
+        
+        # Determine debit/credit based on operation type and direction
+        if revaluation_data.direction == 'iqd_to_usd':
         # من دينار إلى دولار (يشتري دولار)
         if revaluation_data.operation_type == 'debit':
             # خصم دينار (مدين)، إضافة دولار (دائن)
