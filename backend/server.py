@@ -1303,10 +1303,11 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     
     # ============ CREATE ACCOUNTING JOURNAL ENTRY ============
     try:
-        # Get sender agent account
-        sender_account = await db.accounts.find_one({'agent_id': current_user['id']})
-        
-        if sender_account:
+        # Get sender account code from current user
+        if not current_user.get('account_code'):
+            logger.warning(f"User {current_user['id']} has no linked account_code")
+        else:
+            sender_account_code = current_user['account_code']
             # Get Transit account from chart_of_accounts
             transit_account = await db.chart_of_accounts.find_one({'code': '1030'})
             if not transit_account:
