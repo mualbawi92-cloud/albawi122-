@@ -1407,7 +1407,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                     'description': f'عمولة حوالة من {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {transfer_code}',
                     'lines': [
                         {
-                            'account_code': sender_account['code'],
+                            'account_code': sender_account_code,
                             'debit': commission_amount,
                             'credit': 0
                         },
@@ -1430,7 +1430,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 
                 # Update balances for commission
                 await db.chart_of_accounts.update_one(
-                    {'code': sender_account['code']},
+                    {'code': sender_account_code},
                     {'$inc': {'balance': commission_amount, 'balance_iqd': commission_amount}}
                 )
                 
