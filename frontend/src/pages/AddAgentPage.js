@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
@@ -39,6 +39,7 @@ const AddAgentPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [accounts, setAccounts] = useState([]);
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -47,6 +48,7 @@ const AddAgentPage = () => {
     phone: '',
     governorate: '',
     address: '',
+    account_code: '', // رقم الحساب المحاسبي - إجباري
     wallet_limit_iqd: '',
     wallet_limit_usd: ''
   });
