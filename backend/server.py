@@ -5335,23 +5335,23 @@ async def create_currency_revaluation(
         
         if revaluation_data.direction not in ['iqd_to_usd', 'usd_to_iqd']:
             raise HTTPException(status_code=400, detail="الاتجاه يجب أن يكون iqd_to_usd أو usd_to_iqd")
-    
-    # Calculate equivalent amount
-    if revaluation_data.direction == 'iqd_to_usd':
-        # من دينار إلى دولار
-        equivalent_amount = revaluation_data.amount / revaluation_data.exchange_rate
-    else:
-        # من دولار إلى دينار
-        equivalent_amount = revaluation_data.amount * revaluation_data.exchange_rate
-    
-    # Create revaluation record
-    revaluation_id = str(uuid.uuid4())
-    
-    # Create journal entry
-    journal_entry_id = str(uuid.uuid4())
-    
-    # Get account name safely
-    account_name = account.get('name') or account.get('name_ar') or account.get('code', 'Unknown')
+        
+        # Calculate equivalent amount
+        if revaluation_data.direction == 'iqd_to_usd':
+            # من دينار إلى دولار
+            equivalent_amount = revaluation_data.amount / revaluation_data.exchange_rate
+        else:
+            # من دولار إلى دينار
+            equivalent_amount = revaluation_data.amount * revaluation_data.exchange_rate
+        
+        # Create revaluation record
+        revaluation_id = str(uuid.uuid4())
+        
+        # Create journal entry
+        journal_entry_id = str(uuid.uuid4())
+        
+        # Get account name safely
+        account_name = account.get('name') or account.get('name_ar') or account.get('code', 'Unknown')
     
     # Determine debit/credit based on operation type and direction
     if revaluation_data.direction == 'iqd_to_usd':
