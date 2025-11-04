@@ -943,6 +943,39 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
     user_doc.pop('password_hash', None)
     return User(**user_doc)
 
+
+@api_router.get("/agents/available-accounts")
+async def get_available_accounts(current_user: dict = Depends(require_admin)):
+    """
+    Get available accounts from 'شركات الصرافة' category for linking to agents
+    Only returns accounts that are not already linked to an agent
+    """
+    # Get all accounts in "شركات الصرافة" category
+    all_accounts = await db.chart_of_accounts.find({
+        'category': 'شركات الصرافة',
+        'is_active': True
+    }).sort('code', 1).to_list(length=None)
+    
+    # Get all linked account codes
+    agents = await db.users.find({
+        'role': 'agent',
+        'account_code': {'$exists': True, '$ne': None}
+    }).to_list(length=None)
+    
+    linked_codes = {agent['account_code']: agent['display_name'] for agent in agents}
+    
+    # Prepare response with availability status
+    available_accounts = []
+    for account in all_accounts:
+        account.pop('_id', None)
+        code = account['code']
+        account['is_linked'] = code in linked_codes
+        account['linked_to'] = linked_codes.get(code, None)
+        available_accounts.append(account)
+    
+    return {"accounts": available_accounts}
+
+
 @api_router.post("/login", response_model=LoginResponse)
 async def login(credentials: LoginRequest, request: Request):
     """Login endpoint with rate limiting"""
