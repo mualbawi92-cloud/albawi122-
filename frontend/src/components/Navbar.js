@@ -285,6 +285,15 @@ const Navbar = () => {
                       >
                         💰 العمولات
                       </button>
+                      <button
+                        onClick={() => {
+                          navigate('/commissions-management');
+                          setAccountingMenuOpen(false);
+                        }}
+                        className="w-full text-right px-4 py-2 hover:bg-primary/10 text-primary font-semibold text-sm transition-colors"
+                      >
+                        ⚙️ إدارة العمولات
+                      </button>
                     </div>
                   </div>
                 )}
