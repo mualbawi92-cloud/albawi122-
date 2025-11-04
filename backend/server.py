@@ -5433,81 +5433,81 @@ async def create_currency_revaluation(
         
         # Create journal entry with correct structure
         journal_entry = {
-        'id': journal_entry_id,
-        'entry_number': f'REV-{revaluation_id[:8]}',
-        'date': datetime.now(timezone.utc).isoformat(),
-        'description': f'تقويم قطع - {account_name} - {revaluation_data.direction.replace("_", " → ")}',
-        'lines': [debit_entry, credit_entry],  # Changed from 'entries' to 'lines'
-        'total_debit': debit_entry['debit'] + credit_entry['debit'],
-        'total_credit': debit_entry['credit'] + credit_entry['credit'],
-        'created_by': current_user['id'],
-        'created_at': datetime.now(timezone.utc).isoformat(),
-        'reference_type': 'currency_revaluation',
-        'reference_id': revaluation_id,
-        'is_cancelled': False
-    }
-    
-    await db.journal_entries.insert_one(journal_entry)
-    
-    # Create revaluation record
-    revaluation_doc = {
-        'id': revaluation_id,
-        'account_code': revaluation_data.account_code,
-        'account_name': account_name,
-        'amount': revaluation_data.amount,
-        'currency': revaluation_data.currency,
-        'exchange_rate': revaluation_data.exchange_rate,
-        'equivalent_amount': equivalent_amount,
-        'operation_type': revaluation_data.operation_type,
-        'direction': revaluation_data.direction,
-        'journal_entry_id': journal_entry_id,
-        'notes': revaluation_data.notes,
-        'created_by': current_user['display_name'],
-        'created_at': datetime.now(timezone.utc).isoformat()
-    }
-    
-    await db.currency_revaluations.insert_one(revaluation_doc)
-    
-    # Update account balances in chart of accounts
-    current_balance_iqd = account.get('balance_iqd', 0)
-    current_balance_usd = account.get('balance_usd', 0)
-    
-    if revaluation_data.direction == 'iqd_to_usd':
-        if revaluation_data.operation_type == 'debit':
-            new_balance_iqd = current_balance_iqd - revaluation_data.amount
-            new_balance_usd = current_balance_usd + equivalent_amount
+            'id': journal_entry_id,
+            'entry_number': f'REV-{revaluation_id[:8]}',
+            'date': datetime.now(timezone.utc).isoformat(),
+            'description': f'تقويم قطع - {account_name} - {revaluation_data.direction.replace("_", " → ")}',
+            'lines': [debit_entry, credit_entry],
+            'total_debit': debit_entry['debit'] + credit_entry['debit'],
+            'total_credit': debit_entry['credit'] + credit_entry['credit'],
+            'created_by': current_user['id'],
+            'created_at': datetime.now(timezone.utc).isoformat(),
+            'reference_type': 'currency_revaluation',
+            'reference_id': revaluation_id,
+            'is_cancelled': False
+        }
+        
+        await db.journal_entries.insert_one(journal_entry)
+        
+        # Create revaluation record
+        revaluation_doc = {
+            'id': revaluation_id,
+            'account_code': revaluation_data.account_code,
+            'account_name': account_name,
+            'amount': revaluation_data.amount,
+            'currency': revaluation_data.currency,
+            'exchange_rate': revaluation_data.exchange_rate,
+            'equivalent_amount': equivalent_amount,
+            'operation_type': revaluation_data.operation_type,
+            'direction': revaluation_data.direction,
+            'journal_entry_id': journal_entry_id,
+            'notes': revaluation_data.notes,
+            'created_by': current_user['display_name'],
+            'created_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.currency_revaluations.insert_one(revaluation_doc)
+        
+        # Update account balances in chart of accounts
+        current_balance_iqd = account.get('balance_iqd', 0)
+        current_balance_usd = account.get('balance_usd', 0)
+        
+        if revaluation_data.direction == 'iqd_to_usd':
+            if revaluation_data.operation_type == 'debit':
+                new_balance_iqd = current_balance_iqd - revaluation_data.amount
+                new_balance_usd = current_balance_usd + equivalent_amount
+            else:
+                new_balance_iqd = current_balance_iqd + revaluation_data.amount
+                new_balance_usd = current_balance_usd - equivalent_amount
         else:
-            new_balance_iqd = current_balance_iqd + revaluation_data.amount
-            new_balance_usd = current_balance_usd - equivalent_amount
-    else:
-        if revaluation_data.operation_type == 'debit':
-            new_balance_usd = current_balance_usd - revaluation_data.amount
-            new_balance_iqd = current_balance_iqd + equivalent_amount
-        else:
-            new_balance_usd = current_balance_usd + revaluation_data.amount
-            new_balance_iqd = current_balance_iqd - equivalent_amount
-    
-    await db.chart_of_accounts.update_one(
-        {'code': revaluation_data.account_code},
-        {'$set': {
-            'balance_iqd': new_balance_iqd,
-            'balance_usd': new_balance_usd,
-            'updated_at': datetime.now(timezone.utc).isoformat()
-        }}
-    )
-    
-    # Log audit
-    await log_audit(None, current_user['id'], 'currency_revaluation', {
-        'account_code': revaluation_data.account_code,
-        'amount': revaluation_data.amount,
-        'direction': revaluation_data.direction,
-        'exchange_rate': revaluation_data.exchange_rate
-    })
-    
-    revaluation_doc.pop('_id', None)
-    return {
-        'success': True,
-        'revaluation': revaluation_doc,
+            if revaluation_data.operation_type == 'debit':
+                new_balance_usd = current_balance_usd - revaluation_data.amount
+                new_balance_iqd = current_balance_iqd + equivalent_amount
+            else:
+                new_balance_usd = current_balance_usd + revaluation_data.amount
+                new_balance_iqd = current_balance_iqd - equivalent_amount
+        
+        await db.chart_of_accounts.update_one(
+            {'code': revaluation_data.account_code},
+            {'$set': {
+                'balance_iqd': new_balance_iqd,
+                'balance_usd': new_balance_usd,
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        # Log audit
+        await log_audit(None, current_user['id'], 'currency_revaluation', {
+            'account_code': revaluation_data.account_code,
+            'amount': revaluation_data.amount,
+            'direction': revaluation_data.direction,
+            'exchange_rate': revaluation_data.exchange_rate
+        })
+        
+        revaluation_doc.pop('_id', None)
+        return {
+            'success': True,
+            'revaluation': revaluation_doc,
         'journal_entry_id': journal_entry_id,
         'message': 'تمت عملية التقويم بنجاح'
     }
