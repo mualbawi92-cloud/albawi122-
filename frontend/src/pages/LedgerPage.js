@@ -23,6 +23,7 @@ const LedgerPage = () => {
   const [ledgerEntries, setLedgerEntries] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [selectedCurrency, setSelectedCurrency] = useState(''); // Empty means all currencies
 
   useEffect(() => {
     if (user?.role !== 'admin') {
