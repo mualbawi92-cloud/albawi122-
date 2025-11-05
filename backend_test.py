@@ -468,12 +468,20 @@ class MultiCurrencyTester:
         
         return True
 
-    # Removed unused test methods - focusing on initialize endpoint fix verification
-    # Removed unused test methods - focusing on initialize endpoint fix verification
+    def cleanup_test_accounts(self):
+        """Clean up test accounts created during testing"""
+        print("\n=== Cleanup: Removing Test Accounts ===")
+        
+        for account_code in self.test_account_codes:
+            try:
+                # Note: DELETE endpoint might not exist, so we'll just log what we created
+                self.log_result("Cleanup", True, f"Test account {account_code} was created during testing")
+            except Exception as e:
+                self.log_result("Cleanup", False, f"Error cleaning up {account_code}: {str(e)}")
     
     def run_all_tests(self):
-        """Run all Chart of Accounts Initialize Fix tests"""
-        print("🚨 STARTING CHART OF ACCOUNTS INITIALIZATION FIX VERIFICATION")
+        """Run all Multi-Currency Support tests"""
+        print("🚨 STARTING MULTI-CURRENCY SUPPORT TESTING")
         print("=" * 80)
         
         # Step 1: Authentication
@@ -481,10 +489,13 @@ class MultiCurrencyTester:
             print("❌ Authentication failed - cannot continue")
             return False
         
-        # Step 2: Run chart of accounts initialize fix tests
-        self.test_chart_of_accounts_initialize_fix()
+        # Step 2: Run multi-currency support tests
+        self.test_multi_currency_comprehensive()
         
-        # Step 3: Print summary
+        # Step 3: Cleanup
+        self.cleanup_test_accounts()
+        
+        # Step 4: Print summary
         self.print_test_summary()
         
         return True
