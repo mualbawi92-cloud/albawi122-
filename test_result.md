@@ -721,6 +721,87 @@ frontend:
           - Implements proper date range selection (from/to)
           - Works across all three tabs (Send, Receive, Query)
   
+  - task: "Multi-currency support for accounts and ledger"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/ChartOfAccountsPageNew.js, frontend/src/pages/LedgerPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **MULTI-CURRENCY SUPPORT IMPLEMENTED IN FRONTEND**
+          
+          **User Request:**
+          تنفيذ نظام العملات المتعددة - إضافة حقل العملات للحسابات وتصفية الليدجر حسب العملة
+          
+          **Backend Status (Already Implemented):**
+          - ✅ AccountCreate model includes currencies field (Optional[list[str]])
+          - ✅ Journal entries include currency field
+          - ✅ Ledger endpoint accepts currency parameter for filtering
+          
+          **Frontend Changes - ChartOfAccountsPageNew.js:**
+          
+          1. **Add Account Dialog Enhancement:**
+             - Added currencies field to newAccount state (default: ['IQD'])
+             - Added multi-select checkboxes for currencies:
+               * دينار عراقي (IQD)
+               * دولار أمريكي (USD)
+               * يورو (EUR)
+               * جنيه إسترليني (GBP)
+             - Added validation: At least one currency must be selected
+             - Displays helper text explaining currency selection
+          
+          2. **API Integration:**
+             - Updated POST request to include currencies array
+             - Ensures currencies field is sent with account creation
+             - Reset currencies to ['IQD'] after successful creation
+          
+          **Frontend Changes - LedgerPage.js:**
+          
+          1. **Currency Filter Addition:**
+             - Added selectedCurrency state (empty = all currencies)
+             - Added currency dropdown in filters section:
+               * جميع العملات (default)
+               * دينار عراقي (IQD)
+               * دولار أمريكي (USD)
+               * يورو (EUR)
+               * جنيه إسترليني (GBP)
+             - Updated grid layout (md:grid-cols-4 → md:grid-cols-5)
+          
+          2. **API Integration:**
+             - Added currency parameter to ledger API call
+             - Passes currency filter when fetching ledger entries
+          
+          3. **UI Display Updates:**
+             - Added "العملة" column in desktop table view
+             - Displays currency badge with blue background
+             - Added currency badge in mobile card view
+             - Format: Small blue badge showing currency code (e.g., IQD, USD)
+          
+          **Features Implemented:**
+          - ✅ Multi-currency account creation with validation
+          - ✅ Currency filter for ledger viewing
+          - ✅ Currency display in all ledger entries (desktop & mobile)
+          - ✅ Support for 4 major currencies (IQD, USD, EUR, GBP)
+          - ✅ Proper default values and validation
+          - ✅ Responsive design for all screen sizes
+          
+          **Expected Flow:**
+          1. Admin opens Chart of Accounts page
+          2. Clicks "إضافة حساب" (Add Account)
+          3. Selects one or more currencies for the account
+          4. System validates at least one currency is selected
+          5. Account created with currencies array in database
+          6. Admin opens Ledger page
+          7. Selects account and optionally selects currency filter
+          8. Ledger displays only entries in selected currency
+          9. Each entry shows currency badge
+          
+          Ready for comprehensive backend and frontend testing!
+
   - task: "Wallet deposit receipt feature"
     implemented: true
     working: true
