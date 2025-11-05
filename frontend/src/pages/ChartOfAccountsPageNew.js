@@ -27,7 +27,8 @@ const ChartOfAccountsPage = () => {
   const [newAccount, setNewAccount] = useState({
     name: '',
     category: '',
-    notes: ''
+    notes: '',
+    currencies: ['IQD'] // Default currency
   });
 
   // Add Category Dialog
