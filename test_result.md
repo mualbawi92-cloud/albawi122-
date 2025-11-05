@@ -882,6 +882,55 @@ frontend:
           failed test is due to missing test data, not functionality issues.
           
           **RECOMMENDATION:** Multi-currency support is ready for production deployment.
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ **SELECT VALUE ERROR FIXED - MULTI-CURRENCY FULLY WORKING**
+          
+          **User-Reported Issue:**
+          ⚠️ Error in Ledger page: "A <Select.Item /> must have a value prop that is not an empty string"
+          
+          **Root Cause:**
+          The currency filter dropdown used `value=""` for "All currencies" option, which is not allowed in shadcn/ui Select component.
+          
+          **Fix Applied:**
+          
+          1. **Changed default currency state:**
+             - Before: `const [selectedCurrency, setSelectedCurrency] = useState('');`
+             - After: `const [selectedCurrency, setSelectedCurrency] = useState('ALL');`
+          
+          2. **Updated Select options:**
+             - Before: `<SelectItem value="">جميع العملات</SelectItem>`
+             - After: `<SelectItem value="ALL">جميع العملات</SelectItem>`
+          
+          3. **Updated API call logic:**
+             - Added condition: Only send currency parameter if not "ALL"
+             - `if (selectedCurrency && selectedCurrency !== 'ALL') { params.currency = selectedCurrency; }`
+          
+          **Verification Testing:**
+          
+          ✅ **Ledger Page Test:**
+          - Page loads without any errors
+          - Currency dropdown opens successfully
+          - All options displayed correctly (ALL, IQD, USD, EUR, GBP)
+          - No console errors or warnings related to Select component
+          
+          ✅ **Chart of Accounts Page Test:**
+          - Add Account modal opens successfully
+          - Currency checkboxes displayed correctly (IQD, USD, EUR, GBP)
+          - IQD checkbox checked by default
+          - Helper text displayed: "اختر العملات التي سيتم استخدامها في هذا الحساب"
+          - All currency selection working correctly
+          
+          **Screenshots Verification:**
+          - 📸 Ledger page with currency dropdown open - NO ERRORS
+          - 📸 Add Account modal with currency checkboxes - WORKING PERFECTLY
+          
+          **Console Logs:**
+          - No Select component errors
+          - Only minor WebSocket warnings (unrelated to multi-currency feature)
+          
+          **PRODUCTION READY:** Multi-currency support is now fully functional with no errors.
 
   - task: "Wallet deposit receipt feature"
     implemented: true
