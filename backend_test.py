@@ -162,30 +162,35 @@ class MultiCurrencyTester:
         
         return None
     
-    def test_initialize_accounts_idempotent(self):
-        """Test that initialize can be called multiple times without failing"""
-        print("\n=== Testing Initialize Idempotency ===")
+    def test_get_account_verify_currencies(self):
+        """Test GET account and verify currencies field is returned"""
+        print("\n=== Test 2: Get Account and Verify Currencies ===")
         
         try:
-            # Call initialize again
-            response = self.make_request('POST', '/accounting/initialize', token=self.admin_token)
+            response = self.make_request('GET', '/accounting/accounts/9999', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
                 
-                # Should not fail, might have 0 inserted but some updated
-                inserted = data.get('inserted', 0)
-                updated = data.get('updated', 0)
-                total = data.get('total', 0)
-                
-                self.log_result("Initialize Idempotency", True, 
-                              f"Second initialize call successful - Inserted: {inserted}, Updated: {updated}, Total: {total}")
-                return True
+                # Verify currencies field exists and contains expected values
+                if 'currencies' in data:
+                    currencies = data['currencies']
+                    if currencies == ["IQD", "USD"]:
+                        self.log_result("Get Account Currencies", True, 
+                                      f"Account 9999 currencies field verified: {currencies}")
+                        return data
+                    else:
+                        self.log_result("Get Account Currencies", False, 
+                                      f"Account currencies incorrect. Expected: ['IQD', 'USD'], Got: {currencies}")
+                else:
+                    self.log_result("Get Account Currencies", False, 
+                                  f"Account response missing currencies field: {data}")
             else:
-                self.log_result("Initialize Idempotency", False, f"Second initialize failed: {response.status_code}", response.text)
+                self.log_result("Get Account Currencies", False, 
+                              f"Get account failed: {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Initialize Idempotency", False, f"Error: {str(e)}")
+            self.log_result("Get Account Currencies", False, f"Error: {str(e)}")
         
-        return False
+        return None
     
     def test_chart_of_accounts_initialize_fix(self):
         """Test Chart of Accounts Initialize endpoint fix verification"""
