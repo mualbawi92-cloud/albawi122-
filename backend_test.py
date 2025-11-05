@@ -355,57 +355,34 @@ class MultiCurrencyTester:
         
         return True
     
-    def test_trial_balance_report(self):
-        """Test Trial Balance Report with null safety fixes"""
-        print("\n=== Scenario 3: Trial Balance Report (Should Work Now) ===")
+    def test_multi_currency_comprehensive(self):
+        """Run comprehensive multi-currency support tests"""
+        print("\n🚨 MULTI-CURRENCY SUPPORT COMPREHENSIVE TESTING")
+        print("=" * 80)
+        print("Testing multi-currency implementation for Chart of Accounts and Ledger")
+        print("=" * 80)
         
-        try:
-            response = self.make_request('GET', '/accounting/reports/trial-balance', token=self.admin_token)
-            if response.status_code == 200:
-                trial_balance = response.json()
-                
-                if isinstance(trial_balance, dict):
-                    accounts = trial_balance.get('accounts', [])
-                    total_debit = trial_balance.get('total_debit', 0)
-                    total_credit = trial_balance.get('total_credit', 0)
-                    
-                    self.log_result("Trial Balance Report", True, 
-                                  f"✅ Trial balance generated successfully with {len(accounts)} accounts")
-                    
-                    print(f"   Accounts: {len(accounts)}")
-                    print(f"   Total Debit: {total_debit:,}")
-                    print(f"   Total Credit: {total_credit:,}")
-                    
-                    # Check for accounts with missing name_ar (should be handled gracefully)
-                    accounts_with_missing_names = 0
-                    for account in accounts:
-                        if not account.get('name_ar'):
-                            accounts_with_missing_names += 1
-                    
-                    if accounts_with_missing_names > 0:
-                        self.log_result("Trial Balance Null Safety", True, 
-                                      f"✅ Handled {accounts_with_missing_names} accounts with missing name_ar gracefully")
-                    else:
-                        self.log_result("Trial Balance Null Safety", True, 
-                                      "✅ All accounts have name_ar field")
-                    
-                    return trial_balance
-                else:
-                    self.log_result("Trial Balance Report", False, "Invalid trial balance response structure", trial_balance)
-            elif response.status_code == 500:
-                # Check if it's the KeyError we're trying to fix
-                error_text = response.text
-                if 'KeyError' in error_text and 'name_ar' in error_text:
-                    self.log_result("Trial Balance Report", False, 
-                                  "❌ CRITICAL: Still getting KeyError for name_ar - fix not working")
-                else:
-                    self.log_result("Trial Balance Report", False, f"Trial balance 500 error: {error_text}")
-            else:
-                self.log_result("Trial Balance Report", False, f"Trial balance failed: {response.status_code}", response.text)
-        except Exception as e:
-            self.log_result("Trial Balance Report", False, f"Error: {str(e)}")
+        # Test 1: Create Account with Multiple Currencies
+        print("\n--- TEST 1: CREATE ACCOUNT WITH MULTIPLE CURRENCIES ---")
+        self.test_create_account_with_multiple_currencies()
         
-        return None
+        # Test 2: Get Account and Verify Currencies
+        print("\n--- TEST 2: GET ACCOUNT AND VERIFY CURRENCIES ---")
+        self.test_get_account_verify_currencies()
+        
+        # Test 3: Test Ledger with Currency Filter
+        print("\n--- TEST 3: TEST LEDGER WITH CURRENCY FILTER ---")
+        self.test_ledger_currency_filter()
+        
+        # Test 4: Edge Cases
+        print("\n--- TEST 4: EDGE CASES ---")
+        self.test_edge_cases()
+        
+        # Test 5: Validation Tests
+        print("\n--- TEST 5: VALIDATION TESTS ---")
+        self.test_validation_scenarios()
+        
+        return True
     
     def test_complete_flow_verification(self):
         """Test complete flow: Initialize → Get Accounts → Load Ledgers → Generate Reports"""
