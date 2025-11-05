@@ -119,7 +119,7 @@ const LedgerPage = () => {
                     <SelectValue placeholder="جميع العملات" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">جميع العملات</SelectItem>
+                    <SelectItem value="ALL">جميع العملات</SelectItem>
                     <SelectItem value="IQD">دينار عراقي (IQD)</SelectItem>
                     <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
                     <SelectItem value="EUR">يورو (EUR)</SelectItem>
