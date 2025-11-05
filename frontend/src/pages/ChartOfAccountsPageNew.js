@@ -487,6 +487,37 @@ const ChartOfAccountsPage = () => {
             </div>
 
             <div>
+              <Label>العملات المسموح بها *</Label>
+              <div className="border rounded-md p-3 space-y-2">
+                {['IQD', 'USD', 'EUR', 'GBP'].map(currency => (
+                  <div key={currency} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id={`currency-${currency}`}
+                      checked={newAccount.currencies.includes(currency)}
+                      onChange={(e) => {
+                        const currencies = e.target.checked
+                          ? [...newAccount.currencies, currency]
+                          : newAccount.currencies.filter(c => c !== currency);
+                        setNewAccount({...newAccount, currencies});
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <label htmlFor={`currency-${currency}`} className="cursor-pointer">
+                      {currency === 'IQD' ? 'دينار عراقي (IQD)' :
+                       currency === 'USD' ? 'دولار أمريكي (USD)' :
+                       currency === 'EUR' ? 'يورو (EUR)' :
+                       'جنيه إسترليني (GBP)'}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                اختر العملات التي سيتم استخدامها في هذا الحساب
+              </p>
+            </div>
+
+            <div>
               <Label>ملاحظات (اختياري)</Label>
               <textarea
                 className="w-full border rounded-md p-2"
