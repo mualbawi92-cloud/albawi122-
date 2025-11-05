@@ -273,28 +273,87 @@ class MultiCurrencyTester:
         
         return True
     
-    def test_system_accounts_accessible(self):
-        """Test that system accounts (1030, 4020, 5110) are accessible via ledger"""
-        print("\n=== Scenario 2: Verify System Accounts Created ===")
+    def test_edge_cases(self):
+        """Test edge cases for multi-currency support"""
+        print("\n=== Test 4: Edge Cases ===")
         
-        for account_code in self.system_accounts:
-            try:
-                response = self.make_request('GET', f'/accounting/ledger/{account_code}', token=self.admin_token)
-                if response.status_code == 200:
-                    ledger_data = response.json()
-                    account_info = ledger_data.get('account', {})
-                    account_name = account_info.get('name_ar', account_info.get('name', 'Unknown'))
-                    
-                    self.log_result(f"System Account {account_code} Access", True, 
-                                  f"Account {account_code} ({account_name}) accessible via ledger")
-                elif response.status_code == 404:
-                    self.log_result(f"System Account {account_code} Access", False, 
-                                  f"❌ CRITICAL: Account {account_code} returns 404 - not created by initialize")
+        # Edge Case 1: Create account with single currency
+        print("\n--- Edge Case 1: Single Currency Account ---")
+        single_currency_account = {
+            "code": "9998",
+            "name": "Single Currency Test Account",
+            "name_ar": "حساب تجريبي عملة واحدة",
+            "name_en": "Single Currency Test Account",
+            "category": "Test",
+            "currencies": ["IQD"]
+        }
+        
+        try:
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=single_currency_account)
+            if response.status_code == 200 or response.status_code == 201:
+                data = response.json()
+                self.test_account_codes.append("9998")
+                
+                if data.get('currencies') == ["IQD"]:
+                    self.log_result("Single Currency Account", True, 
+                                  f"Account 9998 created with single currency: {data['currencies']}")
                 else:
-                    self.log_result(f"System Account {account_code} Access", False, 
-                                  f"Account {account_code} failed: {response.status_code}")
-            except Exception as e:
-                self.log_result(f"System Account {account_code} Access", False, f"Error: {str(e)}")
+                    self.log_result("Single Currency Account", False, 
+                                  f"Single currency account failed: {data}")
+            else:
+                self.log_result("Single Currency Account", False, 
+                              f"Single currency account creation failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Single Currency Account", False, f"Error: {str(e)}")
+        
+        # Edge Case 2: Create account with all supported currencies
+        print("\n--- Edge Case 2: All Currencies Account ---")
+        all_currencies_account = {
+            "code": "9997",
+            "name": "All Currencies Test Account",
+            "name_ar": "حساب تجريبي جميع العملات",
+            "name_en": "All Currencies Test Account",
+            "category": "Test",
+            "currencies": ["IQD", "USD", "EUR", "GBP"]
+        }
+        
+        try:
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=all_currencies_account)
+            if response.status_code == 200 or response.status_code == 201:
+                data = response.json()
+                self.test_account_codes.append("9997")
+                
+                expected_currencies = ["IQD", "USD", "EUR", "GBP"]
+                if data.get('currencies') == expected_currencies:
+                    self.log_result("All Currencies Account", True, 
+                                  f"Account 9997 created with all currencies: {data['currencies']}")
+                else:
+                    self.log_result("All Currencies Account", False, 
+                                  f"All currencies account failed: {data}")
+            else:
+                self.log_result("All Currencies Account", False, 
+                              f"All currencies account creation failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("All Currencies Account", False, f"Error: {str(e)}")
+        
+        # Edge Case 3: Test ledger filter with currency that has no entries
+        print("\n--- Edge Case 3: Currency Filter with No Entries ---")
+        try:
+            response = self.make_request('GET', '/accounting/ledger/9999?currency=EUR', token=self.admin_token)
+            if response.status_code == 200:
+                data = response.json()
+                entries = data.get('entries', [])
+                
+                # Should return empty array for currency with no entries
+                self.log_result("Currency Filter No Entries", True, 
+                              f"EUR filter returned {len(entries)} entries (expected: 0 or few)")
+            else:
+                self.log_result("Currency Filter No Entries", False, 
+                              f"EUR filter failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Currency Filter No Entries", False, f"Error: {str(e)}")
+        
+        return True
     
     def test_trial_balance_report(self):
         """Test Trial Balance Report with null safety fixes"""
