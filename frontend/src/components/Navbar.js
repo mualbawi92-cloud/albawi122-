@@ -650,6 +650,18 @@ const Navbar = () => {
                     >
                       ⚙️ إدارة العمولات
                     </Button>
+                    <div className="border-t border-white/20 my-1"></div>
+                    <Button
+                      onClick={() => {
+                        navigate('/backup-management');
+                        setMobileMenuOpen(false);
+                        setMobileAccountingOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-white hover:bg-white/20 font-semibold justify-start text-sm py-2"
+                    >
+                      💾 النسخ الاحتياطية
+                    </Button>
                   </div>
                 )}
               </div>
