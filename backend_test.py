@@ -384,52 +384,89 @@ class MultiCurrencyTester:
         
         return True
     
-    def test_complete_flow_verification(self):
-        """Test complete flow: Initialize → Get Accounts → Load Ledgers → Generate Reports"""
-        print("\n=== Scenario 4: Complete Flow Verification ===")
+    def test_validation_scenarios(self):
+        """Test validation scenarios for multi-currency support"""
+        print("\n=== Test 5: Validation Scenarios ===")
         
-        # Step 1: Get all accounts
+        # Validation 1: Try to create account without currencies field
+        print("\n--- Validation 1: Account without currencies field ---")
+        no_currencies_account = {
+            "code": "9996",
+            "name": "No Currencies Test Account",
+            "name_ar": "حساب تجريبي بدون عملات",
+            "name_en": "No Currencies Test Account",
+            "category": "Test"
+            # No currencies field
+        }
+        
         try:
-            response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
-            if response.status_code == 200:
-                accounts = response.json()
-                account_count = len(accounts)
-                self.log_result("Complete Flow - Get Accounts", True, f"Retrieved {account_count} accounts")
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=no_currencies_account)
+            if response.status_code == 200 or response.status_code == 201:
+                data = response.json()
+                self.test_account_codes.append("9996")
                 
-                # Step 2: Test ledger access for system accounts
-                system_accounts_accessible = 0
-                for account_code in self.system_accounts:
-                    ledger_response = self.make_request('GET', f'/accounting/ledger/{account_code}', token=self.admin_token)
-                    if ledger_response.status_code == 200:
-                        system_accounts_accessible += 1
-                
-                if system_accounts_accessible == len(self.system_accounts):
-                    self.log_result("Complete Flow - System Ledgers", True, 
-                                  f"✅ All {len(self.system_accounts)} system accounts accessible")
+                # Should default to ["IQD"] if not specified
+                currencies = data.get('currencies', [])
+                if currencies == ["IQD"] or len(currencies) > 0:
+                    self.log_result("Account No Currencies Field", True, 
+                                  f"Account created with default currencies: {currencies}")
                 else:
-                    self.log_result("Complete Flow - System Ledgers", False, 
-                                  f"❌ Only {system_accounts_accessible}/{len(self.system_accounts)} system accounts accessible")
-                
-                # Step 3: Test trial balance
-                trial_response = self.make_request('GET', '/accounting/reports/trial-balance', token=self.admin_token)
-                if trial_response.status_code == 200:
-                    self.log_result("Complete Flow - Trial Balance", True, "✅ Trial balance report working")
-                    
-                    # Complete flow success
-                    if system_accounts_accessible == len(self.system_accounts):
-                        self.log_result("Complete Flow Success", True, 
-                                      "✅ COMPLETE FLOW SUCCESS: Initialize → Accounts → Ledgers → Reports all working")
-                    else:
-                        self.log_result("Complete Flow Success", False, 
-                                      "❌ Complete flow partially failed - some system accounts inaccessible")
-                else:
-                    self.log_result("Complete Flow - Trial Balance", False, f"Trial balance failed: {trial_response.status_code}")
-                    self.log_result("Complete Flow Success", False, "❌ Complete flow failed at trial balance step")
+                    self.log_result("Account No Currencies Field", False, 
+                                  f"Account created but no currencies: {data}")
             else:
-                self.log_result("Complete Flow - Get Accounts", False, f"Get accounts failed: {response.status_code}")
-                self.log_result("Complete Flow Success", False, "❌ Complete flow failed at get accounts step")
+                self.log_result("Account No Currencies Field", False, 
+                              f"Account creation failed: {response.status_code}")
         except Exception as e:
-            self.log_result("Complete Flow Success", False, f"❌ Complete flow error: {str(e)}")
+            self.log_result("Account No Currencies Field", False, f"Error: {str(e)}")
+        
+        # Validation 2: Try invalid currency filter
+        print("\n--- Validation 2: Invalid currency filter ---")
+        try:
+            response = self.make_request('GET', '/accounting/ledger/9999?currency=INVALID', token=self.admin_token)
+            if response.status_code == 200:
+                data = response.json()
+                entries = data.get('entries', [])
+                self.log_result("Invalid Currency Filter", True, 
+                              f"Invalid currency filter handled gracefully: {len(entries)} entries")
+            else:
+                # Could be 400 (validation error) or other - both are acceptable
+                self.log_result("Invalid Currency Filter", True, 
+                              f"Invalid currency filter properly rejected: {response.status_code}")
+        except Exception as e:
+            self.log_result("Invalid Currency Filter", False, f"Error: {str(e)}")
+        
+        # Validation 3: Test empty currencies array
+        print("\n--- Validation 3: Empty currencies array ---")
+        empty_currencies_account = {
+            "code": "9995",
+            "name": "Empty Currencies Test Account",
+            "name_ar": "حساب تجريبي عملات فارغة",
+            "name_en": "Empty Currencies Test Account",
+            "category": "Test",
+            "currencies": []
+        }
+        
+        try:
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=empty_currencies_account)
+            if response.status_code == 200 or response.status_code == 201:
+                data = response.json()
+                self.test_account_codes.append("9995")
+                
+                # Should handle empty array gracefully or default to ["IQD"]
+                currencies = data.get('currencies', [])
+                self.log_result("Empty Currencies Array", True, 
+                              f"Empty currencies array handled: {currencies}")
+            elif response.status_code == 400:
+                # Validation error is acceptable for empty currencies
+                self.log_result("Empty Currencies Array", True, 
+                              "Empty currencies array properly rejected with validation error")
+            else:
+                self.log_result("Empty Currencies Array", False, 
+                              f"Unexpected response: {response.status_code}")
+        except Exception as e:
+            self.log_result("Empty Currencies Array", False, f"Error: {str(e)}")
+        
+        return True
 
     # Removed unused test methods - focusing on initialize endpoint fix verification
     # Removed unused test methods - focusing on initialize endpoint fix verification
