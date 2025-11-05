@@ -36,6 +36,7 @@ import AgentCommissionsPage from './pages/AgentCommissionsPage';
 import QuickReceiveTransferPage from './pages/QuickReceiveTransferPage';
 import CommissionsUnifiedPage from './pages/CommissionsUnifiedPage';
 import CurrencyRevaluationPage from './pages/CurrencyRevaluationPage';
+import BackupManagementPage from './pages/BackupManagementPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
