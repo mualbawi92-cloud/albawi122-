@@ -266,6 +266,13 @@ const LedgerPage = () => {
                           <p className="text-sm font-medium">{entry.description}</p>
                         </div>
 
+                        {/* العملة */}
+                        <div className="mb-3">
+                          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                            💱 {entry.currency || 'IQD'}
+                          </span>
+                        </div>
+
                         {/* الرصيد */}
                         <div className="bg-gradient-to-l from-blue-50 to-blue-100 rounded-lg p-3 mb-3">
                           <p className="text-xs text-blue-700 mb-1">💰 الرصيد</p>
