@@ -92,7 +92,7 @@ const LedgerPage = () => {
             <CardTitle>اختيار الحساب والفترة</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="space-y-2 md:col-span-2">
                 <Label>الحساب *</Label>
                 <Select value={selectedAccount} onValueChange={setSelectedAccount}>
@@ -105,6 +105,22 @@ const LedgerPage = () => {
                         {acc.code} - {acc.name_ar}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>العملة</Label>
+                <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="جميع العملات" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">جميع العملات</SelectItem>
+                    <SelectItem value="IQD">دينار عراقي (IQD)</SelectItem>
+                    <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
+                    <SelectItem value="EUR">يورو (EUR)</SelectItem>
+                    <SelectItem value="GBP">جنيه إسترليني (GBP)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
