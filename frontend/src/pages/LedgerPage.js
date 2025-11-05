@@ -206,6 +206,7 @@ const LedgerPage = () => {
                           <th className="p-3 text-right">التاريخ</th>
                           <th className="p-3 text-right">رقم القيد</th>
                           <th className="p-3 text-right">البيان</th>
+                          <th className="p-3 text-center">العملة</th>
                           <th className="p-3 text-center">الرصيد</th>
                           <th className="p-3 text-center">المدين (خروج)</th>
                           <th className="p-3 text-center">الدائن (دخول)</th>
@@ -219,6 +220,11 @@ const LedgerPage = () => {
                             </td>
                             <td className="p-3">{entry.entry_number}</td>
                             <td className="p-3">{entry.description}</td>
+                            <td className="p-3 text-center">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">
+                                {entry.currency || 'IQD'}
+                              </span>
+                            </td>
                             <td className={`p-3 text-center font-bold ${
                               entry.balance > 0 ? 'text-teal-700' : entry.balance < 0 ? 'text-red-700' : ''
                             }`}>
