@@ -1,30 +1,28 @@
 <analysis>
-The previous AI engineer demonstrated a comprehensive and iterative development process for an evolving financial application. The trajectory started with critical bug fixes, specifically resolving date filtering issues across multiple backend endpoints and refining the frontend date filter UI. A print feature was a recurring request, initially implemented, then cancelled, and finally re-requested with detailed specifications, leading to the creation of a custom . Wallet management was a key focus, addressing deposit inaccuracies and integrating printable receipts for both administrators and agents. A significant new feature, an AI-powered notification system, was implemented for agents with extensive frontend and backend modifications. Subsequent tasks included a temporary color scheme change, system resource reporting, and detailed guidance for self-hosting and mobile agent deployment. The current major initiative is the Currency Revaluation feature for customer accounts, involving complex accounting logic. This task has seen several iterations to correctly fetch and display account data, and the creation of database initialization/synchronization scripts. The AI engineer is presently focused on a multi-part overhaul of the Chart of Accounts and General Ledger, specifically working on the Add Account modal in the frontend, after having identified a critical backend bug related to account creation.
+The previous AI engineer demonstrated an iterative and detailed approach to enhancing a financial application. The work began by addressing critical bugs and implementing new features related to Chart of Accounts (COA) functionality and ledger reporting. A significant effort was dedicated to refactoring backend logic to correctly use  instead of  for core accounting features, alongside implementing automatic account numbering and ensuring data integrity. The frontend was updated with a new tree-view design for COA and modals for adding accounts and categories. A major task involved overhauling agent registration to link agents directly to COA entries. The most recent focus was on a Currency Revaluation feature, specifically debugging its backend API, which led to significant code restructuring for journal entry creation and error handling. The final phase of the trajectory shows the AI engineer actively working on a comprehensive currency management system, adding currency fields to accounts and journal entries, and implementing currency filtering for ledger reports. The work is currently paused during the verification of database schema changes and frontend implementation for currency selection.
 </analysis>
 
 <product_requirements>
-The application is a secure cash transfer system with agent/admin management, dynamic commission rates, and a comprehensive Chart of Accounts. It supports manual journal entries, ledgers, and advanced financial reports. Key features include:
-1.  **Date Filtering:** Correct functionality and enhanced UI (quick-filter buttons, explicit search) for transfer lists and other date-sensitive reports.
-2.  **Print Feature:** Ability to print received transfers, deposit receipts, and various accounting reports (Ledger, Chart of Accounts, Commissions) with specific formatting.
-3.  **Wallet Management:** Resolve deposit issues, ensuring amounts are correctly added, and generate printable receipts for both admin and agents.
-4.  **AI-powered Notifications:** Intelligent notifications for agents regarding suspicious activities (duplicate transfers, wrong data, ID mismatch), new transfers, and admin deposits.
-5.  **Currency Revaluation:** Allow customers to revalue funds between IQD and USD, including debit/credit logic, real-time balance updates, and automatic journal entry generation.
-6.  **Chart of Accounts (COA) & General Ledger (GL) Overhaul:** Fix disappearing accounts, enable a functional Add Account modal with auto-generated numeric codes by category, ensure automatic COA account creation for new agents, and resolve GL loading errors by referencing the main COA.
+The application is a secure cash transfer system with agent/admin management, dynamic commission rates, and a comprehensive Chart of Accounts. It supports manual journal entries, ledgers, and advanced financial reports. The user has explicitly requested several enhancements:
+1.  **Chart of Accounts (COA) & General Ledger (GL) Overhaul:** This is a recurring theme, evolving from fixing disappearing accounts and a non-functional Add Account modal to implementing auto-generated numeric codes, ensuring automatic COA account creation for new agents, and resolving GL loading errors by referencing the main COA.
+2.  **Account Numbering:** Accounts must have short, clear, auto-generated numeric codes based on category (e.g., 2001 for exchangers, 3001 for customers).
+3.  **Improved Ledger:** Fix error loading ledger by using correct account numbers and COA. Add error handling for accounts without entries (No entries for this account).
+4.  **Agent-COA Linkage:** Automatically generate a COA account for new agents under the Exchange Companies category. Ensure a 1:1 relationship between an agent and a COA account, preventing deletion of categories with accounts and showing available accounts for linkage.
+5.  **COA UI Redesign:** Implement a professional, collapsible tree-view for COA, with Add Account and Add Category buttons. Categories should be pre-defined (Customers, Agents, Transit, Commissions) with numeric codes.
+6.  **Journal Entry & Ledger Integration:** Ensure all financial operations (transfers, revaluations) are correctly linked to COA account codes. General Ledger should show all entries for admins, while agent ledgers filter by their specific account. Old entries must be updated to link to COA accounts.
+7.  **Currency Revaluation Debugging:** Fix the Error during operation for currency revaluation, ensuring correct , , , , and  are passed. Improve error logging.
+8.  **Multi-Currency Support:** Add a  field to COA accounts (e.g., 'IQD,USD'), a  field to journal entries, and a currency filter to the ledger report. Prevent transactions with currencies not allowed for the account.
 </product_requirements>
 
 <key_technical_concepts>
-
 -   **Full-stack:** FastAPI (Backend), React (Frontend), MongoDB.
 -   **Styling:** Tailwind CSS, Shadcn UI.
--   **AI/LLM Integration:** OpenAI GPT-4o (for notifications, planned).
--   **Accounting:** Chart of Accounts, Journal Entries, Ledger, Currency Revaluation.
--   **Frontend Printing:** Custom  for dynamic content.
--   **Deployment:** Self-hosting (Docker/PM2), Emergent Mobile Agent integration.
-
+-   **Accounting:** Chart of Accounts (COA), Journal Entries, Ledger, Currency Revaluation, Multi-currency.
+-   **Data Integrity:** Use of UUIDs, defensive checks, schema validation.
+-   **Deployment:** Supervisor for service management.
 </key_technical_concepts>
 
 <code_architecture>
-
 The application uses a FastAPI backend and a React frontend.
 
 
@@ -32,72 +30,49 @@ The application uses a FastAPI backend and a React frontend.
 **Key Files and Changes Summary:**
 
 -   ****:
-    -   **Importance**: Central API for all application logic.
-    -   **Changes**: Fixed date filtering logic for transfers and commissions. Added notification creation functions and integrated them into wallet deposit, transfer creation, and receive transfer flows. Implemented models and API endpoints for currency revaluation,  and . Introduced endpoints for syncing agents to COA and initializing sample COA data. Consolidated account fetching to  and  for agent-related lookups. Implemented defensive checks for data integrity and corrected the collection used for  from  to .
+    *   **Importance**: Central API.
+    *   **Changes**: Refactored to consistently use  for all COA and Ledger related operations (GET/POST /accounting/accounts, GET /accounting/ledger). Updated  to use  with upsert logic. Implemented new Pydantic models (, ) and CRUD endpoints () for managing account categories. Modified agent registration () to link agents to an existing  from  under the Exchange Companies category, removing auto-creation. Added  endpoint. Debugged  endpoint by fixing journal entry structure and adding  blocks for better error logging. Added  field to  and  models and ensured  is saved with each journal entry line. Updated  to filter by currency.
 -   ****:
-    -   **Importance**: Administrator's interface for managing agent wallet deposits.
-    -   **Changes**: Integrated a printable receipt feature using  from . Debugged and fixed JSX syntax errors and duplicate code sections related to the receipt dialog.
--   ****:
-    -   **Importance**: Agent's personal wallet view.
-    -   **Changes**: Enabled agents to print their own deposit receipts by adding a print button and integrating the receipt dialog for each transaction.
--   ****:
-    -   **Importance**: Displays all system notifications to relevant users.
-    -   **Changes**: Extended functionality to support both Admin and Agent roles, incorporating new notification types and enhancing UI/UX with specific icons and styling.
--   ****:
-    -   **Importance**: Primary navigation component for the application.
-    -   **Changes**: Adjusted logic for the notification icon visibility based on user roles. Integrated a new Currency Revaluation button into both desktop and mobile navigation menus, requiring fixes for JSX structure issues.
--   ****:
-    -   **Importance**: Utility functions for generating printable HTML content.
-    -   **Changes**: Contains the  function, which is critical for creating structured receipt content.
--   ****:
-    -   **Importance**: Configuration file for Tailwind CSS, defining the application's design system.
-    -   **Changes**: Involved a temporary color scheme change to golden yellow for primary elements, which was later reverted to the original dark blue.
+    *   **Importance**: Original COA display.
+    *   **Changes**: Initially contained logic for rendering, filtering, and adding accounts. Significant parts of its functionality (especially for Add Account modal) were iteratively improved. This page is now largely replaced by .
 -   ** (NEW)**:
-    -   **Importance**: A newly created page for managing currency revaluation operations.
-    *   **Changes**: Developed to facilitate IQD/USD exchanges. Faced and resolved issues with incorrect data types from API calls (). The logic for displaying accounts was refined multiple times to correctly show Account Name - Account Number from the Chart of Accounts, instead of just numerical codes or agent-specific accounts. A Sync Agents button was added.
+    *   **Importance**: New, enhanced COA display.
+    *   **Changes**: Newly created page implementing a collapsible tree-view for accounts, categorized by new  model. Includes improved Add Account and new Add Category modals, with automatic number generation logic for accounts. This page provides a more professional and organized UI for the Chart of Accounts.
 -   ****:
-    -   **Importance**: Manages the display and addition of accounts within the Chart of Accounts.
-    *   **Changes**: Implemented defensive checks for  or  values when rendering account data to prevent UI errors. Fixed syntax errors. The Add Account modal's state management, input fields, auto-numbering logic, and UI were significantly modified as part of a major overhaul, including handling  function.
+    *   **Importance**: For adding new agents.
+    *   **Changes**: Modified to include a dropdown for selecting an existing accounting ID from the Exchange Companies category instead of automatically generating one. Fetches available accounts from a new backend API endpoint.
 -   ****:
-    -   **Importance**: Defines the main routing structure for the frontend.
-    -   **Changes**: Added the new route for the , ensuring it's accessible within the application.
--   ** (NEW)**:
-    -   **Importance**: A script to synchronize existing agents' data into the Chart of Accounts, ensuring all agent accounts are properly reflected in the accounting system.
-    -   **Changes**: Newly created to address the need for populating the Chart of Accounts with agent-specific entries.
--   ** (NEW)**:
-    -   **Importance**: A utility script to generate sample data for the Chart of Accounts, facilitating testing and initial setup in empty environments.
-    -   **Changes**: Newly created and executed to provide a baseline set of accounting entries.
-
+    *   **Importance**: Main navigation.
+    *   **Changes**: Added إدارة العمولات (Commissions Management) link back to both desktop and mobile accounting menus to ensure accessibility.
+-   ****:
+    *   **Importance**: Main routing.
+    *   **Changes**: Updated the route for  to use  instead of the original .
 </code_architecture>
 
 <pending_tasks>
 -   Complete the frontend implementation for editing agent wallet limits on .
 -   Populate  with data and UI.
--   Update  Pydantic model with  and  fields.
--   Frontend implementation for , , , , and .
 -   Implement specific Further AI monitoring features.
 -   Address Cancel transit transfers request.
 -   Complete frontend logic in  to restrict agents from changing  and .
 -   Apply the new quick date filter functionality to *all* other pages with date filters.
 -   Re-implement the print feature comprehensively as per the detailed specification for all specified pages (beyond current wallet deposit receipts).
--   Complete the remaining parts of the **Chart of Accounts & General Ledger Overhaul** (fixing General Ledger error, auto account creation for new exchangers, full integration of numeric account codes, and ensuring all parts read from the main COA source).
 -   Add AI capabilities to the notification system.
+-   Frontend implementation of currency selection in the Add Account modal.
+-   Frontend implementation of currency filter in the Ledger page.
+-   Ensure all older journal entries have a  field (migration might be needed if not handled).
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was actively working on a major overhaul of the **Chart of Accounts (COA) and General Ledger (GL)**, specifically focusing on the **Add Account button and its associated modal in the **. The user's request details the need for a modal with fields for Account Name, Account Category (dropdown), and Notes, with automatic numeric account code generation based on the category.
+Immediately before this summary request, the AI engineer was implementing a comprehensive multi-currency support system. This involved:
+1.  **Backend Model Updates:** Modified  and  Pydantic models in  to include a  field (e.g., ).
+2.  **Journal Entry Updates:** Ensured that  is explicitly stored for each line item within a journal entry, particularly in transfer-related functions like .
+3.  **Ledger Endpoint Enhancement:** Updated the  endpoint in  to accept an optional  parameter and filter journal entries accordingly.
+4.  **Backend Validation:** Verified that all backend changes were syntactically correct and the FastAPI server restarted successfully.
 
-The AI engineer has already:
--   Identified and started to address a critical backend bug where the  API endpoint was incorrectly using  instead of  for creating new accounts (Chat Message 459, 510).
--   Implemented defensive checks in  (e.g., in , ) to gracefully handle  or  data received from the API, preventing UI crashes (Chat Messages 464-471).
--   Resolved a  in  caused by duplicate code segments (Chat Messages 478-482).
--   In , the state management for the new account and the modal logic have been updated (Chat Messages 495, 497).
--   A function for automatically calculating and assigning account numbers based on the selected category has been added, and the  function has been refined to incorporate this logic (Chat Message 499).
--   The entire user interface for the Add Account modal has been replaced and updated to meet the specified requirements (Chat Message 509).
-
-The work is at the point where the frontend modal for Add Account has been restructured and its internal logic for generating account numbers is in place. The next crucial step is to ensure the backend API correctly processes this information.
+The work is currently at the stage where the backend is prepared for multi-currency, with models, journal entries, and ledger filtering logic updated. The immediate next step (as per the user's latest message, Chat Message 477) is to verify these changes in the database and implement the corresponding frontend updates, specifically for showing currency options in the Add Account modal and adding a currency filter to the Ledger page. The last action encountered a  during a database verification step, indicating a minor scripting issue.
 </current_work>
 
 <optional_next_step>
-Fix the  endpoint in  to correctly add accounts to .
+Fix the  in the database verification script, then proceed with implementing the currency selection in the Add Account frontend modal.
 </optional_next_step>

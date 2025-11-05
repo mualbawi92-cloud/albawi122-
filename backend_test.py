@@ -61,7 +61,7 @@ import time
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://transferhub-11.preview.emergentagent.com/api"
+BASE_URL = "https://financetrack-16.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
 
 # Try different possible passwords for test agents
