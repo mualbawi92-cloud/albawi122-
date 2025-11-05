@@ -1112,7 +1112,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Multi-currency support for accounts and ledger"
+    - "Automated backup system with browser auto-download"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
