@@ -55,6 +55,7 @@ const LedgerPage = () => {
       const params = {};
       if (startDate) params.start_date = startDate;
       if (endDate) params.end_date = endDate;
+      if (selectedCurrency) params.currency = selectedCurrency; // Add currency filter
 
       const response = await axios.get(`${API}/accounting/ledger/${selectedAccount}`, { params });
       setAccountDetails(response.data.account);
