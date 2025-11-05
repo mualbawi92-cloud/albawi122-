@@ -127,33 +127,38 @@ class MultiCurrencyTester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
     
-    def test_initialize_accounts_endpoint(self):
-        """Test POST /api/accounting/initialize - HIGH PRIORITY"""
-        print("\n=== Scenario 1: Initialize Default Accounts (HIGH PRIORITY) ===")
+    def test_create_account_with_multiple_currencies(self):
+        """Test creating account with multiple currencies: ["IQD", "USD"]"""
+        print("\n=== Test 1: Create Account with Multiple Currencies ===")
+        
+        test_account = {
+            "code": "9999",
+            "name": "Test Multi-Currency Account",
+            "name_ar": "حساب تجريبي متعدد العملات",
+            "name_en": "Test Multi-Currency Account",
+            "category": "Test",
+            "currencies": ["IQD", "USD"]
+        }
         
         try:
-            response = self.make_request('POST', '/accounting/initialize', token=self.admin_token)
-            if response.status_code == 200:
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
+            if response.status_code == 200 or response.status_code == 201:
                 data = response.json()
+                self.test_account_codes.append("9999")
                 
-                # Check response structure
-                if 'inserted' in data and 'updated' in data and 'total' in data:
-                    inserted = data.get('inserted', 0)
-                    updated = data.get('updated', 0)
-                    total = data.get('total', 0)
-                    
-                    self.log_result("Initialize Accounts", True, 
-                                  f"Initialize successful - Inserted: {inserted}, Updated: {updated}, Total: {total}")
-                    
-                    # Store results for later verification
-                    self.initialize_results = data
+                # Verify response includes currencies
+                if 'currencies' in data and data['currencies'] == ["IQD", "USD"]:
+                    self.log_result("Create Multi-Currency Account", True, 
+                                  f"Account 9999 created successfully with currencies: {data['currencies']}")
                     return data
                 else:
-                    self.log_result("Initialize Accounts", False, "Invalid response structure", data)
+                    self.log_result("Create Multi-Currency Account", False, 
+                                  f"Account created but currencies field missing or incorrect: {data}")
             else:
-                self.log_result("Initialize Accounts", False, f"Initialize failed: {response.status_code}", response.text)
+                self.log_result("Create Multi-Currency Account", False, 
+                              f"Account creation failed: {response.status_code}", response.text)
         except Exception as e:
-            self.log_result("Initialize Accounts", False, f"Error: {str(e)}")
+            self.log_result("Create Multi-Currency Account", False, f"Error: {str(e)}")
         
         return None
     
