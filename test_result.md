@@ -992,6 +992,74 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
+      ✅ MULTI-CURRENCY SUPPORT FULLY IMPLEMENTED - Ready for Testing
+      
+      **Implementation Summary:**
+      Implemented comprehensive multi-currency support as requested by the user.
+      
+      **Changes Made:**
+      
+      1. **Frontend - ChartOfAccountsPageNew.js:**
+         - Added currency selection checkboxes (IQD, USD, EUR, GBP) in "Add Account" dialog
+         - Added validation to ensure at least one currency is selected
+         - Updated account creation API call to include currencies array
+         - Default currency: IQD
+      
+      2. **Frontend - LedgerPage.js:**
+         - Added currency filter dropdown (All currencies, IQD, USD, EUR, GBP)
+         - Updated ledger API call to pass currency parameter
+         - Added currency column in desktop table view with blue badge
+         - Added currency badge in mobile card view
+         - Updated grid layout to accommodate new currency filter
+      
+      3. **Backend (Already Implemented):**
+         - AccountCreate model accepts currencies: Optional[list[str]]
+         - Journal entries include currency field
+         - Ledger endpoint filters by currency parameter
+      
+      **Testing Required:**
+      Please test the following scenarios:
+      
+      1. **Create Account with Currencies:**
+         - Login as admin
+         - Go to Chart of Accounts page
+         - Click "إضافة حساب" (Add Account)
+         - Enter account name and select category
+         - Select multiple currencies (e.g., IQD + USD)
+         - Verify account is created successfully
+         - Check that currencies are saved in database
+      
+      2. **Currency Filter in Ledger:**
+         - Go to Ledger page
+         - Select an account
+         - Select "جميع العملات" - verify all entries shown
+         - Select "IQD" - verify only IQD entries shown
+         - Select "USD" - verify only USD entries shown
+      
+      3. **Currency Display:**
+         - Desktop view: Verify currency column shows currency badges
+         - Mobile view: Verify currency badge appears in entry cards
+         - Verify badge styling (blue background, readable text)
+      
+      4. **Validation:**
+         - Try to create account without selecting any currency
+         - Verify error message: "يرجى اختيار عملة واحدة على الأقل"
+      
+      5. **Edge Cases:**
+         - Create account with single currency (IQD only)
+         - Create account with all currencies selected
+         - Filter ledger with currency that has no entries (should show empty)
+      
+      **Expected Results:**
+      - ✅ Accounts created with selected currencies
+      - ✅ Ledger filters correctly by currency
+      - ✅ Currency displayed in all entry views
+      - ✅ Validation prevents account creation without currency
+      
+      Backend and frontend services are running and ready for testing.
+      
+  - agent: "main"
+    message: |
       ✅ DATE FILTER FIX IMPLEMENTED - Ready for Testing
       
       **Issue Fixed:**
