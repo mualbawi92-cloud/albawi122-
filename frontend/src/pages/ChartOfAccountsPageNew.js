@@ -135,6 +135,7 @@ const ChartOfAccountsPage = () => {
         type: newAccount.category,
         category: newAccount.category,
         notes: newAccount.notes,
+        currencies: newAccount.currencies || ['IQD'], // Send currencies array
         balance_iqd: 0,
         balance_usd: 0,
         is_active: true
@@ -144,7 +145,7 @@ const ChartOfAccountsPage = () => {
 
       toast.success(`✅ تمت إضافة الحساب بنجاح برقم ${newCode}`);
       
-      setNewAccount({ name: '', category: '', notes: '' });
+      setNewAccount({ name: '', category: '', notes: '', currencies: ['IQD'] });
       setShowAddAccountDialog(false);
       
       fetchCategories();
