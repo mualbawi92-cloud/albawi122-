@@ -574,7 +574,7 @@ class MultiCurrencyTester:
 
 def main():
     """Main execution function"""
-    tester = ChartOfAccountsInitializeTester()
+    tester = MultiCurrencyTester()
     
     try:
         success = tester.run_all_tests()
