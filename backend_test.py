@@ -192,31 +192,84 @@ class MultiCurrencyTester:
         
         return None
     
-    def test_chart_of_accounts_initialize_fix(self):
-        """Test Chart of Accounts Initialize endpoint fix verification"""
-        print("\n🚨 CHART OF ACCOUNTS INITIALIZATION FIX VERIFICATION")
-        print("=" * 80)
-        print("Testing Initialize endpoint and Trial Balance Report fixes")
-        print("=" * 80)
+    def test_ledger_currency_filter(self):
+        """Test ledger endpoint with currency filter parameter"""
+        print("\n=== Test 3: Test Ledger with Currency Filter ===")
         
-        # Scenario 1: Initialize Default Accounts (HIGH PRIORITY)
-        print("\n--- SCENARIO 1: INITIALIZE DEFAULT ACCOUNTS ---")
-        self.test_initialize_accounts_endpoint()
+        # First, let's test with an existing account that might have entries
+        test_accounts = ["9999", "1030", "2001"]  # Test account, Transit account, Exchange company account
         
-        # Test idempotency
-        self.test_initialize_accounts_idempotent()
-        
-        # Scenario 2: Verify System Accounts Created
-        print("\n--- SCENARIO 2: VERIFY SYSTEM ACCOUNTS CREATED ---")
-        self.test_system_accounts_accessible()
-        
-        # Scenario 3: Trial Balance Report (Should Work Now)
-        print("\n--- SCENARIO 3: TRIAL BALANCE REPORT ---")
-        self.test_trial_balance_report()
-        
-        # Scenario 4: Verify Complete Flow
-        print("\n--- SCENARIO 4: COMPLETE FLOW VERIFICATION ---")
-        self.test_complete_flow_verification()
+        for account_code in test_accounts:
+            print(f"\n--- Testing Ledger for Account {account_code} ---")
+            
+            # Test 1: Get ledger without currency filter (should return all currencies)
+            try:
+                response = self.make_request('GET', f'/accounting/ledger/{account_code}', token=self.admin_token)
+                if response.status_code == 200:
+                    data = response.json()
+                    entries = data.get('entries', [])
+                    account_info = data.get('account', {})
+                    
+                    self.log_result(f"Ledger {account_code} - No Filter", True, 
+                                  f"Ledger accessible, {len(entries)} entries found")
+                    
+                    # Check if entries have currency field
+                    entries_with_currency = [e for e in entries if 'currency' in e]
+                    if entries:
+                        if len(entries_with_currency) == len(entries):
+                            self.log_result(f"Ledger {account_code} - Currency Field", True, 
+                                          f"All {len(entries)} entries have currency field")
+                        else:
+                            self.log_result(f"Ledger {account_code} - Currency Field", False, 
+                                          f"Only {len(entries_with_currency)}/{len(entries)} entries have currency field")
+                    
+                elif response.status_code == 404:
+                    self.log_result(f"Ledger {account_code} - No Filter", False, 
+                                  f"Account {account_code} not found (404)")
+                    continue  # Skip currency filter tests for non-existent accounts
+                else:
+                    self.log_result(f"Ledger {account_code} - No Filter", False, 
+                                  f"Ledger failed: {response.status_code}")
+                    continue
+                
+                # Test 2: Get ledger with IQD currency filter
+                response_iqd = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=IQD', token=self.admin_token)
+                if response_iqd.status_code == 200:
+                    data_iqd = response_iqd.json()
+                    entries_iqd = data_iqd.get('entries', [])
+                    
+                    # Verify all returned entries are IQD
+                    non_iqd_entries = [e for e in entries_iqd if e.get('currency') != 'IQD']
+                    if len(non_iqd_entries) == 0:
+                        self.log_result(f"Ledger {account_code} - IQD Filter", True, 
+                                      f"IQD filter working: {len(entries_iqd)} IQD entries returned")
+                    else:
+                        self.log_result(f"Ledger {account_code} - IQD Filter", False, 
+                                      f"IQD filter failed: {len(non_iqd_entries)} non-IQD entries returned")
+                else:
+                    self.log_result(f"Ledger {account_code} - IQD Filter", False, 
+                                  f"IQD filter failed: {response_iqd.status_code}")
+                
+                # Test 3: Get ledger with USD currency filter
+                response_usd = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=USD', token=self.admin_token)
+                if response_usd.status_code == 200:
+                    data_usd = response_usd.json()
+                    entries_usd = data_usd.get('entries', [])
+                    
+                    # Verify all returned entries are USD
+                    non_usd_entries = [e for e in entries_usd if e.get('currency') != 'USD']
+                    if len(non_usd_entries) == 0:
+                        self.log_result(f"Ledger {account_code} - USD Filter", True, 
+                                      f"USD filter working: {len(entries_usd)} USD entries returned")
+                    else:
+                        self.log_result(f"Ledger {account_code} - USD Filter", False, 
+                                      f"USD filter failed: {len(non_usd_entries)} non-USD entries returned")
+                else:
+                    self.log_result(f"Ledger {account_code} - USD Filter", False, 
+                                  f"USD filter failed: {response_usd.status_code}")
+                
+            except Exception as e:
+                self.log_result(f"Ledger {account_code} - Error", False, f"Error: {str(e)}")
         
         return True
     
