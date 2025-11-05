@@ -69,12 +69,12 @@ ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
 # Try different possible passwords for test agents
 POSSIBLE_PASSWORDS = ["test123", "agent123", "123456", "password", "admin123"]
 
-class ChartOfAccountsInitializeTester:
+class MultiCurrencyTester:
     def __init__(self):
         self.admin_token = None
         self.admin_user_id = None
         self.test_results = []
-        self.system_accounts = ['1030', '4020', '5110']  # Critical system accounts to test
+        self.test_account_codes = []  # Track created test accounts for cleanup
         
     def log_result(self, test_name: str, success: bool, message: str, details: Any = None):
         """Log test result"""
