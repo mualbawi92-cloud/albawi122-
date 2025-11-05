@@ -98,6 +98,11 @@ const ChartOfAccountsPage = () => {
       toast.error('يرجى ملء جميع الحقول المطلوبة');
       return;
     }
+    
+    if (!newAccount.currencies || newAccount.currencies.length === 0) {
+      toast.error('يرجى اختيار عملة واحدة على الأقل');
+      return;
+    }
 
     setLoading(true);
     try {
