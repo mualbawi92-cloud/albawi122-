@@ -5694,6 +5694,70 @@ async def get_currency_revaluations(
     
     return revaluations
 
+
+@api_router.get("/admin/backup/export-all")
+async def export_all_data(current_user: dict = Depends(require_admin)):
+    """
+    Export all database data for backup purposes (Admin only)
+    Returns a complete dump of all collections in JSON format
+    """
+    try:
+        backup_data = {
+            "backup_timestamp": datetime.now(timezone.utc).isoformat(),
+            "backup_version": "1.0",
+            "database_name": os.environ['DB_NAME'],
+            "collections": {}
+        }
+        
+        # List of all collections to backup
+        collections_to_backup = [
+            "users",
+            "transfers",
+            "agents",
+            "chart_of_accounts",
+            "journal_entries",
+            "transit_account",
+            "transit_transactions",
+            "wallet_transactions",
+            "commission_rates",
+            "admin_commissions",
+            "notifications",
+            "categories",
+            "currency_revaluations"
+        ]
+        
+        # Export each collection
+        for collection_name in collections_to_backup:
+            try:
+                collection_data = await db[collection_name].find().to_list(length=None)
+                
+                # Remove MongoDB _id field for cleaner export
+                for doc in collection_data:
+                    if '_id' in doc:
+                        doc.pop('_id')
+                
+                backup_data["collections"][collection_name] = collection_data
+                
+            except Exception as e:
+                # If collection doesn't exist, skip it
+                backup_data["collections"][collection_name] = []
+                logging.warning(f"Could not export collection {collection_name}: {str(e)}")
+        
+        # Add metadata
+        backup_data["metadata"] = {
+            "total_collections": len(collections_to_backup),
+            "total_documents": sum(len(docs) for docs in backup_data["collections"].values()),
+            "exported_by": current_user.get("username", "unknown"),
+            "export_timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+        return backup_data
+        
+    except Exception as e:
+        logging.error(f"Backup export failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في تصدير النسخة الاحتياطية: {str(e)}")
+
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
