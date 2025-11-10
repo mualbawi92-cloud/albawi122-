@@ -941,8 +941,8 @@ class UnifiedLedgerFilteringTester:
                 self.log_result("Cleanup", False, f"Error cleaning up {account_code}: {str(e)}")
     
     def run_all_tests(self):
-        """Run all Currency Filtering Enhancement tests"""
-        print("🚨 STARTING CURRENCY FILTERING ENHANCEMENTS TESTING")
+        """Run all Unified Ledger Filtering tests"""
+        print("🚨 STARTING UNIFIED LEDGER FILTERING LOGIC TESTING")
         print("=" * 80)
         
         # Step 1: Authentication
