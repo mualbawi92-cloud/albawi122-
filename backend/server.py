@@ -4966,9 +4966,10 @@ async def get_exchange_profit_report(
 async def get_agent_ledger(
     date_from: str = None,
     date_to: str = None,
+    currency: str = None,  # فلتر العملة
     current_user: dict = Depends(get_current_user)
 ):
-    """Get agent's own ledger with all transactions"""
+    """Get agent's own ledger with all transactions filtered by currency"""
     
     # Only agents can access
     if current_user['role'] != 'agent':
