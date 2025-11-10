@@ -542,32 +542,32 @@ class CurrencyFilteringTester:
         
         return True
     
-    def test_multi_currency_comprehensive(self):
-        """Run comprehensive multi-currency support tests"""
-        print("\n🚨 MULTI-CURRENCY SUPPORT COMPREHENSIVE TESTING")
+    def test_currency_filtering_comprehensive(self):
+        """Run comprehensive currency filtering tests"""
+        print("\n🚨 CURRENCY FILTERING ENHANCEMENTS COMPREHENSIVE TESTING")
         print("=" * 80)
-        print("Testing multi-currency implementation for Chart of Accounts and Ledger")
+        print("Testing currency filtering enhancements for Ledger pages (Admin and Agent)")
         print("=" * 80)
         
-        # Test 1: Create Account with Multiple Currencies
-        print("\n--- TEST 1: CREATE ACCOUNT WITH MULTIPLE CURRENCIES ---")
-        self.test_create_account_with_multiple_currencies()
+        # Test 1: Admin Ledger Currency Required
+        print("\n--- TEST 1: ADMIN LEDGER CURRENCY REQUIRED ---")
+        self.test_admin_ledger_currency_required()
         
-        # Test 2: Get Account and Verify Currencies
-        print("\n--- TEST 2: GET ACCOUNT AND VERIFY CURRENCIES ---")
-        self.test_get_account_verify_currencies()
+        # Test 2: Admin Ledger Multi-Currency Account
+        print("\n--- TEST 2: ADMIN LEDGER MULTI-CURRENCY ACCOUNT ---")
+        self.test_admin_ledger_multi_currency_account()
         
-        # Test 3: Test Ledger with Currency Filter
-        print("\n--- TEST 3: TEST LEDGER WITH CURRENCY FILTER ---")
-        self.test_ledger_currency_filter()
+        # Test 3: Admin Ledger Single Currency Account
+        print("\n--- TEST 3: ADMIN LEDGER SINGLE CURRENCY ACCOUNT ---")
+        self.test_admin_ledger_single_currency_account()
         
-        # Test 4: Edge Cases
-        print("\n--- TEST 4: EDGE CASES ---")
-        self.test_edge_cases()
+        # Test 4: Agent Ledger Currency Filtering
+        print("\n--- TEST 4: AGENT LEDGER CURRENCY FILTERING ---")
+        self.test_agent_ledger_currency_filtering()
         
-        # Test 5: Validation Tests
-        print("\n--- TEST 5: VALIDATION TESTS ---")
-        self.test_validation_scenarios()
+        # Test 5: Edge Cases and Validation
+        print("\n--- TEST 5: EDGE CASES AND VALIDATION ---")
+        self.test_edge_cases_and_validation()
         
         return True
     
