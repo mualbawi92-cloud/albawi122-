@@ -194,18 +194,11 @@ const AgentLedgerPage = () => {
                         `من ${dateFrom} إلى ${dateTo}`,
                         [
                           { 
-                            label: 'رصيد المحفظة (IQD)', 
-                            value: `${ledgerData.wallet_balance_iqd?.toLocaleString() || 0} IQD`,
+                            label: `الرصيد الحالي (${ledgerData.selected_currency})`, 
+                            value: `${ledgerData.current_balance?.toLocaleString() || 0} ${ledgerData.selected_currency}`,
                             color: '#dbeafe',
                             borderColor: '#3b82f6',
                             textColor: '#1e40af'
-                          },
-                          { 
-                            label: 'رصيد المحفظة (USD)', 
-                            value: `${ledgerData.wallet_balance_usd?.toLocaleString() || 0} USD`,
-                            color: '#d1fae5',
-                            borderColor: '#10b981',
-                            textColor: '#059669'
                           }
                         ],
                         ledgerData.transactions || [],
