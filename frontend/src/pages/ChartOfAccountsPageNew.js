@@ -206,16 +206,51 @@ const ChartOfAccountsPage = () => {
       toast.error('يرجى إدخال اسم الحساب');
       return;
     }
+    
+    // التحقق من اختيار عملة واحدة على الأقل
+    if (!editingAccount.currencies || editingAccount.currencies.length === 0) {
+      toast.error('يرجى اختيار عملة واحدة على الأقل');
+      return;
+    }
 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
       
+      // التحقق من إمكانية حذف العملات
+      const removedCurrencies = editingAccount.originalCurrencies.filter(
+        curr => !editingAccount.currencies.includes(curr)
+      );
+      
+      if (removedCurrencies.length > 0) {
+        // التحقق من وجود قيود بهذه العملات
+        const ledgerResponse = await axios.get(
+          `${API}/accounting/ledger/${editingAccount.code}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        const entries = ledgerResponse.data.entries || [];
+        const currenciesInUse = [...new Set(entries.map(e => e.currency))];
+        
+        const blockedCurrencies = removedCurrencies.filter(curr => 
+          currenciesInUse.includes(curr)
+        );
+        
+        if (blockedCurrencies.length > 0) {
+          toast.error(
+            `⚠️ لا يمكن إلغاء العملات التالية لأنها مرتبطة بقيود نشطة: ${blockedCurrencies.join(', ')}`
+          );
+          setLoading(false);
+          return;
+        }
+      }
+      
       await axios.patch(`${API}/accounting/accounts/${editingAccount.code}`, {
         name: editingAccount.name,
         name_ar: editingAccount.name,
         name_en: editingAccount.name,
-        notes: editingAccount.notes
+        notes: editingAccount.notes,
+        currencies: editingAccount.currencies // إضافة العملات للتحديث
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
