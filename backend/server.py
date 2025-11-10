@@ -597,11 +597,12 @@ class AccountCreate(BaseModel):
     currencies: Optional[list[str]] = ["IQD"]  # العملات المسموح بها للحساب
 
 class AccountUpdate(BaseModel):
-    """Model for updating account name"""
+    """Model for updating account name and currencies"""
     name: Optional[str] = None
     name_ar: Optional[str] = None
     name_en: Optional[str] = None
     notes: Optional[str] = None
+    currencies: Optional[list[str]] = None  # تحديث العملات
 
 class JournalEntry(BaseModel):
     """Journal entry (قيد يومية)"""
