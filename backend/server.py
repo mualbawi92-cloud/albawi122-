@@ -4995,6 +4995,21 @@ async def get_agent_ledger(
     if not agent:
         raise HTTPException(status_code=404, detail="الصراف غير موجود")
     
+    # Get agent's chart of accounts entry to get enabled currencies
+    agent_account_coa = await db.chart_of_accounts.find_one({'agent_id': agent_id})
+    enabled_currencies = agent_account_coa.get('currencies', ['IQD', 'USD']) if agent_account_coa else ['IQD', 'USD']
+    
+    # If currency not specified, use first enabled currency
+    if not currency:
+        currency = enabled_currencies[0]
+    
+    # Validate selected currency
+    if currency not in enabled_currencies:
+        raise HTTPException(
+            status_code=400,
+            detail=f"العملة {currency} غير مفعّلة. العملات المتاحة: {', '.join(enabled_currencies)}"
+        )
+    
     # Get all transfers (outgoing and incoming)
     outgoing_transfers = await db.transfers.find({
         'from_agent_id': agent_id,
