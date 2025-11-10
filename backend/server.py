@@ -4380,18 +4380,33 @@ async def get_account_ledger(
     account_code: str,
     start_date: str = None,
     end_date: str = None,
-    currency: str = None,  # فلتر العملة: IQD, USD, أو None للكل
+    currency: str = None,  # فلتر العملة: IQD, USD, EUR, GBP (مطلوب - لا يوجد "الكل")
     page: int = 1,
     limit: int = 100,
     current_user: dict = Depends(require_admin)
 ):
     """
     Get ledger for a specific account (دفتر الأستاذ) with pagination and currency filter
+    يجب تحديد العملة - لا يوجد خيار "جميع العملات"
     """
     # Verify account exists (using chart_of_accounts)
     account = await db.chart_of_accounts.find_one({'code': account_code})
     if not account:
         raise HTTPException(status_code=404, detail="الحساب غير موجود")
+    
+    # Get enabled currencies for this account
+    enabled_currencies = account.get('currencies', ['IQD'])
+    
+    # If currency not specified, use first enabled currency
+    if not currency:
+        currency = enabled_currencies[0] if enabled_currencies else 'IQD'
+    
+    # Validate selected currency is enabled for this account
+    if currency not in enabled_currencies:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"العملة {currency} غير مفعّلة لهذا الحساب. العملات المتاحة: {', '.join(enabled_currencies)}"
+        )
     
     # Build query
     query = {'is_cancelled': False}
@@ -4418,18 +4433,18 @@ async def get_account_ledger(
     # Get total count
     total_entries = await db.journal_entries.count_documents(query)
     
-    # Filter and transform entries containing this account
+    # Filter and transform entries containing this account with selected currency
     ledger_entries = []
-    running_balance_iqd = 0
-    running_balance_usd = 0
+    running_balance = 0  # رصيد واحد فقط حسب العملة المختارة
     
     for entry in entries:
         for line in entry.get('lines', []):
             if line.get('account_code') == account_code:
-                # فلتر حسب العملة إذا تم تحديدها
                 line_currency = line.get('currency', 'IQD')
-                if currency and line_currency != currency:
-                    continue  # تجاهل هذا السطر إذا لم يطابق العملة المطلوبة
+                
+                # فلتر حسب العملة المختارة فقط
+                if line_currency != currency:
+                    continue
                 
                 debit = line.get('debit', 0)
                 credit = line.get('credit', 0)
@@ -4441,13 +4456,8 @@ async def get_account_ledger(
                 else:
                     balance_change = credit - debit
                 
-                # Update running balance based on currency
-                if line_currency == 'IQD':
-                    running_balance_iqd += balance_change
-                    current_balance = running_balance_iqd
-                else:
-                    running_balance_usd += balance_change
-                    current_balance = running_balance_usd
+                # Update running balance for selected currency only
+                running_balance += balance_change
                 
                 ledger_entries.append({
                     'date': entry['date'],
@@ -4455,8 +4465,8 @@ async def get_account_ledger(
                     'description': entry.get('description', ''),
                     'debit': debit,
                     'credit': credit,
-                    'balance': current_balance,
-                    'currency': line_currency  # إضافة العملة
+                    'balance': running_balance,
+                    'currency': line_currency
                 })
     
     account.pop('_id', None)
@@ -4465,9 +4475,9 @@ async def get_account_ledger(
         "account": account,
         "entries": ledger_entries,
         "total_entries": len(ledger_entries),
-        "current_balance_iqd": running_balance_iqd,
-        "current_balance_usd": running_balance_usd,
-        "filtered_currency": currency
+        "current_balance": running_balance,  # رصيد واحد فقط
+        "selected_currency": currency,
+        "enabled_currencies": enabled_currencies  # العملات المفعّلة للحساب
     }
 
 @api_router.patch("/accounting/journal-entries/{entry_id}")
