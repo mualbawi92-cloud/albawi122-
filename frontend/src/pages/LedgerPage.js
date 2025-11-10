@@ -205,7 +205,11 @@ const LedgerPage = () => {
             </div>
 
             <div className="mt-4">
-              <Button onClick={fetchLedger} disabled={loading || !selectedAccount} className="w-full md:w-auto">
+              <Button 
+                onClick={() => fetchLedger()} 
+                disabled={loading || !selectedAccount || !selectedCurrency} 
+                className="w-full md:w-auto"
+              >
                 {loading ? 'جاري التحميل...' : '🔍 عرض دفتر الأستاذ'}
               </Button>
             </div>
