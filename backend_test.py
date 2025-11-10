@@ -1016,20 +1016,20 @@ class UnifiedLedgerFilteringTester:
         critical_failures = [r for r in self.test_results if not r['success'] and ('CRITICAL' in r['message'] or 'Currency' in r['test'])]
         
         if failed_tests == 0:
-            print("🎉 ALL TESTS PASSED - CURRENCY FILTERING ENHANCEMENTS ARE FULLY FUNCTIONAL!")
-            print("✅ Admin ledger accepts currency parameter and returns proper structure")
-            print("✅ Admin ledger filters entries by selected currency only")
-            print("✅ Admin ledger validates enabled currencies for accounts")
-            print("✅ Agent ledger accepts currency parameter and filters transactions")
-            print("✅ Agent ledger returns currency-specific balances and commissions")
-            print("✅ Both endpoints handle invalid currencies with proper error responses")
+            print("🎉 ALL TESTS PASSED - UNIFIED LEDGER FILTERING LOGIC IS FULLY FUNCTIONAL!")
+            print("✅ Admin ledger handles currency fallback for old entries correctly")
+            print("✅ Agent ledger integrates with chart_of_accounts properly")
+            print("✅ Currency filtering is consistent between admin and agent endpoints")
+            print("✅ Old data without currency field defaults to IQD correctly")
+            print("✅ Edge cases are handled gracefully with proper fallbacks")
+            print("✅ Both endpoints use chart_of_accounts as primary data source")
         elif critical_failures:
-            print("🚨 CRITICAL ISSUES FOUND - CURRENCY FILTERING MAY HAVE FAILED!")
+            print("🚨 CRITICAL ISSUES FOUND - UNIFIED LEDGER FILTERING MAY HAVE FAILED!")
             for failure in critical_failures:
                 print(f"   ❌ {failure['test']}: {failure['message']}")
         else:
             print("⚠️  SOME TESTS FAILED - REVIEW ISSUES ABOVE")
-            print("Currency filtering enhancements may be partially working")
+            print("Unified ledger filtering logic may be partially working")
         
         print("=" * 80)
 
