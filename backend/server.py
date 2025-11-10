@@ -5127,11 +5127,11 @@ async def get_agent_ledger(
             })
     
     # ============ إضافة القيود اليدوية من دفتر اليومية ============
-    # Get agent's account code
-    agent_account = await db.accounts.find_one({'agent_id': agent_id})
+    # Get agent's account code from chart_of_accounts
+    agent_account_coa = await db.chart_of_accounts.find_one({'agent_id': agent_id})
     
-    if agent_account:
-        account_code = agent_account['code']
+    if agent_account_coa:
+        account_code = agent_account_coa['code']
         
         # Get journal entries containing this agent's account
         journal_entries = await db.journal_entries.find({
@@ -5142,15 +5142,19 @@ async def get_agent_ledger(
             'is_cancelled': False
         }).to_list(length=None)
         
-        # Filter and add journal entries
+        # Filter and add journal entries (with currency filtering)
         for entry in journal_entries:
             for line in entry.get('lines', []):
                 if line.get('account_code') == account_code:
+                    # Get currency from line, fallback to IQD if not set
+                    line_currency = line.get('currency', 'IQD')
+                    
+                    # Filter by selected currency
+                    if line_currency != currency:
+                        continue
+                    
                     debit = line.get('debit', 0)
                     credit = line.get('credit', 0)
-                    
-                    # Determine currency from account or use IQD as default
-                    currency = agent_account.get('currency', 'IQD')
                     
                     transactions.append({
                         'date': entry['date'],
@@ -5159,7 +5163,7 @@ async def get_agent_ledger(
                         'debit': debit,
                         'credit': credit,
                         'balance': 0,
-                        'currency': currency,
+                        'currency': line_currency,
                         'entry_id': entry['id'],
                         'entry_number': entry['entry_number']
                     })
