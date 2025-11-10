@@ -248,35 +248,94 @@ class CurrencyFilteringTester:
         
         return True
     
-    def test_get_account_verify_currencies(self):
-        """Test GET account and verify currencies field is returned"""
-        print("\n=== Test 2: Get Account and Verify Currencies ===")
+    def test_admin_ledger_multi_currency_account(self):
+        """Test Admin Ledger with Account having Multiple Currencies"""
+        print("\n=== Test 2: Admin Ledger Multi-Currency Account ===")
+        
+        # First, create a test account with multiple currencies
+        test_account = {
+            "code": "9999",
+            "name": "Test Multi-Currency Account",
+            "name_ar": "حساب تجريبي متعدد العملات",
+            "name_en": "Test Multi-Currency Account",
+            "category": "شركات الصرافة",
+            "currencies": ["IQD", "USD"]
+        }
         
         try:
-            response = self.make_request('GET', '/accounting/accounts/9999', token=self.admin_token)
+            # Create the account
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
+            if response.status_code == 200 or response.status_code == 201:
+                self.test_account_codes.append("9999")
+                self.log_result("Create Multi-Currency Test Account", True, 
+                              f"Test account 9999 created with currencies: ['IQD', 'USD']")
+            else:
+                self.log_result("Create Multi-Currency Test Account", False, 
+                              f"Failed to create test account: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Create Multi-Currency Test Account", False, f"Error: {str(e)}")
+            return False
+        
+        # Test ledger filtering for the multi-currency account
+        account_code = "9999"
+        
+        # Test 1: Filter by IQD
+        try:
+            response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=IQD', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
                 
-                # Verify currencies field exists and contains expected values
-                if 'currencies' in data:
-                    currencies = data['currencies']
-                    if currencies == ["IQD", "USD"]:
-                        self.log_result("Get Account Currencies", True, 
-                                      f"Account 9999 currencies field verified: {currencies}")
-                        return data
+                # Verify response structure
+                if data['selected_currency'] == 'IQD' and 'IQD' in data['enabled_currencies']:
+                    self.log_result(f"Multi-Currency Account - IQD Filter", True, 
+                                  f"IQD filter working. Entries: {len(data['entries'])}, Balance: {data['current_balance']}")
+                    
+                    # Verify all entries are IQD (if any entries exist)
+                    non_iqd_entries = [e for e in data['entries'] if e.get('currency') != 'IQD']
+                    if len(non_iqd_entries) == 0:
+                        self.log_result(f"Multi-Currency Account - IQD Entries Only", True, 
+                                      f"All {len(data['entries'])} entries are IQD currency")
                     else:
-                        self.log_result("Get Account Currencies", False, 
-                                      f"Account currencies incorrect. Expected: ['IQD', 'USD'], Got: {currencies}")
+                        self.log_result(f"Multi-Currency Account - IQD Entries Only", False, 
+                                      f"Found {len(non_iqd_entries)} non-IQD entries in IQD filter")
                 else:
-                    self.log_result("Get Account Currencies", False, 
-                                  f"Account response missing currencies field: {data}")
+                    self.log_result(f"Multi-Currency Account - IQD Filter", False, 
+                                  f"IQD filter failed. Selected: {data['selected_currency']}, Enabled: {data['enabled_currencies']}")
             else:
-                self.log_result("Get Account Currencies", False, 
-                              f"Get account failed: {response.status_code}", response.text)
+                self.log_result(f"Multi-Currency Account - IQD Filter", False, 
+                              f"IQD filter request failed: {response.status_code}")
         except Exception as e:
-            self.log_result("Get Account Currencies", False, f"Error: {str(e)}")
+            self.log_result(f"Multi-Currency Account - IQD Filter", False, f"Error: {str(e)}")
         
-        return None
+        # Test 2: Filter by USD
+        try:
+            response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=USD', token=self.admin_token)
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data['selected_currency'] == 'USD' and 'USD' in data['enabled_currencies']:
+                    self.log_result(f"Multi-Currency Account - USD Filter", True, 
+                                  f"USD filter working. Entries: {len(data['entries'])}, Balance: {data['current_balance']}")
+                    
+                    # Verify all entries are USD (if any entries exist)
+                    non_usd_entries = [e for e in data['entries'] if e.get('currency') != 'USD']
+                    if len(non_usd_entries) == 0:
+                        self.log_result(f"Multi-Currency Account - USD Entries Only", True, 
+                                      f"All {len(data['entries'])} entries are USD currency")
+                    else:
+                        self.log_result(f"Multi-Currency Account - USD Entries Only", False, 
+                                      f"Found {len(non_usd_entries)} non-USD entries in USD filter")
+                else:
+                    self.log_result(f"Multi-Currency Account - USD Filter", False, 
+                                  f"USD filter failed. Selected: {data['selected_currency']}, Enabled: {data['enabled_currencies']}")
+            else:
+                self.log_result(f"Multi-Currency Account - USD Filter", False, 
+                              f"USD filter request failed: {response.status_code}")
+        except Exception as e:
+            self.log_result(f"Multi-Currency Account - USD Filter", False, f"Error: {str(e)}")
+        
+        return True
     
     def test_ledger_currency_filter(self):
         """Test ledger endpoint with currency filter parameter"""
