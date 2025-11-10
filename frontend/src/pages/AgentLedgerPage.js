@@ -235,25 +235,16 @@ const AgentLedgerPage = () => {
             ) : ledgerData ? (
               <div className="space-y-6">
                 {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <Card className="border-2 border-blue-300 bg-blue-50">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm text-blue-700">رصيد المحفظة (IQD)</CardTitle>
+                      <CardTitle className="text-sm text-blue-700">
+                        الرصيد الحالي ({ledgerData.selected_currency})
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-2xl font-bold text-blue-600">
-                        {formatCurrency(ledgerData.wallet_balance_iqd, 'IQD')}
-                      </p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="border-2 border-green-300 bg-green-50">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm text-green-700">رصيد المحفظة (USD)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-2xl font-bold text-green-600">
-                        {formatCurrency(ledgerData.wallet_balance_usd, 'USD')}
+                        {formatCurrency(ledgerData.current_balance, ledgerData.selected_currency)}
                       </p>
                     </CardContent>
                   </Card>
@@ -284,20 +275,26 @@ const AgentLedgerPage = () => {
                 {/* Commissions Summary */}
                 <Card className="border-2 border-green-300">
                   <CardHeader>
-                    <CardTitle className="text-xl text-green-800">💰 ملخص العمولات</CardTitle>
+                    <CardTitle className="text-xl text-green-800">
+                      💰 ملخص العمولات ({ledgerData.selected_currency})
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="bg-green-50 p-4 rounded-lg">
-                        <p className="text-sm text-green-700 mb-1">العمولات المحققة (IQD)</p>
+                        <p className="text-sm text-green-700 mb-1">
+                          العمولات المحققة ({ledgerData.selected_currency})
+                        </p>
                         <p className="text-2xl font-bold text-green-600">
-                          {formatCurrency(ledgerData.earned_commission_iqd, 'IQD')}
+                          {formatCurrency(ledgerData.earned_commission, ledgerData.selected_currency)}
                         </p>
                       </div>
                       <div className="bg-red-50 p-4 rounded-lg">
-                        <p className="text-sm text-red-700 mb-1">العمولات المدفوعة (IQD)</p>
+                        <p className="text-sm text-red-700 mb-1">
+                          العمولات المدفوعة ({ledgerData.selected_currency})
+                        </p>
                         <p className="text-2xl font-bold text-red-600">
-                          {formatCurrency(ledgerData.paid_commission_iqd, 'IQD')}
+                          {formatCurrency(ledgerData.paid_commission, ledgerData.selected_currency)}
                         </p>
                       </div>
                     </div>
