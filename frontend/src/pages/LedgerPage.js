@@ -45,31 +45,77 @@ const LedgerPage = () => {
     }
   };
 
-  const fetchLedger = async () => {
+  const fetchLedger = async (currencyOverride = null) => {
     if (!selectedAccount) {
       toast.error('يرجى اختيار حساب');
       return;
     }
 
+    // Use currency override if provided, otherwise use selected currency
+    const currencyToUse = currencyOverride || selectedCurrency;
+    
+    if (!currencyToUse) {
+      toast.error('يرجى اختيار عملة');
+      return;
+    }
+
     setLoading(true);
     try {
-      const params = {};
+      const params = {
+        currency: currencyToUse // العملة مطلوبة دائماً
+      };
       if (startDate) params.start_date = startDate;
       if (endDate) params.end_date = endDate;
-      // Only add currency filter if not "ALL"
-      if (selectedCurrency && selectedCurrency !== 'ALL') {
-        params.currency = selectedCurrency;
-      }
 
       const response = await axios.get(`${API}/accounting/ledger/${selectedAccount}`, { params });
+      
+      // Update account details and enabled currencies
       setAccountDetails(response.data.account);
+      setEnabledCurrencies(response.data.enabled_currencies || ['IQD']);
       setLedgerEntries(response.data.entries || []);
+      
+      // Update selected currency if it was overridden
+      if (currencyOverride) {
+        setSelectedCurrency(currencyOverride);
+      }
+      
       toast.success('تم تحميل دفتر الأستاذ بنجاح');
     } catch (error) {
       console.error('Error fetching ledger:', error);
-      toast.error('خطأ في تحميل دفتر الأستاذ');
+      const errorMsg = error.response?.data?.detail || 'خطأ في تحميل دفتر الأستاذ';
+      toast.error(errorMsg);
     }
     setLoading(false);
+  };
+
+  // Handle account selection - set first enabled currency
+  const handleAccountChange = async (accountCode) => {
+    setSelectedAccount(accountCode);
+    
+    // Get account details to find enabled currencies
+    try {
+      const response = await axios.get(`${API}/accounting/accounts/${accountCode}`);
+      const account = response.data;
+      const currencies = account.currencies || ['IQD'];
+      
+      setEnabledCurrencies(currencies);
+      
+      // Set first currency as default and fetch ledger
+      const firstCurrency = currencies[0];
+      setSelectedCurrency(firstCurrency);
+      
+      // Clear previous data
+      setAccountDetails(null);
+      setLedgerEntries([]);
+    } catch (error) {
+      console.error('Error fetching account:', error);
+      toast.error('خطأ في تحميل بيانات الحساب');
+    }
+  };
+
+  // Handle currency change
+  const handleCurrencyChange = (currency) => {
+    setSelectedCurrency(currency);
   };
 
   const formatCurrency = (amount, currency = 'IQD') => {
