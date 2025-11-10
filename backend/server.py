@@ -5021,9 +5021,22 @@ async def get_agent_ledger(
     if not agent:
         raise HTTPException(status_code=404, detail="الصراف غير موجود")
     
-    # Get agent's chart of accounts entry to get enabled currencies
+    # Get agent's chart of accounts entry to get enabled currencies and account code
     agent_account_coa = await db.chart_of_accounts.find_one({'agent_id': agent_id})
-    enabled_currencies = agent_account_coa.get('currencies', ['IQD', 'USD']) if agent_account_coa else ['IQD', 'USD']
+    
+    if agent_account_coa:
+        enabled_currencies = agent_account_coa.get('currencies', ['IQD', 'USD'])
+        agent_account_code = agent_account_coa.get('code')
+    else:
+        # Fallback: try to find in old accounts table
+        old_account = await db.accounts.find_one({'agent_id': agent_id})
+        if old_account:
+            enabled_currencies = ['IQD', 'USD']  # Default for old accounts
+            agent_account_code = old_account.get('code')
+        else:
+            # No account found at all
+            enabled_currencies = ['IQD', 'USD']
+            agent_account_code = None
     
     # If currency not specified, use first enabled currency
     if not currency:
