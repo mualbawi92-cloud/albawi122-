@@ -1,73 +1,47 @@
 #!/usr/bin/env python3
 """
-🚨 CURRENCY FILTERING ENHANCEMENTS TESTING FOR LEDGER PAGES
+🚨 UNIFIED LEDGER FILTERING LOGIC TESTING - ADMIN AND AGENT WITH FALLBACK FOR OLD ENTRIES
 
-**Test Objective:** Test the currency filtering enhancements for Ledger pages (Admin and Agent)
+**Test Objective:** Verify unified ledger filtering logic between Admin and Agent with fallback for old entries
 
-**Admin Ledger Endpoint - Multi-Currency Filtering:**
+**Critical Tests:**
 
-1. **GET /api/accounting/ledger/{account_code} - Currency Required**
-   - Test with currency parameter (IQD, USD)
-   - Verify enabled_currencies returned in response
-   - Verify current_balance calculated for selected currency only
-   - Verify selected_currency returned in response
-   - Test without currency parameter (should use first enabled currency)
-   - Test with disabled currency (should return 400 error)
+1. **Admin Ledger - Currency Fallback:**
+   - GET /api/accounting/ledger/{account_code}?currency=IQD
+   - Verify entries without currency field are treated as IQD
+   - Verify running balance calculation is correct
+   - Check that all old entries (currency=null) appear when filtering by IQD
 
-2. **Account with Multiple Currencies:**
-   - Get ledger for account with currencies ['IQD', 'USD']
-   - Filter by IQD - verify only IQD entries returned
-   - Filter by USD - verify only USD entries returned
-   - Verify balances are different for each currency
-
-3. **Account with Single Currency:**
-   - Get ledger for account with only ['IQD']
-   - Verify enabled_currencies contains only IQD
-   - Test filtering by USD (should fail with 400)
-
-**Agent Ledger Endpoint - Currency Filtering:**
-
-4. **GET /api/agent-ledger - Currency Filter**
+2. **Agent Ledger - chart_of_accounts Integration:**
    - Login as agent
-   - Test with currency=IQD parameter
-   - Test with currency=USD parameter
-   - Verify enabled_currencies returned
-   - Verify current_balance specific to selected currency
-   - Verify transactions filtered by currency
-   - Verify earned_commission and paid_commission specific to currency
+   - GET /api/agent-ledger?currency=IQD
+   - Verify agent's account is fetched from chart_of_accounts
+   - Verify journal entries are filtered by currency
+   - Verify fallback to IQD for entries without currency
+   - Check enabled_currencies returned correctly
+
+3. **Currency Filtering Consistency:**
+   - Test same account with admin and agent endpoints
+   - Compare results for same currency filter
+   - Verify entry counts match
+   - Verify balances match
+
+4. **Old Data Handling:**
+   - Create a test journal entry without currency field
+   - Verify it appears when filtering by IQD
+   - Verify it doesn't appear when filtering by USD
+   - Check fallback behavior
 
 5. **Edge Cases:**
-   - Agent with no chart_of_accounts entry (should fallback to IQD, USD)
-   - Agent with single currency only
-   - Filter with invalid currency
+   - Agent without chart_of_accounts entry (fallback to old accounts table)
+   - Account with no journal entries
+   - Mixed old and new entries
 
-**Expected Response Structure:**
-
-Admin Ledger:
-```json
-{
-  "account": {...},
-  "entries": [...],
-  "total_entries": 10,
-  "current_balance": 50000,
-  "selected_currency": "IQD",
-  "enabled_currencies": ["IQD", "USD"]
-}
-```
-
-Agent Ledger:
-```json
-{
-  "agent_name": "...",
-  "current_balance": 50000,
-  "selected_currency": "IQD",
-  "enabled_currencies": ["IQD", "USD"],
-  "transactions": [...],
-  "earned_commission": 1000,
-  "paid_commission": 500,
-  ...
-}
-```
+**Expected Behavior:**
+- Both admin and agent ledgers use chart_of_accounts
+- Entries without currency default to IQD
+- Currency filtering works consistently for both endpoints
+- All old entries visible when appropriate currency selected
 
 **Admin Credentials:**
 username: admin
