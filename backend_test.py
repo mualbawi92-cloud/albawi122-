@@ -603,6 +603,7 @@ class CurrencyFilteringTester:
                     # Try to login with first agent
                     agent_username = agents[0].get('username')
                     if agent_username:
+                        agent_logged_in = False
                         for password in POSSIBLE_PASSWORDS:
                             try:
                                 login_response = self.make_request('POST', '/login', json={
@@ -620,10 +621,14 @@ class CurrencyFilteringTester:
                                     else:
                                         self.log_result("Agent Invalid Currency Filter", False, 
                                                       f"Expected 400 error, got: {invalid_response.status_code}")
+                                    agent_logged_in = True
                                     break
                             except:
                                 continue
-                        break
+                        
+                        if not agent_logged_in:
+                            self.log_result("Agent Invalid Currency Filter", False, 
+                                          f"Could not login as agent {agent_username}")
         except Exception as e:
             self.log_result("Agent Invalid Currency Filter", False, f"Error: {str(e)}")
         
