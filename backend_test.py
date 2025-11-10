@@ -711,8 +711,8 @@ class CurrencyFilteringTester:
                 self.log_result("Cleanup", False, f"Error cleaning up {account_code}: {str(e)}")
     
     def run_all_tests(self):
-        """Run all Multi-Currency Support tests"""
-        print("🚨 STARTING MULTI-CURRENCY SUPPORT TESTING")
+        """Run all Currency Filtering Enhancement tests"""
+        print("🚨 STARTING CURRENCY FILTERING ENHANCEMENTS TESTING")
         print("=" * 80)
         
         # Step 1: Authentication
@@ -720,8 +720,8 @@ class CurrencyFilteringTester:
             print("❌ Authentication failed - cannot continue")
             return False
         
-        # Step 2: Run multi-currency support tests
-        self.test_multi_currency_comprehensive()
+        # Step 2: Run currency filtering enhancement tests
+        self.test_currency_filtering_comprehensive()
         
         # Step 3: Cleanup
         self.cleanup_test_accounts()
