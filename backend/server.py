@@ -2182,8 +2182,12 @@ async def receive_transfer(
     
     # ============ CREATE ACCOUNTING JOURNAL ENTRY ============
     try:
-        # Get receiver agent account
-        receiver_account = await db.accounts.find_one({'agent_id': current_user['id']})
+        # Get receiver agent account from chart_of_accounts (preferred) or old accounts table
+        receiver_account = await db.chart_of_accounts.find_one({'agent_id': current_user['id']})
+        
+        if not receiver_account:
+            # Fallback to old accounts table
+            receiver_account = await db.accounts.find_one({'agent_id': current_user['id']})
         
         if receiver_account:
             # قيد 1: Create journal entry for receiving transfer
