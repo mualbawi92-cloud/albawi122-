@@ -1,56 +1,73 @@
 #!/usr/bin/env python3
 """
-🚨 MULTI-CURRENCY SUPPORT TESTING FOR CHART OF ACCOUNTS AND LEDGER
+🚨 CURRENCY FILTERING ENHANCEMENTS TESTING FOR LEDGER PAGES
 
-**Test Objective:** Test the multi-currency support implementation for Chart of Accounts and Ledger
+**Test Objective:** Test the currency filtering enhancements for Ledger pages (Admin and Agent)
 
-**Backend Endpoints to Test:**
+**Admin Ledger Endpoint - Multi-Currency Filtering:**
 
-1. **Create Account with Currencies:**
-   - POST /api/accounting/accounts
-   - Login as admin first
-   - Create test account with multiple currencies: ["IQD", "USD"]
-   - Verify account is created successfully
-   - Verify currencies field is saved in database
-   - Test payload example:
-     ```json
-     {
-       "code": "9999",
-       "name": "Test Multi-Currency Account",
-       "name_ar": "حساب تجريبي متعدد العملات",
-       "name_en": "Test Multi-Currency Account",
-       "category": "Test",
-       "currencies": ["IQD", "USD"]
-     }
-     ```
+1. **GET /api/accounting/ledger/{account_code} - Currency Required**
+   - Test with currency parameter (IQD, USD)
+   - Verify enabled_currencies returned in response
+   - Verify current_balance calculated for selected currency only
+   - Verify selected_currency returned in response
+   - Test without currency parameter (should use first enabled currency)
+   - Test with disabled currency (should return 400 error)
 
-2. **Get Account and Verify Currencies:**
-   - GET /api/accounting/accounts/9999
-   - Verify response includes currencies field
-   - Verify currencies array contains ["IQD", "USD"]
+2. **Account with Multiple Currencies:**
+   - Get ledger for account with currencies ['IQD', 'USD']
+   - Filter by IQD - verify only IQD entries returned
+   - Filter by USD - verify only USD entries returned
+   - Verify balances are different for each currency
 
-3. **Test Ledger with Currency Filter:**
-   - GET /api/accounting/ledger/{account_code}?currency=IQD
-   - Test with different currency values: IQD, USD
-   - Verify only entries with matching currency are returned
-   - Verify each entry has currency field
+3. **Account with Single Currency:**
+   - Get ledger for account with only ['IQD']
+   - Verify enabled_currencies contains only IQD
+   - Test filtering by USD (should fail with 400)
 
-4. **Edge Cases:**
-   - Create account with single currency: ["IQD"]
-   - Create account with all supported currencies: ["IQD", "USD", "EUR", "GBP"]
-   - Test ledger filter with currency that has no entries
-   - Test ledger without currency parameter (should return all currencies)
+**Agent Ledger Endpoint - Currency Filtering:**
 
-**Authentication:**
-Use admin credentials from the system.
+4. **GET /api/agent-ledger - Currency Filter**
+   - Login as agent
+   - Test with currency=IQD parameter
+   - Test with currency=USD parameter
+   - Verify enabled_currencies returned
+   - Verify current_balance specific to selected currency
+   - Verify transactions filtered by currency
+   - Verify earned_commission and paid_commission specific to currency
 
-**Validation Points:**
-- ✅ Account creation accepts currencies array
-- ✅ Currencies field is saved in database
-- ✅ GET account returns currencies field
-- ✅ Ledger endpoint accepts currency parameter
-- ✅ Ledger filtering works correctly by currency
-- ✅ Journal entries include currency field
+5. **Edge Cases:**
+   - Agent with no chart_of_accounts entry (should fallback to IQD, USD)
+   - Agent with single currency only
+   - Filter with invalid currency
+
+**Expected Response Structure:**
+
+Admin Ledger:
+```json
+{
+  "account": {...},
+  "entries": [...],
+  "total_entries": 10,
+  "current_balance": 50000,
+  "selected_currency": "IQD",
+  "enabled_currencies": ["IQD", "USD"]
+}
+```
+
+Agent Ledger:
+```json
+{
+  "agent_name": "...",
+  "current_balance": 50000,
+  "selected_currency": "IQD",
+  "enabled_currencies": ["IQD", "USD"],
+  "transactions": [...],
+  "earned_commission": 1000,
+  "paid_commission": 500,
+  ...
+}
+```
 
 **Admin Credentials:**
 username: admin
