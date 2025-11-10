@@ -337,84 +337,71 @@ class CurrencyFilteringTester:
         
         return True
     
-    def test_ledger_currency_filter(self):
-        """Test ledger endpoint with currency filter parameter"""
-        print("\n=== Test 3: Test Ledger with Currency Filter ===")
+    def test_admin_ledger_single_currency_account(self):
+        """Test Admin Ledger with Account having Single Currency"""
+        print("\n=== Test 3: Admin Ledger Single Currency Account ===")
         
-        # First, let's test with an existing account that might have entries
-        test_accounts = ["9999", "1030", "2001"]  # Test account, Transit account, Exchange company account
+        # Create a test account with single currency
+        test_account = {
+            "code": "9998",
+            "name": "Test Single Currency Account",
+            "name_ar": "حساب تجريبي عملة واحدة",
+            "name_en": "Test Single Currency Account",
+            "category": "شركات الصرافة",
+            "currencies": ["IQD"]
+        }
         
-        for account_code in test_accounts:
-            print(f"\n--- Testing Ledger for Account {account_code} ---")
-            
-            # Test 1: Get ledger without currency filter (should return all currencies)
-            try:
-                response = self.make_request('GET', f'/accounting/ledger/{account_code}', token=self.admin_token)
-                if response.status_code == 200:
-                    data = response.json()
-                    entries = data.get('entries', [])
-                    account_info = data.get('account', {})
-                    
-                    self.log_result(f"Ledger {account_code} - No Filter", True, 
-                                  f"Ledger accessible, {len(entries)} entries found")
-                    
-                    # Check if entries have currency field
-                    entries_with_currency = [e for e in entries if 'currency' in e]
-                    if entries:
-                        if len(entries_with_currency) == len(entries):
-                            self.log_result(f"Ledger {account_code} - Currency Field", True, 
-                                          f"All {len(entries)} entries have currency field")
-                        else:
-                            self.log_result(f"Ledger {account_code} - Currency Field", False, 
-                                          f"Only {len(entries_with_currency)}/{len(entries)} entries have currency field")
-                    
-                elif response.status_code == 404:
-                    self.log_result(f"Ledger {account_code} - No Filter", False, 
-                                  f"Account {account_code} not found (404)")
-                    continue  # Skip currency filter tests for non-existent accounts
-                else:
-                    self.log_result(f"Ledger {account_code} - No Filter", False, 
-                                  f"Ledger failed: {response.status_code}")
-                    continue
+        try:
+            # Create the account
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
+            if response.status_code == 200 or response.status_code == 201:
+                self.test_account_codes.append("9998")
+                self.log_result("Create Single Currency Test Account", True, 
+                              f"Test account 9998 created with single currency: ['IQD']")
+            else:
+                self.log_result("Create Single Currency Test Account", False, 
+                              f"Failed to create test account: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_result("Create Single Currency Test Account", False, f"Error: {str(e)}")
+            return False
+        
+        account_code = "9998"
+        
+        # Test 1: Verify enabled_currencies contains only IQD
+        try:
+            response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=IQD', token=self.admin_token)
+            if response.status_code == 200:
+                data = response.json()
+                enabled_currencies = data.get('enabled_currencies', [])
                 
-                # Test 2: Get ledger with IQD currency filter
-                response_iqd = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=IQD', token=self.admin_token)
-                if response_iqd.status_code == 200:
-                    data_iqd = response_iqd.json()
-                    entries_iqd = data_iqd.get('entries', [])
-                    
-                    # Verify all returned entries are IQD
-                    non_iqd_entries = [e for e in entries_iqd if e.get('currency') != 'IQD']
-                    if len(non_iqd_entries) == 0:
-                        self.log_result(f"Ledger {account_code} - IQD Filter", True, 
-                                      f"IQD filter working: {len(entries_iqd)} IQD entries returned")
-                    else:
-                        self.log_result(f"Ledger {account_code} - IQD Filter", False, 
-                                      f"IQD filter failed: {len(non_iqd_entries)} non-IQD entries returned")
+                if enabled_currencies == ["IQD"]:
+                    self.log_result(f"Single Currency Account - Enabled Currencies", True, 
+                                  f"Enabled currencies correctly set to ['IQD']")
                 else:
-                    self.log_result(f"Ledger {account_code} - IQD Filter", False, 
-                                  f"IQD filter failed: {response_iqd.status_code}")
-                
-                # Test 3: Get ledger with USD currency filter
-                response_usd = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=USD', token=self.admin_token)
-                if response_usd.status_code == 200:
-                    data_usd = response_usd.json()
-                    entries_usd = data_usd.get('entries', [])
-                    
-                    # Verify all returned entries are USD
-                    non_usd_entries = [e for e in entries_usd if e.get('currency') != 'USD']
-                    if len(non_usd_entries) == 0:
-                        self.log_result(f"Ledger {account_code} - USD Filter", True, 
-                                      f"USD filter working: {len(entries_usd)} USD entries returned")
-                    else:
-                        self.log_result(f"Ledger {account_code} - USD Filter", False, 
-                                      f"USD filter failed: {len(non_usd_entries)} non-USD entries returned")
-                else:
-                    self.log_result(f"Ledger {account_code} - USD Filter", False, 
-                                  f"USD filter failed: {response_usd.status_code}")
-                
-            except Exception as e:
-                self.log_result(f"Ledger {account_code} - Error", False, f"Error: {str(e)}")
+                    self.log_result(f"Single Currency Account - Enabled Currencies", False, 
+                                  f"Expected ['IQD'], got: {enabled_currencies}")
+            else:
+                self.log_result(f"Single Currency Account - Enabled Currencies", False, 
+                              f"Request failed: {response.status_code}")
+        except Exception as e:
+            self.log_result(f"Single Currency Account - Enabled Currencies", False, f"Error: {str(e)}")
+        
+        # Test 2: Test filtering by USD (should fail with 400)
+        try:
+            response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=USD', token=self.admin_token)
+            if response.status_code == 400:
+                self.log_result(f"Single Currency Account - USD Filter Rejection", True, 
+                              f"USD filter properly rejected with 400 error")
+            elif response.status_code == 200:
+                # This should not happen for single currency account
+                self.log_result(f"Single Currency Account - USD Filter Rejection", False, 
+                              f"USD filter should be rejected but got 200 response")
+            else:
+                self.log_result(f"Single Currency Account - USD Filter Rejection", False, 
+                              f"Unexpected response code: {response.status_code}")
+        except Exception as e:
+            self.log_result(f"Single Currency Account - USD Filter Rejection", False, f"Error: {str(e)}")
         
         return True
     
