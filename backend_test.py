@@ -768,31 +768,31 @@ class UnifiedLedgerFilteringTester:
         return True
     
     def test_unified_ledger_filtering_comprehensive(self):
-        """Run comprehensive currency filtering tests"""
-        print("\n🚨 CURRENCY FILTERING ENHANCEMENTS COMPREHENSIVE TESTING")
+        """Run comprehensive unified ledger filtering tests"""
+        print("\n🚨 UNIFIED LEDGER FILTERING LOGIC COMPREHENSIVE TESTING")
         print("=" * 80)
-        print("Testing currency filtering enhancements for Ledger pages (Admin and Agent)")
+        print("Testing unified ledger filtering logic between Admin and Agent with fallback for old entries")
         print("=" * 80)
         
-        # Test 1: Admin Ledger Currency Required
-        print("\n--- TEST 1: ADMIN LEDGER CURRENCY REQUIRED ---")
-        self.test_admin_ledger_currency_required()
+        # Test 1: Admin Ledger Currency Fallback
+        print("\n--- TEST 1: ADMIN LEDGER CURRENCY FALLBACK ---")
+        self.test_admin_ledger_currency_fallback()
         
-        # Test 2: Admin Ledger Multi-Currency Account
-        print("\n--- TEST 2: ADMIN LEDGER MULTI-CURRENCY ACCOUNT ---")
-        self.test_admin_ledger_multi_currency_account()
+        # Test 2: Agent Ledger chart_of_accounts Integration
+        print("\n--- TEST 2: AGENT LEDGER CHART_OF_ACCOUNTS INTEGRATION ---")
+        self.test_agent_ledger_chart_of_accounts_integration()
         
-        # Test 3: Admin Ledger Single Currency Account
-        print("\n--- TEST 3: ADMIN LEDGER SINGLE CURRENCY ACCOUNT ---")
-        self.test_admin_ledger_single_currency_account()
+        # Test 3: Currency Filtering Consistency
+        print("\n--- TEST 3: CURRENCY FILTERING CONSISTENCY ---")
+        self.test_currency_filtering_consistency()
         
-        # Test 4: Agent Ledger Currency Filtering
-        print("\n--- TEST 4: AGENT LEDGER CURRENCY FILTERING ---")
-        self.test_agent_ledger_currency_filtering()
+        # Test 4: Old Data Handling
+        print("\n--- TEST 4: OLD DATA HANDLING ---")
+        self.test_old_data_handling()
         
-        # Test 5: Edge Cases and Validation
-        print("\n--- TEST 5: EDGE CASES AND VALIDATION ---")
-        self.test_edge_cases_and_validation()
+        # Test 5: Edge Cases
+        print("\n--- TEST 5: EDGE CASES ---")
+        self.test_edge_cases()
         
         return True
     
