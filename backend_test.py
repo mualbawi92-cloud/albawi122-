@@ -964,7 +964,7 @@ class UnifiedLedgerFilteringTester:
     def print_test_summary(self):
         """Print comprehensive test summary"""
         print("\n" + "=" * 80)
-        print("🚨 CURRENCY FILTERING ENHANCEMENTS TESTING SUMMARY")
+        print("🚨 UNIFIED LEDGER FILTERING LOGIC TESTING SUMMARY")
         print("=" * 80)
         
         total_tests = len(self.test_results)
