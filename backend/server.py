@@ -5142,26 +5142,25 @@ async def get_agent_ledger(
     # Sort by date
     transactions.sort(key=lambda x: x['date'])
     
-    # Calculate running balance (simplified - just show cumulative)
-    balance_iqd = agent.get('wallet_balance_iqd', 0)
-    balance_usd = agent.get('wallet_balance_usd', 0)
+    # Calculate running balance for selected currency only
+    current_balance = agent.get('wallet_balance_iqd', 0) if currency == 'IQD' else agent.get('wallet_balance_usd', 0)
     
     for txn in transactions:
-        if txn['currency'] == 'IQD':
-            txn['balance'] = balance_iqd
-        else:
-            txn['balance'] = balance_usd
+        txn['balance'] = current_balance
+    
+    # Calculate totals for selected currency
+    earned_commission = earned_commission_iqd if currency == 'IQD' else earned_commission_usd
+    paid_commission = paid_commission_iqd if currency == 'IQD' else paid_commission_usd
     
     return {
         'agent_name': agent['display_name'],
-        'wallet_balance_iqd': agent.get('wallet_balance_iqd', 0),
-        'wallet_balance_usd': agent.get('wallet_balance_usd', 0),
-        'outgoing_transfers_count': len(outgoing_transfers),
-        'incoming_transfers_count': len(incoming_transfers),
-        'earned_commission_iqd': earned_commission_iqd,
-        'earned_commission_usd': earned_commission_usd,
-        'paid_commission_iqd': paid_commission_iqd,
-        'paid_commission_usd': paid_commission_usd,
+        'current_balance': current_balance,
+        'selected_currency': currency,
+        'enabled_currencies': enabled_currencies,
+        'outgoing_transfers_count': len([t for t in outgoing_transfers if t.get('currency') == currency]),
+        'incoming_transfers_count': len([t for t in incoming_transfers if t.get('currency') == currency]),
+        'earned_commission': earned_commission,
+        'paid_commission': paid_commission,
         'transactions': transactions,
         'date_from': date_from_dt.isoformat(),
         'date_to': date_to_dt.isoformat()
