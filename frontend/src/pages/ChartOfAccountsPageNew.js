@@ -284,7 +284,9 @@ const ChartOfAccountsPage = () => {
     setEditingAccount({
       code: account.code,
       name: account.name || account.name_ar,
-      notes: account.notes || ''
+      notes: account.notes || '',
+      currencies: account.currencies || ['IQD'], // إضافة العملات الحالية
+      originalCurrencies: account.currencies || ['IQD'] // للتحقق من التغييرات
     });
     setShowEditAccountDialog(true);
   };
