@@ -1305,11 +1305,24 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     
     # ============ CREATE ACCOUNTING JOURNAL ENTRY ============
     try:
-        # Get sender account code from current user
-        if not current_user.get('account_code'):
-            logger.warning(f"User {current_user['id']} has no linked account_code")
-        else:
+        # Get sender account code from chart_of_accounts or user table
+        sender_account_code = None
+        
+        # First try to get from chart_of_accounts (preferred)
+        agent_account = await db.chart_of_accounts.find_one({'agent_id': current_user['id']})
+        if agent_account:
+            sender_account_code = agent_account['code']
+        # Fallback to account_id in user table
+        elif current_user.get('account_id'):
+            sender_account_code = current_user['account_id']
+        # Last fallback to account_code
+        elif current_user.get('account_code'):
             sender_account_code = current_user['account_code']
+        
+        if not sender_account_code:
+            logger.error(f"❌ Agent {current_user['id']} ({current_user.get('display_name')}) has no linked account in chart_of_accounts!")
+            logger.error("Journal entry will NOT be created - agent must be linked to an account first")
+        else:
             # Get Transit account from chart_of_accounts
             transit_account = await db.chart_of_accounts.find_one({'code': '1030'})
             if not transit_account:
