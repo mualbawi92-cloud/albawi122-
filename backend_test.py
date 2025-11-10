@@ -950,8 +950,8 @@ class UnifiedLedgerFilteringTester:
             print("❌ Authentication failed - cannot continue")
             return False
         
-        # Step 2: Run currency filtering enhancement tests
-        self.test_currency_filtering_comprehensive()
+        # Step 2: Run unified ledger filtering tests
+        self.test_unified_ledger_filtering_comprehensive()
         
         # Step 3: Cleanup
         self.cleanup_test_accounts()
