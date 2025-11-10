@@ -1035,7 +1035,7 @@ class UnifiedLedgerFilteringTester:
 
 def main():
     """Main execution function"""
-    tester = CurrencyFilteringTester()
+    tester = UnifiedLedgerFilteringTester()
     
     try:
         success = tester.run_all_tests()
