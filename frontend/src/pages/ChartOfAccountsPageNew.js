@@ -635,7 +635,7 @@ const ChartOfAccountsPage = () => {
       <Dialog open={showEditAccountDialog} onOpenChange={setShowEditAccountDialog}>
         <DialogContent className="sm:max-w-md" dir="rtl">
           <DialogHeader>
-            <DialogTitle>✏️ تعديل اسم الحساب</DialogTitle>
+            <DialogTitle>✏️ تعديل الحساب</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
@@ -655,6 +655,45 @@ const ChartOfAccountsPage = () => {
                 onChange={(e) => setEditingAccount({...editingAccount, name: e.target.value})}
                 placeholder="اسم الحساب الجديد"
               />
+            </div>
+
+            <div>
+              <Label>العملات المسموح بها *</Label>
+              <div className="border rounded-md p-3 space-y-2">
+                {['IQD', 'USD', 'EUR', 'GBP'].map(currency => (
+                  <div key={currency} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id={`edit-currency-${currency}`}
+                      checked={editingAccount?.currencies?.includes(currency) || false}
+                      onChange={(e) => {
+                        const currencies = e.target.checked
+                          ? [...(editingAccount?.currencies || []), currency]
+                          : (editingAccount?.currencies || []).filter(c => c !== currency);
+                        setEditingAccount({...editingAccount, currencies});
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <label htmlFor={`edit-currency-${currency}`} className="cursor-pointer">
+                      {currency === 'IQD' ? 'دينار عراقي (IQD)' :
+                       currency === 'USD' ? 'دولار أمريكي (USD)' :
+                       currency === 'EUR' ? 'يورو (EUR)' :
+                       'جنيه إسترليني (GBP)'}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                اختر العملات التي سيتم استخدامها في هذا الحساب
+              </p>
+              {editingAccount?.originalCurrencies && 
+               editingAccount.originalCurrencies.some(curr => 
+                 !editingAccount?.currencies?.includes(curr)
+               ) && (
+                <p className="text-xs text-amber-600 mt-1">
+                  ⚠️ سيتم التحقق من عدم وجود قيود للعملات التي تم إلغاؤها
+                </p>
+              )}
             </div>
 
             <div>
