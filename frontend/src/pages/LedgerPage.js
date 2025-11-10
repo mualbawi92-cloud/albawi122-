@@ -145,7 +145,7 @@ const LedgerPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="space-y-2 md:col-span-2">
                 <Label>الحساب *</Label>
-                <Select value={selectedAccount} onValueChange={setSelectedAccount}>
+                <Select value={selectedAccount} onValueChange={handleAccountChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="اختر الحساب" />
                   </SelectTrigger>
@@ -160,19 +160,29 @@ const LedgerPage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>العملة</Label>
-                <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="جميع العملات" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ALL">جميع العملات</SelectItem>
-                    <SelectItem value="IQD">دينار عراقي (IQD)</SelectItem>
-                    <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
-                    <SelectItem value="EUR">يورو (EUR)</SelectItem>
-                    <SelectItem value="GBP">جنيه إسترليني (GBP)</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>العملة *</Label>
+                {enabledCurrencies.length > 0 ? (
+                  <Select value={selectedCurrency} onValueChange={handleCurrencyChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر العملة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {enabledCurrencies.map(curr => (
+                        <SelectItem key={curr} value={curr}>
+                          {curr === 'IQD' ? 'دينار عراقي (IQD)' :
+                           curr === 'USD' ? 'دولار أمريكي (USD)' :
+                           curr === 'EUR' ? 'يورو (EUR)' :
+                           curr === 'GBP' ? 'جنيه إسترليني (GBP)' :
+                           curr}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="border rounded-md p-2 text-sm text-gray-500">
+                    {selectedAccount ? 'هذا الحساب غير مرتبط بأي عملة' : 'اختر حساباً أولاً'}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
