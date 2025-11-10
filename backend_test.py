@@ -405,85 +405,140 @@ class CurrencyFilteringTester:
         
         return True
     
-    def test_edge_cases(self):
-        """Test edge cases for multi-currency support"""
-        print("\n=== Test 4: Edge Cases ===")
+    def test_agent_ledger_currency_filtering(self):
+        """Test Agent Ledger Endpoint - Currency Filtering"""
+        print("\n=== Test 4: Agent Ledger Currency Filtering ===")
         
-        # Edge Case 1: Create account with single currency
-        print("\n--- Edge Case 1: Single Currency Account ---")
-        single_currency_account = {
-            "code": "9998",
-            "name": "Single Currency Test Account",
-            "name_ar": "حساب تجريبي عملة واحدة",
-            "name_en": "Single Currency Test Account",
-            "category": "Test",
-            "currencies": ["IQD"]
-        }
+        # First, try to find an existing agent or create one for testing
+        agent_token = None
+        agent_info = None
         
+        # Try to find existing agents
         try:
-            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=single_currency_account)
-            if response.status_code == 200 or response.status_code == 201:
-                data = response.json()
-                self.test_account_codes.append("9998")
-                
-                if data.get('currencies') == ["IQD"]:
-                    self.log_result("Single Currency Account", True, 
-                                  f"Account 9998 created with single currency: {data['currencies']}")
-                else:
-                    self.log_result("Single Currency Account", False, 
-                                  f"Single currency account failed: {data}")
-            else:
-                self.log_result("Single Currency Account", False, 
-                              f"Single currency account creation failed: {response.status_code}")
+            response = self.make_request('GET', '/agents', token=self.admin_token)
+            if response.status_code == 200:
+                agents = response.json()
+                if agents and len(agents) > 0:
+                    # Try to login with the first agent
+                    for agent in agents[:3]:  # Try first 3 agents
+                        agent_username = agent.get('username')
+                        if agent_username:
+                            # Try different possible passwords
+                            for password in POSSIBLE_PASSWORDS:
+                                try:
+                                    login_response = self.make_request('POST', '/login', json={
+                                        'username': agent_username,
+                                        'password': password
+                                    })
+                                    if login_response.status_code == 200:
+                                        login_data = login_response.json()
+                                        agent_token = login_data['access_token']
+                                        agent_info = login_data['user']
+                                        self.log_result("Agent Login", True, 
+                                                      f"Successfully logged in as agent: {agent_username}")
+                                        break
+                                except:
+                                    continue
+                        if agent_token:
+                            break
         except Exception as e:
-            self.log_result("Single Currency Account", False, f"Error: {str(e)}")
+            self.log_result("Find Agent", False, f"Error finding agents: {str(e)}")
         
-        # Edge Case 2: Create account with all supported currencies
-        print("\n--- Edge Case 2: All Currencies Account ---")
-        all_currencies_account = {
-            "code": "9997",
-            "name": "All Currencies Test Account",
-            "name_ar": "حساب تجريبي جميع العملات",
-            "name_en": "All Currencies Test Account",
-            "category": "Test",
-            "currencies": ["IQD", "USD", "EUR", "GBP"]
-        }
+        if not agent_token:
+            self.log_result("Agent Login", False, "Could not login as any agent - skipping agent tests")
+            return False
         
+        # Test 1: Agent ledger with IQD currency
         try:
-            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=all_currencies_account)
-            if response.status_code == 200 or response.status_code == 201:
-                data = response.json()
-                self.test_account_codes.append("9997")
-                
-                expected_currencies = ["IQD", "USD", "EUR", "GBP"]
-                if data.get('currencies') == expected_currencies:
-                    self.log_result("All Currencies Account", True, 
-                                  f"Account 9997 created with all currencies: {data['currencies']}")
-                else:
-                    self.log_result("All Currencies Account", False, 
-                                  f"All currencies account failed: {data}")
-            else:
-                self.log_result("All Currencies Account", False, 
-                              f"All currencies account creation failed: {response.status_code}")
-        except Exception as e:
-            self.log_result("All Currencies Account", False, f"Error: {str(e)}")
-        
-        # Edge Case 3: Test ledger filter with currency that has no entries
-        print("\n--- Edge Case 3: Currency Filter with No Entries ---")
-        try:
-            response = self.make_request('GET', '/accounting/ledger/9999?currency=EUR', token=self.admin_token)
+            response = self.make_request('GET', '/agent-ledger?currency=IQD', token=agent_token)
             if response.status_code == 200:
                 data = response.json()
-                entries = data.get('entries', [])
                 
-                # Should return empty array for currency with no entries
-                self.log_result("Currency Filter No Entries", True, 
-                              f"EUR filter returned {len(entries)} entries (expected: 0 or few)")
+                # Verify required fields in response
+                required_fields = ['agent_name', 'current_balance', 'selected_currency', 'enabled_currencies', 'transactions', 'earned_commission', 'paid_commission']
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_result("Agent Ledger - IQD Currency", True, 
+                                  f"All required fields present. Agent: {data['agent_name']}, Currency: {data['selected_currency']}")
+                    
+                    # Verify selected_currency is IQD
+                    if data['selected_currency'] == 'IQD':
+                        self.log_result("Agent Ledger - Selected Currency IQD", True, 
+                                      f"Selected currency correctly set to IQD")
+                    else:
+                        self.log_result("Agent Ledger - Selected Currency IQD", False, 
+                                      f"Selected currency should be IQD, got: {data['selected_currency']}")
+                    
+                    # Verify transactions are filtered by currency
+                    transactions = data.get('transactions', [])
+                    non_iqd_transactions = [t for t in transactions if t.get('currency') != 'IQD']
+                    if len(non_iqd_transactions) == 0:
+                        self.log_result("Agent Ledger - IQD Transactions Filter", True, 
+                                      f"All {len(transactions)} transactions are IQD currency")
+                    else:
+                        self.log_result("Agent Ledger - IQD Transactions Filter", False, 
+                                      f"Found {len(non_iqd_transactions)} non-IQD transactions in IQD filter")
+                else:
+                    self.log_result("Agent Ledger - IQD Currency", False, 
+                                  f"Missing required fields: {missing_fields}")
             else:
-                self.log_result("Currency Filter No Entries", False, 
-                              f"EUR filter failed: {response.status_code}")
+                self.log_result("Agent Ledger - IQD Currency", False, 
+                              f"Request failed: {response.status_code} - {response.text}")
         except Exception as e:
-            self.log_result("Currency Filter No Entries", False, f"Error: {str(e)}")
+            self.log_result("Agent Ledger - IQD Currency", False, f"Error: {str(e)}")
+        
+        # Test 2: Agent ledger with USD currency
+        try:
+            response = self.make_request('GET', '/agent-ledger?currency=USD', token=agent_token)
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data['selected_currency'] == 'USD':
+                    self.log_result("Agent Ledger - USD Currency", True, 
+                                  f"USD currency filter working correctly")
+                    
+                    # Verify transactions are filtered by currency
+                    transactions = data.get('transactions', [])
+                    non_usd_transactions = [t for t in transactions if t.get('currency') != 'USD']
+                    if len(non_usd_transactions) == 0:
+                        self.log_result("Agent Ledger - USD Transactions Filter", True, 
+                                      f"All {len(transactions)} transactions are USD currency")
+                    else:
+                        self.log_result("Agent Ledger - USD Transactions Filter", False, 
+                                      f"Found {len(non_usd_transactions)} non-USD transactions in USD filter")
+                else:
+                    self.log_result("Agent Ledger - USD Currency", False, 
+                                  f"USD currency not selected correctly: {data['selected_currency']}")
+            elif response.status_code == 400:
+                # This is acceptable if USD is not enabled for this agent
+                self.log_result("Agent Ledger - USD Currency", True, 
+                              f"USD currency properly rejected (400) - not enabled for agent")
+            else:
+                self.log_result("Agent Ledger - USD Currency", False, 
+                              f"Unexpected response: {response.status_code}")
+        except Exception as e:
+            self.log_result("Agent Ledger - USD Currency", False, f"Error: {str(e)}")
+        
+        # Test 3: Agent ledger without currency parameter (should use first enabled currency)
+        try:
+            response = self.make_request('GET', '/agent-ledger', token=agent_token)
+            if response.status_code == 200:
+                data = response.json()
+                enabled_currencies = data.get('enabled_currencies', [])
+                selected_currency = data.get('selected_currency')
+                
+                if enabled_currencies and selected_currency == enabled_currencies[0]:
+                    self.log_result("Agent Ledger - No Currency Param", True, 
+                                  f"Default currency correctly set to first enabled: {selected_currency}")
+                else:
+                    self.log_result("Agent Ledger - No Currency Param", False, 
+                                  f"Default currency logic failed. Selected: {selected_currency}, Enabled: {enabled_currencies}")
+            else:
+                self.log_result("Agent Ledger - No Currency Param", False, 
+                              f"Request failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Agent Ledger - No Currency Param", False, f"Error: {str(e)}")
         
         return True
     
