@@ -36,28 +36,68 @@ const AgentLedgerPage = () => {
     setDateFrom(thirtyDaysAgo.toISOString().split('T')[0]);
   }, []);
 
+  // Fetch enabled currencies on mount
   useEffect(() => {
-    if (dateFrom && dateTo) {
+    const fetchEnabledCurrencies = async () => {
+      try {
+        // Fetch agent's account from chart of accounts
+        const response = await axios.get(`${API}/agents`);
+        const agents = response.data;
+        const currentAgent = agents.find(a => a.id === user?.id);
+        
+        if (currentAgent && currentAgent.account_id) {
+          const accountResponse = await axios.get(`${API}/accounting/accounts/${currentAgent.account_id}`);
+          const currencies = accountResponse.data.currencies || ['IQD', 'USD'];
+          setEnabledCurrencies(currencies);
+          setSelectedCurrency(currencies[0]); // Set first currency as default
+        } else {
+          // Fallback to default currencies
+          setEnabledCurrencies(['IQD', 'USD']);
+          setSelectedCurrency('IQD');
+        }
+      } catch (error) {
+        console.error('Error fetching currencies:', error);
+        // Fallback to default
+        setEnabledCurrencies(['IQD', 'USD']);
+        setSelectedCurrency('IQD');
+      }
+    };
+    
+    fetchEnabledCurrencies();
+  }, [user]);
+
+  useEffect(() => {
+    if (dateFrom && dateTo && selectedCurrency) {
       fetchLedgerData();
     }
-  }, [dateFrom, dateTo]);
+  }, [dateFrom, dateTo, selectedCurrency]);
 
   const fetchLedgerData = async () => {
+    if (!selectedCurrency) return;
+    
     setLoading(true);
     try {
       const response = await axios.get(`${API}/agent-ledger`, {
         params: {
           date_from: dateFrom,
-          date_to: dateTo
+          date_to: dateTo,
+          currency: selectedCurrency
         }
       });
       setLedgerData(response.data);
+      setEnabledCurrencies(response.data.enabled_currencies || enabledCurrencies);
     } catch (error) {
       console.error('Error fetching ledger:', error);
-      toast.error('خطأ في تحميل دفتر الأستاذ');
+      const errorMsg = error.response?.data?.detail || 'خطأ في تحميل دفتر الأستاذ';
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
+  };
+  
+  // Handle currency change
+  const handleCurrencyChange = (currency) => {
+    setSelectedCurrency(currency);
   };
 
   const formatCurrency = (amount, currency = 'IQD') => {
