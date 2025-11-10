@@ -805,7 +805,7 @@ class CurrencyFilteringTester:
 
 def main():
     """Main execution function"""
-    tester = MultiCurrencyTester()
+    tester = CurrencyFilteringTester()
     
     try:
         success = tester.run_all_tests()
