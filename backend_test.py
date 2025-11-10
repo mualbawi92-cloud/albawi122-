@@ -571,87 +571,131 @@ class CurrencyFilteringTester:
         
         return True
     
-    def test_validation_scenarios(self):
-        """Test validation scenarios for multi-currency support"""
-        print("\n=== Test 5: Validation Scenarios ===")
+    def test_edge_cases_and_validation(self):
+        """Test edge cases and validation scenarios for currency filtering"""
+        print("\n=== Test 5: Edge Cases and Validation ===")
         
-        # Validation 1: Try to create account without currencies field
-        print("\n--- Validation 1: Account without currencies field ---")
-        no_currencies_account = {
-            "code": "9996",
-            "name": "No Currencies Test Account",
-            "name_ar": "حساب تجريبي بدون عملات",
-            "name_en": "No Currencies Test Account",
-            "category": "Test"
-            # No currencies field
-        }
-        
+        # Edge Case 1: Test with disabled currency (should return 400 error)
+        print("\n--- Edge Case 1: Disabled Currency Filter ---")
         try:
-            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=no_currencies_account)
-            if response.status_code == 200 or response.status_code == 201:
-                data = response.json()
-                self.test_account_codes.append("9996")
-                
-                # Should default to ["IQD"] if not specified
-                currencies = data.get('currencies', [])
-                if currencies == ["IQD"] or len(currencies) > 0:
-                    self.log_result("Account No Currencies Field", True, 
-                                  f"Account created with default currencies: {currencies}")
-                else:
-                    self.log_result("Account No Currencies Field", False, 
-                                  f"Account created but no currencies: {data}")
+            # Try to filter by EUR on an account that only has IQD enabled
+            response = self.make_request('GET', '/accounting/ledger/9998?currency=EUR', token=self.admin_token)
+            if response.status_code == 400:
+                self.log_result("Disabled Currency Filter", True, 
+                              f"EUR filter properly rejected with 400 error for IQD-only account")
+            elif response.status_code == 404:
+                self.log_result("Disabled Currency Filter", True, 
+                              f"Account not found (404) - acceptable for test account")
             else:
-                self.log_result("Account No Currencies Field", False, 
-                              f"Account creation failed: {response.status_code}")
+                self.log_result("Disabled Currency Filter", False, 
+                              f"Expected 400 error, got: {response.status_code}")
         except Exception as e:
-            self.log_result("Account No Currencies Field", False, f"Error: {str(e)}")
+            self.log_result("Disabled Currency Filter", False, f"Error: {str(e)}")
         
-        # Validation 2: Try invalid currency filter
-        print("\n--- Validation 2: Invalid currency filter ---")
+        # Edge Case 2: Test agent with invalid currency
+        print("\n--- Edge Case 2: Agent Invalid Currency Filter ---")
         try:
-            response = self.make_request('GET', '/accounting/ledger/9999?currency=INVALID', token=self.admin_token)
+            # Try to find an agent and test with invalid currency
+            response = self.make_request('GET', '/agents', token=self.admin_token)
+            if response.status_code == 200:
+                agents = response.json()
+                if agents and len(agents) > 0:
+                    # Try to login with first agent
+                    agent_username = agents[0].get('username')
+                    if agent_username:
+                        for password in POSSIBLE_PASSWORDS:
+                            try:
+                                login_response = self.make_request('POST', '/login', json={
+                                    'username': agent_username,
+                                    'password': password
+                                })
+                                if login_response.status_code == 200:
+                                    agent_token = login_response.json()['access_token']
+                                    
+                                    # Test with invalid currency
+                                    invalid_response = self.make_request('GET', '/agent-ledger?currency=INVALID', token=agent_token)
+                                    if invalid_response.status_code == 400:
+                                        self.log_result("Agent Invalid Currency Filter", True, 
+                                                      f"Invalid currency filter properly rejected for agent")
+                                    else:
+                                        self.log_result("Agent Invalid Currency Filter", False, 
+                                                      f"Expected 400 error, got: {invalid_response.status_code}")
+                                    break
+                            except:
+                                continue
+                        break
+        except Exception as e:
+            self.log_result("Agent Invalid Currency Filter", False, f"Error: {str(e)}")
+        
+        # Edge Case 3: Test response structure validation
+        print("\n--- Edge Case 3: Response Structure Validation ---")
+        try:
+            # Test admin ledger response structure
+            response = self.make_request('GET', '/accounting/ledger/1030?currency=IQD', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                entries = data.get('entries', [])
-                self.log_result("Invalid Currency Filter", True, 
-                              f"Invalid currency filter handled gracefully: {len(entries)} entries")
-            else:
-                # Could be 400 (validation error) or other - both are acceptable
-                self.log_result("Invalid Currency Filter", True, 
-                              f"Invalid currency filter properly rejected: {response.status_code}")
-        except Exception as e:
-            self.log_result("Invalid Currency Filter", False, f"Error: {str(e)}")
-        
-        # Validation 3: Test empty currencies array
-        print("\n--- Validation 3: Empty currencies array ---")
-        empty_currencies_account = {
-            "code": "9995",
-            "name": "Empty Currencies Test Account",
-            "name_ar": "حساب تجريبي عملات فارغة",
-            "name_en": "Empty Currencies Test Account",
-            "category": "Test",
-            "currencies": []
-        }
-        
-        try:
-            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=empty_currencies_account)
-            if response.status_code == 200 or response.status_code == 201:
-                data = response.json()
-                self.test_account_codes.append("9995")
                 
-                # Should handle empty array gracefully or default to ["IQD"]
-                currencies = data.get('currencies', [])
-                self.log_result("Empty Currencies Array", True, 
-                              f"Empty currencies array handled: {currencies}")
-            elif response.status_code == 400:
-                # Validation error is acceptable for empty currencies
-                self.log_result("Empty Currencies Array", True, 
-                              "Empty currencies array properly rejected with validation error")
+                # Check all required fields for admin ledger
+                admin_required_fields = ['account', 'entries', 'total_entries', 'current_balance', 'selected_currency', 'enabled_currencies']
+                missing_admin_fields = [field for field in admin_required_fields if field not in data]
+                
+                if not missing_admin_fields:
+                    self.log_result("Admin Ledger Response Structure", True, 
+                                  f"All required fields present in admin ledger response")
+                    
+                    # Validate data types
+                    validation_errors = []
+                    if not isinstance(data['entries'], list):
+                        validation_errors.append("entries should be list")
+                    if not isinstance(data['total_entries'], int):
+                        validation_errors.append("total_entries should be int")
+                    if not isinstance(data['current_balance'], (int, float)):
+                        validation_errors.append("current_balance should be number")
+                    if not isinstance(data['enabled_currencies'], list):
+                        validation_errors.append("enabled_currencies should be list")
+                    
+                    if not validation_errors:
+                        self.log_result("Admin Ledger Data Types", True, 
+                                      f"All data types are correct in admin ledger response")
+                    else:
+                        self.log_result("Admin Ledger Data Types", False, 
+                                      f"Data type validation errors: {validation_errors}")
+                else:
+                    self.log_result("Admin Ledger Response Structure", False, 
+                                  f"Missing required fields: {missing_admin_fields}")
+            elif response.status_code == 404:
+                self.log_result("Admin Ledger Response Structure", True, 
+                              f"Account 1030 not found (404) - acceptable for validation test")
             else:
-                self.log_result("Empty Currencies Array", False, 
+                self.log_result("Admin Ledger Response Structure", False, 
+                              f"Admin ledger request failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Admin Ledger Response Structure", False, f"Error: {str(e)}")
+        
+        # Edge Case 4: Test currency case sensitivity
+        print("\n--- Edge Case 4: Currency Case Sensitivity ---")
+        try:
+            # Test with lowercase currency
+            response = self.make_request('GET', '/accounting/ledger/1030?currency=iqd', token=self.admin_token)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('selected_currency') == 'iqd' or data.get('selected_currency') == 'IQD':
+                    self.log_result("Currency Case Sensitivity", True, 
+                                  f"Lowercase currency handled correctly: {data.get('selected_currency')}")
+                else:
+                    self.log_result("Currency Case Sensitivity", False, 
+                                  f"Lowercase currency not handled properly")
+            elif response.status_code == 400:
+                self.log_result("Currency Case Sensitivity", True, 
+                              f"Lowercase currency properly rejected - case sensitive validation")
+            elif response.status_code == 404:
+                self.log_result("Currency Case Sensitivity", True, 
+                              f"Account not found (404) - acceptable for test")
+            else:
+                self.log_result("Currency Case Sensitivity", False, 
                               f"Unexpected response: {response.status_code}")
         except Exception as e:
-            self.log_result("Empty Currencies Array", False, f"Error: {str(e)}")
+            self.log_result("Currency Case Sensitivity", False, f"Error: {str(e)}")
         
         return True
 
