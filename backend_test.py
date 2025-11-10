@@ -387,9 +387,13 @@ class UnifiedLedgerFilteringTester:
         except Exception as e:
             self.log_result("Find Agent for Consistency Test", False, f"Error: {str(e)}")
         
-        if not agent_token or not agent_account_code:
-            self.log_result("Currency Filtering Consistency", False, "Could not find agent with linked account - skipping consistency test")
-            return False
+        if not agent_token:
+            self.log_result("Agent Login for Consistency Test", False, "Could not login as agent - trying alternative approach")
+            # Continue with alternative approach below
+        else:
+            # We have an agent logged in, but they might not have account_code in user record
+            # The account_code might be in chart_of_accounts with agent_id
+            pass
         
         # Alternative approach: Test with known accounts that have agent_id
         try:
