@@ -734,7 +734,7 @@ class CurrencyFilteringTester:
     def print_test_summary(self):
         """Print comprehensive test summary"""
         print("\n" + "=" * 80)
-        print("🚨 MULTI-CURRENCY SUPPORT TESTING SUMMARY")
+        print("🚨 CURRENCY FILTERING ENHANCEMENTS TESTING SUMMARY")
         print("=" * 80)
         
         total_tests = len(self.test_results)
@@ -757,49 +757,49 @@ class CurrencyFilteringTester:
             if result['success']:
                 print(f"   - {result['test']}: {result['message']}")
         
-        # Critical findings for multi-currency support
-        print(f"\n🎯 MULTI-CURRENCY SUPPORT FINDINGS:")
+        # Critical findings for currency filtering enhancements
+        print(f"\n🎯 CURRENCY FILTERING ENHANCEMENTS FINDINGS:")
         
-        account_creation_tests = [r for r in self.test_results if 'Account' in r['test'] and 'Create' in r['test']]
-        account_creation_passed = len([r for r in account_creation_tests if r['success']])
-        print(f"   Account Creation with Currencies: {account_creation_passed}/{len(account_creation_tests)} tests passed")
+        admin_ledger_tests = [r for r in self.test_results if 'Admin Ledger' in r['test']]
+        admin_ledger_passed = len([r for r in admin_ledger_tests if r['success']])
+        print(f"   Admin Ledger Currency Filtering: {admin_ledger_passed}/{len(admin_ledger_tests)} tests passed")
         
-        currencies_field_tests = [r for r in self.test_results if 'Currencies' in r['test']]
-        currencies_field_passed = len([r for r in currencies_field_tests if r['success']])
-        print(f"   Currencies Field Handling: {currencies_field_passed}/{len(currencies_field_tests)} tests passed")
+        agent_ledger_tests = [r for r in self.test_results if 'Agent Ledger' in r['test']]
+        agent_ledger_passed = len([r for r in agent_ledger_tests if r['success']])
+        print(f"   Agent Ledger Currency Filtering: {agent_ledger_passed}/{len(agent_ledger_tests)} tests passed")
         
-        ledger_filter_tests = [r for r in self.test_results if 'Ledger' in r['test'] and 'Filter' in r['test']]
-        ledger_filter_passed = len([r for r in ledger_filter_tests if r['success']])
-        print(f"   Ledger Currency Filtering: {ledger_filter_passed}/{len(ledger_filter_tests)} tests passed")
+        currency_validation_tests = [r for r in self.test_results if 'Currency' in r['test'] and ('Filter' in r['test'] or 'Validation' in r['test'])]
+        currency_validation_passed = len([r for r in currency_validation_tests if r['success']])
+        print(f"   Currency Filter Validation: {currency_validation_passed}/{len(currency_validation_tests)} tests passed")
         
-        edge_case_tests = [r for r in self.test_results if ('Single Currency' in r['test'] or 'All Currencies' in r['test'] or 'No Entries' in r['test'])]
+        response_structure_tests = [r for r in self.test_results if 'Response Structure' in r['test'] or 'Required' in r['test']]
+        response_structure_passed = len([r for r in response_structure_tests if r['success']])
+        print(f"   Response Structure Validation: {response_structure_passed}/{len(response_structure_tests)} tests passed")
+        
+        edge_case_tests = [r for r in self.test_results if ('Edge Case' in r['test'] or 'Invalid' in r['test'] or 'Disabled' in r['test'])]
         edge_case_passed = len([r for r in edge_case_tests if r['success']])
-        print(f"   Edge Cases: {edge_case_passed}/{len(edge_case_tests)} tests passed")
-        
-        validation_tests = [r for r in self.test_results if ('Validation' in r['test'] or 'Invalid' in r['test'] or 'Empty' in r['test'])]
-        validation_passed = len([r for r in validation_tests if r['success']])
-        print(f"   Validation Scenarios: {validation_passed}/{len(validation_tests)} tests passed")
+        print(f"   Edge Cases and Error Handling: {edge_case_passed}/{len(edge_case_tests)} tests passed")
         
         print("\n" + "=" * 80)
         
         # Check for critical issues
-        critical_failures = [r for r in self.test_results if not r['success'] and ('CRITICAL' in r['message'] or 'Multi-Currency' in r['test'])]
+        critical_failures = [r for r in self.test_results if not r['success'] and ('CRITICAL' in r['message'] or 'Currency' in r['test'])]
         
         if failed_tests == 0:
-            print("🎉 ALL TESTS PASSED - MULTI-CURRENCY SUPPORT IS FULLY FUNCTIONAL!")
-            print("✅ Account creation accepts currencies array")
-            print("✅ Currencies field is saved in database")
-            print("✅ GET account returns currencies field")
-            print("✅ Ledger endpoint accepts currency parameter")
-            print("✅ Ledger filtering works correctly by currency")
-            print("✅ Journal entries include currency field")
+            print("🎉 ALL TESTS PASSED - CURRENCY FILTERING ENHANCEMENTS ARE FULLY FUNCTIONAL!")
+            print("✅ Admin ledger accepts currency parameter and returns proper structure")
+            print("✅ Admin ledger filters entries by selected currency only")
+            print("✅ Admin ledger validates enabled currencies for accounts")
+            print("✅ Agent ledger accepts currency parameter and filters transactions")
+            print("✅ Agent ledger returns currency-specific balances and commissions")
+            print("✅ Both endpoints handle invalid currencies with proper error responses")
         elif critical_failures:
-            print("🚨 CRITICAL ISSUES FOUND - MULTI-CURRENCY SUPPORT MAY HAVE FAILED!")
+            print("🚨 CRITICAL ISSUES FOUND - CURRENCY FILTERING MAY HAVE FAILED!")
             for failure in critical_failures:
                 print(f"   ❌ {failure['test']}: {failure['message']}")
         else:
             print("⚠️  SOME TESTS FAILED - REVIEW ISSUES ABOVE")
-            print("Multi-currency support may be partially working")
+            print("Currency filtering enhancements may be partially working")
         
         print("=" * 80)
 
