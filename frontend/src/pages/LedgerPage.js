@@ -118,9 +118,13 @@ const LedgerPage = () => {
     }
   };
 
-  // Handle currency change
+  // Handle currency change - automatically reload ledger
   const handleCurrencyChange = (currency) => {
     setSelectedCurrency(currency);
+    // Auto-reload ledger with new currency
+    if (selectedAccount) {
+      fetchLedger(currency);
+    }
   };
 
   const formatCurrency = (amount, currency = 'IQD') => {
