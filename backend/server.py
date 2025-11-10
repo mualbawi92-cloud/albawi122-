@@ -5038,8 +5038,11 @@ async def get_agent_ledger(
     # Build transactions list
     transactions = []
     
-    # Add outgoing transfers
+    # Add outgoing transfers (filter by selected currency)
     for transfer in outgoing_transfers:
+        if transfer.get('currency') != currency:
+            continue
+            
         transactions.append({
             'date': transfer['created_at'],
             'type': 'outgoing',
@@ -5066,8 +5069,11 @@ async def get_agent_ledger(
                 'transfer_code': transfer['transfer_code']
             })
     
-    # Add incoming transfers
+    # Add incoming transfers (filter by selected currency)
     for transfer in incoming_transfers:
+        if transfer.get('currency') != currency:
+            continue
+            
         transactions.append({
             'date': transfer.get('updated_at', transfer['created_at']),
             'type': 'incoming',
