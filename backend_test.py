@@ -118,9 +118,9 @@ class UnifiedLedgerFilteringTester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
     
-    def test_admin_ledger_currency_required(self):
-        """Test Admin Ledger Endpoint - Currency Required"""
-        print("\n=== Test 1: Admin Ledger Currency Required ===")
+    def test_admin_ledger_currency_fallback(self):
+        """Test Admin Ledger - Currency Fallback for Old Entries"""
+        print("\n=== Test 1: Admin Ledger Currency Fallback ===")
         
         # Test with existing accounts that should have currencies
         test_accounts = [
@@ -135,7 +135,7 @@ class UnifiedLedgerFilteringTester:
             
             print(f"\n--- Testing Account {account_code} ({account_name}) ---")
             
-            # Test 1: With IQD currency parameter
+            # Test 1: With IQD currency parameter - check fallback behavior
             try:
                 response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=IQD', token=self.admin_token)
                 if response.status_code == 200:
@@ -146,79 +146,71 @@ class UnifiedLedgerFilteringTester:
                     missing_fields = [field for field in required_fields if field not in data]
                     
                     if not missing_fields:
-                        self.log_result(f"Admin Ledger {account_code} - IQD Currency", True, 
-                                      f"All required fields present. Selected: {data['selected_currency']}, Enabled: {data['enabled_currencies']}")
+                        self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", True, 
+                                      f"All required fields present. Entries: {len(data['entries'])}, Balance: {data['current_balance']}")
                         
-                        # Verify selected_currency is IQD
-                        if data['selected_currency'] == 'IQD':
-                            self.log_result(f"Admin Ledger {account_code} - Selected Currency", True, 
-                                          f"Selected currency correctly set to IQD")
-                        else:
-                            self.log_result(f"Admin Ledger {account_code} - Selected Currency", False, 
-                                          f"Selected currency should be IQD, got: {data['selected_currency']}")
+                        # Check if entries without currency field are included (fallback to IQD)
+                        entries = data.get('entries', [])
+                        entries_without_currency = [e for e in entries if 'currency' not in e or e.get('currency') is None]
+                        entries_with_iqd = [e for e in entries if e.get('currency') == 'IQD']
                         
-                        # Verify enabled_currencies is a list
-                        if isinstance(data['enabled_currencies'], list) and len(data['enabled_currencies']) > 0:
-                            self.log_result(f"Admin Ledger {account_code} - Enabled Currencies", True, 
-                                          f"Enabled currencies: {data['enabled_currencies']}")
-                        else:
-                            self.log_result(f"Admin Ledger {account_code} - Enabled Currencies", False, 
-                                          f"Invalid enabled_currencies: {data['enabled_currencies']}")
+                        if entries_without_currency:
+                            self.log_result(f"Admin Ledger {account_code} - Old Entries Fallback", True, 
+                                          f"Found {len(entries_without_currency)} entries without currency field (should be treated as IQD)")
+                        
+                        # Verify running balance calculation is correct
+                        if len(entries) > 0:
+                            last_balance = entries[-1].get('balance', 0)
+                            current_balance = data.get('current_balance', 0)
+                            if abs(last_balance - current_balance) < 0.01:  # Allow small floating point differences
+                                self.log_result(f"Admin Ledger {account_code} - Balance Calculation", True, 
+                                              f"Running balance calculation correct: {current_balance}")
+                            else:
+                                self.log_result(f"Admin Ledger {account_code} - Balance Calculation", False, 
+                                              f"Balance mismatch: last entry {last_balance} vs current {current_balance}")
+                        
                     else:
-                        self.log_result(f"Admin Ledger {account_code} - IQD Currency", False, 
+                        self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", False, 
                                       f"Missing required fields: {missing_fields}")
                 elif response.status_code == 404:
-                    self.log_result(f"Admin Ledger {account_code} - IQD Currency", False, 
+                    self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", False, 
                                   f"Account {account_code} not found (404)")
                     continue  # Skip other tests for this account
                 else:
-                    self.log_result(f"Admin Ledger {account_code} - IQD Currency", False, 
+                    self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", False, 
                                   f"Request failed: {response.status_code} - {response.text}")
                     continue
             except Exception as e:
-                self.log_result(f"Admin Ledger {account_code} - IQD Currency", False, f"Error: {str(e)}")
+                self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", False, f"Error: {str(e)}")
                 continue
             
-            # Test 2: With USD currency parameter
+            # Test 2: With USD currency parameter - should not include old entries without currency
             try:
                 response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=USD', token=self.admin_token)
                 if response.status_code == 200:
                     data = response.json()
-                    if data['selected_currency'] == 'USD':
-                        self.log_result(f"Admin Ledger {account_code} - USD Currency", True, 
-                                      f"USD currency filter working correctly")
+                    entries = data.get('entries', [])
+                    
+                    # All entries should have currency=USD, no entries without currency field
+                    entries_without_currency = [e for e in entries if 'currency' not in e or e.get('currency') is None]
+                    non_usd_entries = [e for e in entries if e.get('currency') != 'USD']
+                    
+                    if len(entries_without_currency) == 0 and len(non_usd_entries) == 0:
+                        self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", True, 
+                                      f"USD filter correctly excludes old entries without currency: {len(entries)} USD entries")
                     else:
-                        self.log_result(f"Admin Ledger {account_code} - USD Currency", False, 
-                                      f"USD currency not selected correctly: {data['selected_currency']}")
+                        self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", False, 
+                                      f"USD filter includes old entries: {len(entries_without_currency)} without currency, {len(non_usd_entries)} non-USD")
+                        
                 elif response.status_code == 400:
                     # This is acceptable if USD is not enabled for this account
-                    self.log_result(f"Admin Ledger {account_code} - USD Currency", True, 
+                    self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", True, 
                                   f"USD currency properly rejected (400) - not enabled for account")
                 else:
-                    self.log_result(f"Admin Ledger {account_code} - USD Currency", False, 
+                    self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", False, 
                                   f"Unexpected response: {response.status_code}")
             except Exception as e:
-                self.log_result(f"Admin Ledger {account_code} - USD Currency", False, f"Error: {str(e)}")
-            
-            # Test 3: Without currency parameter (should use first enabled currency)
-            try:
-                response = self.make_request('GET', f'/accounting/ledger/{account_code}', token=self.admin_token)
-                if response.status_code == 200:
-                    data = response.json()
-                    enabled_currencies = data.get('enabled_currencies', [])
-                    selected_currency = data.get('selected_currency')
-                    
-                    if enabled_currencies and selected_currency == enabled_currencies[0]:
-                        self.log_result(f"Admin Ledger {account_code} - No Currency Param", True, 
-                                      f"Default currency correctly set to first enabled: {selected_currency}")
-                    else:
-                        self.log_result(f"Admin Ledger {account_code} - No Currency Param", False, 
-                                      f"Default currency logic failed. Selected: {selected_currency}, Enabled: {enabled_currencies}")
-                else:
-                    self.log_result(f"Admin Ledger {account_code} - No Currency Param", False, 
-                                  f"Request failed: {response.status_code}")
-            except Exception as e:
-                self.log_result(f"Admin Ledger {account_code} - No Currency Param", False, f"Error: {str(e)}")
+                self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", False, f"Error: {str(e)}")
         
         return True
     
