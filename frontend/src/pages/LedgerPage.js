@@ -70,7 +70,12 @@ const LedgerPage = () => {
       const response = await axios.get(`${API}/accounting/ledger/${selectedAccount}`, { params });
       
       // Update account details and enabled currencies
-      setAccountDetails(response.data.account);
+      const accountData = {
+        ...response.data.account,
+        current_balance: response.data.current_balance,
+        selected_currency: response.data.selected_currency
+      };
+      setAccountDetails(accountData);
       setEnabledCurrencies(response.data.enabled_currencies || ['IQD']);
       setLedgerEntries(response.data.entries || []);
       
