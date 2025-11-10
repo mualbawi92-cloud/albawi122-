@@ -144,40 +144,109 @@ class CurrencyFilteringTester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
     
-    def test_create_account_with_multiple_currencies(self):
-        """Test creating account with multiple currencies: ["IQD", "USD"]"""
-        print("\n=== Test 1: Create Account with Multiple Currencies ===")
+    def test_admin_ledger_currency_required(self):
+        """Test Admin Ledger Endpoint - Currency Required"""
+        print("\n=== Test 1: Admin Ledger Currency Required ===")
         
-        test_account = {
-            "code": "9999",
-            "name": "Test Multi-Currency Account",
-            "name_ar": "حساب تجريبي متعدد العملات",
-            "name_en": "Test Multi-Currency Account",
-            "category": "Test",
-            "currencies": ["IQD", "USD"]
-        }
+        # Test with existing accounts that should have currencies
+        test_accounts = [
+            {"code": "1030", "name": "Transit Account"},
+            {"code": "2001", "name": "Exchange Company 1"},
+            {"code": "4020", "name": "Earned Commissions"}
+        ]
         
-        try:
-            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
-            if response.status_code == 200 or response.status_code == 201:
-                data = response.json()
-                self.test_account_codes.append("9999")
-                
-                # Verify response includes currencies
-                if 'currencies' in data and data['currencies'] == ["IQD", "USD"]:
-                    self.log_result("Create Multi-Currency Account", True, 
-                                  f"Account 9999 created successfully with currencies: {data['currencies']}")
-                    return data
+        for account_info in test_accounts:
+            account_code = account_info["code"]
+            account_name = account_info["name"]
+            
+            print(f"\n--- Testing Account {account_code} ({account_name}) ---")
+            
+            # Test 1: With IQD currency parameter
+            try:
+                response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=IQD', token=self.admin_token)
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    # Verify required fields in response
+                    required_fields = ['account', 'entries', 'total_entries', 'current_balance', 'selected_currency', 'enabled_currencies']
+                    missing_fields = [field for field in required_fields if field not in data]
+                    
+                    if not missing_fields:
+                        self.log_result(f"Admin Ledger {account_code} - IQD Currency", True, 
+                                      f"All required fields present. Selected: {data['selected_currency']}, Enabled: {data['enabled_currencies']}")
+                        
+                        # Verify selected_currency is IQD
+                        if data['selected_currency'] == 'IQD':
+                            self.log_result(f"Admin Ledger {account_code} - Selected Currency", True, 
+                                          f"Selected currency correctly set to IQD")
+                        else:
+                            self.log_result(f"Admin Ledger {account_code} - Selected Currency", False, 
+                                          f"Selected currency should be IQD, got: {data['selected_currency']}")
+                        
+                        # Verify enabled_currencies is a list
+                        if isinstance(data['enabled_currencies'], list) and len(data['enabled_currencies']) > 0:
+                            self.log_result(f"Admin Ledger {account_code} - Enabled Currencies", True, 
+                                          f"Enabled currencies: {data['enabled_currencies']}")
+                        else:
+                            self.log_result(f"Admin Ledger {account_code} - Enabled Currencies", False, 
+                                          f"Invalid enabled_currencies: {data['enabled_currencies']}")
+                    else:
+                        self.log_result(f"Admin Ledger {account_code} - IQD Currency", False, 
+                                      f"Missing required fields: {missing_fields}")
+                elif response.status_code == 404:
+                    self.log_result(f"Admin Ledger {account_code} - IQD Currency", False, 
+                                  f"Account {account_code} not found (404)")
+                    continue  # Skip other tests for this account
                 else:
-                    self.log_result("Create Multi-Currency Account", False, 
-                                  f"Account created but currencies field missing or incorrect: {data}")
-            else:
-                self.log_result("Create Multi-Currency Account", False, 
-                              f"Account creation failed: {response.status_code}", response.text)
-        except Exception as e:
-            self.log_result("Create Multi-Currency Account", False, f"Error: {str(e)}")
+                    self.log_result(f"Admin Ledger {account_code} - IQD Currency", False, 
+                                  f"Request failed: {response.status_code} - {response.text}")
+                    continue
+            except Exception as e:
+                self.log_result(f"Admin Ledger {account_code} - IQD Currency", False, f"Error: {str(e)}")
+                continue
+            
+            # Test 2: With USD currency parameter
+            try:
+                response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=USD', token=self.admin_token)
+                if response.status_code == 200:
+                    data = response.json()
+                    if data['selected_currency'] == 'USD':
+                        self.log_result(f"Admin Ledger {account_code} - USD Currency", True, 
+                                      f"USD currency filter working correctly")
+                    else:
+                        self.log_result(f"Admin Ledger {account_code} - USD Currency", False, 
+                                      f"USD currency not selected correctly: {data['selected_currency']}")
+                elif response.status_code == 400:
+                    # This is acceptable if USD is not enabled for this account
+                    self.log_result(f"Admin Ledger {account_code} - USD Currency", True, 
+                                  f"USD currency properly rejected (400) - not enabled for account")
+                else:
+                    self.log_result(f"Admin Ledger {account_code} - USD Currency", False, 
+                                  f"Unexpected response: {response.status_code}")
+            except Exception as e:
+                self.log_result(f"Admin Ledger {account_code} - USD Currency", False, f"Error: {str(e)}")
+            
+            # Test 3: Without currency parameter (should use first enabled currency)
+            try:
+                response = self.make_request('GET', f'/accounting/ledger/{account_code}', token=self.admin_token)
+                if response.status_code == 200:
+                    data = response.json()
+                    enabled_currencies = data.get('enabled_currencies', [])
+                    selected_currency = data.get('selected_currency')
+                    
+                    if enabled_currencies and selected_currency == enabled_currencies[0]:
+                        self.log_result(f"Admin Ledger {account_code} - No Currency Param", True, 
+                                      f"Default currency correctly set to first enabled: {selected_currency}")
+                    else:
+                        self.log_result(f"Admin Ledger {account_code} - No Currency Param", False, 
+                                      f"Default currency logic failed. Selected: {selected_currency}, Enabled: {enabled_currencies}")
+                else:
+                    self.log_result(f"Admin Ledger {account_code} - No Currency Param", False, 
+                                  f"Request failed: {response.status_code}")
+            except Exception as e:
+                self.log_result(f"Admin Ledger {account_code} - No Currency Param", False, f"Error: {str(e)}")
         
-        return None
+        return True
     
     def test_get_account_verify_currencies(self):
         """Test GET account and verify currencies field is returned"""
