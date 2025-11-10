@@ -242,9 +242,9 @@ const LedgerPage = () => {
                   <p className="text-lg font-bold">{accountDetails.category}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">الرصيد الحالي</p>
+                  <p className="text-sm text-muted-foreground">الرصيد الحالي ({accountDetails.selected_currency})</p>
                   <p className="text-2xl font-bold text-teal-700">
-                    {formatCurrency(accountDetails.balance, accountDetails.currency)}
+                    {formatCurrency(accountDetails.current_balance, accountDetails.selected_currency)}
                   </p>
                 </div>
               </div>
