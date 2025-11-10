@@ -86,7 +86,7 @@ ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
 # Try different possible passwords for test agents
 POSSIBLE_PASSWORDS = ["test123", "agent123", "123456", "password", "admin123"]
 
-class MultiCurrencyTester:
+class CurrencyFilteringTester:
     def __init__(self):
         self.admin_token = None
         self.admin_user_id = None
