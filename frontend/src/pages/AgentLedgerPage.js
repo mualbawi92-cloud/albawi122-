@@ -129,7 +129,7 @@ const AgentLedgerPage = () => {
           </CardHeader>
           <CardContent className="pt-6">
             {/* Date Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-gray-50 p-4 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 bg-gray-50 p-4 rounded-lg">
               <div className="space-y-2">
                 <Label>من تاريخ</Label>
                 <Input
@@ -148,6 +148,31 @@ const AgentLedgerPage = () => {
                   onChange={(e) => setDateTo(e.target.value)}
                   className="h-12"
                 />
+              </div>
+              
+              <div className="space-y-2">
+                <Label>العملة *</Label>
+                {enabledCurrencies.length > 0 ? (
+                  <select
+                    value={selectedCurrency}
+                    onChange={(e) => handleCurrencyChange(e.target.value)}
+                    className="w-full h-12 border rounded-md px-3 bg-white"
+                  >
+                    {enabledCurrencies.map(curr => (
+                      <option key={curr} value={curr}>
+                        {curr === 'IQD' ? 'دينار عراقي (IQD)' :
+                         curr === 'USD' ? 'دولار أمريكي (USD)' :
+                         curr === 'EUR' ? 'يورو (EUR)' :
+                         curr === 'GBP' ? 'جنيه إسترليني (GBP)' :
+                         curr}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="h-12 border rounded-md p-2 text-sm text-gray-500 flex items-center">
+                    لا توجد عملات مفعّلة
+                  </div>
+                )}
               </div>
               
               <div className="flex items-end gap-2">
