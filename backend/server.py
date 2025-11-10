@@ -4223,6 +4223,31 @@ async def update_account(
         update_data['name_en'] = account_data.name_en
     if account_data.notes is not None:
         update_data['notes'] = account_data.notes
+    if account_data.currencies is not None:
+        # التحقق من صحة العملات
+        if len(account_data.currencies) == 0:
+            raise HTTPException(status_code=400, detail="يجب اختيار عملة واحدة على الأقل")
+        
+        # التحقق من إمكانية حذف العملات (إذا تم إزالة أي عملة)
+        current_currencies = account.get('currencies', ['IQD'])
+        removed_currencies = [curr for curr in current_currencies if curr not in account_data.currencies]
+        
+        if removed_currencies:
+            # التحقق من وجود قيود بهذه العملات
+            for currency in removed_currencies:
+                entries_with_currency = await db.journal_entries.count_documents({
+                    'lines.account_code': account_code,
+                    'lines.currency': currency,
+                    'is_cancelled': False
+                })
+                
+                if entries_with_currency > 0:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"لا يمكن إلغاء العملة {currency} لأنها مرتبطة بـ {entries_with_currency} قيد نشط في هذا الحساب"
+                    )
+        
+        update_data['currencies'] = account_data.currencies
     
     if not update_data:
         raise HTTPException(status_code=400, detail="لا توجد بيانات للتحديث")
