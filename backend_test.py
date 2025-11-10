@@ -987,28 +987,28 @@ class UnifiedLedgerFilteringTester:
             if result['success']:
                 print(f"   - {result['test']}: {result['message']}")
         
-        # Critical findings for currency filtering enhancements
-        print(f"\n🎯 CURRENCY FILTERING ENHANCEMENTS FINDINGS:")
+        # Critical findings for unified ledger filtering
+        print(f"\n🎯 UNIFIED LEDGER FILTERING FINDINGS:")
         
         admin_ledger_tests = [r for r in self.test_results if 'Admin Ledger' in r['test']]
         admin_ledger_passed = len([r for r in admin_ledger_tests if r['success']])
-        print(f"   Admin Ledger Currency Filtering: {admin_ledger_passed}/{len(admin_ledger_tests)} tests passed")
+        print(f"   Admin Ledger Currency Fallback: {admin_ledger_passed}/{len(admin_ledger_tests)} tests passed")
         
         agent_ledger_tests = [r for r in self.test_results if 'Agent Ledger' in r['test']]
         agent_ledger_passed = len([r for r in agent_ledger_tests if r['success']])
-        print(f"   Agent Ledger Currency Filtering: {agent_ledger_passed}/{len(agent_ledger_tests)} tests passed")
+        print(f"   Agent Ledger chart_of_accounts Integration: {agent_ledger_passed}/{len(agent_ledger_tests)} tests passed")
         
-        currency_validation_tests = [r for r in self.test_results if 'Currency' in r['test'] and ('Filter' in r['test'] or 'Validation' in r['test'])]
-        currency_validation_passed = len([r for r in currency_validation_tests if r['success']])
-        print(f"   Currency Filter Validation: {currency_validation_passed}/{len(currency_validation_tests)} tests passed")
+        consistency_tests = [r for r in self.test_results if 'Consistency' in r['test']]
+        consistency_passed = len([r for r in consistency_tests if r['success']])
+        print(f"   Currency Filtering Consistency: {consistency_passed}/{len(consistency_tests)} tests passed")
         
-        response_structure_tests = [r for r in self.test_results if 'Response Structure' in r['test'] or 'Required' in r['test']]
-        response_structure_passed = len([r for r in response_structure_tests if r['success']])
-        print(f"   Response Structure Validation: {response_structure_passed}/{len(response_structure_tests)} tests passed")
+        old_data_tests = [r for r in self.test_results if 'Old Data' in r['test']]
+        old_data_passed = len([r for r in old_data_tests if r['success']])
+        print(f"   Old Data Handling: {old_data_passed}/{len(old_data_tests)} tests passed")
         
-        edge_case_tests = [r for r in self.test_results if ('Edge Case' in r['test'] or 'Invalid' in r['test'] or 'Disabled' in r['test'])]
+        edge_case_tests = [r for r in self.test_results if 'Edge Case' in r['test']]
         edge_case_passed = len([r for r in edge_case_tests if r['success']])
-        print(f"   Edge Cases and Error Handling: {edge_case_passed}/{len(edge_case_tests)} tests passed")
+        print(f"   Edge Cases: {edge_case_passed}/{len(edge_case_tests)} tests passed")
         
         print("\n" + "=" * 80)
         
