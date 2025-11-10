@@ -23,7 +23,8 @@ const LedgerPage = () => {
   const [ledgerEntries, setLedgerEntries] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [selectedCurrency, setSelectedCurrency] = useState('ALL'); // ALL means all currencies
+  const [selectedCurrency, setSelectedCurrency] = useState(''); // Will be set to first enabled currency
+  const [enabledCurrencies, setEnabledCurrencies] = useState([]); // العملات المفعّلة للحساب
 
   useEffect(() => {
     if (user?.role !== 'admin') {
