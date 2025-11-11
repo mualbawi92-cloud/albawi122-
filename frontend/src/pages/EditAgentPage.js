@@ -92,6 +92,7 @@ const EditAgentPage = () => {
           address: foundAgent.address || '',
           wallet_limit_iqd: foundAgent.wallet_limit_iqd || 0,
           wallet_limit_usd: foundAgent.wallet_limit_usd || 0,
+          account_id: foundAgent.account_id || '', // الحساب المحاسبي المرتبط
           new_password: '',
           confirm_password: ''
         });
