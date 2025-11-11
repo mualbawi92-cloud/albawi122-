@@ -121,11 +121,19 @@ const EditAgentPage = () => {
         return;
       }
 
+      // التحقق من وجود حساب محاسبي مرتبط
+      if (!formData.account_id) {
+        toast.error('⚠️ يجب اختيار حساب محاسبي للصراف');
+        setSaving(false);
+        return;
+      }
+
       const updateData = {
         display_name: formData.display_name,
         phone: formData.phone,
         governorate: formData.governorate,
-        address: formData.address
+        address: formData.address,
+        account_id: formData.account_id // إضافة الحساب المحاسبي
       };
 
       if (formData.new_password) {
