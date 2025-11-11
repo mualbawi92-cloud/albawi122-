@@ -2183,13 +2183,24 @@ async def receive_transfer(
     # ============ CREATE ACCOUNTING JOURNAL ENTRY ============
     try:
         # Get receiver agent account from chart_of_accounts (preferred) or old accounts table
-        receiver_account = await db.chart_of_accounts.find_one({'agent_id': current_user['id']})
+        receiver_account_code = None
         
-        if not receiver_account:
-            # Fallback to old accounts table
-            receiver_account = await db.accounts.find_one({'agent_id': current_user['id']})
+        # First try to get from chart_of_accounts (preferred)
+        receiver_coa = await db.chart_of_accounts.find_one({'agent_id': current_user['id']})
+        if receiver_coa:
+            receiver_account_code = receiver_coa['code']
+        # Fallback to account_id in user table
+        elif current_user.get('account_id'):
+            receiver_account_code = current_user['account_id']
         
-        if receiver_account:
+        if not receiver_account_code:
+            logger.error(f"❌ Receiver agent {current_user['id']} ({current_user.get('display_name')}) has no linked account in chart_of_accounts!")
+            logger.error("Journal entry will NOT be created for receive operation - agent must be linked to an account first")
+        else:
+            # Get the account object
+            receiver_account = await db.chart_of_accounts.find_one({'code': receiver_account_code})
+            
+            if receiver_account:
             # قيد 1: Create journal entry for receiving transfer
             # Transit = مدين
             # المكتب المُسلِّم (دفع نقدية للمستلم) = دائن
