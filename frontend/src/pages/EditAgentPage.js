@@ -71,8 +71,18 @@ const EditAgentPage = () => {
         toast.info('🔄 جاري تحديث قائمة الحسابات...');
       }
       
-      const response = await axios.get(`${API}/accounting/accounts`);
-      console.log('📊 All accounts from API:', response.data);
+      // إضافة Authorization header
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/accounting/accounts`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      console.log('📊 Full API Response:', response);
+      console.log('📊 Response.data:', response.data);
+      
+      // التحقق من structure الـ response
+      const accountsData = response.data.accounts || response.data || [];
+      console.log('📊 Accounts array:', accountsData);
       
       // فلترة الحسابات من قسم "شركات الصرافة"
       // البحث في category, type, parent_code
