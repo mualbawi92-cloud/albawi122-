@@ -3532,6 +3532,7 @@ async def initialize_chart_of_accounts(current_user: dict = Depends(require_admi
         {"code": "4100", "name_ar": "إيرادات الحوالات", "name_en": "Transfer Revenues", "category": "إيرادات", "parent_code": "4000", "currency": "IQD"},
         {"code": "4110", "name_ar": "عمولة حوالات واردة (محققة)", "name_en": "Incoming Transfer Commission", "category": "إيرادات", "parent_code": "4100", "currency": "IQD"},
         {"code": "4120", "name_ar": "عمولة حوالات صادرة (محققة)", "name_en": "Outgoing Transfer Commission", "category": "إيرادات", "parent_code": "4100", "currency": "IQD"},
+        {"code": "413", "name_ar": "عمولات محققة", "name_en": "Earned Commissions", "category": "الإيرادات", "parent_code": "4000", "currency": "IQD"},
         
         # المصاريف - Expenses
         {"code": "5000", "name_ar": "المصاريف", "name_en": "Expenses", "category": "مصاريف", "parent_code": None, "currency": "IQD"},
