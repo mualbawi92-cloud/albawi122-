@@ -1396,7 +1396,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             # قيد 2: العمولة فقط (إذا وجدت)
             if commission_amount > 0:
                 # Get earned commission account from chart_of_accounts
-                commission_account = await db.chart_of_accounts.find_one({'code': '4020'})
+                commission_account = await db.chart_of_accounts.find_one({'code': '413'})
                 if not commission_account:
                     commission_account = {
                         'id': 'earned_commissions',
