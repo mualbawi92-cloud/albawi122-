@@ -3540,7 +3540,7 @@ async def initialize_chart_of_accounts(current_user: dict = Depends(require_admi
         {"code": "5040", "name_ar": "مصاريف اتصالات", "name_en": "Communication Expenses", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
         {"code": "5050", "name_ar": "مصاريف متنوعة", "name_en": "Miscellaneous Expenses", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
         {"code": "5100", "name_ar": "عمولات مدفوعة", "name_en": "Commission Paid", "category": "مصاريف", "parent_code": "5000", "currency": "IQD"},
-        {"code": "5110", "name_ar": "عمولات حوالات مدفوعة", "name_en": "Transfer Commission Paid", "category": "مصاريف", "parent_code": "5100", "currency": "IQD"},
+        {"code": "421", "name_ar": "عمولات حوالات مدفوعة", "name_en": "Transfer Commission Paid", "category": "مصاريف", "parent_code": "5100", "currency": "IQD"},
     ]
     
     # Upsert accounts (insert only if not exist)
