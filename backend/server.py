@@ -1429,7 +1429,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                             'credit': 0
                         },
                         {
-                            'account_code': '4020',
+                            'account_code': '413',
                             'debit': 0,
                             'credit': commission_amount
                         }
