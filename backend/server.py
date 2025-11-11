@@ -1399,13 +1399,13 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 commission_account = await db.chart_of_accounts.find_one({'code': '413'})
                 if not commission_account:
                     commission_account = {
-                        'id': 'earned_commissions',
-                        'code': '4020',
+                        'id': 'earned_commissions_413',
+                        'code': '413',
                         'name': 'عمولات محققة',
                         'name_ar': 'عمولات محققة',
                         'name_en': 'Earned Commissions',
-                        'category': 'الأرباح والخسائر',
-                        'type': 'الأرباح والخسائر',
+                        'category': 'الإيرادات',
+                        'type': 'الإيرادات',
                         'parent_code': None,
                         'is_active': True,
                         'balance': 0,
