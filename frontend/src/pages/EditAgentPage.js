@@ -48,9 +48,11 @@ const EditAgentPage = () => {
     address: '',
     wallet_limit_iqd: '',
     wallet_limit_usd: '',
+    account_id: '', // الحساب المحاسبي المرتبط
     new_password: '',
     confirm_password: ''
   });
+  const [availableAccounts, setAvailableAccounts] = useState([]);
 
   // Check if user is admin
   if (user?.role !== 'admin') {
