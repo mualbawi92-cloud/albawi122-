@@ -312,9 +312,20 @@ const EditAgentPage = () => {
 
               {/* Accounting Account Selection */}
               <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg space-y-2">
-                <Label htmlFor="account_id" className="text-base font-bold text-green-900">
-                  📊 الحساب المحاسبي المرتبط *
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="account_id" className="text-base font-bold text-green-900">
+                    📊 الحساب المحاسبي المرتبط *
+                  </Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fetchAvailableAccounts(true)}
+                    className="h-8"
+                  >
+                    🔄 تحديث القائمة
+                  </Button>
+                </div>
                 <Select 
                   value={formData.account_id} 
                   onValueChange={(value) => setFormData({ ...formData, account_id: value })}
