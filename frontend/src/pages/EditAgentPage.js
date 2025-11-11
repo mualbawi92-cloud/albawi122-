@@ -262,6 +262,42 @@ const EditAgentPage = () => {
                 />
               </div>
 
+              {/* Accounting Account Selection */}
+              <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg space-y-2">
+                <Label htmlFor="account_id" className="text-base font-bold text-green-900">
+                  📊 الحساب المحاسبي المرتبط *
+                </Label>
+                <Select 
+                  value={formData.account_id} 
+                  onValueChange={(value) => setFormData({ ...formData, account_id: value })}
+                >
+                  <SelectTrigger className="h-12 text-base">
+                    <SelectValue placeholder="اختر الحساب المحاسبي" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-80">
+                    {availableAccounts.length > 0 ? (
+                      availableAccounts.map((acc) => (
+                        <SelectItem key={acc.code} value={acc.code}>
+                          {acc.code} - {acc.name_ar || acc.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>
+                        لا توجد حسابات متاحة - أنشئ حساباً أولاً
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-green-700">
+                  ⚠️ يجب ربط الصراف بحساب محاسبي من قسم "شركات الصرافة" لتمكين العمليات المالية
+                </p>
+                {!formData.account_id && (
+                  <p className="text-xs text-red-600 font-bold">
+                    ❌ هذا الصراف غير مربوط بأي حساب محاسبي - لن يتمكن من تنفيذ الحوالات
+                  </p>
+                )}
+              </div>
+
               {/* Wallet Limits Section */}
               <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg space-y-4">
                 <h3 className="text-lg font-bold text-blue-900">💰 حدود المحفظة</h3>
