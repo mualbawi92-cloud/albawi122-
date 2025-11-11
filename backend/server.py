@@ -2242,8 +2242,8 @@ async def receive_transfer(
                 paid_commission_account = await db.chart_of_accounts.find_one({'code': '421'})
                 if not paid_commission_account:
                     paid_commission_account = {
-                        'id': 'paid_commissions_transfer',
-                        'code': '5110',
+                        'id': 'paid_commissions_transfer_421',
+                        'code': '421',
                         'name': 'عمولات حوالات مدفوعة',
                         'name_ar': 'عمولات حوالات مدفوعة',
                         'name_en': 'Transfer Commission Paid',
