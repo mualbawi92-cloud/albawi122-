@@ -68,13 +68,34 @@ const EditAgentPage = () => {
   const fetchAvailableAccounts = async () => {
     try {
       const response = await axios.get(`${API}/accounting/accounts`);
-      // فلترة الحسابات من قسم "شركات الصرافة" فقط
-      const exchangeAccounts = response.data.filter(acc => 
-        acc.category === 'شركات الصرافة' || acc.type === 'شركات الصرافة'
-      );
+      console.log('All accounts:', response.data); // للتحقق
+      
+      // فلترة الحسابات من قسم "شركات الصرافة" أو "Exchange Companies"
+      // نبحث في category و type و name
+      const exchangeAccounts = response.data.filter(acc => {
+        const category = acc.category || '';
+        const type = acc.type || '';
+        const name = acc.name_ar || acc.name || '';
+        
+        // البحث عن "شركات" أو "صرافة" أو "Exchange" في أي حقل
+        return category.includes('شركات') || 
+               category.includes('صرافة') ||
+               category.includes('Exchange') ||
+               type.includes('شركات') || 
+               type.includes('صرافة') ||
+               type.includes('Exchange') ||
+               (acc.code && acc.code.startsWith('21')); // أو الحسابات التي تبدأ بـ 21xx
+      });
+      
+      console.log('Filtered exchange accounts:', exchangeAccounts); // للتحقق
       setAvailableAccounts(exchangeAccounts);
+      
+      if (exchangeAccounts.length === 0) {
+        console.warn('⚠️ No exchange company accounts found!');
+      }
     } catch (error) {
       console.error('Error fetching accounts:', error);
+      toast.error('خطأ في تحميل الحسابات');
     }
   };
 
