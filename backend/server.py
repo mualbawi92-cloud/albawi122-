@@ -2201,10 +2201,10 @@ async def receive_transfer(
             receiver_account = await db.chart_of_accounts.find_one({'code': receiver_account_code})
             
             if receiver_account:
-            # قيد 1: Create journal entry for receiving transfer
-            # Transit = مدين
-            # المكتب المُسلِّم (دفع نقدية للمستلم) = دائن
-            journal_entry = {
+                # قيد 1: Create journal entry for receiving transfer
+                # Transit = مدين
+                # المكتب المُسلِّم (دفع نقدية للمستلم) = دائن
+                journal_entry = {
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-RCV-{transfer['transfer_code']}",
                 'date': datetime.now(timezone.utc).isoformat(),
