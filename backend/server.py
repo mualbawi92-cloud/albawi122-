@@ -2239,7 +2239,7 @@ async def receive_transfer(
             # قيد 2: العمولة المدفوعة (إذا وجدت)
             if incoming_commission > 0:
                 # Get paid commission account from chart_of_accounts
-                paid_commission_account = await db.chart_of_accounts.find_one({'code': '5110'})
+                paid_commission_account = await db.chart_of_accounts.find_one({'code': '421'})
                 if not paid_commission_account:
                     paid_commission_account = {
                         'id': 'paid_commissions_transfer',
