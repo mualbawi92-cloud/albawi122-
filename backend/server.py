@@ -1784,7 +1784,7 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
                 'description': f'إلغاء حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
                 'lines': [
                     {
-                        'account_code': '1030',  # Transit Account (مدين)
+                        'account_code': '203',  # Transit Account (مدين)
                         'debit': transfer['amount'],
                         'credit': 0
                     },
@@ -1808,7 +1808,7 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
             # Update account balances
             # Transit account increases (debit for assets)
             await db.chart_of_accounts.update_one(
-                {'code': '1030'},
+                {'code': '203'},
                 {'$inc': {'balance': transfer['amount'], 'balance_iqd': transfer['amount']}}
             )
             
@@ -2200,7 +2200,7 @@ async def receive_transfer(
                 'description': f'استلام حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
                 'lines': [
                     {
-                        'account_code': '1030',  # Transit Account (مدين)
+                        'account_code': '203',  # Transit Account (مدين)
                         'debit': transfer['amount'],
                         'credit': 0
                     },
@@ -2224,7 +2224,7 @@ async def receive_transfer(
             # Update account balances
             # Transit account decreases (credit for assets - إخراج من الترانزيت)
             await db.chart_of_accounts.update_one(
-                {'code': '1030'},
+                {'code': '203'},
                 {'$inc': {'balance': -transfer['amount'], 'balance_iqd': -transfer['amount']}}
             )
             
