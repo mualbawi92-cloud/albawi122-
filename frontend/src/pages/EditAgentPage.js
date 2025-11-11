@@ -65,36 +65,63 @@ const EditAgentPage = () => {
     fetchAvailableAccounts();
   }, [id]);
 
-  const fetchAvailableAccounts = async () => {
+  const fetchAvailableAccounts = async (showToast = false) => {
     try {
-      const response = await axios.get(`${API}/accounting/accounts`);
-      console.log('All accounts:', response.data); // للتحقق
+      if (showToast) {
+        toast.info('🔄 جاري تحديث قائمة الحسابات...');
+      }
       
-      // فلترة الحسابات من قسم "شركات الصرافة" أو "Exchange Companies"
-      // نبحث في category و type و name
+      const response = await axios.get(`${API}/accounting/accounts`);
+      console.log('📊 All accounts from API:', response.data);
+      
+      // فلترة الحسابات من قسم "شركات الصرافة"
+      // البحث في category, type, parent_code
       const exchangeAccounts = response.data.filter(acc => {
-        const category = acc.category || '';
-        const type = acc.type || '';
-        const name = acc.name_ar || acc.name || '';
+        const category = (acc.category || '').toString();
+        const type = (acc.type || '').toString();
+        const parentCode = (acc.parent_code || '').toString();
         
-        // البحث عن "شركات" أو "صرافة" أو "Exchange" في أي حقل
-        return category.includes('شركات') || 
-               category.includes('صرافة') ||
-               category.includes('Exchange') ||
-               type.includes('شركات') || 
-               type.includes('صرافة') ||
-               type.includes('Exchange') ||
-               (acc.code && acc.code.startsWith('21')); // أو الحسابات التي تبدأ بـ 21xx
+        // شروط الفلترة:
+        // 1. category يحتوي على "شركات" أو "صرافة" أو "Exchange"
+        // 2. type يحتوي على نفس الكلمات
+        // 3. parent_code = "2000" (قسم شركات الصرافة)
+        // 4. رمز الحساب يبدأ بـ 21 (21xx)
+        return (
+          category.includes('شركات') || 
+          category.includes('صرافة') ||
+          category.includes('Exchange') ||
+          type.includes('شركات') || 
+          type.includes('صرافة') ||
+          type.includes('Exchange') ||
+          parentCode === '2000' ||
+          (acc.code && acc.code.toString().match(/^21\d{2}$/))
+        );
       });
       
-      console.log('Filtered exchange accounts:', exchangeAccounts); // للتحقق
+      // ترتيب حسب رمز الحساب
+      exchangeAccounts.sort((a, b) => {
+        const codeA = parseInt(a.code) || 0;
+        const codeB = parseInt(b.code) || 0;
+        return codeA - codeB;
+      });
+      
+      console.log('✅ Filtered exchange company accounts:', exchangeAccounts);
+      console.log(`📌 Found ${exchangeAccounts.length} exchange company account(s)`);
+      
       setAvailableAccounts(exchangeAccounts);
       
       if (exchangeAccounts.length === 0) {
-        console.warn('⚠️ No exchange company accounts found!');
+        console.warn('⚠️ No exchange company accounts found in chart_of_accounts!');
+        if (showToast) {
+          toast.warning('⚠️ لا توجد حسابات ضمن قسم شركات الصرافة');
+        }
+      } else {
+        if (showToast) {
+          toast.success(`✅ تم تحديث القائمة - ${exchangeAccounts.length} حساب`);
+        }
       }
     } catch (error) {
-      console.error('Error fetching accounts:', error);
+      console.error('❌ Error fetching accounts:', error);
       toast.error('خطأ في تحميل الحسابات');
     }
   };
