@@ -3519,6 +3519,7 @@ async def initialize_chart_of_accounts(current_user: dict = Depends(require_admi
         {"code": "2010", "name_ar": "ذمم زبائن دائنة", "name_en": "Customer Payables", "category": "التزامات", "parent_code": "2000", "currency": "IQD"},
         {"code": "2020", "name_ar": "ذمم شركات صرافة دائنة", "name_en": "Exchange Company Payables", "category": "التزامات", "parent_code": "2000", "currency": "IQD"},
         {"code": "2100", "name_ar": "حوالات قيد التسليم", "name_en": "Transfers Payable", "category": "التزامات", "parent_code": "2000", "currency": "IQD"},
+        {"code": "203", "name_ar": "حوالات واردة لم تُسلَّم", "name_en": "Pending Incoming Transfers", "category": "الالتزامات", "parent_code": "2000", "currency": "IQD"},
         
         # حقوق الملكية - Equity
         {"code": "3000", "name_ar": "حقوق الملكية", "name_en": "Equity", "category": "حقوق الملكية", "parent_code": None, "currency": "IQD"},
