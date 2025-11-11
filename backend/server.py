@@ -1323,24 +1323,24 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             logger.error(f"❌ Agent {current_user['id']} ({current_user.get('display_name')}) has no linked account in chart_of_accounts!")
             logger.error("Journal entry will NOT be created - agent must be linked to an account first")
         else:
-            # Get Transit account from chart_of_accounts
-            transit_account = await db.chart_of_accounts.find_one({'code': '1030'})
+            # Get Transit account (203) from chart_of_accounts
+            transit_account = await db.chart_of_accounts.find_one({'code': '203'})
             if not transit_account:
                 # Create Transit account if not exists
                 transit_account = {
-                    'id': 'transit_account',
-                    'code': '1030',
-                    'name': 'حساب الترانزيت - الحوالات الواردة لم تُسلم',
-                    'name_ar': 'حساب الترانزيت - الحوالات الواردة لم تُسلم',
-                    'name_en': 'Transit Account - Pending Transfers',
-                    'category': 'الأصول',
-                    'type': 'الأصول',
+                    'id': 'transit_account_203',
+                    'code': '203',
+                    'name': 'حوالات واردة لم تُسلَّم',
+                    'name_ar': 'حوالات واردة لم تُسلَّم',
+                    'name_en': 'Pending Incoming Transfers',
+                    'category': 'الالتزامات',
+                    'type': 'الالتزامات',
                     'parent_code': None,
                     'is_active': True,
                     'balance': 0,
                     'balance_iqd': 0,
                     'balance_usd': 0,
-                    'currency': 'IQD',
+                    'currencies': ['IQD', 'USD', 'EUR', 'GBP'],
                     'created_at': datetime.now(timezone.utc).isoformat(),
                     'updated_at': datetime.now(timezone.utc).isoformat()
                 }
