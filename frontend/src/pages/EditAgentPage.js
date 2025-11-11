@@ -86,7 +86,7 @@ const EditAgentPage = () => {
       
       // فلترة الحسابات من قسم "شركات الصرافة"
       // البحث في category, type, parent_code
-      const exchangeAccounts = response.data.filter(acc => {
+      const exchangeAccounts = accountsData.filter(acc => {
         const category = (acc.category || '').toString();
         const type = (acc.type || '').toString();
         const parentCode = (acc.parent_code || '').toString();
