@@ -304,7 +304,7 @@ const EditAgentPage = () => {
                       ))
                     ) : (
                       <SelectItem value="none" disabled>
-                        لا توجد حسابات متاحة - أنشئ حساباً أولاً
+                        ⚠️ لا توجد حسابات محاسبية ضمن قسم شركات الصرافة - يرجى إنشاء حساب جديد أولاً من الدليل المحاسبي
                       </SelectItem>
                     )}
                   </SelectContent>
