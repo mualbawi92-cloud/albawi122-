@@ -62,7 +62,21 @@ const EditAgentPage = () => {
 
   useEffect(() => {
     fetchAgent();
+    fetchAvailableAccounts();
   }, [id]);
+
+  const fetchAvailableAccounts = async () => {
+    try {
+      const response = await axios.get(`${API}/accounting/accounts`);
+      // فلترة الحسابات من قسم "شركات الصرافة" فقط
+      const exchangeAccounts = response.data.filter(acc => 
+        acc.category === 'شركات الصرافة' || acc.type === 'شركات الصرافة'
+      );
+      setAvailableAccounts(exchangeAccounts);
+    } catch (error) {
+      console.error('Error fetching accounts:', error);
+    }
+  };
 
   const fetchAgent = async () => {
     try {
