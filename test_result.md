@@ -1537,10 +1537,128 @@ metadata:
   test_sequence: 2
   run_ui: false
 
+  - task: "Auto-create chart of accounts when registering agents"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py, scripts/auto_link_agents_to_chart_of_accounts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **AUTO-CREATE CHART OF ACCOUNTS FOR AGENTS IMPLEMENTED**
+          
+          **User Request:**
+          جعل إضافة الحسابات المحاسبية للوكلاء تلقائية (تضيفهن وتخلي الاضافه تلقائيه)
+          
+          **Implementation:**
+          
+          1. **Modified Agent Registration Logic** (backend/server.py):
+             - Made account_code optional during registration
+             - If account_code provided: validates and uses existing account (manual selection)
+             - If account_code NOT provided: automatically creates new account in chart_of_accounts
+             
+             **Auto-Creation Process:**
+             - Finds highest account code in "شركات الصرافة" category
+             - Generates next sequential code (2001, 2002, 2003, etc.)
+             - Creates account with format: "صيرفة {agent_name} - {governorate}"
+             - Sets default currencies: ['IQD', 'USD']
+             - Links account to agent via agent_id
+             - Updates user record with account_code and account_id
+             
+             **Benefits of Hybrid Approach:**
+             - Flexible: Admin can choose existing account OR auto-create new one
+             - No breaking changes: existing functionality preserved
+             - Automatic for new agents: simplifies onboarding
+             - 1:1 relationship: each agent has unique account
+          
+          2. **Created Migration Script** (scripts/auto_link_agents_to_chart_of_accounts.py):
+             - Scans all existing agents without chart_of_accounts links
+             - Automatically creates accounts for unlinked agents
+             - Updates agent records with account_code
+             - Links accounts to agents via agent_id
+             - Provides detailed Arabic report
+             
+             **Script Features:**
+             - Validates all agent-account linkages
+             - Fixes incorrect linkages automatically
+             - Generates sequential account codes
+             - Handles governorate names properly
+             - Comprehensive reporting in Arabic
+          
+          **Code Changes:**
+          
+          **Before (Required Manual Selection):**
+          ```python
+          # Account was mandatory
+          if user_data.role == 'agent' and not user_data.account_code:
+              raise HTTPException(...)
+          ```
+          
+          **After (Auto-Create if Not Provided):**
+          ```python
+          # Account is optional - auto-creates if not provided
+          if user_data.role == 'agent':
+              if user_data.account_code:
+                  # Manual selection: validate existing account
+                  actual_account_code = user_data.account_code
+              else:
+                  # Auto-creation: create new account
+                  next_code = (last_code + 1)  # Sequential
+                  await db.chart_of_accounts.insert_one(new_account)
+                  actual_account_code = str(next_code)
+          ```
+          
+          **Account Structure Created:**
+          ```python
+          {
+              'code': '2001',  # Sequential
+              'name': 'صيرفة {agent_name} - {governorate}',
+              'name_ar': 'صيرفة {agent_name} - {governorate}',
+              'name_en': 'Exchange {agent_name} - {governorate}',
+              'category': 'شركات الصرافة',
+              'type': 'شركات الصرافة',
+              'balance_iqd': 0.0,
+              'balance_usd': 0.0,
+              'currencies': ['IQD', 'USD'],
+              'is_active': True,
+              'agent_id': user_id  # Linked to agent
+          }
+          ```
+          
+          **Registration Flow:**
+          
+          1. Admin opens "إضافة صراف" (Add Agent)
+          2. Fills agent details (name, phone, governorate, etc.)
+          3. **Option A:** Selects existing account from dropdown (manual)
+          4. **Option B:** Leaves account empty → system creates automatically
+          5. System validates and saves agent
+          6. Account linked via account_code and account_id
+          7. Agent can immediately perform transfers
+          
+          **Validation:**
+          - Manual selection: validates account exists and is available
+          - Auto-creation: ensures sequential code generation
+          - Both: validates 1:1 relationship (one account per agent)
+          - Both: ensures account is in "شركات الصرافة" category
+          
+          **Benefits:**
+          - ✅ Simplifies agent onboarding (no pre-creation needed)
+          - ✅ Maintains data consistency (auto-linked accounts)
+          - ✅ Flexible (supports both manual and auto modes)
+          - ✅ Sequential numbering (2001, 2002, 2003...)
+          - ✅ Proper Arabic naming with governorate
+          - ✅ Multi-currency support by default
+          - ✅ Migration script for existing agents
+          
+          Ready for backend testing to verify auto-creation works correctly for new agent registrations.
+
 test_plan:
   current_focus:
-    - "Complete migration to chart_of_accounts"
-    - "Agent-COA linkage verification"
+    - "Auto-create chart of accounts for agents"
+    - "Test agent registration with and without account_code"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
