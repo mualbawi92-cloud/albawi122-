@@ -121,107 +121,165 @@ class AgentRegistrationAutoCreateTester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
     
-    def test_chart_of_accounts_operations(self):
-        """Phase 1: Test Chart of Accounts CRUD Operations"""
-        print("\n=== Phase 1: Chart of Accounts Operations ===")
+    def test_auto_create_account_no_code_provided(self):
+        """Phase 1: Auto-Create Account (No account_code provided)"""
+        print("\n=== Phase 1: Auto-Create Account (No account_code provided) ===")
         
-        # Test 1: GET /api/accounting/accounts - List all accounts from chart_of_accounts
+        # Test 1: Register new agent WITHOUT account_code
+        test_agent_username = f"test_agent_auto_{int(time.time())}"
+        test_agent_data = {
+            "username": test_agent_username,
+            "password": "test123",
+            "display_name": "صيرفة الاختبار التلقائي",
+            "phone": "07701234567",
+            "governorate": "BG",  # Baghdad
+            "role": "agent",
+            "wallet_limit_iqd": 5000000,
+            "wallet_limit_usd": 10000
+            # Note: No account_code provided - should auto-create
+        }
+        
+        created_agent_id = None
+        created_account_code = None
+        
+        try:
+            response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
+            if response.status_code in [200, 201]:
+                agent_data = response.json()
+                created_agent_id = agent_data.get('id')
+                created_account_code = agent_data.get('account_code')
+                
+                if created_account_code:
+                    self.log_result("Auto-Create Agent Registration", True, 
+                                  f"Agent created successfully with auto-generated account: {created_account_code}")
+                    
+                    # Verify account code follows pattern (2001, 2002, etc.)
+                    if created_account_code.startswith('20') and created_account_code.isdigit():
+                        self.log_result("Auto-Create Account Code Pattern", True, 
+                                      f"Account code follows pattern: {created_account_code}")
+                    else:
+                        self.log_result("Auto-Create Account Code Pattern", False, 
+                                      f"Account code doesn't follow pattern: {created_account_code}")
+                else:
+                    self.log_result("Auto-Create Agent Registration", False, 
+                                  f"Agent created but no account_code returned")
+            else:
+                self.log_result("Auto-Create Agent Registration", False, 
+                              f"Failed to register agent: {response.status_code} - {response.text}")
+                return False
+        except Exception as e:
+            self.log_result("Auto-Create Agent Registration", False, f"Error: {str(e)}")
+            return False
+        
+        # Test 2: GET /api/agents - Verify agent appears with account_code
+        try:
+            response = self.make_request('GET', '/agents', token=self.admin_token)
+            if response.status_code == 200:
+                agents = response.json()
+                created_agent = next((a for a in agents if a.get('id') == created_agent_id), None)
+                
+                if created_agent and created_agent.get('account_code') == created_account_code:
+                    self.log_result("Auto-Create Agent in List", True, 
+                                  f"Agent appears in list with account_code: {created_account_code}")
+                else:
+                    self.log_result("Auto-Create Agent in List", False, 
+                                  f"Agent not found in list or missing account_code")
+            else:
+                self.log_result("Auto-Create Agent in List", False, 
+                              f"Failed to get agents: {response.status_code}")
+        except Exception as e:
+            self.log_result("Auto-Create Agent in List", False, f"Error: {str(e)}")
+        
+        # Test 3: GET /api/accounting/accounts - Verify new account created
         try:
             response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
             if response.status_code == 200:
                 data = response.json()
-                
-                # Handle both direct array and wrapped response
                 if isinstance(data, dict) and 'accounts' in data:
                     accounts = data['accounts']
                 else:
                     accounts = data
                 
-                if isinstance(accounts, list):
-                    self.log_result("GET Chart of Accounts", True, 
-                                  f"Successfully retrieved {len(accounts)} accounts from chart_of_accounts")
+                created_account = next((a for a in accounts if a.get('code') == created_account_code), None)
+                
+                if created_account:
+                    # Verify account details
+                    expected_name = f"صيرفة {test_agent_data['display_name']} - بغداد"
+                    actual_name = created_account.get('name_ar', '')
                     
-                    # Verify accounts have required fields
-                    if accounts:
-                        sample_account = accounts[0]
-                        required_fields = ['code', 'name_ar', 'category']
-                        missing_fields = [field for field in required_fields if field not in sample_account]
+                    if expected_name in actual_name or "صيرفة الاختبار التلقائي" in actual_name:
+                        self.log_result("Auto-Create Account Name Format", True, 
+                                      f"Account name format correct: {actual_name}")
+                    else:
+                        self.log_result("Auto-Create Account Name Format", False, 
+                                      f"Account name format incorrect: {actual_name}")
+                    
+                    # Verify category
+                    if created_account.get('category') == 'شركات الصرافة':
+                        self.log_result("Auto-Create Account Category", True, 
+                                      f"Account category correct: شركات الصرافة")
+                    else:
+                        self.log_result("Auto-Create Account Category", False, 
+                                      f"Account category incorrect: {created_account.get('category')}")
+                    
+                    # Verify agent_id linkage
+                    if created_account.get('agent_id') == created_agent_id:
+                        self.log_result("Auto-Create Account Agent Linkage", True, 
+                                      f"Account linked to agent: {created_agent_id}")
+                    else:
+                        self.log_result("Auto-Create Account Agent Linkage", False, 
+                                      f"Account not linked to agent")
+                else:
+                    self.log_result("Auto-Create Account in Chart", False, 
+                                  f"Account {created_account_code} not found in chart_of_accounts")
+            else:
+                self.log_result("Auto-Create Account in Chart", False, 
+                              f"Failed to get accounts: {response.status_code}")
+        except Exception as e:
+            self.log_result("Auto-Create Account in Chart", False, f"Error: {str(e)}")
+        
+        # Test 4: GET /api/accounting/accounts/{code} - Get the new account details
+        if created_account_code:
+            try:
+                response = self.make_request('GET', f'/accounting/accounts/{created_account_code}', token=self.admin_token)
+                if response.status_code == 200:
+                    account_data = response.json()
+                    
+                    # Verify all required fields
+                    required_fields = ['code', 'name_ar', 'name_en', 'category', 'currencies', 'balance_iqd', 'balance_usd']
+                    missing_fields = [field for field in required_fields if field not in account_data]
+                    
+                    if not missing_fields:
+                        self.log_result("Auto-Create Account Details Complete", True, 
+                                      f"Account has all required fields")
                         
-                        if not missing_fields:
-                            self.log_result("Chart of Accounts Structure", True, 
-                                          f"Accounts have required fields: {list(sample_account.keys())}")
+                        # Verify currencies
+                        currencies = account_data.get('currencies', [])
+                        if 'IQD' in currencies and 'USD' in currencies:
+                            self.log_result("Auto-Create Account Currencies", True, 
+                                          f"Account has correct currencies: {currencies}")
                         else:
-                            self.log_result("Chart of Accounts Structure", False, 
-                                          f"Missing required fields: {missing_fields}")
+                            self.log_result("Auto-Create Account Currencies", False, 
+                                          f"Account currencies incorrect: {currencies}")
+                        
+                        # Verify initial balances
+                        balance_iqd = account_data.get('balance_iqd', None)
+                        balance_usd = account_data.get('balance_usd', None)
+                        
+                        if balance_iqd == 0.0 and balance_usd == 0.0:
+                            self.log_result("Auto-Create Account Initial Balances", True, 
+                                          f"Initial balances correct: IQD={balance_iqd}, USD={balance_usd}")
+                        else:
+                            self.log_result("Auto-Create Account Initial Balances", False, 
+                                          f"Initial balances incorrect: IQD={balance_iqd}, USD={balance_usd}")
+                    else:
+                        self.log_result("Auto-Create Account Details Complete", False, 
+                                      f"Missing fields: {missing_fields}")
                 else:
-                    self.log_result("GET Chart of Accounts", False, 
-                                  f"Invalid response format: {type(accounts)}")
-            else:
-                self.log_result("GET Chart of Accounts", False, 
-                              f"Request failed: {response.status_code} - {response.text}")
-        except Exception as e:
-            self.log_result("GET Chart of Accounts", False, f"Error: {str(e)}")
-        
-        # Test 2: POST /api/accounting/accounts - Create new account in chart_of_accounts
-        test_account_code = "9960"
-        try:
-            test_account = {
-                "code": test_account_code,
-                "name": "Test Migration Account",
-                "name_ar": "حساب تجريبي للهجرة",
-                "name_en": "Test Migration Account",
-                "category": "شركات الصرافة",
-                "type": "شركات الصرافة",
-                "currencies": ["IQD", "USD"]
-            }
-            
-            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
-            if response.status_code in [200, 201]:
-                self.test_account_codes.append(test_account_code)
-                self.log_result("POST Create Account", True, 
-                              f"Successfully created account {test_account_code} in chart_of_accounts")
-            elif response.status_code == 400 and "already exists" in response.text:
-                self.log_result("POST Create Account", True, 
-                              f"Account {test_account_code} already exists (acceptable)")
-            else:
-                self.log_result("POST Create Account", False, 
-                              f"Failed to create account: {response.status_code} - {response.text}")
-        except Exception as e:
-            self.log_result("POST Create Account", False, f"Error: {str(e)}")
-        
-        # Test 3: GET /api/accounting/accounts/{code} - Get specific account
-        try:
-            response = self.make_request('GET', f'/accounting/accounts/{test_account_code}', token=self.admin_token)
-            if response.status_code == 200:
-                account_data = response.json()
-                if account_data.get('code') == test_account_code:
-                    self.log_result("GET Specific Account", True, 
-                                  f"Successfully retrieved account {test_account_code}: {account_data.get('name_ar')}")
-                else:
-                    self.log_result("GET Specific Account", False, 
-                                  f"Account code mismatch: expected {test_account_code}, got {account_data.get('code')}")
-            else:
-                self.log_result("GET Specific Account", False, 
-                              f"Failed to get account {test_account_code}: {response.status_code}")
-        except Exception as e:
-            self.log_result("GET Specific Account", False, f"Error: {str(e)}")
-        
-        # Test 4: Verify account is accessible via ledger
-        try:
-            response = self.make_request('GET', f'/accounting/ledger/{test_account_code}', token=self.admin_token)
-            if response.status_code == 200:
-                ledger_data = response.json()
-                if ledger_data.get('account', {}).get('code') == test_account_code:
-                    self.log_result("Account Ledger Access", True, 
-                                  f"Account {test_account_code} accessible via ledger endpoint")
-                else:
-                    self.log_result("Account Ledger Access", False, 
-                                  f"Ledger account code mismatch")
-            else:
-                self.log_result("Account Ledger Access", False, 
-                              f"Failed to access ledger for {test_account_code}: {response.status_code}")
-        except Exception as e:
-            self.log_result("Account Ledger Access", False, f"Error: {str(e)}")
+                    self.log_result("Auto-Create Account Details", False, 
+                                  f"Failed to get account details: {response.status_code}")
+            except Exception as e:
+                self.log_result("Auto-Create Account Details", False, f"Error: {str(e)}")
         
         return True
     
