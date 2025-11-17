@@ -4362,13 +4362,13 @@ async def create_journal_entry(entry_data: JournalEntryCreate, current_user: dic
     
     await db.journal_entries.insert_one(journal_entry)
     
-    # Update account balances
+    # Update account balances in chart_of_accounts
     for line in entry_data.lines:
         account_code = line['account_code']
         debit = line.get('debit', 0)
         credit = line.get('credit', 0)
         
-        account = await db.accounts.find_one({'code': account_code})
+        account = await db.chart_of_accounts.find_one({'code': account_code})
         if account:
             # For assets and expenses: debit increases, credit decreases
             # For liabilities, equity, and revenues: credit increases, debit decreases
@@ -4380,7 +4380,7 @@ async def create_journal_entry(entry_data: JournalEntryCreate, current_user: dic
             
             new_balance = account.get('balance', 0) + balance_change
             
-            await db.accounts.update_one(
+            await db.chart_of_accounts.update_one(
                 {'code': account_code},
                 {
                     '$set': {
