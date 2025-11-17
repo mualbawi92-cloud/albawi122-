@@ -246,135 +246,115 @@ class ChartOfAccountsMigrationTester:
     
     # Removed old test methods - replaced with unified ledger filtering tests
     
-    def test_agent_ledger_chart_of_accounts_integration(self):
-        """Test Agent Ledger - chart_of_accounts Integration"""
-        print("\n=== Test 2: Agent Ledger chart_of_accounts Integration ===")
+    def test_agent_registration_and_linking(self):
+        """Phase 2: Test Agent Registration and Linking to Chart of Accounts"""
+        print("\n=== Phase 2: Agent Registration and Linking ===")
         
-        # First, try to find an existing agent or create one for testing
-        agent_token = None
-        agent_info = None
+        # Test 1: Register new agent and verify account creation
+        test_agent_username = f"test_agent_{int(time.time())}"
+        test_agent_data = {
+            "username": test_agent_username,
+            "password": "test123",
+            "display_name": f"صيرفة الاختبار {int(time.time())}",
+            "governorate": "BG",  # Baghdad
+            "phone": "07901234567",
+            "address": "شارع الاختبار",
+            "role": "agent",
+            "wallet_limit_iqd": 1000000.0,
+            "wallet_limit_usd": 1000.0
+        }
         
-        # Try to find existing agents
         try:
-            response = self.make_request('GET', '/agents', token=self.admin_token)
-            if response.status_code == 200:
-                agents = response.json()
-                if agents and len(agents) > 0:
-                    # Try to login with the first agent
-                    for agent in agents[:3]:  # Try first 3 agents
-                        agent_username = agent.get('username')
-                        if agent_username:
-                            # Try different possible passwords
-                            for password in POSSIBLE_PASSWORDS:
-                                try:
-                                    login_response = self.make_request('POST', '/login', json={
-                                        'username': agent_username,
-                                        'password': password
-                                    })
-                                    if login_response.status_code == 200:
-                                        login_data = login_response.json()
-                                        agent_token = login_data['access_token']
-                                        agent_info = login_data['user']
-                                        self.log_result("Agent Login", True, 
-                                                      f"Successfully logged in as agent: {agent_username}")
-                                        break
-                                except:
-                                    continue
-                        if agent_token:
-                            break
-        except Exception as e:
-            self.log_result("Find Agent", False, f"Error finding agents: {str(e)}")
-        
-        if not agent_token:
-            self.log_result("Agent Login", False, "Could not login as any agent - skipping agent tests")
-            return False
-        
-        # Test 1: Verify agent's account is fetched from chart_of_accounts
-        try:
-            response = self.make_request('GET', '/agent-ledger?currency=IQD', token=agent_token)
-            if response.status_code == 200:
-                data = response.json()
+            # First, get available accounts from chart_of_accounts
+            available_response = self.make_request('GET', '/agents/available-accounts', token=self.admin_token)
+            if available_response.status_code == 200:
+                available_data = available_response.json()
+                accounts = available_data.get('accounts', [])
                 
-                # Verify required fields in response
-                required_fields = ['agent_name', 'current_balance', 'selected_currency', 'enabled_currencies', 'transactions', 'earned_commission', 'paid_commission']
-                missing_fields = [field for field in required_fields if field not in data]
+                # Find an unlinked account
+                unlinked_accounts = [acc for acc in accounts if not acc.get('is_linked', False)]
                 
-                if not missing_fields:
-                    self.log_result("Agent Ledger - chart_of_accounts Integration", True, 
-                                  f"Agent account fetched from chart_of_accounts. Agent: {data['agent_name']}")
+                if unlinked_accounts:
+                    # Use the first unlinked account
+                    selected_account = unlinked_accounts[0]
+                    test_agent_data['account_code'] = selected_account['code']
                     
-                    # Verify enabled_currencies returned correctly
-                    enabled_currencies = data.get('enabled_currencies', [])
-                    if isinstance(enabled_currencies, list) and len(enabled_currencies) > 0:
-                        self.log_result("Agent Ledger - Enabled Currencies", True, 
-                                      f"Enabled currencies returned: {enabled_currencies}")
-                    else:
-                        self.log_result("Agent Ledger - Enabled Currencies", False, 
-                                      f"Invalid enabled_currencies: {enabled_currencies}")
-                    
-                    # Verify journal entries are filtered by currency
-                    transactions = data.get('transactions', [])
-                    journal_entries = [t for t in transactions if t.get('type') == 'journal_entry']
-                    
-                    if journal_entries:
-                        # Check if all journal entries have IQD currency or fallback to IQD
-                        entries_without_currency = [e for e in journal_entries if 'currency' not in e or e.get('currency') is None]
-                        entries_with_iqd = [e for e in journal_entries if e.get('currency') == 'IQD']
-                        
-                        self.log_result("Agent Ledger - Journal Entries Currency Filter", True, 
-                                      f"Journal entries filtered by currency: {len(journal_entries)} total, {len(entries_with_iqd)} IQD, {len(entries_without_currency)} without currency (fallback)")
-                    else:
-                        self.log_result("Agent Ledger - Journal Entries Currency Filter", True, 
-                                      f"No journal entries found for agent (acceptable)")
-                    
-                    # Verify fallback to IQD for entries without currency
-                    transactions_without_currency = [t for t in transactions if 'currency' not in t or t.get('currency') is None]
-                    if transactions_without_currency:
-                        self.log_result("Agent Ledger - IQD Fallback", True, 
-                                      f"Found {len(transactions_without_currency)} transactions without currency (should be treated as IQD)")
-                    
+                    self.log_result("Find Available Account", True, 
+                                  f"Found available account {selected_account['code']} for agent registration")
                 else:
-                    self.log_result("Agent Ledger - chart_of_accounts Integration", False, 
-                                  f"Missing required fields: {missing_fields}")
-            else:
-                self.log_result("Agent Ledger - chart_of_accounts Integration", False, 
-                              f"Request failed: {response.status_code} - {response.text}")
-        except Exception as e:
-            self.log_result("Agent Ledger - chart_of_accounts Integration", False, f"Error: {str(e)}")
-        
-        # Test 2: Agent ledger with USD currency - verify filtering
-        try:
-            response = self.make_request('GET', '/agent-ledger?currency=USD', token=agent_token)
-            if response.status_code == 200:
-                data = response.json()
-                
-                if data['selected_currency'] == 'USD':
-                    self.log_result("Agent Ledger - USD Currency Filter", True, 
-                                  f"USD currency filter working correctly")
+                    # Create a new account for the agent
+                    new_account_code = f"2{int(time.time()) % 1000:03d}"
+                    new_account = {
+                        "code": new_account_code,
+                        "name": f"صيرفة {test_agent_data['display_name']}",
+                        "name_ar": f"صيرفة {test_agent_data['display_name']}",
+                        "name_en": f"Exchange {test_agent_data['display_name']}",
+                        "category": "شركات الصرافة",
+                        "type": "شركات الصرافة",
+                        "currencies": ["IQD", "USD"]
+                    }
                     
-                    # Verify transactions are filtered by currency (no old entries without currency)
-                    transactions = data.get('transactions', [])
-                    transactions_without_currency = [t for t in transactions if 'currency' not in t or t.get('currency') is None]
-                    non_usd_transactions = [t for t in transactions if t.get('currency') != 'USD']
-                    
-                    if len(transactions_without_currency) == 0 and len(non_usd_transactions) == 0:
-                        self.log_result("Agent Ledger - USD Filter Exclusion", True, 
-                                      f"USD filter correctly excludes old entries: {len(transactions)} USD transactions")
+                    create_response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=new_account)
+                    if create_response.status_code in [200, 201]:
+                        test_agent_data['account_code'] = new_account_code
+                        self.test_account_codes.append(new_account_code)
+                        self.log_result("Create Account for Agent", True, 
+                                      f"Created new account {new_account_code} for agent registration")
                     else:
-                        self.log_result("Agent Ledger - USD Filter Exclusion", False, 
-                                      f"USD filter includes old entries: {len(transactions_without_currency)} without currency, {len(non_usd_transactions)} non-USD")
-                else:
-                    self.log_result("Agent Ledger - USD Currency Filter", False, 
-                                  f"USD currency not selected correctly: {data['selected_currency']}")
-            elif response.status_code == 400:
-                # This is acceptable if USD is not enabled for this agent
-                self.log_result("Agent Ledger - USD Currency Filter", True, 
-                              f"USD currency properly rejected (400) - not enabled for agent")
+                        self.log_result("Create Account for Agent", False, 
+                                      f"Failed to create account: {create_response.status_code}")
+                        return False
             else:
-                self.log_result("Agent Ledger - USD Currency Filter", False, 
-                              f"Unexpected response: {response.status_code}")
+                self.log_result("Get Available Accounts", False, 
+                              f"Failed to get available accounts: {available_response.status_code}")
+                return False
+            
+            # Register the agent
+            register_response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
+            if register_response.status_code in [200, 201]:
+                agent_data = register_response.json()
+                agent_id = agent_data.get('id')
+                account_code = agent_data.get('account_code')
+                
+                self.log_result("Agent Registration", True, 
+                              f"Successfully registered agent {test_agent_username} with account {account_code}")
+                
+                # Verify the account is now linked to the agent
+                account_response = self.make_request('GET', f'/accounting/accounts/{account_code}', token=self.admin_token)
+                if account_response.status_code == 200:
+                    account_data = account_response.json()
+                    if account_data.get('agent_id') == agent_id:
+                        self.log_result("Agent-Account Linking", True, 
+                                      f"Account {account_code} correctly linked to agent {agent_id}")
+                    else:
+                        self.log_result("Agent-Account Linking", False, 
+                                      f"Account not properly linked: expected agent_id {agent_id}, got {account_data.get('agent_id')}")
+                else:
+                    self.log_result("Agent-Account Linking", False, 
+                                  f"Failed to verify account linking: {account_response.status_code}")
+                
+                # Verify agent appears in agents list with account_code
+                agents_response = self.make_request('GET', '/agents', token=self.admin_token)
+                if agents_response.status_code == 200:
+                    agents = agents_response.json()
+                    registered_agent = next((a for a in agents if a.get('id') == agent_id), None)
+                    
+                    if registered_agent and registered_agent.get('account_code') == account_code:
+                        self.log_result("Agent in List with Account", True, 
+                                      f"Agent appears in list with correct account_code {account_code}")
+                    else:
+                        self.log_result("Agent in List with Account", False, 
+                                      f"Agent not found in list or missing account_code")
+                else:
+                    self.log_result("Agent in List with Account", False, 
+                                  f"Failed to get agents list: {agents_response.status_code}")
+                
+            else:
+                self.log_result("Agent Registration", False, 
+                              f"Failed to register agent: {register_response.status_code} - {register_response.text}")
+                
         except Exception as e:
-            self.log_result("Agent Ledger - USD Currency Filter", False, f"Error: {str(e)}")
+            self.log_result("Agent Registration and Linking", False, f"Error: {str(e)}")
         
         return True
     
