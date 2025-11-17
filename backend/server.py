@@ -4658,13 +4658,13 @@ async def cancel_journal_entry(entry_id: str, current_user: dict = Depends(requi
     if existing.get('is_cancelled'):
         raise HTTPException(status_code=400, detail="القيد ملغى مسبقاً")
     
-    # Reverse entry effects on account balances
+    # Reverse entry effects on account balances in chart_of_accounts
     for line in existing.get('lines', []):
         account_code = line['account_code']
         debit = line.get('debit', 0)
         credit = line.get('credit', 0)
         
-        account = await db.accounts.find_one({'code': account_code})
+        account = await db.chart_of_accounts.find_one({'code': account_code})
         if account:
             category = account.get('category', '')
             if category in ['أصول', 'مصاريف']:
@@ -4674,7 +4674,7 @@ async def cancel_journal_entry(entry_id: str, current_user: dict = Depends(requi
             
             new_balance = account.get('balance', 0) + balance_change
             
-            await db.accounts.update_one(
+            await db.chart_of_accounts.update_one(
                 {'code': account_code},
                 {'$set': {'balance': new_balance, 'updated_at': datetime.now(timezone.utc).isoformat()}}
             )
