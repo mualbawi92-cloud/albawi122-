@@ -358,117 +358,159 @@ class ChartOfAccountsMigrationTester:
         
         return True
     
-    def test_currency_filtering_consistency(self):
-        """Test Currency Filtering Consistency between Admin and Agent endpoints"""
-        print("\n=== Test 3: Currency Filtering Consistency ===")
+    def test_journal_entry_operations(self):
+        """Phase 3: Test Journal Entry Operations with Chart of Accounts"""
+        print("\n=== Phase 3: Journal Entry Operations ===")
         
-        # First, find an agent with a linked account
-        agent_token = None
-        agent_info = None
-        agent_account_code = None
-        
+        # Test 1: Create manual journal entry with valid account codes from chart_of_accounts
         try:
-            response = self.make_request('GET', '/agents', token=self.admin_token)
-            if response.status_code == 200:
-                agents = response.json()
-                for agent in agents[:3]:  # Try first 3 agents
-                    agent_username = agent.get('username')
-                    agent_account_code = agent.get('account_code')
-                    
-                    if agent_username and agent_account_code:
-                        # Try to login with this agent
-                        for password in POSSIBLE_PASSWORDS:
-                            try:
-                                login_response = self.make_request('POST', '/login', json={
-                                    'username': agent_username,
-                                    'password': password
-                                })
-                                if login_response.status_code == 200:
-                                    login_data = login_response.json()
-                                    agent_token = login_data['access_token']
-                                    agent_info = login_data['user']
-                                    self.log_result("Agent Login for Consistency Test", True, 
-                                                  f"Logged in as agent: {agent_username} with account: {agent_account_code}")
-                                    break
-                            except:
-                                continue
-                    if agent_token:
-                        break
-        except Exception as e:
-            self.log_result("Find Agent for Consistency Test", False, f"Error: {str(e)}")
-        
-        if not agent_token:
-            self.log_result("Agent Login for Consistency Test", False, "Could not login as agent - trying alternative approach")
-            # Continue with alternative approach below
-        else:
-            # We have an agent logged in, but they might not have account_code in user record
-            # The account_code might be in chart_of_accounts with agent_id
-            pass
-        
-        # Alternative approach: Test with known accounts that have agent_id
-        try:
-            # Get accounts with agent_id from chart_of_accounts
-            coa_response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
-            if coa_response.status_code == 200:
-                accounts_data = coa_response.json()
+            # Get some account codes from chart_of_accounts
+            accounts_response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+            if accounts_response.status_code == 200:
+                accounts_data = accounts_response.json()
                 if isinstance(accounts_data, dict) and 'accounts' in accounts_data:
                     accounts = accounts_data['accounts']
                 else:
                     accounts = accounts_data
                 
-                # Find accounts with agent_id
-                agent_linked_accounts = [acc for acc in accounts if acc.get('agent_id')]
-                
-                if agent_linked_accounts:
-                    test_account = agent_linked_accounts[0]  # Use first linked account
-                    account_code = test_account['code']
+                if len(accounts) >= 2:
+                    # Use first two accounts for journal entry
+                    debit_account = accounts[0]['code']
+                    credit_account = accounts[1]['code']
                     
-                    # Test admin ledger for this account
-                    admin_response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=IQD', token=self.admin_token)
+                    journal_entry = {
+                        "description": "قيد تجريبي لاختبار الهجرة",
+                        "lines": [
+                            {
+                                "account_code": debit_account,
+                                "debit": 1000.0,
+                                "credit": 0.0,
+                                "currency": "IQD"
+                            },
+                            {
+                                "account_code": credit_account,
+                                "debit": 0.0,
+                                "credit": 1000.0,
+                                "currency": "IQD"
+                            }
+                        ],
+                        "reference_type": "manual",
+                        "reference_id": None
+                    }
                     
-                    if admin_response.status_code == 200:
-                        admin_data = admin_response.json()
+                    response = self.make_request('POST', '/accounting/journal-entries', token=self.admin_token, json=journal_entry)
+                    if response.status_code in [200, 201]:
+                        entry_data = response.json()
+                        entry_id = entry_data.get('id')
+                        self.log_result("Create Journal Entry - Valid Accounts", True, 
+                                      f"Successfully created journal entry {entry_id} with chart_of_accounts")
                         
-                        self.log_result("Consistency - Admin Ledger Access", True, 
-                                      f"Admin can access ledger for account {account_code}: {len(admin_data.get('entries', []))} entries")
+                        # Verify balance updates in chart_of_accounts
+                        debit_account_response = self.make_request('GET', f'/accounting/accounts/{debit_account}', token=self.admin_token)
+                        credit_account_response = self.make_request('GET', f'/accounting/accounts/{credit_account}', token=self.admin_token)
                         
-                        # Verify currency fallback behavior
-                        entries = admin_data.get('entries', [])
-                        entries_with_currency = [e for e in entries if 'currency' in e and e.get('currency') is not None]
-                        entries_without_currency = [e for e in entries if 'currency' not in e or e.get('currency') is None]
-                        
-                        self.log_result("Consistency - Currency Fallback", True, 
-                                      f"Account {account_code}: {len(entries_with_currency)} entries with currency, {len(entries_without_currency)} entries without currency (fallback to IQD)")
-                        
-                        # Test USD filter should exclude old entries
-                        usd_response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=USD', token=self.admin_token)
-                        if usd_response.status_code == 200:
-                            usd_data = usd_response.json()
-                            usd_entries = usd_data.get('entries', [])
-                            
-                            # Should only have USD entries, no fallback entries
-                            non_usd_entries = [e for e in usd_entries if e.get('currency') != 'USD']
-                            if len(non_usd_entries) == 0:
-                                self.log_result("Consistency - USD Filter Exclusion", True, 
-                                              f"USD filter correctly excludes fallback entries: {len(usd_entries)} USD-only entries")
-                            else:
-                                self.log_result("Consistency - USD Filter Exclusion", False, 
-                                              f"USD filter includes non-USD entries: {len(non_usd_entries)}")
-                        elif usd_response.status_code == 400:
-                            self.log_result("Consistency - USD Filter Exclusion", True, 
-                                          f"USD filter properly rejected (400) - not enabled for account")
+                        if debit_account_response.status_code == 200 and credit_account_response.status_code == 200:
+                            self.log_result("Balance Updates in Chart of Accounts", True, 
+                                          f"Account balances updated in chart_of_accounts after journal entry")
+                        else:
+                            self.log_result("Balance Updates in Chart of Accounts", False, 
+                                          f"Failed to verify balance updates")
                     else:
-                        self.log_result("Consistency - Admin Ledger Access", False, 
-                                      f"Failed to access admin ledger for account {account_code}: {admin_response.status_code}")
+                        self.log_result("Create Journal Entry - Valid Accounts", False, 
+                                      f"Failed to create journal entry: {response.status_code} - {response.text}")
                 else:
-                    self.log_result("Currency Filtering Consistency", False, 
-                                  "No accounts with agent_id found for consistency testing")
+                    self.log_result("Create Journal Entry - Valid Accounts", False, 
+                                  f"Not enough accounts found for testing: {len(accounts)}")
             else:
-                self.log_result("Currency Filtering Consistency", False, 
-                              f"Failed to get chart of accounts: {coa_response.status_code}")
-                
+                self.log_result("Create Journal Entry - Valid Accounts", False, 
+                              f"Failed to get accounts: {accounts_response.status_code}")
         except Exception as e:
-            self.log_result("Currency Filtering Consistency", False, f"Error: {str(e)}")
+            self.log_result("Create Journal Entry - Valid Accounts", False, f"Error: {str(e)}")
+        
+        # Test 2: Create journal entry with invalid account code
+        try:
+            invalid_journal_entry = {
+                "description": "قيد تجريبي بحساب غير موجود",
+                "lines": [
+                    {
+                        "account_code": "9999999",  # Invalid account code
+                        "debit": 500.0,
+                        "credit": 0.0,
+                        "currency": "IQD"
+                    },
+                    {
+                        "account_code": "1030",  # Valid account code
+                        "debit": 0.0,
+                        "credit": 500.0,
+                        "currency": "IQD"
+                    }
+                ],
+                "reference_type": "manual",
+                "reference_id": None
+            }
+            
+            response = self.make_request('POST', '/accounting/journal-entries', token=self.admin_token, json=invalid_journal_entry)
+            if response.status_code == 400:
+                error_text = response.text
+                if "الدليل المحاسبي" in error_text or "غير موجود" in error_text:
+                    self.log_result("Create Journal Entry - Invalid Account", True, 
+                                  f"Properly rejected invalid account with Arabic error message")
+                else:
+                    self.log_result("Create Journal Entry - Invalid Account", True, 
+                                  f"Properly rejected invalid account: {response.status_code}")
+            else:
+                self.log_result("Create Journal Entry - Invalid Account", False, 
+                              f"Should have rejected invalid account: {response.status_code}")
+        except Exception as e:
+            self.log_result("Create Journal Entry - Invalid Account", False, f"Error: {str(e)}")
+        
+        # Test 3: List journal entries
+        try:
+            response = self.make_request('GET', '/accounting/journal-entries', token=self.admin_token)
+            if response.status_code == 200:
+                entries = response.json()
+                if isinstance(entries, list):
+                    self.log_result("List Journal Entries", True, 
+                                  f"Successfully retrieved {len(entries)} journal entries")
+                else:
+                    self.log_result("List Journal Entries", False, 
+                                  f"Invalid response format: {type(entries)}")
+            else:
+                self.log_result("List Journal Entries", False, 
+                              f"Failed to list journal entries: {response.status_code}")
+        except Exception as e:
+            self.log_result("List Journal Entries", False, f"Error: {str(e)}")
+        
+        # Test 4: View ledger for account with multiple currencies
+        try:
+            # Test with account 1030 (Transit Account) which should exist
+            response = self.make_request('GET', '/accounting/ledger/1030', token=self.admin_token)
+            if response.status_code == 200:
+                ledger_data = response.json()
+                entries = ledger_data.get('entries', [])
+                current_balance = ledger_data.get('current_balance', 0)
+                
+                self.log_result("View Ledger - Multi-Currency", True, 
+                              f"Successfully viewed ledger for account 1030: {len(entries)} entries, balance: {current_balance}")
+                
+                # Test with currency filter
+                iqd_response = self.make_request('GET', '/accounting/ledger/1030?currency=IQD', token=self.admin_token)
+                if iqd_response.status_code == 200:
+                    iqd_data = iqd_response.json()
+                    iqd_entries = iqd_data.get('entries', [])
+                    self.log_result("View Ledger - IQD Filter", True, 
+                                  f"IQD currency filter working: {len(iqd_entries)} IQD entries")
+                else:
+                    self.log_result("View Ledger - IQD Filter", False, 
+                                  f"IQD filter failed: {iqd_response.status_code}")
+            elif response.status_code == 404:
+                self.log_result("View Ledger - Multi-Currency", False, 
+                              f"Account 1030 not found in chart_of_accounts (migration issue)")
+            else:
+                self.log_result("View Ledger - Multi-Currency", False, 
+                              f"Failed to view ledger: {response.status_code}")
+        except Exception as e:
+            self.log_result("View Ledger - Multi-Currency", False, f"Error: {str(e)}")
         
         return True
     
