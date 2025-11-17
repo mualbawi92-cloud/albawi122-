@@ -866,7 +866,7 @@ class ChartOfAccountsMigrationTester:
     def print_test_summary(self):
         """Print comprehensive test summary"""
         print("\n" + "=" * 80)
-        print("🚨 UNIFIED LEDGER FILTERING LOGIC TESTING SUMMARY")
+        print("🚨 CHART OF ACCOUNTS MIGRATION VERIFICATION TESTING SUMMARY")
         print("=" * 80)
         
         total_tests = len(self.test_results)
