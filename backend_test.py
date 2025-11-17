@@ -1236,8 +1236,8 @@ class AgentRegistrationAutoCreateTester:
             print("❌ Authentication failed - cannot continue")
             return False
         
-        # Step 2: Run chart of accounts migration tests
-        self.test_chart_of_accounts_migration_comprehensive()
+        # Step 2: Run agent registration auto-create tests
+        self.test_agent_registration_auto_create_comprehensive()
         
         # Step 3: Cleanup
         self.cleanup_test_accounts()
