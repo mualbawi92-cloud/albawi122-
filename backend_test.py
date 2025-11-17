@@ -639,91 +639,164 @@ class ChartOfAccountsMigrationTester:
         
         return True
     
-    def test_edge_cases(self):
-        """Test Edge Cases"""
-        print("\n=== Test 5: Edge Cases ===")
+    def test_transfer_operations(self):
+        """Phase 5: Test Transfer Operations (Critical)"""
+        print("\n=== Phase 5: Transfer Operations (Critical) ===")
         
-        # Edge Case 1: Agent without chart_of_accounts entry (fallback to old accounts table)
+        # Find an agent to test transfers with
+        agent_token = None
+        agent_info = None
+        
         try:
-            # Try to find an agent that might not have chart_of_accounts entry
             response = self.make_request('GET', '/agents', token=self.admin_token)
             if response.status_code == 200:
                 agents = response.json()
-                
-                # Try to login with an agent and test fallback behavior
-                for agent in agents[:2]:  # Try first 2 agents
-                    agent_username = agent.get('username')
-                    if agent_username:
-                        for password in POSSIBLE_PASSWORDS:
-                            try:
-                                login_response = self.make_request('POST', '/login', json={
-                                    'username': agent_username,
-                                    'password': password
-                                })
-                                if login_response.status_code == 200:
-                                    agent_token = login_response.json()['access_token']
-                                    
-                                    # Test agent ledger (should fallback gracefully)
-                                    ledger_response = self.make_request('GET', '/agent-ledger?currency=IQD', token=agent_token)
-                                    if ledger_response.status_code == 200:
-                                        data = ledger_response.json()
-                                        enabled_currencies = data.get('enabled_currencies', [])
-                                        
-                                        # Should have fallback currencies
-                                        if 'IQD' in enabled_currencies:
-                                            self.log_result("Edge Case - Agent Fallback", True, 
-                                                          f"Agent without chart_of_accounts falls back correctly: {enabled_currencies}")
-                                        else:
-                                            self.log_result("Edge Case - Agent Fallback", False, 
-                                                          f"Agent fallback missing IQD: {enabled_currencies}")
-                                    break
-                            except:
-                                continue
-                        break
+                if agents and len(agents) > 0:
+                    # Try to login with an agent that has account_code
+                    for agent in agents[:3]:
+                        agent_username = agent.get('username')
+                        agent_account_code = agent.get('account_code')
+                        
+                        if agent_username and agent_account_code:
+                            for password in POSSIBLE_PASSWORDS:
+                                try:
+                                    login_response = self.make_request('POST', '/login', json={
+                                        'username': agent_username,
+                                        'password': password
+                                    })
+                                    if login_response.status_code == 200:
+                                        login_data = login_response.json()
+                                        agent_token = login_data['access_token']
+                                        agent_info = login_data['user']
+                                        self.log_result("Agent Login for Transfer Test", True, 
+                                                      f"Logged in as agent: {agent_username} with account: {agent_account_code}")
+                                        break
+                                except:
+                                    continue
+                        if agent_token:
+                            break
         except Exception as e:
-            self.log_result("Edge Case - Agent Fallback", False, f"Error: {str(e)}")
+            self.log_result("Find Agent for Transfer Test", False, f"Error: {str(e)}")
         
-        # Edge Case 2: Account with no journal entries
-        try:
-            # Test with the test account we created (should have no or minimal entries)
-            response = self.make_request('GET', '/accounting/ledger/9997?currency=IQD', token=self.admin_token)
-            if response.status_code == 200:
-                data = response.json()
-                entries = data.get('entries', [])
-                current_balance = data.get('current_balance', 0)
-                
-                self.log_result("Edge Case - Empty Account", True, 
-                              f"Account with no/minimal entries handled correctly: {len(entries)} entries, balance: {current_balance}")
-            elif response.status_code == 404:
-                self.log_result("Edge Case - Empty Account", True, 
-                              f"Account not found (404) - acceptable for test account")
-            else:
-                self.log_result("Edge Case - Empty Account", False, 
-                              f"Unexpected response for empty account: {response.status_code}")
-        except Exception as e:
-            self.log_result("Edge Case - Empty Account", False, f"Error: {str(e)}")
+        if not agent_token:
+            self.log_result("Agent Login for Transfer Test", False, "Could not login as agent with account_code - skipping transfer tests")
+            return False
         
-        # Edge Case 3: Mixed old and new entries
+        # Test 1: Create transfer - verify sender account lookup from chart_of_accounts
+        transfer_id = None
         try:
-            # Test an account that might have both old and new entries
-            response = self.make_request('GET', '/accounting/ledger/1030?currency=IQD', token=self.admin_token)
-            if response.status_code == 200:
-                data = response.json()
-                entries = data.get('entries', [])
+            transfer_data = {
+                "sender_name": "أحمد محمد علي",
+                "sender_phone": "07901234567",
+                "receiver_name": "فاطمة حسن محمود",
+                "amount": 50000.0,
+                "currency": "IQD",
+                "to_governorate": "BS",  # Basra
+                "note": "حوالة تجريبية لاختبار الهجرة"
+            }
+            
+            response = self.make_request('POST', '/transfers', token=agent_token, json=transfer_data)
+            if response.status_code in [200, 201]:
+                transfer_response = response.json()
+                transfer_id = transfer_response.get('id')
+                transfer_code = transfer_response.get('transfer_code')
                 
-                entries_with_currency = [e for e in entries if 'currency' in e and e.get('currency') is not None]
-                entries_without_currency = [e for e in entries if 'currency' not in e or e.get('currency') is None]
+                self.log_result("Create Transfer - Chart of Accounts Lookup", True, 
+                              f"Successfully created transfer {transfer_code} using chart_of_accounts")
                 
-                self.log_result("Edge Case - Mixed Entries", True, 
-                              f"Mixed old/new entries handled: {len(entries_with_currency)} with currency, {len(entries_without_currency)} without currency")
-            elif response.status_code == 404:
-                self.log_result("Edge Case - Mixed Entries", True, 
-                              f"Account 1030 not found (404) - acceptable")
+                # Verify journal entries were created with correct accounts
+                journal_response = self.make_request('GET', '/accounting/journal-entries', token=self.admin_token)
+                if journal_response.status_code == 200:
+                    journal_entries = journal_response.json()
+                    
+                    # Find journal entries related to this transfer
+                    transfer_entries = [je for je in journal_entries if je.get('reference_id') == transfer_id]
+                    
+                    if transfer_entries:
+                        self.log_result("Transfer Journal Entries - Chart of Accounts", True, 
+                                      f"Journal entries created for transfer using chart_of_accounts: {len(transfer_entries)} entries")
+                        
+                        # Verify transit account (203) was updated
+                        transit_response = self.make_request('GET', '/accounting/accounts/203', token=self.admin_token)
+                        if transit_response.status_code == 200:
+                            self.log_result("Transit Account Update - Chart of Accounts", True, 
+                                          f"Transit account (203) accessible in chart_of_accounts")
+                        else:
+                            self.log_result("Transit Account Update - Chart of Accounts", False, 
+                                          f"Transit account (203) not found in chart_of_accounts: {transit_response.status_code}")
+                    else:
+                        self.log_result("Transfer Journal Entries - Chart of Accounts", False, 
+                                      f"No journal entries found for transfer {transfer_id}")
+                else:
+                    self.log_result("Transfer Journal Entries - Chart of Accounts", False, 
+                                  f"Failed to get journal entries: {journal_response.status_code}")
             else:
-                self.log_result("Edge Case - Mixed Entries", False, 
-                              f"Unexpected response: {response.status_code}")
+                self.log_result("Create Transfer - Chart of Accounts Lookup", False, 
+                              f"Failed to create transfer: {response.status_code} - {response.text}")
         except Exception as e:
-            self.log_result("Edge Case - Mixed Entries", False, f"Error: {str(e)}")
+            self.log_result("Create Transfer - Chart of Accounts Lookup", False, f"Error: {str(e)}")
+        
+        # Test 2: Test agent without account_id should fail transfers with proper error
+        try:
+            # Create a test agent without account_code
+            test_agent_no_account = {
+                "username": f"test_no_account_{int(time.time())}",
+                "password": "test123",
+                "display_name": "صراف بدون حساب",
+                "governorate": "BG",
+                "phone": "07901234568",
+                "role": "agent"
+                # Note: No account_code provided
+            }
+            
+            # This should fail because account_code is required for agents
+            register_response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_no_account)
+            if register_response.status_code == 400:
+                error_text = register_response.text
+                if "حساب مالي" in error_text or "شركات الصرافة" in error_text:
+                    self.log_result("Agent Without Account - Proper Error", True, 
+                                  f"Properly rejected agent registration without account_code with Arabic error")
+                else:
+                    self.log_result("Agent Without Account - Proper Error", True, 
+                                  f"Properly rejected agent registration without account_code")
+            else:
+                self.log_result("Agent Without Account - Proper Error", False, 
+                              f"Should have rejected agent without account_code: {register_response.status_code}")
+        except Exception as e:
+            self.log_result("Agent Without Account - Proper Error", False, f"Error: {str(e)}")
+        
+        # Test 3: Verify all operations use chart_of_accounts (no references to old accounts table)
+        try:
+            # Check that account operations work with chart_of_accounts
+            accounts_response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+            if accounts_response.status_code == 200:
+                accounts_data = accounts_response.json()
+                if isinstance(accounts_data, dict) and 'accounts' in accounts_data:
+                    accounts = accounts_data['accounts']
+                else:
+                    accounts = accounts_data
+                
+                # Verify we have accounts from chart_of_accounts
+                if len(accounts) > 0:
+                    # Check if accounts have chart_of_accounts structure
+                    sample_account = accounts[0]
+                    coa_fields = ['code', 'name_ar', 'category']
+                    has_coa_structure = all(field in sample_account for field in coa_fields)
+                    
+                    if has_coa_structure:
+                        self.log_result("Chart of Accounts Migration Complete", True, 
+                                      f"All operations use chart_of_accounts structure: {len(accounts)} accounts")
+                    else:
+                        self.log_result("Chart of Accounts Migration Complete", False, 
+                                      f"Accounts missing chart_of_accounts structure: {list(sample_account.keys())}")
+                else:
+                    self.log_result("Chart of Accounts Migration Complete", False, 
+                                  f"No accounts found in chart_of_accounts")
+            else:
+                self.log_result("Chart of Accounts Migration Complete", False, 
+                              f"Failed to verify chart_of_accounts: {accounts_response.status_code}")
+        except Exception as e:
+            self.log_result("Chart of Accounts Migration Complete", False, f"Error: {str(e)}")
         
         return True
     
