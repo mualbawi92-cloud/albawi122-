@@ -1351,15 +1351,102 @@ frontend:
           
           Ready for frontend testing to verify agent can print receipts from wallet page.
 
+  - task: "Complete migration to chart_of_accounts and cleanup old data"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py, scripts/complete_cleanup_and_migration.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **COMPLETE MIGRATION TO CHART_OF_ACCOUNTS IMPLEMENTED**
+          
+          **User Request:**
+          حذف الحسابات القديمة المسجلة خارج دليل الحسابات والاعتماد على الدليل المحاسبي فقط
+          
+          **Implementation Summary:**
+          
+          1. **Created Comprehensive Cleanup Script** (scripts/complete_cleanup_and_migration.py):
+             - Deletes all entries from old 'accounts' collection
+             - Removes agents not linked to chart_of_accounts
+             - Validates all agent-account linkages
+             - Checks journal entries for invalid account references
+             - Provides detailed Arabic report of all changes
+          
+          2. **Updated All Backend Endpoints to Use chart_of_accounts:**
+             
+             **Modified Endpoints:**
+             - DELETE /api/accounting/accounts/{account_code}
+               * Changed: db.accounts → db.chart_of_accounts (3 occurrences)
+             
+             - POST /api/transfers (cancel transfer journal entry)
+               * Enhanced agent account lookup with fallback
+               * Changed: db.accounts → db.chart_of_accounts
+             
+             - POST /api/accounting/journal-entries
+               * Account validation: db.accounts → db.chart_of_accounts
+               * Balance updates: db.accounts → db.chart_of_accounts
+               * Updated error messages to mention "الدليل المحاسبي"
+             
+             - PUT /api/accounting/journal-entries/{entry_id}
+               * Reverse balance effects: db.accounts → db.chart_of_accounts (2 sections)
+               * Apply new effects: db.accounts → db.chart_of_accounts
+               * Updated all comments to clarify chart_of_accounts usage
+             
+             - DELETE /api/accounting/journal-entries/{entry_id}/cancel
+               * Balance reversal: db.accounts → db.chart_of_accounts
+             
+             - GET /api/agent-ledger
+               * Enhanced account lookup logic
+               * Removed fallback to old accounts table
+               * Uses account_id from user record first
+               * Falls back to agent_id search in chart_of_accounts
+          
+          3. **Database Indexes Update:**
+             - Commented out old accounts table indexes
+             - System now only maintains chart_of_accounts indexes
+          
+          **Script Execution Results:**
+          - Old accounts collection: Already empty (0 entries)
+          - Chart of accounts: 7 valid accounts
+          - No agents or data to clean (fresh database state)
+          - All system checks passed
+          
+          **Code Changes Summary:**
+          - Total db.accounts references replaced: 15+
+          - All journal entry operations now use chart_of_accounts
+          - All account validation now checks chart_of_accounts
+          - All balance updates now modify chart_of_accounts
+          - Agent account lookup enhanced with proper fallback chain
+          
+          **Benefits:**
+          - ✅ Single source of truth for accounts (chart_of_accounts only)
+          - ✅ All agents must be linked to valid COA accounts
+          - ✅ Prevents orphaned accounts and data inconsistency
+          - ✅ Cleaner data model and easier maintenance
+          - ✅ Better Arabic error messages referencing "الدليل المحاسبي"
+          
+          **Important Notes:**
+          - System now ONLY uses chart_of_accounts for all operations
+          - Agents without valid account_id in chart_of_accounts cannot perform transfers
+          - All financial operations enforce COA linkage
+          - Old accounts table is completely deprecated
+          
+          Ready for comprehensive backend testing to verify all journal entry and ledger operations work correctly with chart_of_accounts.
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Automated backup system with browser auto-download"
+    - "Complete migration to chart_of_accounts"
+    - "Agent-COA linkage verification"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
