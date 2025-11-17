@@ -937,7 +937,7 @@ class ChartOfAccountsMigrationTester:
 
 def main():
     """Main execution function"""
-    tester = UnifiedLedgerFilteringTester()
+    tester = ChartOfAccountsMigrationTester()
     
     try:
         success = tester.run_all_tests()
