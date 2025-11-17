@@ -283,7 +283,101 @@ class AgentRegistrationAutoCreateTester:
         
         return True
     
-    # Removed old test methods - replaced with unified ledger filtering tests
+    def test_manual_account_selection(self):
+        """Phase 2: Manual Account Selection (account_code provided)"""
+        print("\n=== Phase 2: Manual Account Selection (account_code provided) ===")
+        
+        # Test 1: First, create an available account manually
+        manual_account_code = "2999"
+        try:
+            manual_account = {
+                "code": manual_account_code,
+                "name_ar": "صيرفة الاختبار اليدوي",
+                "name_en": "Manual Test Exchange",
+                "category": "شركات الصرافة",
+                "currencies": ["IQD", "USD"]
+            }
+            
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=manual_account)
+            if response.status_code in [200, 201]:
+                self.test_account_codes.append(manual_account_code)
+                self.log_result("Manual Account Creation", True, 
+                              f"Successfully created manual account {manual_account_code}")
+            elif response.status_code == 400 and "already exists" in response.text:
+                self.log_result("Manual Account Creation", True, 
+                              f"Account {manual_account_code} already exists (acceptable)")
+            else:
+                self.log_result("Manual Account Creation", False, 
+                              f"Failed to create manual account: {response.status_code} - {response.text}")
+                return False
+        except Exception as e:
+            self.log_result("Manual Account Creation", False, f"Error: {str(e)}")
+            return False
+        
+        # Test 2: POST /api/register - Register agent WITH account_code
+        test_agent_username = f"test_agent_manual_{int(time.time())}"
+        test_agent_data = {
+            "username": test_agent_username,
+            "password": "test123",
+            "display_name": "صيرفة الاختبار اليدوي",
+            "phone": "07709876543",
+            "governorate": "BS",  # Basra
+            "role": "agent",
+            "account_code": manual_account_code,  # Provide existing account code
+            "wallet_limit_iqd": 5000000,
+            "wallet_limit_usd": 10000
+        }
+        
+        created_agent_id = None
+        
+        try:
+            response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
+            if response.status_code in [200, 201]:
+                agent_data = response.json()
+                created_agent_id = agent_data.get('id')
+                returned_account_code = agent_data.get('account_code')
+                
+                if returned_account_code == manual_account_code:
+                    self.log_result("Manual Account Agent Registration", True, 
+                                  f"Agent created successfully using existing account: {manual_account_code}")
+                else:
+                    self.log_result("Manual Account Agent Registration", False, 
+                                  f"Agent account_code mismatch: expected {manual_account_code}, got {returned_account_code}")
+            else:
+                self.log_result("Manual Account Agent Registration", False, 
+                              f"Failed to register agent with manual account: {response.status_code} - {response.text}")
+                return False
+        except Exception as e:
+            self.log_result("Manual Account Agent Registration", False, f"Error: {str(e)}")
+            return False
+        
+        # Test 3: Verify account is now linked to agent
+        try:
+            response = self.make_request('GET', f'/accounting/accounts/{manual_account_code}', token=self.admin_token)
+            if response.status_code == 200:
+                account_data = response.json()
+                
+                if account_data.get('agent_id') == created_agent_id:
+                    self.log_result("Manual Account Agent Linkage", True, 
+                                  f"Account {manual_account_code} correctly linked to agent")
+                    
+                    # Verify agent_name field is set
+                    if account_data.get('agent_name'):
+                        self.log_result("Manual Account Agent Name", True, 
+                                      f"Account has agent_name: {account_data.get('agent_name')}")
+                    else:
+                        self.log_result("Manual Account Agent Name", False, 
+                                      f"Account missing agent_name field")
+                else:
+                    self.log_result("Manual Account Agent Linkage", False, 
+                                  f"Account not linked to agent: expected {created_agent_id}, got {account_data.get('agent_id')}")
+            else:
+                self.log_result("Manual Account Agent Linkage", False, 
+                              f"Failed to verify account linkage: {response.status_code}")
+        except Exception as e:
+            self.log_result("Manual Account Agent Linkage", False, f"Error: {str(e)}")
+        
+        return True
     
     def test_agent_registration_and_linking(self):
         """Phase 2: Test Agent Registration and Linking to Chart of Accounts"""
