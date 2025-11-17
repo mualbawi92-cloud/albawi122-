@@ -918,20 +918,20 @@ class ChartOfAccountsMigrationTester:
         critical_failures = [r for r in self.test_results if not r['success'] and ('CRITICAL' in r['message'] or 'Currency' in r['test'])]
         
         if failed_tests == 0:
-            print("🎉 ALL TESTS PASSED - UNIFIED LEDGER FILTERING LOGIC IS FULLY FUNCTIONAL!")
-            print("✅ Admin ledger handles currency fallback for old entries correctly")
-            print("✅ Agent ledger integrates with chart_of_accounts properly")
-            print("✅ Currency filtering is consistent between admin and agent endpoints")
-            print("✅ Old data without currency field defaults to IQD correctly")
-            print("✅ Edge cases are handled gracefully with proper fallbacks")
-            print("✅ Both endpoints use chart_of_accounts as primary data source")
+            print("🎉 ALL TESTS PASSED - CHART OF ACCOUNTS MIGRATION IS FULLY FUNCTIONAL!")
+            print("✅ All Chart of Accounts CRUD operations use chart_of_accounts collection")
+            print("✅ Agent registration properly links to chart_of_accounts")
+            print("✅ Journal entry operations use chart_of_accounts for validation and balance updates")
+            print("✅ Agent ledger operations fetch accounts from chart_of_accounts")
+            print("✅ Transfer operations use chart_of_accounts for account lookup and journal entries")
+            print("✅ No references to old accounts table - migration complete")
         elif critical_failures:
-            print("🚨 CRITICAL ISSUES FOUND - UNIFIED LEDGER FILTERING MAY HAVE FAILED!")
+            print("🚨 CRITICAL ISSUES FOUND - CHART OF ACCOUNTS MIGRATION MAY HAVE FAILED!")
             for failure in critical_failures:
                 print(f"   ❌ {failure['test']}: {failure['message']}")
         else:
             print("⚠️  SOME TESTS FAILED - REVIEW ISSUES ABOVE")
-            print("Unified ledger filtering logic may be partially working")
+            print("Chart of accounts migration may be partially complete")
         
         print("=" * 80)
 
