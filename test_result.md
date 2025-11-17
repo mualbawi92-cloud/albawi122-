@@ -134,7 +134,7 @@ user_problem_statement: |
 backend:
   - task: "Fix Chart of Accounts endpoints to use chart_of_accounts collection"
     implemented: true
-    working: false
+    working: true
     file: "backend/server.py"
     stuck_count: 1
     priority: "high"
