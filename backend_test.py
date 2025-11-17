@@ -800,32 +800,32 @@ class ChartOfAccountsMigrationTester:
         
         return True
     
-    def test_unified_ledger_filtering_comprehensive(self):
-        """Run comprehensive unified ledger filtering tests"""
-        print("\n🚨 UNIFIED LEDGER FILTERING LOGIC COMPREHENSIVE TESTING")
+    def test_chart_of_accounts_migration_comprehensive(self):
+        """Run comprehensive chart of accounts migration tests"""
+        print("\n🚨 CHART OF ACCOUNTS MIGRATION VERIFICATION COMPREHENSIVE TESTING")
         print("=" * 80)
-        print("Testing unified ledger filtering logic between Admin and Agent with fallback for old entries")
+        print("Testing that all endpoints now use chart_of_accounts instead of old accounts collection")
         print("=" * 80)
         
-        # Test 1: Admin Ledger Currency Fallback
-        print("\n--- TEST 1: ADMIN LEDGER CURRENCY FALLBACK ---")
-        self.test_admin_ledger_currency_fallback()
+        # Phase 1: Chart of Accounts Operations
+        print("\n--- PHASE 1: CHART OF ACCOUNTS OPERATIONS ---")
+        self.test_chart_of_accounts_operations()
         
-        # Test 2: Agent Ledger chart_of_accounts Integration
-        print("\n--- TEST 2: AGENT LEDGER CHART_OF_ACCOUNTS INTEGRATION ---")
-        self.test_agent_ledger_chart_of_accounts_integration()
+        # Phase 2: Agent Registration and Linking
+        print("\n--- PHASE 2: AGENT REGISTRATION AND LINKING ---")
+        self.test_agent_registration_and_linking()
         
-        # Test 3: Currency Filtering Consistency
-        print("\n--- TEST 3: CURRENCY FILTERING CONSISTENCY ---")
-        self.test_currency_filtering_consistency()
+        # Phase 3: Journal Entry Operations
+        print("\n--- PHASE 3: JOURNAL ENTRY OPERATIONS ---")
+        self.test_journal_entry_operations()
         
-        # Test 4: Old Data Handling
-        print("\n--- TEST 4: OLD DATA HANDLING ---")
-        self.test_old_data_handling()
+        # Phase 4: Agent Ledger Operations
+        print("\n--- PHASE 4: AGENT LEDGER OPERATIONS ---")
+        self.test_agent_ledger_operations()
         
-        # Test 5: Edge Cases
-        print("\n--- TEST 5: EDGE CASES ---")
-        self.test_edge_cases()
+        # Phase 5: Transfer Operations (Critical)
+        print("\n--- PHASE 5: TRANSFER OPERATIONS (CRITICAL) ---")
+        self.test_transfer_operations()
         
         return True
     
