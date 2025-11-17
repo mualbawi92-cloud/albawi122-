@@ -138,10 +138,19 @@ const EditAgentPage = () => {
 
   const fetchAgent = async () => {
     try {
-      const response = await axios.get(`${API}/agents`);
+      // إضافة Authorization header
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/agents`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      console.log('📋 All agents:', response.data);
       const foundAgent = response.data.find(a => a.id === id);
       
       if (foundAgent) {
+        console.log('✅ Found agent:', foundAgent);
+        console.log('📌 Agent account_id:', foundAgent.account_id);
+        
         setAgent(foundAgent);
         setFormData({
           display_name: foundAgent.display_name,
@@ -154,6 +163,8 @@ const EditAgentPage = () => {
           new_password: '',
           confirm_password: ''
         });
+        
+        console.log('📝 Form data set with account_id:', foundAgent.account_id);
       } else {
         toast.error('الصراف غير موجود');
         navigate('/agents');
@@ -161,7 +172,7 @@ const EditAgentPage = () => {
       
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching agent:', error);
+      console.error('❌ Error fetching agent:', error);
       toast.error('خطأ في تحميل بيانات الصراف');
       navigate('/agents');
     }
