@@ -1,47 +1,69 @@
 #!/usr/bin/env python3
 """
-🚨 UNIFIED LEDGER FILTERING LOGIC TESTING - ADMIN AND AGENT WITH FALLBACK FOR OLD ENTRIES
+🚨 CHART OF ACCOUNTS MIGRATION VERIFICATION TESTING
 
-**Test Objective:** Verify unified ledger filtering logic between Admin and Agent with fallback for old entries
+**Test Objective:** Verify that all endpoints now use chart_of_accounts instead of old accounts collection
 
-**Critical Tests:**
+**Critical Changes Made:**
+1. All journal entry operations now use chart_of_accounts
+2. Agent account lookup enhanced with fallback mechanism
+3. All account validation checks chart_of_accounts
+4. Balance updates now modify chart_of_accounts only
 
-1. **Admin Ledger - Currency Fallback:**
-   - GET /api/accounting/ledger/{account_code}?currency=IQD
-   - Verify entries without currency field are treated as IQD
-   - Verify running balance calculation is correct
-   - Check that all old entries (currency=null) appear when filtering by IQD
+**Testing Requirements:**
 
-2. **Agent Ledger - chart_of_accounts Integration:**
-   - Login as agent
-   - GET /api/agent-ledger?currency=IQD
-   - Verify agent's account is fetched from chart_of_accounts
-   - Verify journal entries are filtered by currency
-   - Verify fallback to IQD for entries without currency
-   - Check enabled_currencies returned correctly
+**Phase 1: Chart of Accounts Operations**
+1. GET /api/accounting/accounts - List all accounts from chart_of_accounts
+2. POST /api/accounting/accounts - Create new account in chart_of_accounts
+3. GET /api/accounting/accounts/{code} - Get specific account
+4. DELETE /api/accounting/accounts/{code} - Delete account (should work with chart_of_accounts)
 
-3. **Currency Filtering Consistency:**
-   - Test same account with admin and agent endpoints
-   - Compare results for same currency filter
-   - Verify entry counts match
-   - Verify balances match
+**Phase 2: Agent Registration and Linking**
+1. POST /api/register - Register new agent
+   - Verify account automatically created in chart_of_accounts
+   - Verify agent.account_id is set correctly
+   - Verify account code follows pattern (2001, 2002, etc.)
+2. GET /api/agents - Verify agent has account_id
 
-4. **Old Data Handling:**
-   - Create a test journal entry without currency field
-   - Verify it appears when filtering by IQD
-   - Verify it doesn't appear when filtering by USD
-   - Check fallback behavior
+**Phase 3: Journal Entry Operations**
+1. POST /api/accounting/journal-entries - Create manual journal entry
+   - Test with valid account codes from chart_of_accounts
+   - Test with invalid account code (should fail with proper error)
+   - Verify balance updates in chart_of_accounts
+2. GET /api/accounting/journal-entries - List entries
+3. GET /api/accounting/ledger/{account_code} - View ledger
+   - Test with multiple currencies
+   - Verify balance calculation
+4. PUT /api/accounting/journal-entries/{id} - Update entry
+   - Verify old balances reversed correctly
+   - Verify new balances applied correctly
+5. DELETE /api/accounting/journal-entries/{id}/cancel - Cancel entry
+   - Verify balance reversal in chart_of_accounts
 
-5. **Edge Cases:**
-   - Agent without chart_of_accounts entry (fallback to old accounts table)
-   - Account with no journal entries
-   - Mixed old and new entries
+**Phase 4: Agent Ledger**
+1. GET /api/agent-ledger - Agent views own ledger
+   - Verify uses account_id from user record
+   - Verify fallback to agent_id search works
+   - Verify enabled_currencies returned correctly
+   - Test with currency filter
 
-**Expected Behavior:**
-- Both admin and agent ledgers use chart_of_accounts
-- Entries without currency default to IQD
-- Currency filtering works consistently for both endpoints
-- All old entries visible when appropriate currency selected
+**Phase 5: Transfer Operations (Critical)**
+1. POST /api/transfers - Create transfer
+   - Verify sender account lookup from chart_of_accounts
+   - Verify journal entries created with correct accounts
+   - Verify transit account (203) updated
+2. POST /api/transfers/{id}/receive - Receive transfer
+   - Verify receiver account lookup from chart_of_accounts
+   - Verify journal entries use COA accounts
+3. DELETE /api/transfers/{id}/cancel - Cancel transfer
+   - Verify reversal journal entry uses chart_of_accounts
+
+**Expected Behaviors:**
+- All operations should succeed with chart_of_accounts
+- No references to old accounts table
+- Proper Arabic error messages mentioning "الدليل المحاسبي"
+- All balances updated in chart_of_accounts only
+- Agent without account_id should fail transfers with proper error
 
 **Admin Credentials:**
 username: admin
