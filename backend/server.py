@@ -957,7 +957,8 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
         'governorate': user_data.governorate,
         'phone': user_data.phone,
         'address': user_data.address,
-        'account_code': user_data.account_code if user_data.role == 'agent' else None,
+        'account_code': actual_account_code if user_data.role == 'agent' else None,
+        'account_id': actual_account_code if user_data.role == 'agent' else None,  # Also set account_id for consistency
         'is_active': True,
         'wallet_balance_iqd': 0.0,
         'wallet_balance_usd': 0.0,
@@ -970,9 +971,9 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
     await log_audit(None, current_user['id'], 'user_created', {'new_user_id': user_id})
     
     # Update the account with agent_id for reference
-    if user_data.role == 'agent' and user_data.account_code:
+    if user_data.role == 'agent' and actual_account_code:
         await db.chart_of_accounts.update_one(
-            {'code': user_data.account_code},
+            {'code': actual_account_code},
             {
                 '$set': {
                     'agent_id': user_id,
@@ -981,7 +982,7 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
                 }
             }
         )
-        logger.info(f"Linked account {user_data.account_code} to agent {user_data.display_name}")
+        logger.info(f"✅ Linked account {actual_account_code} to agent {user_data.display_name}")
     
     user_doc.pop('_id', None)
     user_doc.pop('password_hash', None)
