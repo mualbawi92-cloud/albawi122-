@@ -1,69 +1,50 @@
 #!/usr/bin/env python3
 """
-🚨 CHART OF ACCOUNTS MIGRATION VERIFICATION TESTING
+🚨 AGENT REGISTRATION AUTO-CREATE CHART OF ACCOUNTS TESTING
 
-**Test Objective:** Verify that all endpoints now use chart_of_accounts instead of old accounts collection
+**Test Objective:** Comprehensive testing of agent registration with automatic chart of accounts creation
 
-**Critical Changes Made:**
-1. All journal entry operations now use chart_of_accounts
-2. Agent account lookup enhanced with fallback mechanism
-3. All account validation checks chart_of_accounts
-4. Balance updates now modify chart_of_accounts only
+**Review Request Focus:**
+Testing the enhanced agent registration system that automatically creates accounts in chart_of_accounts
+when no account_code is provided, and validates existing accounts when account_code is provided.
 
 **Testing Requirements:**
 
-**Phase 1: Chart of Accounts Operations**
-1. GET /api/accounting/accounts - List all accounts from chart_of_accounts
-2. POST /api/accounting/accounts - Create new account in chart_of_accounts
-3. GET /api/accounting/accounts/{code} - Get specific account
-4. DELETE /api/accounting/accounts/{code} - Delete account (should work with chart_of_accounts)
+**Phase 1: Auto-Create Account (No account_code provided)**
+1. POST /api/register - Register new agent WITHOUT account_code
+   - Agent created successfully
+   - New account automatically created in chart_of_accounts
+   - Account code follows pattern (e.g., 2001, 2002, etc.)
+   - Account name: "صيرفة [display_name] - [governorate]"
+   - agent.account_code and agent.account_id set correctly
+   - account.agent_id links back to agent
 
-**Phase 2: Agent Registration and Linking**
-1. POST /api/register - Register new agent
-   - Verify account automatically created in chart_of_accounts
-   - Verify agent.account_id is set correctly
-   - Verify account code follows pattern (2001, 2002, etc.)
-2. GET /api/agents - Verify agent has account_id
+2. GET /api/agents - Verify agent appears with account_code
+3. GET /api/accounting/accounts - Verify new account created
+4. GET /api/accounting/accounts/{code} - Get the new account details
 
-**Phase 3: Journal Entry Operations**
-1. POST /api/accounting/journal-entries - Create manual journal entry
-   - Test with valid account codes from chart_of_accounts
-   - Test with invalid account code (should fail with proper error)
-   - Verify balance updates in chart_of_accounts
-2. GET /api/accounting/journal-entries - List entries
-3. GET /api/accounting/ledger/{account_code} - View ledger
-   - Test with multiple currencies
-   - Verify balance calculation
-4. PUT /api/accounting/journal-entries/{id} - Update entry
-   - Verify old balances reversed correctly
-   - Verify new balances applied correctly
-5. DELETE /api/accounting/journal-entries/{id}/cancel - Cancel entry
-   - Verify balance reversal in chart_of_accounts
+**Phase 2: Manual Account Selection (account_code provided)**
+1. Create an available account manually
+2. POST /api/register - Register agent WITH account_code
+   - Agent created successfully
+   - Uses existing account (no new account created)
+   - agent.account_code matches provided code
+   - account.agent_id links to agent
 
-**Phase 4: Agent Ledger**
-1. GET /api/agent-ledger - Agent views own ledger
-   - Verify uses account_id from user record
-   - Verify fallback to agent_id search works
-   - Verify enabled_currencies returned correctly
-   - Test with currency filter
+**Phase 3: Validation Tests**
+1. Try to register agent with invalid account_code (doesn't exist)
+2. Try to register agent with account from wrong category
+3. Try to register agent with account already linked
 
-**Phase 5: Transfer Operations (Critical)**
-1. POST /api/transfers - Create transfer
-   - Verify sender account lookup from chart_of_accounts
-   - Verify journal entries created with correct accounts
-   - Verify transit account (203) updated
-2. POST /api/transfers/{id}/receive - Receive transfer
-   - Verify receiver account lookup from chart_of_accounts
-   - Verify journal entries use COA accounts
-3. DELETE /api/transfers/{id}/cancel - Cancel transfer
-   - Verify reversal journal entry uses chart_of_accounts
+**Phase 4: Sequential Code Generation**
+1. Register multiple agents without account_code
+2. Verify account codes are sequential
 
-**Expected Behaviors:**
-- All operations should succeed with chart_of_accounts
-- No references to old accounts table
-- Proper Arabic error messages mentioning "الدليل المحاسبي"
-- All balances updated in chart_of_accounts only
-- Agent without account_id should fail transfers with proper error
+**Phase 5: Account Details Verification**
+- Verify name format: "صيرفة {display_name} - {governorate_name}"
+- Verify governorate mapping (BG → بغداد, BS → البصرة, etc.)
+- Verify default currencies: ['IQD', 'USD']
+- Verify initial balances: 0.0
 
 **Admin Credentials:**
 username: admin
