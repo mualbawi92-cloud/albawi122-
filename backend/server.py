@@ -866,42 +866,84 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
     if not user_data.phone:
         raise HTTPException(status_code=400, detail="رقم الهاتف مطلوب")
     
-    # For agents, account_code is required
-    if user_data.role == 'agent' and not user_data.account_code:
-        raise HTTPException(
-            status_code=400, 
-            detail="⚠️ يجب اختيار حساب مالي من قسم شركات الصرافة قبل حفظ الصراف"
-        )
-    
     # Check if username exists
     existing = await db.users.find_one({'username': user_data.username})
     if existing:
         raise HTTPException(status_code=400, detail=f"اسم المستخدم '{user_data.username}' موجود مسبقاً")
     
-    # For agents, validate account_code
+    # For agents: handle account_code (manual selection or auto-creation)
+    actual_account_code = None
+    
     if user_data.role == 'agent':
-        # Check if account exists in chart_of_accounts
-        account = await db.chart_of_accounts.find_one({'code': user_data.account_code})
-        if not account:
-            raise HTTPException(status_code=404, detail=f"الحساب {user_data.account_code} غير موجود")
-        
-        # Check if account is in "شركات الصرافة" category
-        if account.get('category') != 'شركات الصرافة':
-            raise HTTPException(
-                status_code=400,
-                detail="الحساب المختار يجب أن يكون من قسم شركات الصرافة"
+        if user_data.account_code:
+            # Manual selection: validate the provided account_code
+            account = await db.chart_of_accounts.find_one({'code': user_data.account_code})
+            if not account:
+                raise HTTPException(status_code=404, detail=f"الحساب {user_data.account_code} غير موجود")
+            
+            # Check if account is in "شركات الصرافة" category
+            if account.get('category') != 'شركات الصرافة':
+                raise HTTPException(
+                    status_code=400,
+                    detail="الحساب المختار يجب أن يكون من قسم شركات الصرافة"
+                )
+            
+            # Check if account is already linked to another agent (1:1 relationship)
+            existing_agent = await db.users.find_one({
+                'account_code': user_data.account_code,
+                'role': 'agent'
+            })
+            if existing_agent:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"الحساب {user_data.account_code} مرتبط بالفعل بصراف آخر: {existing_agent.get('display_name')}"
+                )
+            
+            actual_account_code = user_data.account_code
+            logger.info(f"Agent will use manually selected account: {actual_account_code}")
+        else:
+            # Auto-creation: create new account in chart_of_accounts
+            # Get highest account code in "شركات الصرافة" category
+            last_account = await db.chart_of_accounts.find_one(
+                {'category': 'شركات الصرافة'},
+                sort=[('code', -1)]
             )
-        
-        # Check if account is already linked to another agent (1:1 relationship)
-        existing_agent = await db.users.find_one({
-            'account_code': user_data.account_code,
-            'role': 'agent'
-        })
-        if existing_agent:
-            raise HTTPException(
-                status_code=400,
-                detail=f"الحساب {user_data.account_code} مرتبط بالفعل بصراف آخر: {existing_agent.get('display_name')}"
-            )
+            
+            # Generate next sequential code
+            if last_account and last_account.get('code'):
+                try:
+                    last_code = int(last_account['code'])
+                    if last_code >= 2000:
+                        next_code = last_code + 1
+                    else:
+                        next_code = 2001
+                except:
+                    next_code = 2001
+            else:
+                next_code = 2001
+            
+            actual_account_code = str(next_code)
+            governorate_name = GOVERNORATE_CODE_TO_NAME.get(user_data.governorate, user_data.governorate)
+            
+            # Create new account in chart_of_accounts
+            new_account = {
+                'code': actual_account_code,
+                'name': f"صيرفة {user_data.display_name} - {governorate_name}",
+                'name_ar': f"صيرفة {user_data.display_name} - {governorate_name}",
+                'name_en': f"Exchange {user_data.display_name} - {governorate_name}",
+                'category': 'شركات الصرافة',
+                'type': 'شركات الصرافة',
+                'balance': 0.0,
+                'balance_iqd': 0.0,
+                'balance_usd': 0.0,
+                'currencies': ['IQD', 'USD'],
+                'is_active': True,
+                'created_at': datetime.now(timezone.utc).isoformat(),
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }
+            
+            await db.chart_of_accounts.insert_one(new_account)
+            logger.info(f"✅ Auto-created account {actual_account_code} for agent {user_data.display_name}")
     
     user_id = str(uuid.uuid4())
     password_hash = bcrypt.hashpw(user_data.password.encode(), bcrypt.gensalt()).decode()
