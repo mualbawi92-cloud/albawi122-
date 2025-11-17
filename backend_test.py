@@ -1227,8 +1227,8 @@ class AgentRegistrationAutoCreateTester:
                 self.log_result("Cleanup", False, f"Error cleaning up {account_code}: {str(e)}")
     
     def run_all_tests(self):
-        """Run all Chart of Accounts Migration tests"""
-        print("🚨 STARTING CHART OF ACCOUNTS MIGRATION VERIFICATION TESTING")
+        """Run all Agent Registration Auto-Create tests"""
+        print("🚨 STARTING AGENT REGISTRATION AUTO-CREATE CHART OF ACCOUNTS TESTING")
         print("=" * 80)
         
         # Step 1: Authentication
