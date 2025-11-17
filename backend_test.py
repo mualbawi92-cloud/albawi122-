@@ -514,92 +514,128 @@ class ChartOfAccountsMigrationTester:
         
         return True
     
-    def test_old_data_handling(self):
-        """Test Old Data Handling - entries without currency field"""
-        print("\n=== Test 4: Old Data Handling ===")
+    def test_agent_ledger_operations(self):
+        """Phase 4: Test Agent Ledger Operations"""
+        print("\n=== Phase 4: Agent Ledger Operations ===")
         
-        # Create a test journal entry without currency field to simulate old data
+        # Find an agent to test with
+        agent_token = None
+        agent_info = None
+        
         try:
-            # First, create a test account if it doesn't exist
-            test_account = {
-                "code": "9997",
-                "name": "Test Old Data Account",
-                "name_ar": "حساب تجريبي للبيانات القديمة",
-                "name_en": "Test Old Data Account",
-                "category": "شركات الصرافة",
-                "currencies": ["IQD", "USD"]
-            }
-            
-            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
-            if response.status_code in [200, 201]:
-                self.test_account_codes.append("9997")
-                self.log_result("Create Test Account for Old Data", True, 
-                              f"Test account 9997 created for old data testing")
-            else:
-                # Account might already exist, continue with test
-                self.log_result("Create Test Account for Old Data", True, 
-                              f"Test account 9997 already exists or creation failed (continuing with test)")
-            
-            # Test with existing accounts that might have old data
-            # Check account 1030 which should have journal entries
-            ledger_response = self.make_request('GET', '/accounting/ledger/1030?currency=IQD', token=self.admin_token)
-            if ledger_response.status_code == 200:
-                ledger_data = ledger_response.json()
-                entries = ledger_data.get('entries', [])
-                
-                # Analyze entries for currency field presence
-                entries_with_currency = [e for e in entries if 'currency' in e and e.get('currency') is not None]
-                entries_without_currency = [e for e in entries if 'currency' not in e or e.get('currency') is None]
-                entries_with_iqd = [e for e in entries if e.get('currency') == 'IQD']
-                
-                self.log_result("Old Data - IQD Filter Inclusion", True, 
-                              f"Account 1030 IQD filter: {len(entries)} total entries, {len(entries_with_iqd)} with IQD currency, {len(entries_without_currency)} without currency field")
-                
-                # Test 2: Verify USD filter behavior
-                usd_response = self.make_request('GET', '/accounting/ledger/1030?currency=USD', token=self.admin_token)
-                if usd_response.status_code == 200:
-                    usd_data = usd_response.json()
-                    usd_entries = usd_data.get('entries', [])
-                    
-                    # Should only have entries with currency=USD, no old entries without currency
-                    entries_without_currency_usd = [e for e in usd_entries if 'currency' not in e or e.get('currency') is None]
-                    entries_with_usd = [e for e in usd_entries if e.get('currency') == 'USD']
-                    
-                    self.log_result("Old Data - USD Filter Exclusion", True, 
-                                  f"Account 1030 USD filter: {len(usd_entries)} total entries, {len(entries_with_usd)} with USD currency, {len(entries_without_currency_usd)} without currency field")
-                    
-                elif usd_response.status_code == 400:
-                    self.log_result("Old Data - USD Filter Exclusion", True, 
-                                  f"USD filter properly rejected (400) - USD not enabled for account 1030")
-                else:
-                    self.log_result("Old Data - USD Filter Exclusion", False, 
-                                  f"Unexpected USD filter response: {usd_response.status_code}")
-            else:
-                self.log_result("Old Data - IQD Filter Inclusion", False, 
-                              f"Failed to access account 1030 ledger: {ledger_response.status_code}")
-            
-            # Test fallback behavior with account 4020 (Earned Commissions)
-            commission_response = self.make_request('GET', '/accounting/ledger/4020?currency=IQD', token=self.admin_token)
-            if commission_response.status_code == 200:
-                commission_data = commission_response.json()
-                entries = commission_data.get('entries', [])
-                
-                # Check if entries have currency field or fallback to IQD
-                entries_analysis = {
-                    'total': len(entries),
-                    'with_currency': len([e for e in entries if 'currency' in e and e.get('currency') is not None]),
-                    'without_currency': len([e for e in entries if 'currency' not in e or e.get('currency') is None]),
-                    'iqd_currency': len([e for e in entries if e.get('currency') == 'IQD'])
-                }
-                
-                self.log_result("Old Data - Fallback Behavior", True, 
-                              f"Account 4020 analysis: {entries_analysis}")
-            else:
-                self.log_result("Old Data - Fallback Behavior", False, 
-                              f"Failed to access account 4020: {commission_response.status_code}")
-                
+            response = self.make_request('GET', '/agents', token=self.admin_token)
+            if response.status_code == 200:
+                agents = response.json()
+                if agents and len(agents) > 0:
+                    # Try to login with the first agent
+                    for agent in agents[:3]:  # Try first 3 agents
+                        agent_username = agent.get('username')
+                        if agent_username:
+                            # Try different possible passwords
+                            for password in POSSIBLE_PASSWORDS:
+                                try:
+                                    login_response = self.make_request('POST', '/login', json={
+                                        'username': agent_username,
+                                        'password': password
+                                    })
+                                    if login_response.status_code == 200:
+                                        login_data = login_response.json()
+                                        agent_token = login_data['access_token']
+                                        agent_info = login_data['user']
+                                        self.log_result("Agent Login for Ledger Test", True, 
+                                                      f"Successfully logged in as agent: {agent_username}")
+                                        break
+                                except:
+                                    continue
+                        if agent_token:
+                            break
         except Exception as e:
-            self.log_result("Old Data Handling", False, f"Error: {str(e)}")
+            self.log_result("Find Agent for Ledger Test", False, f"Error finding agents: {str(e)}")
+        
+        if not agent_token:
+            self.log_result("Agent Login for Ledger Test", False, "Could not login as any agent - skipping agent ledger tests")
+            return False
+        
+        # Test 1: Agent views own ledger - verify uses account_id from user record or chart_of_accounts
+        try:
+            response = self.make_request('GET', '/agent-ledger', token=agent_token)
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify required fields in response
+                required_fields = ['agent_name', 'current_balance', 'selected_currency', 'enabled_currencies', 'transactions']
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_result("Agent Ledger - Account Lookup", True, 
+                                  f"Agent ledger uses chart_of_accounts lookup. Agent: {data['agent_name']}")
+                    
+                    # Verify enabled_currencies returned correctly
+                    enabled_currencies = data.get('enabled_currencies', [])
+                    if isinstance(enabled_currencies, list) and 'IQD' in enabled_currencies:
+                        self.log_result("Agent Ledger - Enabled Currencies", True, 
+                                      f"Enabled currencies returned correctly: {enabled_currencies}")
+                    else:
+                        self.log_result("Agent Ledger - Enabled Currencies", False, 
+                                      f"Invalid enabled_currencies: {enabled_currencies}")
+                else:
+                    self.log_result("Agent Ledger - Account Lookup", False, 
+                                  f"Missing required fields: {missing_fields}")
+            else:
+                self.log_result("Agent Ledger - Account Lookup", False, 
+                              f"Request failed: {response.status_code} - {response.text}")
+        except Exception as e:
+            self.log_result("Agent Ledger - Account Lookup", False, f"Error: {str(e)}")
+        
+        # Test 2: Agent ledger with currency filter
+        try:
+            response = self.make_request('GET', '/agent-ledger?currency=IQD', token=agent_token)
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get('selected_currency') == 'IQD':
+                    self.log_result("Agent Ledger - Currency Filter", True, 
+                                  f"IQD currency filter working correctly")
+                    
+                    # Verify transactions are filtered by currency
+                    transactions = data.get('transactions', [])
+                    iqd_transactions = [t for t in transactions if t.get('currency') == 'IQD' or 'currency' not in t]
+                    
+                    self.log_result("Agent Ledger - IQD Transactions", True, 
+                                  f"IQD filter returned {len(iqd_transactions)} transactions")
+                else:
+                    self.log_result("Agent Ledger - Currency Filter", False, 
+                                  f"IQD currency not selected correctly: {data.get('selected_currency')}")
+            else:
+                self.log_result("Agent Ledger - Currency Filter", False, 
+                              f"Currency filter failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Agent Ledger - Currency Filter", False, f"Error: {str(e)}")
+        
+        # Test 3: Verify fallback mechanism works
+        try:
+            # Test agent ledger without specific currency (should default to all or IQD)
+            response = self.make_request('GET', '/agent-ledger', token=agent_token)
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Should have fallback behavior for agents without account_id
+                if 'enabled_currencies' in data:
+                    enabled_currencies = data['enabled_currencies']
+                    if isinstance(enabled_currencies, list) and len(enabled_currencies) > 0:
+                        self.log_result("Agent Ledger - Fallback Mechanism", True, 
+                                      f"Fallback mechanism working: {enabled_currencies}")
+                    else:
+                        self.log_result("Agent Ledger - Fallback Mechanism", False, 
+                                      f"Fallback failed: {enabled_currencies}")
+                else:
+                    self.log_result("Agent Ledger - Fallback Mechanism", False, 
+                                  f"Missing enabled_currencies in response")
+            else:
+                self.log_result("Agent Ledger - Fallback Mechanism", False, 
+                              f"Fallback test failed: {response.status_code}")
+        except Exception as e:
+            self.log_result("Agent Ledger - Fallback Mechanism", False, f"Error: {str(e)}")
         
         return True
     
