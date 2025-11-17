@@ -4324,13 +4324,13 @@ async def create_journal_entry(entry_data: JournalEntryCreate, current_user: dic
             detail=f"القيد غير متوازن: المدين {total_debit} ≠ الدائن {total_credit}"
         )
     
-    # Validate all account codes exist
+    # Validate all account codes exist in chart_of_accounts
     for line in entry_data.lines:
-        account = await db.accounts.find_one({'code': line['account_code']})
+        account = await db.chart_of_accounts.find_one({'code': line['account_code']})
         if not account:
             raise HTTPException(
                 status_code=404,
-                detail=f"الحساب {line['account_code']} غير موجود"
+                detail=f"الحساب {line['account_code']} غير موجود في الدليل المحاسبي"
             )
     
     # Generate entry number
@@ -4573,13 +4573,13 @@ async def update_journal_entry(
             detail=f"القيد غير متوازن: المدين {total_debit} ≠ الدائن {total_credit}"
         )
     
-    # Validate all account codes exist
+    # Validate all account codes exist in chart_of_accounts
     for line in entry_data.lines:
-        account = await db.accounts.find_one({'code': line['account_code']})
+        account = await db.chart_of_accounts.find_one({'code': line['account_code']})
         if not account:
             raise HTTPException(
                 status_code=404,
-                detail=f"الحساب {line['account_code']} غير موجود"
+                detail=f"الحساب {line['account_code']} غير موجود في الدليل المحاسبي"
             )
     
     # Reverse old entry effects on account balances
