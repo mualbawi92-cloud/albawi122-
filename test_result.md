@@ -1452,6 +1452,40 @@ test_plan:
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "main"
+    message: |
+      🎯 **CHART OF ACCOUNTS MIGRATION COMPLETE - READY FOR TESTING**
+      
+      **Work Completed:**
+      
+      1. **Cleanup Script Created and Executed:**
+         - Created comprehensive cleanup script in scripts/complete_cleanup_and_migration.py
+         - Provides detailed Arabic reporting of all database changes
+         - Script successfully executed (no old data found to clean)
+      
+      2. **Backend Code Migration:**
+         - Replaced ALL db.accounts references with db.chart_of_accounts (15+ occurrences)
+         - Updated journal entry creation, updates, and cancellation
+         - Enhanced agent account lookup with proper fallback chain
+         - Improved error messages to reference "الدليل المحاسبي"
+         - Disabled old accounts table indexes
+      
+      3. **System Now Enforces:**
+         - All agents MUST be linked to chart_of_accounts
+         - All journal entries MUST reference valid COA accounts
+         - All balance updates go to chart_of_accounts only
+         - Single source of truth: chart_of_accounts
+      
+      **Next Steps:**
+      Need comprehensive backend testing to verify:
+      - Agent registration creates proper COA linkage
+      - Transfer operations use correct accounts
+      - Journal entries validate against COA
+      - Ledger displays work correctly
+      - All balance updates work properly
+      
+      Backend has been restarted and is running successfully.
+      
   - agent: "testing"
     message: |
       ✅ **UNIFIED LEDGER FILTERING LOGIC TESTING COMPLETED - EXCELLENT RESULTS**
