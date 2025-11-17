@@ -115,10 +115,10 @@ async def create_database_indexes():
         await db.journal_entries.create_index([("date", -1)])
         await db.journal_entries.create_index([("entry_number", 1)], unique=True)
         
-        # Accounts indexes
-        await db.accounts.create_index([("code", 1)], unique=True)
-        await db.accounts.create_index([("agent_id", 1)])
-        await db.accounts.create_index([("category", 1)])
+        # Old accounts indexes - REMOVED (now using chart_of_accounts)
+        # await db.accounts.create_index([("code", 1)], unique=True)
+        # await db.accounts.create_index([("agent_id", 1)])
+        # await db.accounts.create_index([("category", 1)])
         
         # Commission rates indexes
         await db.commission_rates.create_index([("agent_id", 1), ("currency", 1)])
