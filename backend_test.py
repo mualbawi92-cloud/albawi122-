@@ -140,99 +140,107 @@ class ChartOfAccountsMigrationTester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
     
-    def test_admin_ledger_currency_fallback(self):
-        """Test Admin Ledger - Currency Fallback for Old Entries"""
-        print("\n=== Test 1: Admin Ledger Currency Fallback ===")
+    def test_chart_of_accounts_operations(self):
+        """Phase 1: Test Chart of Accounts CRUD Operations"""
+        print("\n=== Phase 1: Chart of Accounts Operations ===")
         
-        # Test with existing accounts that should have currencies
-        test_accounts = [
-            {"code": "1030", "name": "Transit Account"},
-            {"code": "2001", "name": "Exchange Company 1"},
-            {"code": "4020", "name": "Earned Commissions"}
-        ]
+        # Test 1: GET /api/accounting/accounts - List all accounts from chart_of_accounts
+        try:
+            response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Handle both direct array and wrapped response
+                if isinstance(data, dict) and 'accounts' in data:
+                    accounts = data['accounts']
+                else:
+                    accounts = data
+                
+                if isinstance(accounts, list):
+                    self.log_result("GET Chart of Accounts", True, 
+                                  f"Successfully retrieved {len(accounts)} accounts from chart_of_accounts")
+                    
+                    # Verify accounts have required fields
+                    if accounts:
+                        sample_account = accounts[0]
+                        required_fields = ['code', 'name_ar', 'category']
+                        missing_fields = [field for field in required_fields if field not in sample_account]
+                        
+                        if not missing_fields:
+                            self.log_result("Chart of Accounts Structure", True, 
+                                          f"Accounts have required fields: {list(sample_account.keys())}")
+                        else:
+                            self.log_result("Chart of Accounts Structure", False, 
+                                          f"Missing required fields: {missing_fields}")
+                else:
+                    self.log_result("GET Chart of Accounts", False, 
+                                  f"Invalid response format: {type(accounts)}")
+            else:
+                self.log_result("GET Chart of Accounts", False, 
+                              f"Request failed: {response.status_code} - {response.text}")
+        except Exception as e:
+            self.log_result("GET Chart of Accounts", False, f"Error: {str(e)}")
         
-        for account_info in test_accounts:
-            account_code = account_info["code"]
-            account_name = account_info["name"]
+        # Test 2: POST /api/accounting/accounts - Create new account in chart_of_accounts
+        test_account_code = "9960"
+        try:
+            test_account = {
+                "code": test_account_code,
+                "name": "Test Migration Account",
+                "name_ar": "حساب تجريبي للهجرة",
+                "name_en": "Test Migration Account",
+                "category": "شركات الصرافة",
+                "type": "شركات الصرافة",
+                "currencies": ["IQD", "USD"]
+            }
             
-            print(f"\n--- Testing Account {account_code} ({account_name}) ---")
-            
-            # Test 1: With IQD currency parameter - check fallback behavior
-            try:
-                response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=IQD', token=self.admin_token)
-                if response.status_code == 200:
-                    data = response.json()
-                    
-                    # Verify required fields in response
-                    required_fields = ['account', 'entries', 'total_entries', 'current_balance', 'selected_currency', 'enabled_currencies']
-                    missing_fields = [field for field in required_fields if field not in data]
-                    
-                    if not missing_fields:
-                        self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", True, 
-                                      f"All required fields present. Entries: {len(data['entries'])}, Balance: {data['current_balance']}")
-                        
-                        # Check if entries without currency field are included (fallback to IQD)
-                        entries = data.get('entries', [])
-                        entries_without_currency = [e for e in entries if 'currency' not in e or e.get('currency') is None]
-                        entries_with_iqd = [e for e in entries if e.get('currency') == 'IQD']
-                        
-                        if entries_without_currency:
-                            self.log_result(f"Admin Ledger {account_code} - Old Entries Fallback", True, 
-                                          f"Found {len(entries_without_currency)} entries without currency field (should be treated as IQD)")
-                        
-                        # Verify running balance calculation is correct
-                        if len(entries) > 0:
-                            last_balance = entries[-1].get('balance', 0)
-                            current_balance = data.get('current_balance', 0)
-                            if abs(last_balance - current_balance) < 0.01:  # Allow small floating point differences
-                                self.log_result(f"Admin Ledger {account_code} - Balance Calculation", True, 
-                                              f"Running balance calculation correct: {current_balance}")
-                            else:
-                                self.log_result(f"Admin Ledger {account_code} - Balance Calculation", False, 
-                                              f"Balance mismatch: last entry {last_balance} vs current {current_balance}")
-                        
-                    else:
-                        self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", False, 
-                                      f"Missing required fields: {missing_fields}")
-                elif response.status_code == 404:
-                    self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", False, 
-                                  f"Account {account_code} not found (404)")
-                    continue  # Skip other tests for this account
+            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=test_account)
+            if response.status_code in [200, 201]:
+                self.test_account_codes.append(test_account_code)
+                self.log_result("POST Create Account", True, 
+                              f"Successfully created account {test_account_code} in chart_of_accounts")
+            elif response.status_code == 400 and "already exists" in response.text:
+                self.log_result("POST Create Account", True, 
+                              f"Account {test_account_code} already exists (acceptable)")
+            else:
+                self.log_result("POST Create Account", False, 
+                              f"Failed to create account: {response.status_code} - {response.text}")
+        except Exception as e:
+            self.log_result("POST Create Account", False, f"Error: {str(e)}")
+        
+        # Test 3: GET /api/accounting/accounts/{code} - Get specific account
+        try:
+            response = self.make_request('GET', f'/accounting/accounts/{test_account_code}', token=self.admin_token)
+            if response.status_code == 200:
+                account_data = response.json()
+                if account_data.get('code') == test_account_code:
+                    self.log_result("GET Specific Account", True, 
+                                  f"Successfully retrieved account {test_account_code}: {account_data.get('name_ar')}")
                 else:
-                    self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", False, 
-                                  f"Request failed: {response.status_code} - {response.text}")
-                    continue
-            except Exception as e:
-                self.log_result(f"Admin Ledger {account_code} - IQD Currency Fallback", False, f"Error: {str(e)}")
-                continue
-            
-            # Test 2: With USD currency parameter - should not include old entries without currency
-            try:
-                response = self.make_request('GET', f'/accounting/ledger/{account_code}?currency=USD', token=self.admin_token)
-                if response.status_code == 200:
-                    data = response.json()
-                    entries = data.get('entries', [])
-                    
-                    # All entries should have currency=USD, no entries without currency field
-                    entries_without_currency = [e for e in entries if 'currency' not in e or e.get('currency') is None]
-                    non_usd_entries = [e for e in entries if e.get('currency') != 'USD']
-                    
-                    if len(entries_without_currency) == 0 and len(non_usd_entries) == 0:
-                        self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", True, 
-                                      f"USD filter correctly excludes old entries without currency: {len(entries)} USD entries")
-                    else:
-                        self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", False, 
-                                      f"USD filter includes old entries: {len(entries_without_currency)} without currency, {len(non_usd_entries)} non-USD")
-                        
-                elif response.status_code == 400:
-                    # This is acceptable if USD is not enabled for this account
-                    self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", True, 
-                                  f"USD currency properly rejected (400) - not enabled for account")
+                    self.log_result("GET Specific Account", False, 
+                                  f"Account code mismatch: expected {test_account_code}, got {account_data.get('code')}")
+            else:
+                self.log_result("GET Specific Account", False, 
+                              f"Failed to get account {test_account_code}: {response.status_code}")
+        except Exception as e:
+            self.log_result("GET Specific Account", False, f"Error: {str(e)}")
+        
+        # Test 4: Verify account is accessible via ledger
+        try:
+            response = self.make_request('GET', f'/accounting/ledger/{test_account_code}', token=self.admin_token)
+            if response.status_code == 200:
+                ledger_data = response.json()
+                if ledger_data.get('account', {}).get('code') == test_account_code:
+                    self.log_result("Account Ledger Access", True, 
+                                  f"Account {test_account_code} accessible via ledger endpoint")
                 else:
-                    self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", False, 
-                                  f"Unexpected response: {response.status_code}")
-            except Exception as e:
-                self.log_result(f"Admin Ledger {account_code} - USD Filter Exclusion", False, f"Error: {str(e)}")
+                    self.log_result("Account Ledger Access", False, 
+                                  f"Ledger account code mismatch")
+            else:
+                self.log_result("Account Ledger Access", False, 
+                              f"Failed to access ledger for {test_account_code}: {response.status_code}")
+        except Exception as e:
+            self.log_result("Account Ledger Access", False, f"Error: {str(e)}")
         
         return True
     
