@@ -1770,8 +1770,17 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
     
     # ============ CREATE ACCOUNTING JOURNAL ENTRY (REVERSAL) ============
     try:
-        # Get sender agent account
-        sender_account = await db.accounts.find_one({'agent_id': current_user['id']})
+        # Get sender agent account from chart_of_accounts
+        # First try to get account_id from user
+        sender_account_code = current_user.get('account_id')
+        sender_account = None
+        
+        if sender_account_code:
+            sender_account = await db.chart_of_accounts.find_one({'code': sender_account_code})
+        
+        # Fallback: search by agent_id
+        if not sender_account:
+            sender_account = await db.chart_of_accounts.find_one({'agent_id': current_user['id']})
         
         if sender_account:
             # Create reversal journal entry for cancelled transfer
