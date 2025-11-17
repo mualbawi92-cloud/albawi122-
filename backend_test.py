@@ -889,28 +889,28 @@ class ChartOfAccountsMigrationTester:
             if result['success']:
                 print(f"   - {result['test']}: {result['message']}")
         
-        # Critical findings for unified ledger filtering
-        print(f"\n🎯 UNIFIED LEDGER FILTERING FINDINGS:")
+        # Critical findings for chart of accounts migration
+        print(f"\n🎯 CHART OF ACCOUNTS MIGRATION FINDINGS:")
         
-        admin_ledger_tests = [r for r in self.test_results if 'Admin Ledger' in r['test']]
-        admin_ledger_passed = len([r for r in admin_ledger_tests if r['success']])
-        print(f"   Admin Ledger Currency Fallback: {admin_ledger_passed}/{len(admin_ledger_tests)} tests passed")
+        coa_operations_tests = [r for r in self.test_results if 'Chart of Accounts' in r['test'] or 'GET' in r['test'] or 'POST' in r['test']]
+        coa_operations_passed = len([r for r in coa_operations_tests if r['success']])
+        print(f"   Chart of Accounts Operations: {coa_operations_passed}/{len(coa_operations_tests)} tests passed")
+        
+        agent_registration_tests = [r for r in self.test_results if 'Agent Registration' in r['test'] or 'Agent-Account' in r['test']]
+        agent_registration_passed = len([r for r in agent_registration_tests if r['success']])
+        print(f"   Agent Registration and Linking: {agent_registration_passed}/{len(agent_registration_tests)} tests passed")
+        
+        journal_entry_tests = [r for r in self.test_results if 'Journal Entry' in r['test'] or 'Ledger' in r['test']]
+        journal_entry_passed = len([r for r in journal_entry_tests if r['success']])
+        print(f"   Journal Entry Operations: {journal_entry_passed}/{len(journal_entry_tests)} tests passed")
         
         agent_ledger_tests = [r for r in self.test_results if 'Agent Ledger' in r['test']]
         agent_ledger_passed = len([r for r in agent_ledger_tests if r['success']])
-        print(f"   Agent Ledger chart_of_accounts Integration: {agent_ledger_passed}/{len(agent_ledger_tests)} tests passed")
+        print(f"   Agent Ledger Operations: {agent_ledger_passed}/{len(agent_ledger_tests)} tests passed")
         
-        consistency_tests = [r for r in self.test_results if 'Consistency' in r['test']]
-        consistency_passed = len([r for r in consistency_tests if r['success']])
-        print(f"   Currency Filtering Consistency: {consistency_passed}/{len(consistency_tests)} tests passed")
-        
-        old_data_tests = [r for r in self.test_results if 'Old Data' in r['test']]
-        old_data_passed = len([r for r in old_data_tests if r['success']])
-        print(f"   Old Data Handling: {old_data_passed}/{len(old_data_tests)} tests passed")
-        
-        edge_case_tests = [r for r in self.test_results if 'Edge Case' in r['test']]
-        edge_case_passed = len([r for r in edge_case_tests if r['success']])
-        print(f"   Edge Cases: {edge_case_passed}/{len(edge_case_tests)} tests passed")
+        transfer_tests = [r for r in self.test_results if 'Transfer' in r['test'] or 'Transit' in r['test']]
+        transfer_passed = len([r for r in transfer_tests if r['success']])
+        print(f"   Transfer Operations: {transfer_passed}/{len(transfer_tests)} tests passed")
         
         print("\n" + "=" * 80)
         
