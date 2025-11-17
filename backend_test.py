@@ -1322,7 +1322,7 @@ class AgentRegistrationAutoCreateTester:
 
 def main():
     """Main execution function"""
-    tester = ChartOfAccountsMigrationTester()
+    tester = AgentRegistrationAutoCreateTester()
     
     try:
         success = tester.run_all_tests()
