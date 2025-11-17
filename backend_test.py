@@ -1184,32 +1184,32 @@ class AgentRegistrationAutoCreateTester:
         
         return True
     
-    def test_chart_of_accounts_migration_comprehensive(self):
-        """Run comprehensive chart of accounts migration tests"""
-        print("\n🚨 CHART OF ACCOUNTS MIGRATION VERIFICATION COMPREHENSIVE TESTING")
+    def test_agent_registration_auto_create_comprehensive(self):
+        """Run comprehensive agent registration auto-create tests"""
+        print("\n🚨 AGENT REGISTRATION AUTO-CREATE CHART OF ACCOUNTS COMPREHENSIVE TESTING")
         print("=" * 80)
-        print("Testing that all endpoints now use chart_of_accounts instead of old accounts collection")
+        print("Testing agent registration with automatic chart of accounts creation")
         print("=" * 80)
         
-        # Phase 1: Chart of Accounts Operations
-        print("\n--- PHASE 1: CHART OF ACCOUNTS OPERATIONS ---")
-        self.test_chart_of_accounts_operations()
+        # Phase 1: Auto-Create Account (No account_code provided)
+        print("\n--- PHASE 1: AUTO-CREATE ACCOUNT (NO ACCOUNT_CODE PROVIDED) ---")
+        self.test_auto_create_account_no_code_provided()
         
-        # Phase 2: Agent Registration and Linking
-        print("\n--- PHASE 2: AGENT REGISTRATION AND LINKING ---")
-        self.test_agent_registration_and_linking()
+        # Phase 2: Manual Account Selection (account_code provided)
+        print("\n--- PHASE 2: MANUAL ACCOUNT SELECTION (ACCOUNT_CODE PROVIDED) ---")
+        self.test_manual_account_selection()
         
-        # Phase 3: Journal Entry Operations
-        print("\n--- PHASE 3: JOURNAL ENTRY OPERATIONS ---")
-        self.test_journal_entry_operations()
+        # Phase 3: Validation Tests
+        print("\n--- PHASE 3: VALIDATION TESTS ---")
+        self.test_validation_tests()
         
-        # Phase 4: Agent Ledger Operations
-        print("\n--- PHASE 4: AGENT LEDGER OPERATIONS ---")
-        self.test_agent_ledger_operations()
+        # Phase 4: Sequential Code Generation
+        print("\n--- PHASE 4: SEQUENTIAL CODE GENERATION ---")
+        self.test_sequential_code_generation()
         
-        # Phase 5: Transfer Operations (Critical)
-        print("\n--- PHASE 5: TRANSFER OPERATIONS (CRITICAL) ---")
-        self.test_transfer_operations()
+        # Phase 5: Account Details Verification
+        print("\n--- PHASE 5: ACCOUNT DETAILS VERIFICATION ---")
+        self.test_account_details_verification()
         
         return True
     
