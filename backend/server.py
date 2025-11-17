@@ -4582,13 +4582,13 @@ async def update_journal_entry(
                 detail=f"الحساب {line['account_code']} غير موجود في الدليل المحاسبي"
             )
     
-    # Reverse old entry effects on account balances
+    # Reverse old entry effects on account balances in chart_of_accounts
     for line in existing.get('lines', []):
         account_code = line['account_code']
         debit = line.get('debit', 0)
         credit = line.get('credit', 0)
         
-        account = await db.accounts.find_one({'code': account_code})
+        account = await db.chart_of_accounts.find_one({'code': account_code})
         if account:
             category = account.get('category', '')
             if category in ['أصول', 'مصاريف']:
@@ -4598,18 +4598,18 @@ async def update_journal_entry(
             
             new_balance = account.get('balance', 0) + balance_change
             
-            await db.accounts.update_one(
+            await db.chart_of_accounts.update_one(
                 {'code': account_code},
                 {'$set': {'balance': new_balance, 'updated_at': datetime.now(timezone.utc).isoformat()}}
             )
     
-    # Apply new entry effects
+    # Apply new entry effects on chart_of_accounts
     for line in entry_data.lines:
         account_code = line['account_code']
         debit = line.get('debit', 0)
         credit = line.get('credit', 0)
         
-        account = await db.accounts.find_one({'code': account_code})
+        account = await db.chart_of_accounts.find_one({'code': account_code})
         if account:
             category = account.get('category', '')
             if category in ['أصول', 'مصاريف']:
@@ -4619,7 +4619,7 @@ async def update_journal_entry(
             
             new_balance = account.get('balance', 0) + balance_change
             
-            await db.accounts.update_one(
+            await db.chart_of_accounts.update_one(
                 {'code': account_code},
                 {'$set': {'balance': new_balance, 'updated_at': datetime.now(timezone.utc).isoformat()}}
             )
