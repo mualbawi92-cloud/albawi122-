@@ -379,6 +379,257 @@ class AgentRegistrationAutoCreateTester:
         
         return True
     
+    def test_validation_tests(self):
+        """Phase 3: Validation Tests"""
+        print("\n=== Phase 3: Validation Tests ===")
+        
+        # Test 1: Try to register agent with invalid account_code (doesn't exist)
+        try:
+            invalid_agent_data = {
+                "username": f"test_invalid_{int(time.time())}",
+                "password": "test123",
+                "display_name": "صيرفة اختبار خطأ",
+                "phone": "07701234568",
+                "governorate": "BG",
+                "role": "agent",
+                "account_code": "9999",  # Non-existent account
+                "wallet_limit_iqd": 5000000,
+                "wallet_limit_usd": 10000
+            }
+            
+            response = self.make_request('POST', '/register', token=self.admin_token, json=invalid_agent_data)
+            if response.status_code == 404:
+                error_text = response.text
+                if "9999" in error_text and "غير موجود" in error_text:
+                    self.log_result("Validation - Invalid Account Code", True, 
+                                  f"Properly rejected invalid account with Arabic error: {error_text}")
+                else:
+                    self.log_result("Validation - Invalid Account Code", True, 
+                                  f"Properly rejected invalid account: {response.status_code}")
+            else:
+                self.log_result("Validation - Invalid Account Code", False, 
+                              f"Should have rejected invalid account: {response.status_code}")
+        except Exception as e:
+            self.log_result("Validation - Invalid Account Code", False, f"Error: {str(e)}")
+        
+        # Test 2: Try to register agent with account from wrong category
+        try:
+            # First create an account in different category
+            wrong_category_code = "1999"
+            wrong_category_account = {
+                "code": wrong_category_code,
+                "name_ar": "حساب أصول تجريبي",
+                "name_en": "Test Assets Account",
+                "category": "أصول",  # Wrong category (should be شركات الصرافة)
+                "currencies": ["IQD", "USD"]
+            }
+            
+            create_response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=wrong_category_account)
+            if create_response.status_code in [200, 201]:
+                self.test_account_codes.append(wrong_category_code)
+                
+                # Now try to use it for agent registration
+                wrong_category_agent = {
+                    "username": f"test_wrong_cat_{int(time.time())}",
+                    "password": "test123",
+                    "display_name": "صيرفة فئة خاطئة",
+                    "phone": "07701234569",
+                    "governorate": "BG",
+                    "role": "agent",
+                    "account_code": wrong_category_code,
+                    "wallet_limit_iqd": 5000000,
+                    "wallet_limit_usd": 10000
+                }
+                
+                response = self.make_request('POST', '/register', token=self.admin_token, json=wrong_category_agent)
+                if response.status_code == 400:
+                    error_text = response.text
+                    if "شركات الصرافة" in error_text:
+                        self.log_result("Validation - Wrong Category", True, 
+                                      f"Properly rejected wrong category with Arabic error")
+                    else:
+                        self.log_result("Validation - Wrong Category", True, 
+                                      f"Properly rejected wrong category: {response.status_code}")
+                else:
+                    self.log_result("Validation - Wrong Category", False, 
+                                  f"Should have rejected wrong category: {response.status_code}")
+            else:
+                self.log_result("Validation - Wrong Category Setup", False, 
+                              f"Failed to create wrong category account: {create_response.status_code}")
+        except Exception as e:
+            self.log_result("Validation - Wrong Category", False, f"Error: {str(e)}")
+        
+        # Test 3: Try to register agent with account already linked
+        try:
+            # Get an existing agent with account_code
+            agents_response = self.make_request('GET', '/agents', token=self.admin_token)
+            if agents_response.status_code == 200:
+                agents = agents_response.json()
+                linked_agent = next((a for a in agents if a.get('account_code')), None)
+                
+                if linked_agent:
+                    linked_account_code = linked_agent['account_code']
+                    
+                    # Try to register another agent with the same account_code
+                    duplicate_agent = {
+                        "username": f"test_duplicate_{int(time.time())}",
+                        "password": "test123",
+                        "display_name": "صيرفة مكررة",
+                        "phone": "07701234570",
+                        "governorate": "BG",
+                        "role": "agent",
+                        "account_code": linked_account_code,  # Already linked account
+                        "wallet_limit_iqd": 5000000,
+                        "wallet_limit_usd": 10000
+                    }
+                    
+                    response = self.make_request('POST', '/register', token=self.admin_token, json=duplicate_agent)
+                    if response.status_code == 400:
+                        error_text = response.text
+                        if "مرتبط بالفعل" in error_text or "already" in error_text.lower():
+                            self.log_result("Validation - Already Linked Account", True, 
+                                          f"Properly rejected already linked account with Arabic error")
+                        else:
+                            self.log_result("Validation - Already Linked Account", True, 
+                                          f"Properly rejected already linked account: {response.status_code}")
+                    else:
+                        self.log_result("Validation - Already Linked Account", False, 
+                                      f"Should have rejected already linked account: {response.status_code}")
+                else:
+                    self.log_result("Validation - Already Linked Account", False, 
+                                  f"No agents with account_code found for testing")
+            else:
+                self.log_result("Validation - Already Linked Account", False, 
+                              f"Failed to get agents: {agents_response.status_code}")
+        except Exception as e:
+            self.log_result("Validation - Already Linked Account", False, f"Error: {str(e)}")
+        
+        return True
+    
+    def test_sequential_code_generation(self):
+        """Phase 4: Sequential Code Generation"""
+        print("\n=== Phase 4: Sequential Code Generation ===")
+        
+        # Register 3 agents without account_code and verify sequential codes
+        generated_codes = []
+        
+        for i in range(3):
+            try:
+                test_agent_data = {
+                    "username": f"test_seq_{int(time.time())}_{i}",
+                    "password": "test123",
+                    "display_name": f"صيرفة تسلسل {i+1}",
+                    "phone": f"0770123456{i}",
+                    "governorate": "BG",
+                    "role": "agent",
+                    "wallet_limit_iqd": 5000000,
+                    "wallet_limit_usd": 10000
+                    # No account_code - should auto-create
+                }
+                
+                response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
+                if response.status_code in [200, 201]:
+                    agent_data = response.json()
+                    account_code = agent_data.get('account_code')
+                    
+                    if account_code:
+                        generated_codes.append(int(account_code))
+                        self.log_result(f"Sequential Generation - Agent {i+1}", True, 
+                                      f"Generated account code: {account_code}")
+                    else:
+                        self.log_result(f"Sequential Generation - Agent {i+1}", False, 
+                                      f"No account_code returned")
+                else:
+                    self.log_result(f"Sequential Generation - Agent {i+1}", False, 
+                                  f"Failed to register agent: {response.status_code}")
+                
+                # Small delay to ensure different timestamps
+                time.sleep(1)
+                
+            except Exception as e:
+                self.log_result(f"Sequential Generation - Agent {i+1}", False, f"Error: {str(e)}")
+        
+        # Verify codes are sequential
+        if len(generated_codes) >= 2:
+            generated_codes.sort()
+            is_sequential = True
+            
+            for i in range(1, len(generated_codes)):
+                if generated_codes[i] != generated_codes[i-1] + 1:
+                    is_sequential = False
+                    break
+            
+            if is_sequential:
+                self.log_result("Sequential Code Verification", True, 
+                              f"Account codes are sequential: {generated_codes}")
+            else:
+                self.log_result("Sequential Code Verification", False, 
+                              f"Account codes are not sequential: {generated_codes}")
+        else:
+            self.log_result("Sequential Code Verification", False, 
+                          f"Not enough codes generated for verification: {generated_codes}")
+        
+        return True
+    
+    def test_account_details_verification(self):
+        """Phase 5: Account Details Verification"""
+        print("\n=== Phase 5: Account Details Verification ===")
+        
+        # Test governorate mapping
+        governorate_tests = [
+            ("BG", "بغداد"),
+            ("BS", "البصرة"),
+            ("NJ", "النجف")
+        ]
+        
+        for gov_code, expected_name in governorate_tests:
+            try:
+                test_agent_data = {
+                    "username": f"test_gov_{gov_code}_{int(time.time())}",
+                    "password": "test123",
+                    "display_name": f"صيرفة {expected_name}",
+                    "phone": "07701234571",
+                    "governorate": gov_code,
+                    "role": "agent",
+                    "wallet_limit_iqd": 5000000,
+                    "wallet_limit_usd": 10000
+                }
+                
+                response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
+                if response.status_code in [200, 201]:
+                    agent_data = response.json()
+                    account_code = agent_data.get('account_code')
+                    
+                    if account_code:
+                        # Get account details
+                        account_response = self.make_request('GET', f'/accounting/accounts/{account_code}', token=self.admin_token)
+                        if account_response.status_code == 200:
+                            account_data = account_response.json()
+                            account_name = account_data.get('name_ar', '')
+                            
+                            if expected_name in account_name:
+                                self.log_result(f"Governorate Mapping - {gov_code}", True, 
+                                              f"Correct governorate name in account: {account_name}")
+                            else:
+                                self.log_result(f"Governorate Mapping - {gov_code}", False, 
+                                              f"Incorrect governorate name: {account_name}")
+                        else:
+                            self.log_result(f"Governorate Mapping - {gov_code}", False, 
+                                          f"Failed to get account details: {account_response.status_code}")
+                    else:
+                        self.log_result(f"Governorate Mapping - {gov_code}", False, 
+                                      f"No account_code returned")
+                else:
+                    self.log_result(f"Governorate Mapping - {gov_code}", False, 
+                                  f"Failed to register agent: {response.status_code}")
+                
+                time.sleep(1)  # Small delay
+                
+            except Exception as e:
+                self.log_result(f"Governorate Mapping - {gov_code}", False, f"Error: {str(e)}")
+        
+        return True
+
     def test_agent_registration_and_linking(self):
         """Phase 2: Test Agent Registration and Linking to Chart of Accounts"""
         print("\n=== Phase 2: Agent Registration and Linking ===")
