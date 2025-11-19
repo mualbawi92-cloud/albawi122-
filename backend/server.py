@@ -799,6 +799,7 @@ class UserUpdate(BaseModel):
     phone: Optional[str] = None
     governorate: Optional[str] = None
     address: Optional[str] = None  # عنوان الصيرفة
+    account_id: Optional[str] = None  # الحساب المحاسبي المرتبط
     current_password: Optional[str] = None
     new_password: Optional[str] = None
 
