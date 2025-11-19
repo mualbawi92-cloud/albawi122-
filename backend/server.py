@@ -2693,6 +2693,58 @@ async def update_user_by_admin(user_id: str, user_data: UserUpdate, current_user
     if user_data.address is not None:  # Allow empty string
         update_fields['address'] = user_data.address
     
+    # Handle account_id (الحساب المحاسبي المرتبط)
+    if user_data.account_id is not None:
+        if user_data.account_id:  # If not empty string
+            # التحقق من وجود الحساب في chart_of_accounts
+            account = await db.chart_of_accounts.find_one({'code': user_data.account_id})
+            if not account:
+                raise HTTPException(status_code=404, detail=f"الحساب {user_data.account_id} غير موجود في الدليل المحاسبي")
+            
+            # التحقق من أن الحساب في قسم شركات الصرافة
+            if account.get('category') != 'شركات الصرافة':
+                raise HTTPException(status_code=400, detail="الحساب يجب أن يكون من قسم شركات الصرافة")
+            
+            # التحقق من أن الحساب غير مرتبط بوكيل آخر
+            existing_link = await db.users.find_one({
+                'account_id': user_data.account_id,
+                'id': {'$ne': user_id},
+                'role': 'agent'
+            })
+            if existing_link:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"الحساب {user_data.account_id} مرتبط بالفعل بوكيل آخر: {existing_link.get('display_name')}"
+                )
+            
+            # تحديث الربط في chart_of_accounts
+            await db.chart_of_accounts.update_one(
+                {'code': user_data.account_id},
+                {'$set': {'agent_id': user_id}}
+            )
+            
+            # حذف الربط القديم إن وجد
+            user = await db.users.find_one({'id': user_id})
+            old_account_id = user.get('account_id')
+            if old_account_id and old_account_id != user_data.account_id:
+                await db.chart_of_accounts.update_one(
+                    {'code': old_account_id},
+                    {'$unset': {'agent_id': ''}}
+                )
+            
+            update_fields['account_id'] = user_data.account_id
+            logger.info(f"✅ Linked agent {user_id} to account {user_data.account_id}")
+        else:
+            # If empty string, remove the link
+            user = await db.users.find_one({'id': user_id})
+            old_account_id = user.get('account_id')
+            if old_account_id:
+                await db.chart_of_accounts.update_one(
+                    {'code': old_account_id},
+                    {'$unset': {'agent_id': ''}}
+                )
+            update_fields['account_id'] = None
+    
     # Admin can set new password without current password
     if user_data.new_password:
         if len(user_data.new_password) < 6:
