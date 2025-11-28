@@ -2331,7 +2331,7 @@ async def receive_transfer(
                     'description': f'عمولة مدفوعة على استلام حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
                     'lines': [
                         {
-                            'account_code': '421',  # عمولات حوالات مدفوعة (مدين - مصروف)
+                            'account_code': '701',  # عمولات حوالات مدفوعة (مدين - مصروف)
                             'debit': incoming_commission,
                             'credit': 0
                         },
