@@ -1073,6 +1073,21 @@ async def get_agents(governorate: Optional[str] = None, search: Optional[str] = 
     agents = await db.users.find(query, {'_id': 0, 'password_hash': 0}).to_list(1000)
     return agents
 
+@api_router.get("/users/{user_id}", response_model=User)
+async def get_user_by_id(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Get single user by ID"""
+    # Check permissions: admin or the user themselves
+    if current_user['role'] != 'admin' and current_user['id'] != user_id:
+        raise HTTPException(status_code=403, detail="غير مصرح لك بعرض هذا المستخدم")
+    
+    user = await db.users.find_one({'id': user_id}, {'_id': 0, 'password_hash': 0})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    return user
+
+
 @api_router.get("/agents/{agent_id}/statement", response_model=AgentStatement)
 async def get_agent_statement(agent_id: str, current_user: dict = Depends(get_current_user)):
     """Get agent statement (كشف حساب) with all transactions and totals"""
