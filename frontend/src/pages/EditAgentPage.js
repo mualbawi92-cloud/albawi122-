@@ -201,8 +201,11 @@ const EditAgentPage = () => {
       console.log('📝 account_id value:', newFormData.account_id);
       
       setFormData(newFormData);
-      
       setLoading(false);
+      
+      // بعد تحديث formData، نحمّل الحسابات المتوفرة
+      // هذا يضمن أن الحساب الحالي سيكون في القائمة
+      return newFormData.account_id; // نرجع account_id للاستخدام في useEffect
     } catch (error) {
       console.error('❌ Error fetching agent:', error);
       console.error('❌ Error details:', error.response?.data);
