@@ -1367,8 +1367,8 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             logger.error(f"❌ Agent {current_user['id']} ({current_user.get('display_name')}) has no linked account in chart_of_accounts!")
             logger.error("Journal entry will NOT be created - agent must be linked to an account first")
         else:
-            # Get Transit account (203) from chart_of_accounts
-            transit_account = await db.chart_of_accounts.find_one({'code': '203'})
+            # Get Transit account (901) from chart_of_accounts
+            transit_account = await db.chart_of_accounts.find_one({'code': '901'})
             if not transit_account:
                 # Create Transit account if not exists
                 transit_account = {
