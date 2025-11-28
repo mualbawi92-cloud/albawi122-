@@ -1837,7 +1837,7 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
                 'description': f'إلغاء حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
                 'lines': [
                     {
-                        'account_code': '203',  # Transit Account (مدين)
+                        'account_code': '901',  # Transit Account (مدين)
                         'debit': transfer['amount'],
                         'credit': 0
                     },
@@ -2264,7 +2264,7 @@ async def receive_transfer(
                 'description': f'استلام حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
                 'lines': [
                     {
-                        'account_code': '203',  # Transit Account (مدين)
+                        'account_code': '901',  # Transit Account (مدين)
                         'debit': transfer['amount'],
                         'credit': 0
                     },
