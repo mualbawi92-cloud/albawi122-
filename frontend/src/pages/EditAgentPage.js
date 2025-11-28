@@ -125,13 +125,16 @@ const EditAgentPage = () => {
       
       console.log('✅ Filtered exchange company accounts:', exchangeAccounts);
       console.log(`📌 Found ${exchangeAccounts.length} exchange company account(s)`);
+      console.log('📌 Current formData.account_id:', formData.account_id);
       
       // إذا كان الوكيل مرتبط بحساب حالياً، تأكد من إضافته للقائمة
-      if (formData.account_id && !exchangeAccounts.find(acc => acc.code === formData.account_id)) {
-        console.log('⚠️ Current account not in list, fetching it:', formData.account_id);
+      const currentAccountId = formData.account_id;
+      
+      if (currentAccountId && !exchangeAccounts.find(acc => acc.code === currentAccountId)) {
+        console.log('⚠️ Current account not in list, fetching it:', currentAccountId);
         try {
           const currentAccountResponse = await axios.get(
-            `${API}/accounting/accounts/${formData.account_id}`,
+            `${API}/accounting/accounts/${currentAccountId}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           if (currentAccountResponse.data) {
@@ -143,6 +146,7 @@ const EditAgentPage = () => {
         }
       }
       
+      console.log('📋 Final accounts list:', exchangeAccounts);
       setAvailableAccounts(exchangeAccounts);
       
       if (exchangeAccounts.length === 0) {
