@@ -87,24 +87,28 @@ const EditAgentPage = () => {
       // فلترة الحسابات من قسم "شركات الصرافة"
       // البحث في category, type, parent_code
       const exchangeAccounts = accountsData.filter(acc => {
-        const category = (acc.category || '').toString();
-        const type = (acc.type || '').toString();
+        const category = (acc.category || '').toString().toLowerCase();
+        const type = (acc.type || '').toString().toLowerCase();
         const parentCode = (acc.parent_code || '').toString();
+        const code = (acc.code || '').toString();
+        
+        console.log('🔍 Checking account:', { code, category, type, parentCode });
         
         // شروط الفلترة:
         // 1. category يحتوي على "شركات" أو "صرافة" أو "Exchange"
         // 2. type يحتوي على نفس الكلمات
-        // 3. parent_code = "2000" (قسم شركات الصرافة)
-        // 4. رمز الحساب يبدأ بـ 21 (21xx)
+        // 3. parent_code = "501" (قسم شركات الصرافة الجديد)
+        // 4. رمز الحساب يبدأ بـ 501 (501-xx)
         return (
           category.includes('شركات') || 
           category.includes('صرافة') ||
-          category.includes('Exchange') ||
+          category.includes('exchange') ||
           type.includes('شركات') || 
           type.includes('صرافة') ||
-          type.includes('Exchange') ||
-          parentCode === '2000' ||
-          (acc.code && acc.code.toString().match(/^21\d{2}$/))
+          type.includes('exchange') ||
+          parentCode === '501' ||
+          code.startsWith('501-') ||
+          code === '501'
         );
       });
       
