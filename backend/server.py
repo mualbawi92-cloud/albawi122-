@@ -2288,7 +2288,7 @@ async def receive_transfer(
             # Update account balances
             # Transit account decreases (credit for assets - إخراج من الترانزيت)
             await db.chart_of_accounts.update_one(
-                {'code': '203'},
+                {'code': '901'},
                 {'$inc': {'balance': -transfer['amount'], 'balance_iqd': -transfer['amount']}}
             )
             
