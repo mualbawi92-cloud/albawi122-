@@ -138,41 +138,40 @@ const EditAgentPage = () => {
 
   const fetchAgent = async () => {
     try {
-      // إضافة Authorization header
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/agents`, {
+      
+      console.log('🔍 Fetching agent with id:', id);
+      console.log('🔑 Token:', token ? 'present' : 'missing');
+      
+      // استخدام endpoint مباشر للحصول على بيانات الوكيل المحددة
+      const response = await axios.get(`${API}/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      console.log('📋 All agents:', response.data);
-      const foundAgent = response.data.find(a => a.id === id);
+      const foundAgent = response.data;
       
-      if (foundAgent) {
-        console.log('✅ Found agent:', foundAgent);
-        console.log('📌 Agent account_id:', foundAgent.account_id);
-        
-        setAgent(foundAgent);
-        setFormData({
-          display_name: foundAgent.display_name,
-          phone: foundAgent.phone,
-          governorate: foundAgent.governorate,
-          address: foundAgent.address || '',
-          wallet_limit_iqd: foundAgent.wallet_limit_iqd || 0,
-          wallet_limit_usd: foundAgent.wallet_limit_usd || 0,
-          account_id: foundAgent.account_id || '', // الحساب المحاسبي المرتبط
-          new_password: '',
-          confirm_password: ''
-        });
-        
-        console.log('📝 Form data set with account_id:', foundAgent.account_id);
-      } else {
-        toast.error('الصراف غير موجود');
-        navigate('/agents');
-      }
+      console.log('✅ Found agent:', foundAgent);
+      console.log('📌 Agent account_id:', foundAgent.account_id);
+      
+      setAgent(foundAgent);
+      setFormData({
+        display_name: foundAgent.display_name,
+        phone: foundAgent.phone,
+        governorate: foundAgent.governorate,
+        address: foundAgent.address || '',
+        wallet_limit_iqd: foundAgent.wallet_limit_iqd || 0,
+        wallet_limit_usd: foundAgent.wallet_limit_usd || 0,
+        account_id: foundAgent.account_id || '', // الحساب المحاسبي المرتبط
+        new_password: '',
+        confirm_password: ''
+      });
+      
+      console.log('📝 Form data set with account_id:', foundAgent.account_id);
       
       setLoading(false);
     } catch (error) {
       console.error('❌ Error fetching agent:', error);
+      console.error('❌ Error details:', error.response?.data);
       toast.error('خطأ في تحميل بيانات الصراف');
       navigate('/agents');
     }
