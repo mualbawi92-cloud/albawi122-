@@ -1372,8 +1372,8 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             if not transit_account:
                 # Create Transit account if not exists
                 transit_account = {
-                    'id': 'transit_account_203',
-                    'code': '203',
+                    'id': 'transit_account_901',
+                    'code': '901',
                     'name': 'حوالات واردة لم تُسلَّم',
                     'name_ar': 'حوالات واردة لم تُسلَّم',
                     'name_en': 'Pending Incoming Transfers',
