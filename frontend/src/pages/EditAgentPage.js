@@ -398,10 +398,26 @@ const EditAgentPage = () => {
                 </div>
                 <Select 
                   value={formData.account_id} 
-                  onValueChange={(value) => setFormData({ ...formData, account_id: value })}
+                  onValueChange={(value) => {
+                    console.log('🔄 Account changed to:', value);
+                    setFormData({ ...formData, account_id: value });
+                  }}
                 >
                   <SelectTrigger className="h-12 text-base">
-                    <SelectValue placeholder="اختر الحساب المحاسبي" />
+                    <SelectValue placeholder="اختر الحساب المحاسبي">
+                      {/* عرض القيمة الحالية بشكل صريح */}
+                      {formData.account_id && availableAccounts.length > 0 ? (
+                        (() => {
+                          const selectedAccount = availableAccounts.find(acc => acc.code === formData.account_id);
+                          console.log('🔍 Selected account:', selectedAccount);
+                          return selectedAccount ? 
+                            `${selectedAccount.code} - ${selectedAccount.name_ar || selectedAccount.name}` : 
+                            formData.account_id;
+                        })()
+                      ) : (
+                        formData.account_id || 'اختر الحساب المحاسبي'
+                      )}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="max-h-80">
                     {availableAccounts.length > 0 ? (
