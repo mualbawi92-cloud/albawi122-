@@ -61,8 +61,12 @@ const EditAgentPage = () => {
   }
 
   useEffect(() => {
-    fetchAgent();
-    fetchAvailableAccounts();
+    const loadData = async () => {
+      await fetchAgent();
+      // بعد تحميل بيانات الوكيل، نحمّل الحسابات المتوفرة
+      await fetchAvailableAccounts();
+    };
+    loadData();
   }, [id]);
 
   const fetchAvailableAccounts = async (showToast = false) => {
