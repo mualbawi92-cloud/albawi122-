@@ -926,7 +926,7 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
             else:
                 next_code = "501-01"
             
-            actual_account_code = str(next_code)
+            actual_account_code = next_code
             governorate_name = GOVERNORATE_CODE_TO_NAME.get(user_data.governorate, user_data.governorate)
             
             # Create new account in chart_of_accounts
