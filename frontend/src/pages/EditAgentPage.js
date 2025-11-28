@@ -122,6 +122,23 @@ const EditAgentPage = () => {
       console.log('✅ Filtered exchange company accounts:', exchangeAccounts);
       console.log(`📌 Found ${exchangeAccounts.length} exchange company account(s)`);
       
+      // إذا كان الوكيل مرتبط بحساب حالياً، تأكد من إضافته للقائمة
+      if (formData.account_id && !exchangeAccounts.find(acc => acc.code === formData.account_id)) {
+        console.log('⚠️ Current account not in list, fetching it:', formData.account_id);
+        try {
+          const currentAccountResponse = await axios.get(
+            `${API}/accounting/accounts/${formData.account_id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          if (currentAccountResponse.data) {
+            console.log('✅ Added current account to list:', currentAccountResponse.data);
+            exchangeAccounts.unshift(currentAccountResponse.data); // أضفه في البداية
+          }
+        } catch (err) {
+          console.warn('⚠️ Could not fetch current account:', err);
+        }
+      }
+      
       setAvailableAccounts(exchangeAccounts);
       
       if (exchangeAccounts.length === 0) {
