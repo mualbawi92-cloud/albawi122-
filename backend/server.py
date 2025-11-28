@@ -1433,7 +1433,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             )
             
             await db.chart_of_accounts.update_one(
-                {'code': '203'},
+                {'code': '901'},
                 {'$inc': {'balance': -transfer_data.amount, 'balance_iqd': -transfer_data.amount}}
             )
             
