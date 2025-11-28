@@ -209,7 +209,19 @@ const EditAgentPage = () => {
         updateData.new_password = formData.new_password;
       }
 
-      await axios.put(`${API}/users/${id}`, updateData);
+      // إضافة Authorization header
+      const token = localStorage.getItem('token');
+      
+      console.log('📤 Sending update request:', updateData);
+      console.log('🔑 With token:', token ? 'present' : 'missing');
+      
+      const response = await axios.put(`${API}/users/${id}`, updateData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      console.log('✅ Update response:', response.data);
       
       toast.success('تم تحديث معلومات الصراف بنجاح!');
       navigate('/agents');
