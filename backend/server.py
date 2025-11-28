@@ -913,15 +913,18 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
             # Generate next sequential code
             if last_account and last_account.get('code'):
                 try:
-                    last_code = int(last_account['code'])
-                    if last_code >= 2000:
-                        next_code = last_code + 1
+                    # Extract number from code (e.g., "501-01" -> 1, "501-02" -> 2)
+                    if '-' in last_account['code']:
+                        parts = last_account['code'].split('-')
+                        last_num = int(parts[1])
+                        next_num = last_num + 1
+                        next_code = f"501-{next_num:02d}"
                     else:
-                        next_code = 2001
+                        next_code = "501-01"
                 except:
-                    next_code = 2001
+                    next_code = "501-01"
             else:
-                next_code = 2001
+                next_code = "501-01"
             
             actual_account_code = str(next_code)
             governorate_name = GOVERNORATE_CODE_TO_NAME.get(user_data.governorate, user_data.governorate)
