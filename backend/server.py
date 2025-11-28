@@ -1409,7 +1409,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                         'currency': 'IQD'  # العملة
                     },
                     {
-                        'account_code': '203',
+                        'account_code': '901',
                         'debit': 0,
                         'credit': transfer_data.amount,
                         'currency': 'IQD'  # العملة
