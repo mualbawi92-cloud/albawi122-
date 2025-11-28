@@ -1861,7 +1861,7 @@ async def cancel_transfer(transfer_id: str, current_user: dict = Depends(get_cur
             # Update account balances
             # Transit account increases (debit for assets)
             await db.chart_of_accounts.update_one(
-                {'code': '203'},
+                {'code': '901'},
                 {'$inc': {'balance': transfer['amount'], 'balance_iqd': transfer['amount']}}
             )
             
