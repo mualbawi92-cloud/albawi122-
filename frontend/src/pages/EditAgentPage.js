@@ -173,21 +173,26 @@ const EditAgentPage = () => {
       
       console.log('✅ Found agent:', foundAgent);
       console.log('📌 Agent account_id:', foundAgent.account_id);
+      console.log('📌 Agent account_code:', foundAgent.account_code);
       
       setAgent(foundAgent);
-      setFormData({
+      
+      const newFormData = {
         display_name: foundAgent.display_name,
         phone: foundAgent.phone,
         governorate: foundAgent.governorate,
         address: foundAgent.address || '',
         wallet_limit_iqd: foundAgent.wallet_limit_iqd || 0,
         wallet_limit_usd: foundAgent.wallet_limit_usd || 0,
-        account_id: foundAgent.account_id || '', // الحساب المحاسبي المرتبط
+        account_id: foundAgent.account_id || foundAgent.account_code || '', // الحساب المحاسبي المرتبط
         new_password: '',
         confirm_password: ''
-      });
+      };
       
-      console.log('📝 Form data set with account_id:', foundAgent.account_id);
+      console.log('📝 Setting form data:', newFormData);
+      console.log('📝 account_id value:', newFormData.account_id);
+      
+      setFormData(newFormData);
       
       setLoading(false);
     } catch (error) {
