@@ -242,9 +242,21 @@ const EditAgentPage = () => {
       });
       
       console.log('✅ Update response:', response.data);
+      console.log('📌 Updated account_id:', response.data.account_id);
+      
+      // تحديث الـ formData بالبيانات المحدثة
+      setFormData(prev => ({
+        ...prev,
+        account_id: response.data.account_id || prev.account_id
+      }));
       
       toast.success('تم تحديث معلومات الصراف بنجاح!');
-      navigate('/agents');
+      
+      // إعادة تحميل البيانات لتأكيد الحفظ
+      await fetchAgent();
+      
+      // لا ننتقل للصفحة الرئيسية - نبقى في صفحة التعديل
+      // navigate('/agents');
     } catch (error) {
       console.error('Error updating agent:', error);
       toast.error('خطأ في التحديث', {
