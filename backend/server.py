@@ -2355,7 +2355,7 @@ async def receive_transfer(
                 # Update balances for commission
                 # عمولات مدفوعة (مصروف يزداد بالمدين)
                 await db.chart_of_accounts.update_one(
-                    {'code': '421'},
+                    {'code': '701'},
                     {'$inc': {'balance': incoming_commission, 'balance_iqd': incoming_commission}}
                 )
                 
