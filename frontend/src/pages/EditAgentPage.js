@@ -62,9 +62,12 @@ const EditAgentPage = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchAgent();
+      console.log('🔄 Loading page data for agent:', id);
+      const accountId = await fetchAgent();
+      console.log('📌 Agent loaded with account_id:', accountId);
       // بعد تحميل بيانات الوكيل، نحمّل الحسابات المتوفرة
       await fetchAvailableAccounts();
+      console.log('✅ All data loaded');
     };
     loadData();
   }, [id]);
