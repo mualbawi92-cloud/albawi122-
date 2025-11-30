@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Update Agent</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>اختبار تحديث الوكيل</h1>
+    
+    <div id="status"></div>
+    <div id="result"></div>
+    
+    <script>
+        const API = 'http://localhost:8001/api';
+        const userId = 'd6662114-b717-43a6-a47c-e29bfec54cec';
+        
+        async function testUpdate() {
+            const statusDiv = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                statusDiv.innerHTML = '<p>⏳ جاري تسجيل الدخول...</p>';
+                
+                // 1. Login
+                const loginResponse = await axios.post(`${API}/auth/login`, {
+                    username: 'admin',
+                    password: 'admin123'
+                });
+                
+                const token = loginResponse.data.access_token;
+                statusDiv.innerHTML += '<p>✅ تم تسجيل الدخول</p>';
+                
+                // 2. Get current user
+                statusDiv.innerHTML += '<p>⏳ جاري جلب بيانات الوكيل...</p>';
+                const getUserResponse = await axios.get(`${API}/users/${userId}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                
+                statusDiv.innerHTML += '<p>✅ تم جلب البيانات</p>';
+                statusDiv.innerHTML += `<pre>البيانات الحالية:\n${JSON.stringify(getUserResponse.data, null, 2)}</pre>`;
+                
+                // 3. Update user with new account_id
+                statusDiv.innerHTML += '<p>⏳ جاري تحديث الحساب المحاسبي...</p>';
+                
+                const updateData = {
+                    display_name: getUserResponse.data.display_name,
+                    phone: getUserResponse.data.phone,
+                    governorate: getUserResponse.data.governorate,
+                    address: getUserResponse.data.address || '',
+                    account_id: '501-01'  // الحساب الجديد
+                };
+                
+                console.log('📤 Sending update:', updateData);
+                
+                const updateResponse = await axios.put(`${API}/users/${userId}`, updateData, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                
+                statusDiv.innerHTML += '<p>✅ تم التحديث بنجاح!</p>';
+                statusDiv.innerHTML += `<pre>البيانات بعد التحديث:\n${JSON.stringify(updateResponse.data, null, 2)}</pre>`;
+                
+                // 4. Verify - get user again
+                statusDiv.innerHTML += '<p>⏳ التحقق من الحفظ...</p>';
+                const verifyResponse = await axios.get(`${API}/users/${userId}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                
+                statusDiv.innerHTML += '<p>✅ التحقق اكتمل</p>';
+                
+                if (verifyResponse.data.account_id === '501-01') {
+                    resultDiv.innerHTML = '<h2 style="color: green;">✅ النجاح! الحساب محفوظ بشكل صحيح</h2>';
+                    resultDiv.innerHTML += `<p>account_id: ${verifyResponse.data.account_id}</p>`;
+                } else {
+                    resultDiv.innerHTML = '<h2 style="color: red;">❌ فشل! الحساب لم يُحفظ</h2>';
+                    resultDiv.innerHTML += `<p>Expected: 501-01</p>`;
+                    resultDiv.innerHTML += `<p>Got: ${verifyResponse.data.account_id || 'null'}</p>`;
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML += `<p style="color: red;">❌ خطأ: ${error.message}</p>`;
+                if (error.response) {
+                    statusDiv.innerHTML += `<pre>Response: ${JSON.stringify(error.response.data, null, 2)}</pre>`;
+                }
+                console.error('Error:', error);
+            }
+        }
+        
+        // Run test on page load
+        testUpdate();
+    </script>
+</body>
+</html>
