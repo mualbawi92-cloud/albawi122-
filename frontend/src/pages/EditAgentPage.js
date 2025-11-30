@@ -70,6 +70,15 @@ const EditAgentPage = () => {
       console.log('✅ All data loaded');
     };
     loadData();
+
+  // Reload accounts when account_id changes
+  useEffect(() => {
+    if (formData.account_id) {
+      console.log('🔄 formData.account_id changed to:', formData.account_id);
+      fetchAvailableAccounts();
+    }
+  }, [formData.account_id]);
+
   }, [id]);
 
   const fetchAvailableAccounts = async (showToast = false) => {
