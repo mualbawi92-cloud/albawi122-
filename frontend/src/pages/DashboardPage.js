@@ -117,7 +117,7 @@ const DashboardPageNew = () => {
     let filtered = [...agents];
     
     // Filter by city
-    if (cityFilter) {
+    if (cityFilter && cityFilter !== 'all') {
       filtered = filtered.filter(agent => agent.governorate === cityFilter);
     }
     
