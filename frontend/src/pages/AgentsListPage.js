@@ -154,16 +154,6 @@ const AgentsListPage = () => {
                   <SelectItem value="inactive">غير نشط</SelectItem>
                 </SelectContent>
               </Select>
-
-              {user?.role === 'admin' && (
-                <Button
-                  onClick={() => navigate('/agents/add')}
-                  className="bg-secondary hover:bg-secondary/90 text-primary font-bold mr-auto h-12"
-                  data-testid="add-agent-btn"
-                >
-                  ➕ إضافة صراف جديد
-                </Button>
-              )}
             </div>
 
             {loading ? (
