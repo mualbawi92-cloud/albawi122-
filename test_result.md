@@ -810,6 +810,65 @@ backend:
           **Production Ready:** ✅ All date filters verified and functional
 
 frontend:
+  - task: "New Dashboard Page Design Implementation"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/DashboardPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **NEW DASHBOARD PAGE DESIGN IMPLEMENTED**
+          
+          **Implementation Details:**
+          - Complete redesign of DashboardPage.js for admin users
+          - New Arabic header with building icon 🏢
+          - Title: "لوحة التحكم - الصراف المسجل"
+          - Subtitle: "إدارة ومراقبة جميع الصراف والتحويلات"
+          
+          **Features Implemented:**
+          1. **Filters Section:**
+             - City filter dropdown with all Iraqi governorates
+             - Name search filter for real-time agent filtering
+             - Default "كل المحافظات" option
+          
+          2. **Add Button:**
+             - Green button: "+ إضافة صيرفة جديدة"
+             - Navigates to /register page (AddAgentPage)
+          
+          3. **Agents Table:**
+             - Displays agents with role="agent"
+             - Columns: اسم الصيرفة, اسم المالك, اسم الحساب المرتبط, مدينة الوكيل, عنوان الوكيل, رقم هاتف الوكيل, آخر نشاط, الإجراءات
+             - Green dot indicator for active agents
+             - Account name with code display
+             - Total count display: "إجمالي: X صيرفة"
+          
+          4. **Edit Modal:**
+             - Title: "✏️ تعديل معلومات الصراف"
+             - Fields: display_name, phone, governorate, address, account_id
+             - Save/Cancel buttons with proper Arabic labels
+             - Form validation and error handling
+          
+          5. **Copy Functionality:**
+             - 📋 button copies agent info to clipboard
+             - Success toast: "تم نسخ المعلومات!"
+             - Formatted info includes name, city, address, phone
+          
+          6. **Navbar Update:**
+             - Updated agents link text to "عناوين الوكلاء" (line 170, 492)
+          
+          **Ready for Testing:**
+          - Login with admin/admin123
+          - Verify dashboard loads with new design
+          - Test city and name filters
+          - Test add button navigation
+          - Test edit modal functionality
+          - Test copy button
+          - Verify navbar text update
+
   - task: "Fix ChartOfAccountsPage error handling and account number generation"
     implemented: true
     working: "NA"
