@@ -395,7 +395,7 @@ const DashboardPageNew = () => {
                             <div className="flex items-center justify-center gap-2">
                               <Button
                                 size="sm"
-                                onClick={() => handleOpenModal(agent)}
+                                onClick={() => handleOpenEditModal(agent)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1"
                               >
                                 عرض
