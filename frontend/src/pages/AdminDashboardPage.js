@@ -422,7 +422,7 @@ const DashboardPageNew = () => {
       </div>
 
       {/* Edit Agent Modal */}
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl">✏️ تعديل معلومات الصراف</DialogTitle>
@@ -433,23 +433,23 @@ const DashboardPageNew = () => {
           
           <form onSubmit={handleSaveAgent} className="space-y-4 mt-4">
             <div className="space-y-2">
-              <Label htmlFor="modal_display_name">اسم الصيرفة *</Label>
+              <Label htmlFor="edit_display_name">اسم الوكيل *</Label>
               <Input
-                id="modal_display_name"
-                value={modalFormData.display_name}
-                onChange={(e) => setModalFormData({ ...modalFormData, display_name: e.target.value })}
+                id="edit_display_name"
+                value={editFormData.display_name}
+                onChange={(e) => setEditFormData({ ...editFormData, display_name: e.target.value })}
                 required
                 className="h-10"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="modal_phone">رقم الهاتف *</Label>
+              <Label htmlFor="edit_phone">رقم هاتف الوكيل *</Label>
               <Input
-                id="modal_phone"
+                id="edit_phone"
                 type="tel"
-                value={modalFormData.phone}
-                onChange={(e) => setModalFormData({ ...modalFormData, phone: e.target.value })}
+                value={editFormData.phone}
+                onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
                 required
                 className="h-10"
                 dir="ltr"
@@ -457,10 +457,10 @@ const DashboardPageNew = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="modal_governorate">المحافظة *</Label>
+              <Label htmlFor="edit_governorate">المحافظة *</Label>
               <Select 
-                value={modalFormData.governorate} 
-                onValueChange={(value) => setModalFormData({ ...modalFormData, governorate: value })}
+                value={editFormData.governorate} 
+                onValueChange={(value) => setEditFormData({ ...editFormData, governorate: value })}
               >
                 <SelectTrigger className="h-10">
                   <SelectValue placeholder="اختر المحافظة" />
@@ -474,20 +474,20 @@ const DashboardPageNew = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="modal_address">عنوان الصيرفة</Label>
+              <Label htmlFor="edit_address">عنوان الوكيل</Label>
               <Input
-                id="modal_address"
-                value={modalFormData.address}
-                onChange={(e) => setModalFormData({ ...modalFormData, address: e.target.value })}
+                id="edit_address"
+                value={editFormData.address}
+                onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
                 className="h-10"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="modal_account_id">الحساب المحاسبي المرتبط *</Label>
+              <Label htmlFor="edit_account_id">الحساب المحاسبي المرتبط *</Label>
               <Select 
-                value={modalFormData.account_id} 
-                onValueChange={(value) => setModalFormData({ ...modalFormData, account_id: value })}
+                value={editFormData.account_id} 
+                onValueChange={(value) => setEditFormData({ ...editFormData, account_id: value })}
               >
                 <SelectTrigger className="h-10">
                   <SelectValue placeholder="اختر الحساب المحاسبي" />
@@ -517,7 +517,7 @@ const DashboardPageNew = () => {
             <div className="flex gap-3 pt-4">
               <Button
                 type="button"
-                onClick={() => setModalOpen(false)}
+                onClick={() => setEditModalOpen(false)}
                 variant="outline"
                 className="flex-1"
                 disabled={saving}
@@ -530,6 +530,150 @@ const DashboardPageNew = () => {
                 className="flex-1 bg-secondary hover:bg-secondary/90 text-primary"
               >
                 {saving ? 'جاري الحفظ...' : '💾 حفظ التغييرات'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Agent Modal */}
+      <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">➕ إضافة صيرفة جديدة</DialogTitle>
+            <DialogDescription>
+              إضافة وكيل جديد إلى النظام
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleAddAgent} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="add_username">اسم المستخدم (Username) *</Label>
+              <Input
+                id="add_username"
+                value={addFormData.username}
+                onChange={(e) => setAddFormData({ ...addFormData, username: e.target.value })}
+                required
+                className="h-10"
+                placeholder="مثال: agent_najaf"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="add_password">كلمة المرور (Password) *</Label>
+              <Input
+                id="add_password"
+                type="password"
+                value={addFormData.password}
+                onChange={(e) => setAddFormData({ ...addFormData, password: e.target.value })}
+                required
+                className="h-10"
+                placeholder="كلمة المرور"
+                minLength={6}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="add_display_name">اسم الوكيل *</Label>
+              <Input
+                id="add_display_name"
+                value={addFormData.display_name}
+                onChange={(e) => setAddFormData({ ...addFormData, display_name: e.target.value })}
+                required
+                className="h-10"
+                placeholder="مثال: صيرفة النجف"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="add_phone">رقم هاتف الوكيل *</Label>
+              <Input
+                id="add_phone"
+                type="tel"
+                value={addFormData.phone}
+                onChange={(e) => setAddFormData({ ...addFormData, phone: e.target.value })}
+                required
+                className="h-10"
+                dir="ltr"
+                placeholder="+9647801234567"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="add_governorate">المحافظة *</Label>
+              <Select 
+                value={addFormData.governorate} 
+                onValueChange={(value) => setAddFormData({ ...addFormData, governorate: value })}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="اختر المحافظة" />
+                </SelectTrigger>
+                <SelectContent className="max-h-80">
+                  {IRAQI_GOVERNORATES.map((gov) => (
+                    <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="add_address">عنوان الوكيل</Label>
+              <Input
+                id="add_address"
+                value={addFormData.address}
+                onChange={(e) => setAddFormData({ ...addFormData, address: e.target.value })}
+                className="h-10"
+                placeholder="مثال: شارع الرشيد، قرب ساحة التحرير"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="add_account_id">الحساب المحاسبي المرتبط *</Label>
+              <Select 
+                value={addFormData.account_id} 
+                onValueChange={(value) => setAddFormData({ ...addFormData, account_id: value })}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="اختر الحساب المحاسبي" />
+                </SelectTrigger>
+                <SelectContent className="max-h-80">
+                  {accounts.length > 0 ? (
+                    accounts
+                      .filter(acc => 
+                        acc.code?.startsWith('501') || 
+                        acc.parent_code === '501' ||
+                        (acc.category && (acc.category.includes('شركات') || acc.category.includes('صرافة')))
+                      )
+                      .map((acc) => (
+                        <SelectItem key={acc.code} value={acc.code}>
+                          {acc.code} - {acc.name_ar || acc.name}
+                        </SelectItem>
+                      ))
+                  ) : (
+                    <SelectItem value="none" disabled>
+                      لا توجد حسابات
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button
+                type="button"
+                onClick={() => setAddModalOpen(false)}
+                variant="outline"
+                className="flex-1"
+                disabled={saving}
+              >
+                إلغاء
+              </Button>
+              <Button
+                type="submit"
+                disabled={saving}
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+              >
+                {saving ? 'جاري الإضافة...' : '➕ إضافة الصيرفة'}
               </Button>
             </div>
           </form>
