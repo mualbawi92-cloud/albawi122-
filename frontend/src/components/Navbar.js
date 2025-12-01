@@ -489,7 +489,7 @@ const Navbar = () => {
               className="w-full text-white hover:bg-white/10 font-bold justify-start"
               data-testid="mobile-nav-agents"
             >
-              👥 الصرافين
+              👥 عناوين الوكلاء
             </Button>
             {user?.role === 'admin' && (
               <Button
