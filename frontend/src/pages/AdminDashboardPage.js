@@ -326,7 +326,7 @@ const DashboardPageNew = () => {
 
               {/* Add Button */}
               <Button
-                onClick={() => navigate('/register')}
+                onClick={handleOpenAddModal}
                 className="bg-green-600 hover:bg-green-700 text-white h-10 px-6 flex items-center gap-2"
               >
                 <span className="text-lg">+</span>
