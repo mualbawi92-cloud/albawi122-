@@ -178,11 +178,11 @@ const DashboardPageNew = () => {
     try {
       const token = localStorage.getItem('token');
       const updateData = {
-        display_name: modalFormData.display_name,
-        phone: modalFormData.phone,
-        governorate: modalFormData.governorate,
-        address: modalFormData.address,
-        account_id: modalFormData.account_id
+        display_name: editFormData.display_name,
+        phone: editFormData.phone,
+        governorate: editFormData.governorate,
+        address: editFormData.address,
+        account_id: editFormData.account_id
       };
 
       await axios.put(`${API}/users/${selectedAgent.id}`, updateData, {
@@ -190,11 +190,64 @@ const DashboardPageNew = () => {
       });
 
       toast.success('تم تحديث معلومات الصراف بنجاح!');
-      setModalOpen(false);
+      setEditModalOpen(false);
       fetchData(); // Reload data
     } catch (error) {
       console.error('Error updating agent:', error);
       toast.error('خطأ في التحديث', {
+        description: error.response?.data?.detail || 'حدث خطأ غير متوقع'
+      });
+    }
+
+    setSaving(false);
+  };
+
+  const handleAddAgent = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      // Validation
+      if (!addFormData.username || !addFormData.password) {
+        toast.error('يرجى إدخال اسم المستخدم وكلمة المرور');
+        setSaving(false);
+        return;
+      }
+
+      if (!addFormData.display_name || !addFormData.phone || !addFormData.governorate) {
+        toast.error('يرجى إدخال جميع الحقول المطلوبة');
+        setSaving(false);
+        return;
+      }
+
+      if (!addFormData.account_id) {
+        toast.error('يرجى اختيار الحساب المحاسبي');
+        setSaving(false);
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      const newAgentData = {
+        username: addFormData.username,
+        password: addFormData.password,
+        display_name: addFormData.display_name,
+        phone: addFormData.phone,
+        governorate: addFormData.governorate,
+        address: addFormData.address,
+        account_id: addFormData.account_id,
+        role: 'agent'
+      };
+
+      await axios.post(`${API}/register`, newAgentData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      toast.success('تم إضافة الصراف بنجاح!');
+      setAddModalOpen(false);
+      fetchData(); // Reload data
+    } catch (error) {
+      console.error('Error adding agent:', error);
+      toast.error('خطأ في الإضافة', {
         description: error.response?.data?.detail || 'حدث خطأ غير متوقع'
       });
     }
