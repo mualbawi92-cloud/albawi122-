@@ -3861,3 +3861,40 @@ agent_communication:
       
       **NO FURTHER ACTION NEEDED:** All migration requirements from review request have been met.
 
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+
+test_plan:
+  current_focus:
+    - "New Dashboard Page Design Implementation"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+      message: |
+        **NEW DASHBOARD PAGE TESTING REQUEST**
+        
+        I have implemented a complete redesign of the Dashboard page for admin users. 
+        Please test the following comprehensive functionality:
+        
+        **Login Credentials:** admin / admin123
+        
+        **Test Scenarios:**
+        1. **Dashboard Page Load:** Verify new design with Arabic header and building icon
+        2. **Filters:** Test city dropdown and name search functionality
+        3. **Add Button:** Verify navigation to /register (AddAgentPage)
+        4. **Agents Table:** Check all columns, data display, and total count
+        5. **Edit Modal:** Test opening, editing, and saving agent information
+        6. **Copy Button:** Test clipboard functionality and success toast
+        7. **Navbar Update:** Verify "عناوين الوكلاء" text instead of "الصرافين"
+        
+        **Expected Test Data:**
+        - 3 agents in database: صيرفة النجف, بابل, صيرفة النور
+        - Cities: النجف, البصرة, كربلاء
+        
+        Please test all features thoroughly and report any issues found.
+
