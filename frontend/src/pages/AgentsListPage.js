@@ -90,6 +90,29 @@ const AgentsListPage = () => {
     }
   };
 
+  // دالة نسخ معلومات الوكيل
+  const handleCopyAgentInfo = (agent) => {
+    const governorateName = IRAQI_GOVERNORATES.find(g => g.code === agent.governorate)?.name || agent.governorate;
+    
+    const agentInfo = `اسم الوكيل: ${agent.display_name}
+المدينة: ${governorateName}
+العنوان: ${agent.address || 'غير محدد'}
+الهاتف: ${agent.phone || 'غير محدد'}`;
+
+    navigator.clipboard.writeText(agentInfo).then(() => {
+      setCopiedId(agent.id);
+      toast.success('تم نسخ معلومات الوكيل');
+      
+      // إخفاء رسالة النسخ بعد ثانيتين
+      setTimeout(() => {
+        setCopiedId(null);
+      }, 2000);
+    }).catch(() => {
+      toast.error('فشل نسخ المعلومات');
+    });
+  };
+
+
   return (
     <div className="min-h-screen bg-background" data-testid="agents-list-page">
       <Navbar />
