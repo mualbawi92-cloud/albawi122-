@@ -44,7 +44,7 @@ const DashboardPageNew = () => {
   const [accounts, setAccounts] = useState([]);
   
   // Filters
-  const [cityFilter, setCityFilter] = useState('');
+  const [cityFilter, setCityFilter] = useState('all');
   const [nameFilter, setNameFilter] = useState('');
   
   // Modal state
