@@ -42,6 +42,7 @@ const AgentsListPage = () => {
   const [governorateFilter, setGovernorateFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('active');
+  const [copiedId, setCopiedId] = useState(null);
 
   useEffect(() => {
     fetchAgents();
