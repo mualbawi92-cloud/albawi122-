@@ -1073,6 +1073,22 @@ async def get_agents(governorate: Optional[str] = None, search: Optional[str] = 
     agents = await db.users.find(query, {'_id': 0, 'password_hash': 0}).to_list(1000)
     return agents
 
+@api_router.get("/users", response_model=List[User])
+async def get_all_users(
+    role: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get all users (admin only)"""
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="غير مصرح لك بعرض المستخدمين")
+    
+    query = {}
+    if role:
+        query['role'] = role
+    
+    users = await db.users.find(query, {'_id': 0, 'password_hash': 0}).to_list(1000)
+    return users
+
 @api_router.get("/users/{user_id}", response_model=User)
 async def get_user_by_id(user_id: str, current_user: dict = Depends(get_current_user)):
     """Get single user by ID"""
