@@ -226,7 +226,7 @@ const DashboardPageNew = () => {
                     <SelectValue placeholder="كل المحافظات" />
                   </SelectTrigger>
                   <SelectContent className="max-h-80">
-                    <SelectItem value="">كل المحافظات</SelectItem>
+                    <SelectItem value="all">كل المحافظات</SelectItem>
                     {IRAQI_GOVERNORATES.map((gov) => (
                       <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
                     ))}
