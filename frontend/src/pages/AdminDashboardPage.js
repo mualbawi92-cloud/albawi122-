@@ -47,16 +47,29 @@ const DashboardPageNew = () => {
   const [cityFilter, setCityFilter] = useState('all');
   const [nameFilter, setNameFilter] = useState('');
   
-  // Modal state
-  const [modalOpen, setModalOpen] = useState(false);
+  // Modal state for Edit
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState(null);
-  const [modalFormData, setModalFormData] = useState({
+  const [editFormData, setEditFormData] = useState({
     display_name: '',
     phone: '',
     governorate: '',
     address: '',
     account_id: ''
   });
+  
+  // Modal state for Add
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [addFormData, setAddFormData] = useState({
+    username: '',
+    password: '',
+    display_name: '',
+    phone: '',
+    governorate: '',
+    address: '',
+    account_id: ''
+  });
+  
   const [saving, setSaving] = useState(false);
 
   // Check if user is admin
