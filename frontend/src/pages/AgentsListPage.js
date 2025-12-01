@@ -176,39 +176,72 @@ const AgentsListPage = () => {
                   <Card
                     key={agent.id}
                     data-testid={`agent-card-${agent.username}`}
-                    className="hover:shadow-lg transition-all border-r-4 border-r-secondary"
+                    className="hover:shadow-lg transition-all border-r-4 border-r-primary relative"
                   >
-                    <CardHeader>
+                    <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
-                        <div className="space-y-1">
-                          <CardTitle className="text-xl text-primary">{agent.display_name}</CardTitle>
-                          {user?.role === 'admin' && (
-                            <CardDescription>@{agent.username}</CardDescription>
-                          )}
-                        </div>
+                        <CardTitle className="text-xl text-primary">{agent.display_name}</CardTitle>
                         <Badge className="bg-secondary text-primary">
                           {IRAQI_GOVERNORATES.find(g => g.code === agent.governorate)?.name || agent.governorate}
                         </Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2 text-sm">
-                          <span className="text-muted-foreground">📞</span>
-                          <span className="font-medium" dir="ltr">{agent.phone || 'غير متوفر'}</span>
+                      <div className="space-y-4">
+                        {/* معلومات الاتصال */}
+                        <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+                          <div className="flex items-start gap-3">
+                            <span className="text-2xl">👤</span>
+                            <div className="flex-1">
+                              <p className="text-xs text-muted-foreground mb-1">اسم الوكيل</p>
+                              <p className="font-semibold text-base">{agent.display_name}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start gap-3">
+                            <span className="text-2xl">🏙️</span>
+                            <div className="flex-1">
+                              <p className="text-xs text-muted-foreground mb-1">المدينة</p>
+                              <p className="font-semibold text-base">
+                                {IRAQI_GOVERNORATES.find(g => g.code === agent.governorate)?.name || agent.governorate}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start gap-3">
+                            <span className="text-2xl">📍</span>
+                            <div className="flex-1">
+                              <p className="text-xs text-muted-foreground mb-1">العنوان</p>
+                              <p className="font-semibold text-base">{agent.address || 'غير محدد'}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start gap-3">
+                            <span className="text-2xl">📞</span>
+                            <div className="flex-1">
+                              <p className="text-xs text-muted-foreground mb-1">الهاتف</p>
+                              <p className="font-semibold text-base" dir="ltr">{agent.phone || 'غير محدد'}</p>
+                            </div>
+                          </div>
                         </div>
-                        {agent.address && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <span className="text-muted-foreground">📍</span>
-                            <span className="font-medium">{agent.address}</span>
-                          </div>
-                        )}
-                        {user?.role === 'admin' && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <span className="text-muted-foreground">📋</span>
-                            <span>{agent.role === 'admin' ? 'مدير' : 'صراف'}</span>
-                          </div>
-                        )}
+                        
+                        {/* زر النسخ */}
+                        <Button
+                          onClick={() => handleCopyAgentInfo(agent)}
+                          className={`w-full ${copiedId === agent.id ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-primary/90'} text-white font-bold transition-all`}
+                        >
+                          {copiedId === agent.id ? (
+                            <>
+                              <span className="ml-2">✓</span>
+                              تم النسخ
+                            </>
+                          ) : (
+                            <>
+                              <span className="ml-2">📋</span>
+                              نسخ المعلومات
+                            </>
+                          )}
+                        </Button>
                         
                         {/* Wallet Balance - Admin Only */}
                         {user?.role === 'admin' && (
