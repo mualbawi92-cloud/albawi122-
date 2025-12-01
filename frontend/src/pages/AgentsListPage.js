@@ -119,8 +119,8 @@ const AgentsListPage = () => {
       <div className="container mx-auto p-6">
         <Card className="shadow-xl">
           <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5">
-            <CardTitle className="text-3xl text-primary">قائمة الصرافين</CardTitle>
-            <CardDescription className="text-base">البحث عن صراف بحسب المحافظة</CardDescription>
+            <CardTitle className="text-3xl text-primary">عناوين الوكلاء</CardTitle>
+            <CardDescription className="text-base">عرض معلومات التواصل مع الوكلاء</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-4 mb-6">
