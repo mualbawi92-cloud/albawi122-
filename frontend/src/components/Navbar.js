@@ -167,7 +167,7 @@ const Navbar = () => {
               className="text-white hover:bg-white/10 font-bold text-sm"
               data-testid="nav-agents"
             >
-              👥 الصرافين
+              👥 عناوين الوكلاء
             </Button>
             {user?.role === 'admin' && (
               <Button
