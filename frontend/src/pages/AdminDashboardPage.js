@@ -146,16 +146,29 @@ const DashboardPageNew = () => {
     setFilteredAgents(filtered);
   };
 
-  const handleOpenModal = (agent) => {
+  const handleOpenEditModal = (agent) => {
     setSelectedAgent(agent);
-    setModalFormData({
+    setEditFormData({
       display_name: agent.display_name || '',
       phone: agent.phone || '',
       governorate: agent.governorate || '',
       address: agent.address || '',
       account_id: agent.account_id || ''
     });
-    setModalOpen(true);
+    setEditModalOpen(true);
+  };
+
+  const handleOpenAddModal = () => {
+    setAddFormData({
+      username: '',
+      password: '',
+      display_name: '',
+      phone: '',
+      governorate: '',
+      address: '',
+      account_id: ''
+    });
+    setAddModalOpen(true);
   };
 
   const handleSaveAgent = async (e) => {
