@@ -61,7 +61,7 @@ const DashboardPageNew = () => {
 
   // Check if user is admin
   if (user?.role !== 'admin') {
-    navigate('/dashboard-old');
+    navigate('/dashboard');
     return null;
   }
 
