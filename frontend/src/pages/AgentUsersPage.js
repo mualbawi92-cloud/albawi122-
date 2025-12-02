@@ -101,7 +101,7 @@ const AgentUsersPage = () => {
 
       // Only include password if it's provided
       if (editFormData.password && editFormData.password.trim() !== '') {
-        updateData.password = editFormData.password;
+        updateData.new_password = editFormData.password;
       }
 
       await axios.put(`${API}/users/${selectedUser.id}`, updateData, {
