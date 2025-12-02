@@ -814,7 +814,7 @@ frontend:
     implemented: true
     working: false
     file: "frontend/src/pages/AdminDashboardPage.js, frontend/src/pages/AgentUsersPage.js"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
