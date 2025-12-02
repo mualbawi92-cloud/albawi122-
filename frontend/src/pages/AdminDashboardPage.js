@@ -202,9 +202,16 @@ const DashboardPageNew = () => {
         account_id: editFormData.account_id
       };
 
-      await axios.put(`${API}/users/${selectedAgent.id}`, updateData, {
+      console.log('=== handleSaveAgent Debug ===');
+      console.log('Selected Agent ID:', selectedAgent.id);
+      console.log('Update Data:', updateData);
+      console.log('Account ID being sent:', editFormData.account_id);
+
+      const response = await axios.put(`${API}/users/${selectedAgent.id}`, updateData, {
         headers: { Authorization: `Bearer ${token}` }
       });
+
+      console.log('Response:', response.data);
 
       toast.success('تم تحديث معلومات الصراف بنجاح!');
       setEditModalOpen(false);
