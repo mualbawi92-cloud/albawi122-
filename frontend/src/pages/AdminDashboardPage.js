@@ -61,8 +61,6 @@ const DashboardPageNew = () => {
   // Modal state for Add Agent
   const [addAgentModalOpen, setAddAgentModalOpen] = useState(false);
   const [addAgentFormData, setAddAgentFormData] = useState({
-    username: '',
-    password: '',
     display_name: '',
     phone: '',
     governorate: '',
