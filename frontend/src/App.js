@@ -19,6 +19,7 @@ import WalletPage from './pages/WalletPage';
 import WalletManagementPage from './pages/WalletManagementPage';
 import AgentStatementPage from './pages/AgentStatementPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import AgentUsersPage from './pages/AgentUsersPage';
 import CancelledTransfersPage from './pages/CancelledTransfersPage';
 import TransitAccountPage from './pages/TransitAccountPage';
 import AllCommissionsViewPage from './pages/AllCommissionsViewPage';
