@@ -677,7 +677,7 @@ const DashboardPageNew = () => {
                 id="add_phone"
                 type="tel"
                 value={addAgentFormData.phone}
-                onChange={(e) => setAddFormData({ ...addFormData, phone: e.target.value })}
+                onChange={(e) => setAddAgentFormData({ ...addAgentFormData, phone: e.target.value })}
                 required
                 className="h-10"
                 dir="ltr"
