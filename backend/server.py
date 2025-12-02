@@ -954,6 +954,11 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
     user_id = str(uuid.uuid4())
     password_hash = bcrypt.hashpw(user_data.password.encode(), bcrypt.gensalt()).decode()
     
+    logger.info(f"=== CREATE USER DEBUG ===")
+    logger.info(f"user_data.account_code: {user_data.account_code}")
+    logger.info(f"actual_account_code: {actual_account_code}")
+    logger.info(f"user_data.role: {user_data.role}")
+    
     user_doc = {
         'id': user_id,
         'username': user_data.username,
