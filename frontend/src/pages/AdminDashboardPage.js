@@ -630,32 +630,6 @@ const DashboardPageNew = () => {
           
           <form onSubmit={handleAddAgent} className="space-y-4 mt-4">
             <div className="space-y-2">
-              <Label htmlFor="add_username">اسم المستخدم (Username) *</Label>
-              <Input
-                id="add_username"
-                value={addAgentFormData.username}
-                onChange={(e) => setAddAgentFormData({ ...addAgentFormData, username: e.target.value })}
-                required
-                className="h-10"
-                placeholder="مثال: agent_najaf"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="add_password">كلمة المرور (Password) *</Label>
-              <Input
-                id="add_password"
-                type="password"
-                value={addAgentFormData.password}
-                onChange={(e) => setAddAgentFormData({ ...addAgentFormData, password: e.target.value })}
-                required
-                className="h-10"
-                placeholder="كلمة المرور"
-                minLength={6}
-              />
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="add_display_name">اسم الوكيل *</Label>
               <Input
                 id="add_display_name"
