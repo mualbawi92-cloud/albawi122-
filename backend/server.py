@@ -717,6 +717,7 @@ class UserCreate(BaseModel):
     address: Optional[str] = None  # عنوان الصيرفة
     role: str = "agent"
     account_code: Optional[str] = None  # رقم الحساب المحاسبي المرتبط (إجباري للصرافين)
+    agent_id: Optional[str] = None  # معرف الوكيل (للمستخدمين)
     wallet_limit_iqd: float = 0.0  # حد أقصى للسحب بالدينار
     wallet_limit_usd: float = 0.0  # حد أقصى للسحب بالدولار
 
