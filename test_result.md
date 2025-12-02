@@ -2992,6 +2992,28 @@ agent_communication:
       ✅ **UNIFIED LEDGER FILTERING LOGIC TESTING COMPLETED - EXCELLENT RESULTS**
       
       **Test Execution Summary:**
+  - agent: "testing"
+    message: |
+      **CRITICAL ISSUE CONFIRMED: Agent Account Linking Completely Broken**
+      
+      **Test Results Summary:**
+      - ✅ Frontend implementation is 100% functional
+      - ❌ Backend account linking is completely broken
+      - ❌ Despite main agent's claim of fix, account_code is NOT being saved
+      
+      **Evidence:**
+      - Created new agent "وكيل اختبار نهائي" with account "1002 - صيرفة اور"
+      - Agent appears in table but account column shows "غير محدد" (not specified)
+      - All other fields (name, phone, address, governorate) saved correctly
+      - Only account linking failed
+      
+      **Root Cause:**
+      The backend POST /api/register endpoint is not properly saving the account_code field as account_id in the user document, OR the frontend account lookup logic is failing.
+      
+      **URGENT ACTION REQUIRED:**
+      Main agent must investigate and fix the backend account linking logic immediately. The current implementation does not work despite previous claims of being fixed.
+      
+      **Priority:** HIGH - This is a critical feature that is completely non-functional.
       Completed comprehensive testing of unified ledger filtering logic between Admin and Agent 
       with fallback for old entries as requested in the review.
       
