@@ -168,8 +168,8 @@ const DashboardPageNew = () => {
     setEditModalOpen(true);
   };
 
-  const handleOpenAddModal = () => {
-    setAddFormData({
+  const handleOpenAddAgentModal = () => {
+    setAddAgentFormData({
       username: '',
       password: '',
       display_name: '',
@@ -178,7 +178,18 @@ const DashboardPageNew = () => {
       address: '',
       account_id: ''
     });
-    setAddModalOpen(true);
+    setAddAgentModalOpen(true);
+  };
+
+  const handleOpenAddUserModal = () => {
+    setAddUserFormData({
+      username: '',
+      password: '',
+      full_name: '',
+      phone: '',
+      agent_id: ''
+    });
+    setAddUserModalOpen(true);
   };
 
   const handleSaveAgent = async (e) => {
