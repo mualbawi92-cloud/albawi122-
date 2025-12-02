@@ -651,7 +651,7 @@ const DashboardPageNew = () => {
                 id="add_password"
                 type="password"
                 value={addAgentFormData.password}
-                onChange={(e) => setAddFormData({ ...addFormData, password: e.target.value })}
+                onChange={(e) => setAddAgentFormData({ ...addAgentFormData, password: e.target.value })}
                 required
                 className="h-10"
                 placeholder="كلمة المرور"
