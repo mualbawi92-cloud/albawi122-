@@ -812,9 +812,9 @@ backend:
 frontend:
   - task: "Agent Users Management Features Implementation"
     implemented: true
-    working: true
+    working: false
     file: "frontend/src/pages/AdminDashboardPage.js, frontend/src/pages/AgentUsersPage.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
