@@ -637,8 +637,8 @@ const DashboardPageNew = () => {
               <Label htmlFor="add_username">اسم المستخدم (Username) *</Label>
               <Input
                 id="add_username"
-                value={addFormData.username}
-                onChange={(e) => setAddFormData({ ...addFormData, username: e.target.value })}
+                value={addAgentFormData.username}
+                onChange={(e) => setAddAgentFormData({ ...addAgentFormData, username: e.target.value })}
                 required
                 className="h-10"
                 placeholder="مثال: agent_najaf"
