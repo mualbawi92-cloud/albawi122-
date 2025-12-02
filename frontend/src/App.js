@@ -93,6 +93,7 @@ function AppRoutes() {
       <Route path="/statement" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
       <Route path="/statement/:agentId" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
       <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
+      <Route path="/admin/agent-users/:agentId" element={<ProtectedRoute><AgentUsersPage /></ProtectedRoute>} />
       <Route path="/admin/cancelled-transfers" element={<ProtectedRoute><CancelledTransfersPage /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" />} />
     </Routes>
