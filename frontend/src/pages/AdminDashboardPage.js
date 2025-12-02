@@ -689,7 +689,7 @@ const DashboardPageNew = () => {
               <Label htmlFor="add_governorate">المحافظة *</Label>
               <Select 
                 value={addAgentFormData.governorate} 
-                onValueChange={(value) => setAddFormData({ ...addFormData, governorate: value })}
+                onValueChange={(value) => setAddAgentFormData({ ...addAgentFormData, governorate: value })}
               >
                 <SelectTrigger className="h-10">
                   <SelectValue placeholder="اختر المحافظة" />
