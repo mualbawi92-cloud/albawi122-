@@ -168,8 +168,6 @@ const DashboardPageNew = () => {
 
   const handleOpenAddAgentModal = () => {
     setAddAgentFormData({
-      username: '',
-      password: '',
       display_name: '',
       phone: '',
       governorate: '',
