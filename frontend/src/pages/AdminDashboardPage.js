@@ -264,9 +264,16 @@ const DashboardPageNew = () => {
         role: 'agent'
       };
 
-      await axios.post(`${API}/register`, newAgentData, {
+      console.log('=== handleAddAgent Debug ===');
+      console.log('New Agent Data:', newAgentData);
+      console.log('account_code being sent:', newAgentData.account_code);
+      console.log('Token exists:', !!token);
+
+      const response = await axios.post(`${API}/register`, newAgentData, {
         headers: { Authorization: `Bearer ${token}` }
       });
+
+      console.log('Add Agent Response:', response.data);
 
       toast.success('تم إضافة الصراف بنجاح!');
       setAddAgentModalOpen(false);
