@@ -82,7 +82,8 @@ const AgentUsersPage = () => {
     setSelectedUser(user);
     setEditFormData({
       display_name: user.display_name || '',
-      phone: user.phone || ''
+      phone: user.phone || '',
+      password: '' // Leave empty, user can optionally update password
     });
     setEditModalOpen(true);
   };
