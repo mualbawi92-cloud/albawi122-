@@ -225,12 +225,6 @@ const DashboardPageNew = () => {
 
     try {
       // Validation
-      if (!addAgentFormData.username || !addAgentFormData.password) {
-        toast.error('يرجى إدخال اسم المستخدم وكلمة المرور');
-        setSaving(false);
-        return;
-      }
-
       if (!addAgentFormData.display_name || !addAgentFormData.phone || !addAgentFormData.governorate) {
         toast.error('يرجى إدخال جميع الحقول المطلوبة');
         setSaving(false);
@@ -244,9 +238,15 @@ const DashboardPageNew = () => {
       }
 
       const token = localStorage.getItem('token');
+      
+      // Create agent without user credentials - just update agent info
+      // Generate a unique username based on agent name
+      const username = 'agent_' + Date.now();
+      const password = 'temp_' + Math.random().toString(36).substring(7);
+      
       const newAgentData = {
-        username: addAgentFormData.username,
-        password: addAgentFormData.password,
+        username: username,
+        password: password,
         display_name: addAgentFormData.display_name,
         phone: addAgentFormData.phone,
         governorate: addAgentFormData.governorate,
