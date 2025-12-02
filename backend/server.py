@@ -856,6 +856,9 @@ class AgentStatement(BaseModel):
 @api_router.post("/register", response_model=User)
 async def register_user(user_data: UserCreate, current_user: dict = Depends(require_admin)):
     """Register new agent (admin only)"""
+    logger.info(f"=== REGISTER REQUEST ===")
+    logger.info(f"Received data: {user_data}")
+    logger.info(f"account_code: {user_data.account_code}")
     # Validate username
     if not user_data.username or len(user_data.username) < 3:
         raise HTTPException(status_code=400, detail="اسم المستخدم يجب أن يكون 3 أحرف على الأقل")
