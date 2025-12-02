@@ -117,7 +117,9 @@ const DashboardPageNew = () => {
       
       // Enrich agents with account info
       const enrichedAgents = agentUsers.map(agent => {
+        console.log(`Agent: ${agent.display_name}, account_id: ${agent.account_id}`);
         const linkedAccount = accountsData.find(acc => acc.code === agent.account_id);
+        console.log(`Found linked account:`, linkedAccount);
         return {
           ...agent,
           account_name: linkedAccount ? (linkedAccount.name_ar || linkedAccount.name) : 'غير محدد'
