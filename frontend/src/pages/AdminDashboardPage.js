@@ -650,7 +650,7 @@ const DashboardPageNew = () => {
               <Input
                 id="add_password"
                 type="password"
-                value={addFormData.password}
+                value={addAgentFormData.password}
                 onChange={(e) => setAddFormData({ ...addFormData, password: e.target.value })}
                 required
                 className="h-10"
@@ -663,7 +663,7 @@ const DashboardPageNew = () => {
               <Label htmlFor="add_display_name">اسم الوكيل *</Label>
               <Input
                 id="add_display_name"
-                value={addFormData.display_name}
+                value={addAgentFormData.display_name}
                 onChange={(e) => setAddFormData({ ...addFormData, display_name: e.target.value })}
                 required
                 className="h-10"
@@ -676,7 +676,7 @@ const DashboardPageNew = () => {
               <Input
                 id="add_phone"
                 type="tel"
-                value={addFormData.phone}
+                value={addAgentFormData.phone}
                 onChange={(e) => setAddFormData({ ...addFormData, phone: e.target.value })}
                 required
                 className="h-10"
@@ -688,7 +688,7 @@ const DashboardPageNew = () => {
             <div className="space-y-2">
               <Label htmlFor="add_governorate">المحافظة *</Label>
               <Select 
-                value={addFormData.governorate} 
+                value={addAgentFormData.governorate} 
                 onValueChange={(value) => setAddFormData({ ...addFormData, governorate: value })}
               >
                 <SelectTrigger className="h-10">
@@ -706,7 +706,7 @@ const DashboardPageNew = () => {
               <Label htmlFor="add_address">عنوان الوكيل</Label>
               <Input
                 id="add_address"
-                value={addFormData.address}
+                value={addAgentFormData.address}
                 onChange={(e) => setAddFormData({ ...addFormData, address: e.target.value })}
                 className="h-10"
                 placeholder="مثال: شارع الرشيد، قرب ساحة التحرير"
@@ -716,7 +716,7 @@ const DashboardPageNew = () => {
             <div className="space-y-2">
               <Label htmlFor="add_account_id">الحساب المحاسبي المرتبط *</Label>
               <Select 
-                value={addFormData.account_id} 
+                value={addAgentFormData.account_id} 
                 onValueChange={(value) => setAddFormData({ ...addFormData, account_id: value })}
               >
                 <SelectTrigger className="h-10">
