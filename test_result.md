@@ -5198,3 +5198,23 @@ agent_communication:
         **Recommendation:**
         The task can be marked as complete. All features from the review request have been implemented and verified working correctly.
 
+agent_communication:
+    -agent: "testing"
+    -message: |
+      **AGENT ACCOUNT LINK UPDATE TESTING COMPLETED - CRITICAL BACKEND ISSUE FOUND**
+      
+      **Test Results:** Frontend is 100% functional, but backend has critical account linking issue.
+      
+      **What Works:**
+      ✅ All UI components (login, navigation, modal, dropdown, save)
+      ✅ Account dropdown shows 4 available accounts correctly
+      ✅ Account selection works perfectly
+      ✅ Save shows success toast
+      
+      **Critical Issue:**
+      ❌ Despite success toast, table still shows "غير محدد" instead of selected account name
+      
+      **Root Cause:** Backend account_id not being saved properly OR table enrichment logic failing
+      
+      **Action Required:** Main agent must fix backend account linking logic in PUT /api/users/{agent_id} endpoint or table data enrichment.
+
