@@ -27,7 +27,8 @@ const AgentUsersPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [editFormData, setEditFormData] = useState({
     display_name: '',
-    phone: ''
+    phone: '',
+    password: ''
   });
   const [saving, setSaving] = useState(false);
 
