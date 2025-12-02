@@ -810,6 +810,55 @@ backend:
           **Production Ready:** ✅ All date filters verified and functional
 
 frontend:
+  - task: "Agent Users Management Features Implementation"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/AdminDashboardPage.js, frontend/src/pages/AgentUsersPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **AGENT USERS MANAGEMENT FEATURES IMPLEMENTED**
+          
+          **Implementation Summary:**
+          
+          1. **Admin Dashboard Updates:**
+             - Title changed to "📋 قائمة الوكلاء"
+             - Each agent row now has 4 buttons:
+               * ✏️ عرض (Edit agent info)
+               * 📋 (Copy details)
+               * 👥 (View agent users) - NEW
+               * 🗑️ (Delete agent) - NEW
+          
+          2. **Agent Users Page (/admin/agent-users/:agentId):**
+             - New page for managing agent users
+             - Header: "مستخدمي الوكيل: [Agent Name]"
+             - Back button to return to dashboard
+             - Users table with columns:
+               * اسم المستخدم (Username)
+               * الاسم الثلاثي (Full name)
+               * رقم الهاتف (Phone)
+               * الحالة (Status: نشط/موقوف)
+               * الإجراءات (Actions)
+          
+          3. **User Management Features:**
+             - ✏️ تعديل button - Opens modal to edit full name and phone
+             - 🔴 إيقاف / ✅ تفعيل button - Toggle user status
+             - Status indicators (green/red dots)
+             - Confirmation dialogs for status changes
+             - Success toasts for all operations
+          
+          **Ready for Testing:**
+          - Login as admin/admin123
+          - Navigate to /admin/dashboard
+          - Test 4-button layout for each agent
+          - Test navigation to agent users page
+          - Test user editing and status toggle functionality
+          - Test delete agent functionality
+
   - task: "Updated Admin Dashboard with Two Action Buttons and Three Modals"
     implemented: true
     working: true
