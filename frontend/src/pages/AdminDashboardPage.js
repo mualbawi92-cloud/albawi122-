@@ -339,6 +339,31 @@ const DashboardPageNew = () => {
     toast.success('تم نسخ المعلومات!');
   };
 
+  const handleDeleteAgent = async (agentId) => {
+    if (!window.confirm('هل أنت متأكد من حذف هذا الوكيل؟')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/users/${agentId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      toast.success('تم حذف الوكيل بنجاح!');
+      fetchData(); // Reload data
+    } catch (error) {
+      console.error('Error deleting agent:', error);
+      toast.error('خطأ في الحذف', {
+        description: error.response?.data?.detail || 'حدث خطأ غير متوقع'
+      });
+    }
+  };
+
+  const handleViewAgentUsers = (agentId) => {
+    navigate(`/admin/agent-users/${agentId}`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
