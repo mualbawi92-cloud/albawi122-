@@ -99,6 +99,11 @@ const AgentUsersPage = () => {
         phone: editFormData.phone
       };
 
+      // Only include password if it's provided
+      if (editFormData.password && editFormData.password.trim() !== '') {
+        updateData.password = editFormData.password;
+      }
+
       await axios.put(`${API}/users/${selectedUser.id}`, updateData, {
         headers: { Authorization: `Bearer ${token}` }
       });
