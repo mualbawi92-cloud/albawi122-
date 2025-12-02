@@ -229,19 +229,19 @@ const DashboardPageNew = () => {
 
     try {
       // Validation
-      if (!addFormData.username || !addFormData.password) {
+      if (!addAgentFormData.username || !addAgentFormData.password) {
         toast.error('يرجى إدخال اسم المستخدم وكلمة المرور');
         setSaving(false);
         return;
       }
 
-      if (!addFormData.display_name || !addFormData.phone || !addFormData.governorate) {
+      if (!addAgentFormData.display_name || !addAgentFormData.phone || !addAgentFormData.governorate) {
         toast.error('يرجى إدخال جميع الحقول المطلوبة');
         setSaving(false);
         return;
       }
 
-      if (!addFormData.account_id) {
+      if (!addAgentFormData.account_id) {
         toast.error('يرجى اختيار الحساب المحاسبي');
         setSaving(false);
         return;
@@ -249,13 +249,13 @@ const DashboardPageNew = () => {
 
       const token = localStorage.getItem('token');
       const newAgentData = {
-        username: addFormData.username,
-        password: addFormData.password,
-        display_name: addFormData.display_name,
-        phone: addFormData.phone,
-        governorate: addFormData.governorate,
-        address: addFormData.address,
-        account_id: addFormData.account_id,
+        username: addAgentFormData.username,
+        password: addAgentFormData.password,
+        display_name: addAgentFormData.display_name,
+        phone: addAgentFormData.phone,
+        governorate: addAgentFormData.governorate,
+        address: addAgentFormData.address,
+        account_id: addAgentFormData.account_id,
         role: 'agent'
       };
 
@@ -264,10 +264,66 @@ const DashboardPageNew = () => {
       });
 
       toast.success('تم إضافة الصراف بنجاح!');
-      setAddModalOpen(false);
+      setAddAgentModalOpen(false);
       fetchData(); // Reload data
     } catch (error) {
       console.error('Error adding agent:', error);
+      toast.error('خطأ في الإضافة', {
+        description: error.response?.data?.detail || 'حدث خطأ غير متوقع'
+      });
+    }
+
+    setSaving(false);
+  };
+
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      // Validation
+      if (!addUserFormData.username || !addUserFormData.password) {
+        toast.error('يرجى إدخال اسم المستخدم وكلمة المرور');
+        setSaving(false);
+        return;
+      }
+
+      if (!addUserFormData.full_name || !addUserFormData.phone) {
+        toast.error('يرجى إدخال الاسم الثلاثي ورقم الهاتف');
+        setSaving(false);
+        return;
+      }
+
+      if (!addUserFormData.agent_id) {
+        toast.error('يرجى اختيار الوكيل');
+        setSaving(false);
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      
+      // Find selected agent to get governorate
+      const selectedAgent = agents.find(a => a.id === addUserFormData.agent_id);
+      
+      const newUserData = {
+        username: addUserFormData.username,
+        password: addUserFormData.password,
+        display_name: addUserFormData.full_name,
+        phone: addUserFormData.phone,
+        governorate: selectedAgent?.governorate || 'BG',
+        role: 'user',
+        agent_id: addUserFormData.agent_id
+      };
+
+      await axios.post(`${API}/register`, newUserData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      toast.success('تم إضافة المستخدم بنجاح!');
+      setAddUserModalOpen(false);
+      fetchData(); // Reload data
+    } catch (error) {
+      console.error('Error adding user:', error);
       toast.error('خطأ في الإضافة', {
         description: error.response?.data?.detail || 'حدث خطأ غير متوقع'
       });
