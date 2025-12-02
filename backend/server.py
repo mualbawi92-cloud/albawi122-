@@ -731,6 +731,7 @@ class User(BaseModel):
     phone: Optional[str] = None
     address: Optional[str] = None  # عنوان الصيرفة
     account_code: Optional[str] = None  # رقم الحساب المحاسبي
+    agent_id: Optional[str] = None  # معرف الوكيل (للمستخدمين)
     is_active: bool = True
     wallet_balance_iqd: float = 0.0
     wallet_balance_usd: float = 0.0
