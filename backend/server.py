@@ -1089,6 +1089,19 @@ async def get_all_users(
     users = await db.users.find(query, {'_id': 0, 'password_hash': 0}).to_list(1000)
     return users
 
+@api_router.get("/agents/{agent_id}", response_model=User)
+async def get_agent_details(agent_id: str, current_user: dict = Depends(get_current_user)):
+    """Get agent details by ID"""
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="غير مصرح لك")
+    
+    agent = await db.users.find_one({'id': agent_id, 'role': 'agent'}, {'_id': 0, 'password_hash': 0})
+    
+    if not agent:
+        raise HTTPException(status_code=404, detail="الوكيل غير موجود")
+    
+    return agent
+
 @api_router.get("/users/{user_id}", response_model=User)
 async def get_user_by_id(user_id: str, current_user: dict = Depends(get_current_user)):
     """Get single user by ID"""
