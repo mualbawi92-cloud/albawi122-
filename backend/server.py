@@ -963,6 +963,7 @@ async def register_user(user_data: UserCreate, current_user: dict = Depends(requ
         'address': user_data.address,
         'account_code': actual_account_code if user_data.role == 'agent' else None,
         'account_id': actual_account_code if user_data.role == 'agent' else None,  # Also set account_id for consistency
+        'agent_id': user_data.agent_id if hasattr(user_data, 'agent_id') and user_data.agent_id else None,  # Link to agent
         'is_active': True,
         'wallet_balance_iqd': 0.0,
         'wallet_balance_usd': 0.0,
