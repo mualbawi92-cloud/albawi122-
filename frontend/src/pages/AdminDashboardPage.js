@@ -422,8 +422,8 @@ const DashboardPageNew = () => {
         <Card>
           <CardHeader className="border-b bg-gray-50">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">📋 قائمة الصراف المسجل</CardTitle>
-              <span className="text-sm text-gray-600">إجمالي: {filteredAgents.length} صيرفة</span>
+              <CardTitle className="text-xl">📋 قائمة الوكلاء</CardTitle>
+              <span className="text-sm text-gray-600">إجمالي: {filteredAgents.length} وكيل</span>
             </div>
           </CardHeader>
           <CardContent className="p-0">
