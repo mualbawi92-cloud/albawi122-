@@ -2727,6 +2727,11 @@ async def update_profile(user_data: UserUpdate, current_user: dict = Depends(get
 @api_router.put("/users/{user_id}")
 async def update_user_by_admin(user_id: str, user_data: UserUpdate, current_user: dict = Depends(require_admin)):
     """Update user by admin"""
+    logger.info(f"=== UPDATE USER DEBUG ===")
+    logger.info(f"User ID: {user_id}")
+    logger.info(f"Update data: {user_data}")
+    logger.info(f"Account ID received: {user_data.account_id}")
+    
     update_fields = {}
     
     if user_data.display_name:
