@@ -58,9 +58,9 @@ const DashboardPageNew = () => {
     account_id: ''
   });
   
-  // Modal state for Add
-  const [addModalOpen, setAddModalOpen] = useState(false);
-  const [addFormData, setAddFormData] = useState({
+  // Modal state for Add Agent
+  const [addAgentModalOpen, setAddAgentModalOpen] = useState(false);
+  const [addAgentFormData, setAddAgentFormData] = useState({
     username: '',
     password: '',
     display_name: '',
@@ -68,6 +68,16 @@ const DashboardPageNew = () => {
     governorate: '',
     address: '',
     account_id: ''
+  });
+  
+  // Modal state for Add User to Agent
+  const [addUserModalOpen, setAddUserModalOpen] = useState(false);
+  const [addUserFormData, setAddUserFormData] = useState({
+    username: '',
+    password: '',
+    full_name: '',
+    phone: '',
+    agent_id: ''
   });
   
   const [saving, setSaving] = useState(false);
