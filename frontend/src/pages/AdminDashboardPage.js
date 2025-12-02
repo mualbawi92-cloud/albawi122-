@@ -401,14 +401,23 @@ const DashboardPageNew = () => {
                 />
               </div>
 
-              {/* Add Button */}
-              <Button
-                onClick={handleOpenAddModal}
-                className="bg-green-600 hover:bg-green-700 text-white h-10 px-6 flex items-center gap-2"
-              >
-                <span className="text-lg">+</span>
-                <span>إضافة صيرفة جديدة</span>
-              </Button>
+              {/* Add Buttons */}
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleOpenAddAgentModal}
+                  className="bg-green-600 hover:bg-green-700 text-white h-10 px-6 flex items-center gap-2"
+                >
+                  <span className="text-lg">+</span>
+                  <span>إضافة صيرفة جديدة</span>
+                </Button>
+                <Button
+                  onClick={handleOpenAddUserModal}
+                  className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-6 flex items-center gap-2"
+                >
+                  <span className="text-lg">+</span>
+                  <span>إضافة مستخدم لوكيل</span>
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
