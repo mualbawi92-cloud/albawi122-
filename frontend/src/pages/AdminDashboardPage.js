@@ -499,21 +499,39 @@ const DashboardPageNew = () => {
                             لا توجد حركات
                           </td>
                           <td className="p-3">
-                            <div className="flex items-center justify-center gap-2">
+                            <div className="flex items-center justify-center gap-2 flex-wrap">
                               <Button
                                 size="sm"
                                 onClick={() => handleOpenEditModal(agent)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1"
+                                title="تعديل معلومات الوكيل"
                               >
-                                عرض
+                                ✏️ عرض
                               </Button>
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => copyAgentInfo(agent)}
                                 className="text-xs px-3 py-1"
+                                title="نسخ التفاصيل"
                               >
                                 📋
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => handleViewAgentUsers(agent.id)}
+                                className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1"
+                                title="عرض المستخدمين"
+                              >
+                                👥
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => handleDeleteAgent(agent.id)}
+                                className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1"
+                                title="حذف الوكيل"
+                              >
+                                🗑️
                               </Button>
                             </div>
                           </td>
