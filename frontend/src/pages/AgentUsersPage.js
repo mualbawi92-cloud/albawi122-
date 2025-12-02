@@ -305,6 +305,20 @@ const AgentUsersPage = () => {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="edit_password">كلمة المرور الجديدة (اختياري)</Label>
+              <Input
+                id="edit_password"
+                type="password"
+                value={editFormData.password}
+                onChange={(e) => setEditFormData({ ...editFormData, password: e.target.value })}
+                className="h-10"
+                placeholder="اتركه فارغاً إذا لم ترد التغيير"
+                minLength={6}
+              />
+              <p className="text-xs text-gray-500">* اترك الحقل فارغاً إذا لم ترد تغيير كلمة المرور</p>
+            </div>
+
             <div className="flex gap-3 pt-4">
               <Button
                 type="button"
