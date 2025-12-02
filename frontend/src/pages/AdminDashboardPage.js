@@ -717,7 +717,7 @@ const DashboardPageNew = () => {
               <Label htmlFor="add_account_id">الحساب المحاسبي المرتبط *</Label>
               <Select 
                 value={addAgentFormData.account_id} 
-                onValueChange={(value) => setAddFormData({ ...addFormData, account_id: value })}
+                onValueChange={(value) => setAddAgentFormData({ ...addAgentFormData, account_id: value })}
               >
                 <SelectTrigger className="h-10">
                   <SelectValue placeholder="اختر الحساب المحاسبي" />
