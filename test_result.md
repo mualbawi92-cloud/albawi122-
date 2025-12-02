@@ -814,7 +814,7 @@ frontend:
     implemented: true
     working: false
     file: "frontend/src/pages/AdminDashboardPage.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -870,6 +870,80 @@ frontend:
           
           **CONCLUSION:**
           Frontend implementation is 100% functional. Backend account linking has a critical data persistence or retrieval issue that prevents the account name from appearing in the table after successful save.
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ **COMPREHENSIVE AGENT ACCOUNT LINKING TEST COMPLETED - CRITICAL FAILURE CONFIRMED**
+          
+          **Test Date:** December 2, 2025
+          **Test Focus:** Complete verification of agent account linking functionality as requested in review
+          
+          **Test Scenario Executed:**
+          1. ✅ Login: admin / admin123
+          2. ✅ Navigate to: /admin/dashboard  
+          3. ✅ Click: Green button "إضافة صيرفة جديدة"
+          4. ✅ Fill form with test data:
+             - اسم الوكيل: "وكيل اختبار نهائي"
+             - رقم هاتف الوكيل: "+9647801111111"
+             - المحافظة: "بغداد"
+             - عنوان الوكيل: "عنوان الاختبار"
+             - الحساب المحاسبي المرتبط: "1002 - صيرفة اور"
+          5. ✅ Click: "إضافة الصيرفة"
+          6. ✅ Modal closed after submission
+          7. ✅ New agent "وكيل اختبار نهائي" found in table
+          
+          **❌ CRITICAL FAILURE IDENTIFIED:**
+          
+          **Expected Result:** Account name column should show "صيرفة اور"
+          **Actual Result:** Account name column shows "غير محدد" (Not specified)
+          
+          **Complete Agent Details in Table:**
+          - اسم الصيرفة: وكيل اختبار نهائي ✅
+          - اسم المالك: وكيل اختبار نهائي ✅
+          - اسم الحساب المرتبط: غير محدد ❌ **CRITICAL FAILURE**
+          - مدينة الوكيل: بغداد ✅
+          - عنوان الوكيل: عنوان الاختبار ✅
+          - رقم هاتف الوكيل: +9647801111111 ✅
+          - آخر نشاط: لا توجد حركات ✅
+          
+          **Root Cause Analysis:**
+          
+          The issue is in the backend implementation. Despite the main agent's claim that the fix was implemented by changing `account_id` to `account_code`, the test proves that:
+          
+          1. **Frontend Implementation:** ✅ 100% Working
+             - Form correctly sends `account_code: "1002"` to backend (line 263 in AdminDashboardPage.js)
+             - Account dropdown correctly populated with available accounts
+             - Form submission works without errors
+             - Modal closes properly after submission
+          
+          2. **Backend Issue:** ❌ Critical Failure
+             - The `account_code` field is NOT being saved to the agent record in the database
+             - OR the account lookup logic in the frontend (line 121) is not finding the linked account
+             - The enrichment logic `linkedAccount = accountsData.find(acc => acc.code === agent.account_id)` fails
+          
+          **Technical Investigation Required:**
+          
+          1. **Backend POST /api/register endpoint:** Must verify that `account_code` from request body is being saved as `account_id` in the user document
+          2. **Database verification:** Check if the newly created agent has the `account_id` field set to "1002"
+          3. **Frontend enrichment logic:** Verify that the account lookup is working correctly
+          
+          **Evidence from Test:**
+          - ✅ Agent creation successful (agent appears in table)
+          - ✅ All other fields saved correctly (name, phone, governorate, address)
+          - ❌ Account linking completely failed (shows "غير محدد" instead of "صيرفة اور")
+          
+          **IMMEDIATE ACTION REQUIRED:**
+          
+          The main agent must fix the backend account linking logic. The current implementation is not working despite claims of being fixed. The `account_code` to `account_id` mapping is broken.
+          
+          **CONCLUSION:**
+          
+          The agent account linking functionality is **COMPLETELY BROKEN**. While the frontend works perfectly, the backend is not saving the account association, making this a critical failure that prevents the feature from working as intended.
+          
+          **Screenshots Captured:**
+          - 📸 Filled form with "1002 - صيرفة اور" selected
+          - 📸 Updated table showing "غير محدد" in account column
+          - 📸 Final verification confirming the failure
 
   - task: "Agent Users Management Features Implementation"
     implemented: true
