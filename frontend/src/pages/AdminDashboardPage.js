@@ -707,7 +707,7 @@ const DashboardPageNew = () => {
               <Input
                 id="add_address"
                 value={addAgentFormData.address}
-                onChange={(e) => setAddFormData({ ...addFormData, address: e.target.value })}
+                onChange={(e) => setAddAgentFormData({ ...addAgentFormData, address: e.target.value })}
                 className="h-10"
                 placeholder="مثال: شارع الرشيد، قرب ساحة التحرير"
               />
