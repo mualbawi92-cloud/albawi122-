@@ -765,6 +765,116 @@ const DashboardPageNew = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Add User to Agent Modal */}
+      <Dialog open={addUserModalOpen} onOpenChange={setAddUserModalOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">👤 إضافة مستخدم لوكيل</DialogTitle>
+            <DialogDescription>
+              إضافة مستخدم جديد وربطه بوكيل
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleAddUser} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="user_username">اسم المستخدم (Username) *</Label>
+              <Input
+                id="user_username"
+                value={addUserFormData.username}
+                onChange={(e) => setAddUserFormData({ ...addUserFormData, username: e.target.value })}
+                required
+                className="h-10"
+                placeholder="مثال: user123"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="user_password">كلمة المرور (Password) *</Label>
+              <Input
+                id="user_password"
+                type="password"
+                value={addUserFormData.password}
+                onChange={(e) => setAddUserFormData({ ...addUserFormData, password: e.target.value })}
+                required
+                className="h-10"
+                placeholder="كلمة المرور"
+                minLength={6}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="user_full_name">الاسم الثلاثي للمستخدم *</Label>
+              <Input
+                id="user_full_name"
+                value={addUserFormData.full_name}
+                onChange={(e) => setAddUserFormData({ ...addUserFormData, full_name: e.target.value })}
+                required
+                className="h-10"
+                placeholder="مثال: أحمد محمد علي"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="user_phone">رقم الهاتف *</Label>
+              <Input
+                id="user_phone"
+                type="tel"
+                value={addUserFormData.phone}
+                onChange={(e) => setAddUserFormData({ ...addUserFormData, phone: e.target.value })}
+                required
+                className="h-10"
+                dir="ltr"
+                placeholder="+9647801234567"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="user_agent">اختر الوكيل *</Label>
+              <Select 
+                value={addUserFormData.agent_id} 
+                onValueChange={(value) => setAddUserFormData({ ...addUserFormData, agent_id: value })}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="اختر الوكيل" />
+                </SelectTrigger>
+                <SelectContent className="max-h-80">
+                  {agents.length > 0 ? (
+                    agents.map((agent) => (
+                      <SelectItem key={agent.id} value={agent.id}>
+                        {agent.display_name || agent.username}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled>
+                      لا يوجد وكلاء
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button
+                type="button"
+                onClick={() => setAddUserModalOpen(false)}
+                variant="outline"
+                className="flex-1"
+                disabled={saving}
+              >
+                إلغاء
+              </Button>
+              <Button
+                type="submit"
+                disabled={saving}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                {saving ? 'جاري الإضافة...' : '👤 إضافة المستخدم'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
