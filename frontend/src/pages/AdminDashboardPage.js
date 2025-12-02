@@ -260,7 +260,7 @@ const DashboardPageNew = () => {
         phone: addAgentFormData.phone,
         governorate: addAgentFormData.governorate,
         address: addAgentFormData.address,
-        account_id: addAgentFormData.account_id,
+        account_code: addAgentFormData.account_id,  // Backend expects account_code not account_id
         role: 'agent'
       };
 
