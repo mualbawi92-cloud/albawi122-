@@ -664,7 +664,7 @@ const DashboardPageNew = () => {
               <Input
                 id="add_display_name"
                 value={addAgentFormData.display_name}
-                onChange={(e) => setAddFormData({ ...addFormData, display_name: e.target.value })}
+                onChange={(e) => setAddAgentFormData({ ...addAgentFormData, display_name: e.target.value })}
                 required
                 className="h-10"
                 placeholder="مثال: صيرفة النجف"
