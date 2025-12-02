@@ -58,7 +58,15 @@ const AgentUsersPage = () => {
       });
       
       // Filter users by agent_id
-      const agentUsers = usersResponse.data.filter(u => u.role === 'user' && u.agent_id === agentId);
+      console.log('=== AgentUsersPage Debug ===');
+      console.log('agentId from URL:', agentId);
+      console.log('Total users from API:', usersResponse.data.length);
+      console.log('Users data:', usersResponse.data);
+      const agentUsers = usersResponse.data.filter(u => {
+        console.log(`Checking user ${u.username}: role=${u.role}, agent_id=${u.agent_id}, matches=${u.role === 'user' && u.agent_id === agentId}`);
+        return u.role === 'user' && u.agent_id === agentId;
+      });
+      console.log('Filtered agent users:', agentUsers.length);
       setUsers(agentUsers);
       
       setLoading(false);
