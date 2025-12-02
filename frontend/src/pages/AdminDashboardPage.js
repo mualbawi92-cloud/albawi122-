@@ -623,7 +623,7 @@ const DashboardPageNew = () => {
       </Dialog>
 
       {/* Add Agent Modal */}
-      <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
+      <Dialog open={addAgentModalOpen} onOpenChange={setAddAgentModalOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl">➕ إضافة صيرفة جديدة</DialogTitle>
