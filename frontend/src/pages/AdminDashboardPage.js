@@ -747,7 +747,7 @@ const DashboardPageNew = () => {
             <div className="flex gap-3 pt-4">
               <Button
                 type="button"
-                onClick={() => setAddModalOpen(false)}
+                onClick={() => setAddAgentModalOpen(false)}
                 variant="outline"
                 className="flex-1"
                 disabled={saving}
