@@ -2803,6 +2803,55 @@ async def update_user_by_admin(user_id: str, user_data: UserUpdate, current_user
     updated_user = await db.users.find_one({'id': user_id}, {'_id': 0, 'password_hash': 0})
     return updated_user
 
+@api_router.delete("/users/{user_id}")
+async def delete_user_by_admin(user_id: str, current_user: dict = Depends(require_admin)):
+    """Delete user by admin"""
+    # Check if user exists
+    user = await db.users.find_one({'id': user_id}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    # Cannot delete admin users
+    if user.get('role') == 'admin':
+        raise HTTPException(status_code=403, detail="لا يمكن حذف مستخدم إداري")
+    
+    # If agent, unlink account
+    if user.get('account_id'):
+        await db.chart_of_accounts.update_one(
+            {'code': user['account_id']},
+            {'$unset': {'agent_id': ''}}
+        )
+    
+    # Delete user
+    result = await db.users.delete_one({'id': user_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="فشل الحذف")
+    
+    await log_audit(None, current_user['id'], 'user_deleted', {'target_user_id': user_id, 'username': user.get('username')})
+    
+    return {"message": "تم حذف المستخدم بنجاح"}
+
+@api_router.put("/users/{user_id}/status")
+async def toggle_user_status(user_id: str, status_data: dict, current_user: dict = Depends(require_admin)):
+    """Toggle user status (active/inactive)"""
+    new_status = status_data.get('status', 'active')
+    
+    if new_status not in ['active', 'inactive']:
+        raise HTTPException(status_code=400, detail="الحالة غير صحيحة")
+    
+    result = await db.users.update_one(
+        {'id': user_id},
+        {'$set': {'status': new_status}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    await log_audit(None, current_user['id'], 'user_status_changed', {'target_user_id': user_id, 'new_status': new_status})
+    
+    return {"message": f"تم تغيير حالة المستخدم إلى {new_status}"}
+
 # ============ WebSocket Events ============
 
 @sio.event
