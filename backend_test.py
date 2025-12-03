@@ -348,70 +348,125 @@ class TransferCommissionTester:
             self.log_result("Transfer Receipt", False, f"Error: {str(e)}")
             return False
     
-    def test_sequential_code_generation(self):
-        """Phase 4: Sequential Code Generation"""
-        print("\n=== Phase 4: Sequential Code Generation ===")
+    def test_verify_commission_in_ledger(self):
+        """Phase 4: Verify commission entry in receiver agent's ledger"""
+        print("\n=== Phase 4: Verify Commission in Ledger ===")
         
-        # Register 3 agents without account_code and verify sequential codes
-        generated_codes = []
+        if not hasattr(self, 'receiver_user') or not self.receiver_user.get('account_code'):
+            self.log_result("Ledger Commission Check", False, "No receiver agent account code available")
+            return False
         
-        for i in range(3):
-            try:
-                test_agent_data = {
-                    "username": f"test_seq_{int(time.time())}_{i}",
-                    "password": "test123",
-                    "display_name": f"صيرفة تسلسل {i+1}",
-                    "phone": f"0770123456{i}",
-                    "governorate": "BG",
-                    "role": "agent",
-                    "wallet_limit_iqd": 5000000,
-                    "wallet_limit_usd": 10000
-                    # No account_code - should auto-create
-                }
+        receiver_account_code = self.receiver_user.get('account_code')
+        
+        try:
+            # Get ledger for receiver agent
+            response = self.make_request('GET', f'/accounting/ledger/{receiver_account_code}', 
+                                       token=self.admin_token)
+            
+            if response.status_code == 200:
+                ledger_data = response.json()
+                entries = ledger_data.get('entries', [])
                 
-                response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
-                if response.status_code in [200, 201]:
-                    agent_data = response.json()
-                    account_code = agent_data.get('account_code')
+                self.log_result("Ledger Access", True, 
+                              f"Successfully accessed ledger for account {receiver_account_code}, found {len(entries)} entries")
+                
+                # Look for commission entry related to our transfer
+                commission_entries = []
+                transfer_related_entries = []
+                
+                for entry in entries:
+                    description = entry.get('description', '').lower()
                     
-                    if account_code:
-                        generated_codes.append(int(account_code))
-                        self.log_result(f"Sequential Generation - Agent {i+1}", True, 
-                                      f"Generated account code: {account_code}")
-                    else:
-                        self.log_result(f"Sequential Generation - Agent {i+1}", False, 
-                                      f"No account_code returned")
+                    # Check if entry is related to our transfer
+                    if (self.transfer_code and self.transfer_code.lower() in description) or \
+                       (self.tracking_number and self.tracking_number in description):
+                        transfer_related_entries.append(entry)
+                    
+                    # Check for commission entries
+                    if 'عمولة' in description or 'commission' in description:
+                        commission_entries.append(entry)
+                
+                if transfer_related_entries:
+                    self.log_result("Transfer Related Entries", True, 
+                                  f"Found {len(transfer_related_entries)} entries related to transfer {self.transfer_code}")
+                    
+                    # Check each transfer-related entry for commission details
+                    for entry in transfer_related_entries:
+                        description = entry.get('description', '')
+                        debit = entry.get('debit', 0)
+                        credit = entry.get('credit', 0)
+                        
+                        # Check if this is a commission entry
+                        if 'عمولة' in description:
+                            # Verify commission title format
+                            expected_patterns = [
+                                'عمولة مدفوعة',
+                                'عمولة حوالة',
+                                'commission'
+                            ]
+                            
+                            title_correct = any(pattern in description for pattern in expected_patterns)
+                            
+                            if title_correct:
+                                self.log_result("Commission Entry Title", True, 
+                                              f"Commission entry title correct: {description}")
+                            else:
+                                self.log_result("Commission Entry Title", False, 
+                                              f"Commission entry title format: {description}")
+                            
+                            # Check if transfer code is visible
+                            if self.transfer_code and self.transfer_code in description:
+                                self.log_result("Transfer Code in Commission", True, 
+                                              f"Transfer code visible in commission entry: {self.transfer_code}")
+                            else:
+                                self.log_result("Transfer Code in Commission", False, 
+                                              f"Transfer code not found in commission entry")
+                            
+                            # Check debit/credit amounts
+                            if credit > 0 and debit == 0:
+                                self.log_result("Commission Debit/Credit", True, 
+                                              f"Commission correctly credited: debit={debit}, credit={credit}")
+                            elif debit > 0 and credit == 0:
+                                self.log_result("Commission Debit/Credit", True, 
+                                              f"Commission correctly debited: debit={debit}, credit={credit}")
+                            else:
+                                self.log_result("Commission Debit/Credit", False, 
+                                              f"Commission entry unclear: debit={debit}, credit={credit}")
+                            
+                            # Check if governorate is mentioned
+                            if 'واسط' in description or 'WS' in description:
+                                self.log_result("Governorate in Commission", True, 
+                                              f"Governorate mentioned in commission entry")
+                            else:
+                                self.log_result("Governorate in Commission", False, 
+                                              f"Governorate not mentioned in commission entry")
                 else:
-                    self.log_result(f"Sequential Generation - Agent {i+1}", False, 
-                                  f"Failed to register agent: {response.status_code}")
+                    self.log_result("Transfer Related Entries", False, 
+                                  f"No entries found related to transfer {self.transfer_code}")
                 
-                # Small delay to ensure different timestamps
-                time.sleep(1)
+                if commission_entries:
+                    self.log_result("Commission Entries Found", True, 
+                                  f"Found {len(commission_entries)} commission entries in ledger")
+                    
+                    # Show details of commission entries
+                    for i, entry in enumerate(commission_entries[:3]):  # Show first 3
+                        description = entry.get('description', '')
+                        debit = entry.get('debit', 0)
+                        credit = entry.get('credit', 0)
+                        self.log_result(f"Commission Entry {i+1}", True, 
+                                      f"Description: {description}, Debit: {debit}, Credit: {credit}")
+                else:
+                    self.log_result("Commission Entries Found", False, 
+                                  f"No commission entries found in ledger")
                 
-            except Exception as e:
-                self.log_result(f"Sequential Generation - Agent {i+1}", False, f"Error: {str(e)}")
-        
-        # Verify codes are sequential
-        if len(generated_codes) >= 2:
-            generated_codes.sort()
-            is_sequential = True
-            
-            for i in range(1, len(generated_codes)):
-                if generated_codes[i] != generated_codes[i-1] + 1:
-                    is_sequential = False
-                    break
-            
-            if is_sequential:
-                self.log_result("Sequential Code Verification", True, 
-                              f"Account codes are sequential: {generated_codes}")
+                return True
             else:
-                self.log_result("Sequential Code Verification", False, 
-                              f"Account codes are not sequential: {generated_codes}")
-        else:
-            self.log_result("Sequential Code Verification", False, 
-                          f"Not enough codes generated for verification: {generated_codes}")
-        
-        return True
+                self.log_result("Ledger Access", False, 
+                              f"Failed to access ledger: {response.status_code} - {response.text}")
+                return False
+        except Exception as e:
+            self.log_result("Ledger Commission Check", False, f"Error: {str(e)}")
+            return False
     
     def test_account_details_verification(self):
         """Phase 5: Account Details Verification"""
