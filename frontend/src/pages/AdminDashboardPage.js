@@ -360,8 +360,46 @@ const DashboardPageNew = () => {
 العنوان: ${agent.address || 'غير محدد'}
 رقم الهاتف: ${agent.phone || 'غير محدد'}`;
     
-    navigator.clipboard.writeText(info);
-    toast.success('تم نسخ المعلومات!');
+    // Try modern clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(info)
+        .then(() => {
+          toast.success('تم نسخ المعلومات!');
+        })
+        .catch((err) => {
+          console.error('Clipboard API failed:', err);
+          // Fallback to old method
+          fallbackCopyToClipboard(info);
+        });
+    } else {
+      // Use fallback for older browsers or restricted contexts
+      fallbackCopyToClipboard(info);
+    }
+  };
+
+  const fallbackCopyToClipboard = (text) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        toast.success('تم نسخ المعلومات!');
+      } else {
+        toast.error('فشل النسخ - يرجى النسخ يدوياً');
+      }
+    } catch (err) {
+      console.error('Fallback copy failed:', err);
+      toast.error('فشل النسخ - يرجى النسخ يدوياً');
+    }
+    
+    document.body.removeChild(textArea);
   };
 
   const handleDeleteAgent = async (agentId) => {
