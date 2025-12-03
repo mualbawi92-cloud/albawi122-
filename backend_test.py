@@ -305,7 +305,26 @@ class TransferCommissionTester:
             return False
         
         try:
-            # Create a minimal PNG file (1x1 pixel transparent PNG)
+            # Step 1: Search for transfer using tracking number to get transfer ID
+            search_response = self.make_request('GET', f'/transfers/search/{self.tracking_number}', 
+                                              token=self.receiver_token)
+            
+            if search_response.status_code != 200:
+                self.log_result("Transfer Search", False, 
+                              f"Failed to find transfer by tracking number: {search_response.status_code} - {search_response.text}")
+                return False
+            
+            search_data = search_response.json()
+            actual_transfer_id = search_data.get('id')
+            
+            if not actual_transfer_id:
+                self.log_result("Transfer Search", False, "No transfer ID returned from search")
+                return False
+            
+            self.log_result("Transfer Search", True, 
+                          f"Found transfer by tracking number: {actual_transfer_id}")
+            
+            # Step 2: Create a minimal PNG file (1x1 pixel transparent PNG)
             import io
             import base64
             
@@ -313,7 +332,7 @@ class TransferCommissionTester:
             png_data = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=')
             img_bytes = io.BytesIO(png_data)
             
-            # Prepare form data for multipart upload
+            # Step 3: Prepare form data for multipart upload
             files = {
                 'id_image': ('test_id.png', img_bytes, 'image/png')
             }
@@ -323,8 +342,8 @@ class TransferCommissionTester:
                 'receiver_fullname': 'محمد سعد كريم'
             }
             
-            # Make request with form data and file upload
-            url = f"{BASE_URL}/transfers/{self.tracking_number}/receive"
+            # Step 4: Make request with form data and file upload using the correct transfer ID
+            url = f"{BASE_URL}/transfers/{actual_transfer_id}/receive"
             headers = {'Authorization': f'Bearer {self.receiver_token}'}
             
             response = requests.post(url, data=data, files=files, headers=headers)
