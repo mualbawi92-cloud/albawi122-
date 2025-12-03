@@ -330,15 +330,9 @@ const CreateTransferPage = () => {
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
               <div className="bg-primary/5 p-6 rounded-xl space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm text-muted-foreground">رقم الحوالة</Label>
-                    <p className="text-2xl font-bold text-secondary">{result.transfer_number || 'غير متوفر'}</p>
-                  </div>
-                  <div>
-                    <Label className="text-sm text-muted-foreground">رمز الحوالة</Label>
-                    <p className="text-lg font-bold text-primary" data-testid="transfer-code-display">{result.transfer_code}</p>
-                  </div>
+                <div className="text-center">
+                  <Label className="text-sm text-muted-foreground">رقم الحوالة</Label>
+                  <p className="text-3xl font-bold text-secondary" data-testid="transfer-number-display">{result.transfer_number || 'غير متوفر'}</p>
                 </div>
                 <div className="bg-red-50 border-2 border-red-500 p-6 rounded-xl">
                   <Label className="text-sm text-red-700 font-bold">رقم PIN (لمرة واحدة فقط)</Label>
