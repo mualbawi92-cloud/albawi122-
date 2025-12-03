@@ -24,7 +24,14 @@ const LoginPage = () => {
       toast.success('أهلاً بك!', {
         description: 'تم تسجيل الدخول بنجاح'
       });
-      navigate('/dashboard');
+      
+      // Check user role and redirect accordingly
+      const userData = JSON.parse(localStorage.getItem('user'));
+      if (userData && userData.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       toast.error('خطأ', {
         description: result.error
