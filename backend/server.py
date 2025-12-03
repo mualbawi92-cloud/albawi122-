@@ -2227,9 +2227,19 @@ async def receive_transfer(
     incoming_commission = 0.0
     incoming_commission_percentage = 0.0
     
+    # Determine actual receiving agent (for users, use their linked agent)
+    receiving_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+    receiving_agent_name = current_user['display_name']
+    
+    # If user, get agent's display name
+    if current_user['role'] == 'user' and current_user.get('agent_id'):
+        agent = await db.users.find_one({'id': current_user['agent_id']}, {'_id': 0})
+        if agent:
+            receiving_agent_name = agent['display_name']
+    
     # Try to get commission rate for receiving agent
     commission_rates = await db.commission_rates.find({
-        'agent_id': current_user['id'],
+        'agent_id': receiving_agent_id,
         'currency': transfer['currency']
     }).to_list(length=None)
     
@@ -2258,8 +2268,8 @@ async def receive_transfer(
         {'id': transfer_id},
         {'$set': {
             'status': 'completed',
-            'to_agent_id': current_user['id'],
-            'to_agent_name': current_user['display_name'],
+            'to_agent_id': receiving_agent_id,
+            'to_agent_name': receiving_agent_name,
             'incoming_commission': incoming_commission,
             'incoming_commission_percentage': incoming_commission_percentage,
             'updated_at': datetime.now(timezone.utc).isoformat()
