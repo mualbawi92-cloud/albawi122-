@@ -3103,9 +3103,12 @@ async def calculate_commission_preview(
             "message": "Invalid amount"
         }
     
+    # Determine the actual agent ID (for users, use their linked agent)
+    actual_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+    
     # Try to get commission rate for this agent
     commission_rates = await db.commission_rates.find({
-        'agent_id': current_user['id'],
+        'agent_id': actual_agent_id,
         'currency': currency
     }).to_list(length=None)
     
