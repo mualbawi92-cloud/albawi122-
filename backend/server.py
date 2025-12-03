@@ -2091,8 +2091,14 @@ async def update_transfer(
 
 @api_router.get("/transfers/search/{transfer_code}")
 async def search_transfer_by_code(transfer_code: str, current_user: dict = Depends(get_current_user)):
-    """Search transfer by transfer_code (for receiving step 1)"""
-    transfer = await db.transfers.find_one({'transfer_code': transfer_code}, {'_id': 0, 'pin_hash': 0, 'pin_encrypted': 0})
+    """Search transfer by transfer_code or tracking_number (for receiving step 1)"""
+    # Search by tracking_number (10 digits) or transfer_code
+    if transfer_code.isdigit() and len(transfer_code) == 10:
+        # Search by tracking_number
+        transfer = await db.transfers.find_one({'tracking_number': transfer_code}, {'_id': 0, 'pin_hash': 0, 'pin_encrypted': 0})
+    else:
+        # Search by transfer_code
+        transfer = await db.transfers.find_one({'transfer_code': transfer_code}, {'_id': 0, 'pin_hash': 0, 'pin_encrypted': 0})
     
     if not transfer:
         raise HTTPException(status_code=404, detail="رقم الحوالة غير صحيح")
@@ -2105,6 +2111,7 @@ async def search_transfer_by_code(transfer_code: str, current_user: dict = Depen
     return {
         'id': transfer['id'],
         'transfer_code': transfer['transfer_code'],
+        'tracking_number': transfer.get('tracking_number'),
         'sender_name': transfer.get('sender_name'),
         'receiver_name': transfer.get('receiver_name'),
         'amount': transfer.get('amount'),
