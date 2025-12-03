@@ -5424,9 +5424,9 @@ async def get_agent_ledger(
             'AN': 'الأنبار', 'NI': 'نينوى', 'AR': 'أربيل', 'SU': 'السليمانية',
             'DH': 'ذي قار', 'DI': 'ديالى', 'KI': 'كركوك', 'WA': 'واسط',
             'SA': 'صلاح الدين', 'QA': 'القادسية', 'MY': 'ميسان', 'MU': 'المثنى',
-            'BA': 'بابل', 'DU': 'دهوك'
+            'BB': 'بابل', 'DU': 'دهوك', 'NA': 'النجف'
         }
-        gov_name = gov_names.get(gov_code, gov_code)
+        gov_name = gov_names.get(gov_code, gov_code if gov_code else 'غير محدد')
             
         transactions.append({
             'date': transfer['created_at'],
