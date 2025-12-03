@@ -217,20 +217,20 @@ class AccountCodeBugTester:
                     print(f"🔑 account_id in DB: {db_account_id}")
                     
                     # CRITICAL VERIFICATION: Check account_code field
-                    if db_account_code == "1002":
+                    if db_account_code == "1003":
                         self.log_result("🔑 DATABASE - account_code field", True, 
                                       f"✅ account_code correctly saved as: {db_account_code}")
                     else:
                         self.log_result("🔑 DATABASE - account_code field", False, 
-                                      f"❌ account_code NOT saved correctly: expected '1002', got '{db_account_code}'")
+                                      f"❌ account_code NOT saved correctly: expected '1003', got '{db_account_code}'")
                     
                     # CRITICAL VERIFICATION: Check account_id field
-                    if db_account_id == "1002":
+                    if db_account_id == "1003":
                         self.log_result("🔑 DATABASE - account_id field", True, 
                                       f"✅ account_id correctly saved as: {db_account_id}")
                     else:
                         self.log_result("🔑 DATABASE - account_id field", False, 
-                                      f"❌ account_id NOT saved correctly: expected '1002', got '{db_account_id}'")
+                                      f"❌ account_id NOT saved correctly: expected '1003', got '{db_account_id}'")
                     
                     # Print all fields for debugging
                     print(f"\n📋 COMPLETE AGENT RECORD:")
