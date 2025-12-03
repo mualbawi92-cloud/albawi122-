@@ -924,6 +924,115 @@ backend:
           **CONCLUSION:**
           
           The commission ledger issue from the review request is **CONFIRMED and CRITICAL**. While the transfer flow works perfectly (88.5% success rate), the specific requirement for commission entries to appear in the receiver agent's ledger is **NOT IMPLEMENTED**. This prevents proper commission tracking as requested in the Arabic review.
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ **DECEMBER 2025 ARABIC REVIEW REQUEST TESTING - CRITICAL ISSUES CONFIRMED**
+          
+          **Test Date:** December 3, 2025
+          **Test Focus:** Specific testing of two display issues reported in Arabic review request
+          
+          **🎯 ARABIC REVIEW REQUEST VERIFICATION:**
+          
+          **المشكلة 1: صفحة إصدار الحوالة - يجب عرض رقم الحوالة فقط**
+          **Issue 1: Transfer Creation Success Page - Show Only Transfer Number**
+          
+          **✅ ISSUE 1 TESTING RESULTS - FULLY RESOLVED:**
+          
+          1. **Transfer Creation Test:** ✅ Successfully created transfer with testuser123
+             - المرسل: أحمد علي حسن ✅
+             - المستلم: محمد سعد كريم ✅  
+             - المبلغ: 250,000 IQD ✅
+             - المحافظة: KR (كربلاء) ✅
+          
+          2. **Display Fields Verification:** ✅ All display requirements met
+             - transfer_code (رمز الحوالة): T-KR-20251203-000037-0 - **Should be HIDDEN from user** ✅
+             - transfer_number (6 digits): 695566 - Internal use only ✅
+             - tracking_number (10 digits): 0898987249 - **Should be shown as 'رقم الحوالة'** ✅
+          
+          3. **Critical Verification:** ✅ SUCCESS
+             - ✅ tracking_number is exactly 10 digits as required
+             - ✅ transfer_code exists but should be hidden from user display
+             - ✅ Frontend should display tracking_number as "رقم الحوالة" (10 digits)
+             - ✅ Frontend should NOT display transfer_code as "رمز الحوالة"
+          
+          **ISSUE 1 CONCLUSION:** ✅ **BACKEND PROVIDES CORRECT DATA FOR DISPLAY FIX**
+          The backend correctly returns:
+          - tracking_number (10 digits) for display as "رقم الحوالة"
+          - transfer_code should be hidden from user interface
+          
+          ---
+          
+          **المشكلة 2: كشف حساب الوكيل المستلم - إزالة التكرار**
+          **Issue 2: Agent Ledger for Receiver - Remove Duplication**
+          
+          **❌ ISSUE 2 TESTING RESULTS - CRITICAL PROBLEM CONFIRMED:**
+          
+          1. **Completed Transfer Found:** ✅ T-KR-20251203-000035-2
+             - Receiver Agent: صيرفة النور (Account: 1001) ✅
+             - Transfer Status: completed ✅
+          
+          2. **Ledger Access:** ✅ Successfully accessed accounting ledger for account 1001
+             - Total entries: 48 ✅
+             - Transfer-related entries: 1 ✅
+          
+          3. **Critical Issue Identified:** ❌ **COMMISSION ENTRIES MISSING**
+             - ✅ Found exactly 1 transfer receipt entry (no duplication)
+             - ❌ **Found 0 commission entries** (expected 1)
+             - ❌ **Missing commission entry:** "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
+          
+          4. **Ledger Entry Analysis:**
+             ```
+             Entry 1: استلام حوالة من زيد علي إلى حسين علي - T-KR-20251203-000035-2
+             Type: unknown, Debit: 0, Credit: 1800000.0
+             ```
+             - ✅ Transfer receipt entry present and correct
+             - ❌ Commission entry completely missing
+          
+          **ISSUE 2 CONCLUSION:** ❌ **CRITICAL BACKEND ISSUE CONFIRMED**
+          
+          **🚨 ROOT CAUSE ANALYSIS - COMMISSION LEDGER MISSING:**
+          
+          **Expected Behavior (from Arabic review):**
+          1. ✅ قيد واحد فقط للحوالة المستلمة (type: incoming) - WORKING
+          2. ❌ قيد واحد فقط للعمولة المحققة (type: commission_received) - **MISSING**
+          3. ✅ يجب ألا يكون هناك تكرار في القيود - NO DUPLICATION FOUND
+          
+          **Technical Issue:**
+          The `/api/transfers/{transfer_id}/receive` endpoint creates commission entries in:
+          - ✅ Account 701: عمولات مدفوعة (Paid Commissions) - Working
+          - ✅ Account 601: عمولات محققة (Earned Commissions) - Working
+          - ❌ **MISSING:** Commission entry in receiver agent's account (1001, 501-04, etc.)
+          
+          **Required Fix:**
+          Add additional journal entry in receiver agent's account:
+          ```
+          Description: "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
+          Account: [receiver_agent_account_code]
+          Debit: 0
+          Credit: [commission_amount]
+          Reference: [transfer_code]
+          ```
+          
+          **🎯 COMPREHENSIVE TEST RESULTS SUMMARY:**
+          
+          **Display Fixes Testing:**
+          - Total Tests: 14
+          - Passed: 11 (78.6% success rate)
+          - Failed: 3 (commission-related failures)
+          
+          **Transfer and Commission Testing:**
+          - Total Tests: 27  
+          - Passed: 24 (88.9% success rate)
+          - Failed: 3 (commission ledger issue confirmed)
+          
+          **FINAL ASSESSMENT:**
+          
+          ✅ **Issue 1 (Transfer Display):** BACKEND READY - Frontend should display tracking_number as "رقم الحوالة"
+          ❌ **Issue 2 (Commission Ledger):** CRITICAL BACKEND BUG - Commission entries missing from receiver agent ledger
+          
+          **IMMEDIATE ACTION REQUIRED:**
+          Main agent must fix the commission journal entry creation in `/api/transfers/{transfer_id}/receive` endpoint to include commission entries in receiver agent's individual account ledger.
 
 frontend:
   - task: "Ledger Link Access for User Role"
