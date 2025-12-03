@@ -2282,7 +2282,7 @@ async def receive_transfer(
         currency=transfer['currency'],
         operation='subtract',
         reference_id=transfer_id,
-        note=f'حوالة مُسلَّمة إلى {current_user["display_name"]} - {transfer["transfer_code"]}'
+        note=f'حوالة مُسلَّمة إلى {receiving_agent_name} - {transfer["transfer_code"]}'
     )
     
     # Update receiver's wallet (increase balance + incoming commission)
