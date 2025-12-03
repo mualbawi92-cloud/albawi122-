@@ -208,6 +208,39 @@ const AgentUsersPage = () => {
           </div>
         </div>
 
+        {/* Agent Info Card */}
+        <Card>
+          <CardHeader className="bg-blue-50 border-b">
+            <CardTitle className="text-lg">📊 معلومات الوكيل</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">اسم الوكيل</p>
+                <p className="text-base font-semibold">{agent?.display_name || agent?.username}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">رقم الهاتف</p>
+                <p className="text-base font-semibold" dir="ltr">{agent?.phone || 'غير محدد'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">الحساب المحاسبي المرتبط</p>
+                <p className="text-base font-semibold">
+                  {linkedAccount ? (
+                    <span className="flex items-center gap-2">
+                      <span className="text-green-600">✓</span>
+                      <span>{linkedAccount.name_ar || linkedAccount.name}</span>
+                      <span className="text-xs text-gray-500">({linkedAccount.code})</span>
+                    </span>
+                  ) : (
+                    <span className="text-orange-500">غير محدد</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Users Table */}
         <Card>
           <CardHeader className="border-b bg-gray-50">
