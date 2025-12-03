@@ -52,7 +52,25 @@ const AgentUsersPage = () => {
       const agentResponse = await axios.get(`${API}/agents/${agentId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setAgent(agentResponse.data);
+      const agentData = agentResponse.data;
+      setAgent(agentData);
+      
+      // Fetch linked account if agent has account_id
+      if (agentData.account_id) {
+        try {
+          const accountsResponse = await axios.get(`${API}/accounting/accounts`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const accountsData = accountsResponse.data.accounts || accountsResponse.data || [];
+          const account = accountsData.find(acc => 
+            acc.code === agentData.account_id || 
+            String(acc.code) === String(agentData.account_id)
+          );
+          setLinkedAccount(account);
+        } catch (error) {
+          console.error('Error fetching account:', error);
+        }
+      }
       
       // Fetch users for this agent
       const usersResponse = await axios.get(`${API}/users`, {
