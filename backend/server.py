@@ -1068,9 +1068,12 @@ async def login(credentials: LoginRequest, request: Request):
     
     # If user has an agent_id, fetch and add agent_display_name
     if user.get('role') == 'user' and user.get('agent_id'):
+        logger.info(f"Fetching agent for user: {user.get('username')}, agent_id: {user.get('agent_id')}")
         agent = await db.users.find_one({'id': user['agent_id']}, {'_id': 0, 'display_name': 1})
+        logger.info(f"Agent found: {agent}")
         if agent:
             user['agent_display_name'] = agent['display_name']
+            logger.info(f"Set agent_display_name to: {agent['display_name']}")
     
     return {'access_token': access_token, 'user': user}
 
