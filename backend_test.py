@@ -411,9 +411,19 @@ class TransferCommissionTester:
                        (self.tracking_number and self.tracking_number in description):
                         transfer_related_entries.append(entry)
                     
-                    # Check for commission entries
-                    if 'عمولة' in description or 'commission' in description:
+                    # Check for commission entries (broader search)
+                    if 'عمولة' in description or 'commission' in description or 'com-' in description:
                         commission_entries.append(entry)
+                
+                # Debug: Show all entries for analysis
+                self.log_result("Ledger Entries Debug", True, 
+                              f"All entries in ledger: {len(entries)}")
+                for i, entry in enumerate(entries[:5]):  # Show first 5 entries
+                    desc = entry.get('description', '')
+                    debit = entry.get('debit', 0)
+                    credit = entry.get('credit', 0)
+                    self.log_result(f"Entry {i+1}", True, 
+                                  f"Desc: {desc}, Debit: {debit}, Credit: {credit}")
                 
                 if transfer_related_entries:
                     self.log_result("Transfer Related Entries", True, 
