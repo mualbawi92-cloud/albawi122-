@@ -1722,6 +1722,9 @@ async def get_transfers(
     if currency:
         query['currency'] = currency
     
+    # Determine the effective agent ID (for users, use their linked agent)
+    effective_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+    
     # Agent filter (for admin)
     if current_user['role'] == 'admin' and agent_id:
         query['$or'] = [
@@ -1730,16 +1733,16 @@ async def get_transfers(
         ]
     elif direction == 'incoming':
         query['$or'] = [
-            {'to_agent_id': current_user['id']},
+            {'to_agent_id': effective_agent_id},
             {'to_governorate': current_user.get('governorate'), 'to_agent_id': None}
         ]
     elif direction == 'outgoing':
-        query['from_agent_id'] = current_user['id']
-    elif current_user['role'] == 'agent' and not direction:
-        # Show both incoming and outgoing for agent
+        query['from_agent_id'] = effective_agent_id
+    elif current_user['role'] in ['agent', 'user'] and not direction:
+        # Show both incoming and outgoing for agent (and their users)
         query['$or'] = [
-            {'from_agent_id': current_user['id']},
-            {'to_agent_id': current_user['id']},
+            {'from_agent_id': effective_agent_id},
+            {'to_agent_id': effective_agent_id},
             {'to_governorate': current_user.get('governorate'), 'to_agent_id': None}
         ]
     
