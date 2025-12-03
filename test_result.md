@@ -809,6 +809,118 @@ backend:
           
           **Production Ready:** ✅ All date filters verified and functional
 
+  - task: "Comprehensive Transfer and Commission Testing"
+    implemented: true
+    working: false
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ **COMPREHENSIVE TRANSFER AND COMMISSION TESTING COMPLETED - CRITICAL COMMISSION LEDGER ISSUE FOUND**
+          
+          **Test Date:** December 3, 2025
+          **Test Focus:** Complete testing of transfer creation, receipt, and commission ledger verification as requested in Arabic review
+          
+          **Test Scenario Executed:**
+          1. ✅ Login as testuser123 (صيرفة النور)
+          2. ✅ Create transfer to governorate WA (واسط) - Amount: 500,000 IQD
+          3. ✅ Get tracking_number (10 digits) and PIN (4 digits)
+          4. ✅ Setup/Login as receiver agent in WA governorate (صيرفة أور - واسط)
+          5. ✅ Receive transfer using tracking_number and PIN with ID image upload
+          6. ❌ **CRITICAL ISSUE:** Commission entries NOT appearing in receiver agent's ledger
+          
+          **✅ SUCCESSFUL COMPONENTS (91.3% success rate - 21/23 tests passed):**
+          
+          **Transfer Flow - FULLY FUNCTIONAL:**
+          - ✅ Sender authentication (testuser123) working correctly
+          - ✅ Transfer creation successful: T-WS-20251203-000032-5
+          - ✅ Tracking number format correct: 10 digits (2422931082)
+          - ✅ PIN format correct: 4 digits (1436)
+          - ✅ Transfer amount and governorate correctly set
+          - ✅ Receiver agent setup and authentication working
+          - ✅ Transfer search by tracking number working
+          - ✅ Transfer receipt with ID image upload successful
+          - ✅ Transfer status updated to 'completed' correctly
+          
+          **Commission Recording - PARTIALLY WORKING:**
+          - ✅ Admin commissions being recorded correctly in admin_commissions table
+          - ✅ Found 2 commission entries: 1250.0 IQD each for sender and receiver
+          - ✅ Commission types: "earned" for both agents
+          
+          **Ledger Access - WORKING:**
+          - ✅ Receiver agent ledger accessible (account 501-04)
+          - ✅ Transfer receipt entries appearing in ledger: "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم"
+          - ✅ Transfer amounts correctly credited (500,000 IQD)
+          
+          **Statement Verification - MOSTLY WORKING:**
+          - ✅ Transfer appears in receiver's statement correctly
+          - ❌ Transfer not found in sender's statement (minor issue)
+          
+          **❌ CRITICAL ISSUE IDENTIFIED:**
+          
+          **Commission Entries Missing from Receiver Agent's Ledger:**
+          
+          **Expected (from review request):**
+          - Commission entry title: "عمولة مدفوعة من [sender] إلى [receiver] - واسط"
+          - Commission in ledger: debit: 0, credit: [amount]
+          - Transfer code visible in commission entry
+          
+          **Actual:**
+          - ❌ NO commission entries found in receiver agent's ledger
+          - ✅ Only transfer receipt entries found: "استلام حوالة..."
+          - ❌ No entries with "عمولة" or "commission" keywords
+          - ❌ No separate commission journal entries in ledger
+          
+          **ROOT CAUSE ANALYSIS:**
+          
+          The issue is in the **journal entry creation logic** during transfer receipt:
+          
+          1. **Admin Commissions Working:** Commission amounts are correctly calculated and stored in admin_commissions table
+          2. **Transfer Journal Entries Working:** Transfer receipt creates proper journal entries in ledger
+          3. **Commission Journal Entries MISSING:** The system is NOT creating separate commission journal entries in the receiver agent's ledger
+          
+          **Technical Investigation Required:**
+          
+          The backend code in `/api/transfers/{transfer_id}/receive` endpoint (around lines 2400-2500) needs to be checked:
+          - Commission calculation is working (admin_commissions table populated)
+          - Transfer journal entry creation is working (ledger shows transfer receipt)
+          - **MISSING:** Commission journal entry creation for receiver agent's ledger
+          
+          **Expected Commission Journal Entry:**
+          ```
+          Description: "عمولة مدفوعة من أحمد علي حسن إلى محمد سعد كريم - واسط"
+          Account: 501-04 (receiver agent account)
+          Debit: 0
+          Credit: 1250.0 (commission amount)
+          Reference: T-WS-20251203-000032-5
+          ```
+          
+          **IMMEDIATE ACTION REQUIRED:**
+          
+          The main agent should investigate the transfer receipt endpoint and ensure that:
+          1. Commission journal entries are created in the receiver agent's chart_of_accounts
+          2. Commission entries appear in the agent's ledger with proper Arabic titles
+          3. Commission entries include transfer codes and governorate information
+          4. Commission amounts are properly debited/credited as per accounting rules
+          
+          **VERIFICATION NEEDED:**
+          After fixing the commission journal entry creation, test should verify:
+          - Commission entries appear in receiver agent's ledger
+          - Commission titles follow format: "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
+          - Transfer codes are visible in commission entries
+          - Proper debit/credit amounts for commissions
+          
+          **CONCLUSION:**
+          
+          The transfer flow is **FULLY FUNCTIONAL** (91.3% success rate), but the **commission ledger entries are MISSING**. 
+          This is a critical accounting issue that prevents proper commission tracking in agent ledgers as requested 
+          in the Arabic review. The backend logic needs to be enhanced to create commission journal entries 
+          during transfer receipt.
+
 frontend:
   - task: "Ledger Link Access for User Role"
     implemented: true
