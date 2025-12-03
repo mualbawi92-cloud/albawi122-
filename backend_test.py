@@ -621,22 +621,19 @@ class TransferCommissionTester:
                 self.log_result("Cleanup", False, f"Error cleaning up {account_code}: {str(e)}")
     
     def run_all_tests(self):
-        """Run all Agent Registration Auto-Create tests"""
-        print("🚨 STARTING AGENT REGISTRATION AUTO-CREATE CHART OF ACCOUNTS TESTING")
+        """Run all Transfer and Commission tests"""
+        print("🚨 STARTING COMPREHENSIVE TRANSFER AND COMMISSION TESTING")
         print("=" * 80)
         
-        # Step 1: Authentication
+        # Step 1: Admin Authentication
         if not self.test_authentication():
-            print("❌ Authentication failed - cannot continue")
+            print("❌ Admin authentication failed - cannot continue")
             return False
         
-        # Step 2: Run agent registration auto-create tests
-        self.test_agent_registration_auto_create_comprehensive()
+        # Step 2: Run comprehensive transfer and commission tests
+        self.test_comprehensive_transfer_commission_flow()
         
-        # Step 3: Cleanup
-        self.cleanup_test_accounts()
-        
-        # Step 4: Print summary
+        # Step 3: Print summary
         self.print_test_summary()
         
         return True
