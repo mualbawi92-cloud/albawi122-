@@ -55,11 +55,17 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppRoutes() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+
+  // Determine redirect based on user role
+  const getRedirectPath = () => {
+    if (!user) return '/dashboard';
+    return user.role === 'admin' ? '/admin/dashboard' : '/dashboard';
+  };
 
   return (
     <Routes>
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} />
+      <Route path="/login" element={isAuthenticated ? <Navigate to={getRedirectPath()} /> : <LoginPage />} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       <Route path="/transfers" element={<ProtectedRoute><TransfersListPage /></ProtectedRoute>} />
       <Route path="/quick-receive" element={<ProtectedRoute><QuickReceiveTransferPage /></ProtectedRoute>} />
