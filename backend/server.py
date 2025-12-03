@@ -733,6 +733,7 @@ class User(BaseModel):
     account_code: Optional[str] = None  # رقم الحساب المحاسبي
     account_id: Optional[str] = None  # رقم الحساب المحاسبي (للتوافق)
     agent_id: Optional[str] = None  # معرف الوكيل (للمستخدمين)
+    agent_display_name: Optional[str] = None  # اسم الوكيل (للعرض فقط)
     is_active: bool = True
     wallet_balance_iqd: float = 0.0
     wallet_balance_usd: float = 0.0
