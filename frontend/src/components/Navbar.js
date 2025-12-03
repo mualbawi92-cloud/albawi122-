@@ -411,6 +411,19 @@ const Navbar = () => {
                 📊 دفتر الأستاذ الخاص
               </Button>
             )}
+            {user?.role === 'user' && (
+              <Button
+                onClick={() => {
+                  navigate('/agent-ledger');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-user-ledger"
+              >
+                📊 دفتر الأستاذ
+              </Button>
+            )}
             
             {/* Agent Commissions Dropdown for Mobile */}
             {user?.role === 'agent' && (
