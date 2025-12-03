@@ -141,7 +141,7 @@ class AccountCodeBugTester:
             "phone": "+9647801234567",
             "governorate": "BG",
             "address": "Test Address",
-            "account_code": "1002",  # THIS IS THE KEY FIELD!
+            "account_code": "1003",  # THIS IS THE KEY FIELD!
             "role": "agent"
         }
         
