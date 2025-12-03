@@ -5530,9 +5530,9 @@ async def get_agent_ledger(
         
         # Filter and add journal entries (with currency filtering)
         for entry in journal_entries:
-            # Skip transfer-created and commission_earned (already added from outgoing transfers)
-            # But KEEP commission_received and transfer_received journal entries
-            if entry.get('reference_type') in ['transfer_created', 'commission_earned']:
+            # Skip ALL transfer-related entries (already added from transfers)
+            # This includes: transfer_created, commission_earned, transfer_received, commission_received
+            if entry.get('reference_type') in ['transfer_created', 'commission_earned', 'transfer_received', 'commission_received']:
                 if entry.get('reference_id') in transfer_ids:
                     continue
             
