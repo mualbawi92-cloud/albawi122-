@@ -1819,8 +1819,12 @@ async def get_transfer_pin(transfer_id: str, current_user: dict = Depends(get_cu
     if not transfer:
         raise HTTPException(status_code=404, detail="الحوالة غير موجودة")
     
-    # Only sender or admin can view PIN
-    if current_user['role'] != 'admin' and transfer['from_agent_id'] != current_user['id']:
+    # Only sender (agent or agent's user) or admin can view PIN
+    user_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+    
+    if (current_user['role'] != 'admin' and 
+        transfer['from_agent_id'] != current_user['id'] and 
+        transfer['from_agent_id'] != user_agent_id):
         raise HTTPException(status_code=403, detail="فقط المُرسل أو الأدمن يمكنه رؤية الرقم السري")
     
     # Decrypt and return PIN
