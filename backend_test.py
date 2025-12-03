@@ -551,10 +551,21 @@ class TransferCommissionTester:
         try:
             response = self.make_request('GET', '/admin-commissions', token=self.admin_token)
             if response.status_code == 200:
-                commissions = response.json()
+                commissions_data = response.json()
+                
+                # Handle different response formats
+                if isinstance(commissions_data, dict):
+                    commissions = commissions_data.get('commissions', [])
+                elif isinstance(commissions_data, list):
+                    commissions = commissions_data
+                else:
+                    commissions = []
                 
                 # Look for commissions related to our transfer
-                transfer_commissions = [c for c in commissions if c.get('transfer_id') == self.transfer_id]
+                transfer_commissions = []
+                for c in commissions:
+                    if isinstance(c, dict) and c.get('transfer_id') == self.transfer_id:
+                        transfer_commissions.append(c)
                 
                 if transfer_commissions:
                     self.log_result("Admin Commissions", True, 
@@ -567,7 +578,7 @@ class TransferCommissionTester:
                                       f"Amount: {amount}, Agent: {commission.get('agent_name', 'Unknown')}")
                 else:
                     self.log_result("Admin Commissions", False, 
-                                  f"No commission entries found for transfer")
+                                  f"No commission entries found for transfer. Total commissions: {len(commissions)}")
             else:
                 self.log_result("Admin Commissions Access", False, 
                               f"Failed to access admin commissions: {response.status_code}")
