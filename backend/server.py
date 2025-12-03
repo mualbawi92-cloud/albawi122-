@@ -1251,13 +1251,32 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     
     transfer_id = str(uuid.uuid4())
     
+    # Determine the actual agent for this transfer
+    # If current user is a regular user, use their linked agent
+    # If current user is an agent, use them directly
+    actual_agent_id = current_user['id']
+    actual_agent_name = current_user['display_name']
+    
+    if current_user['role'] == 'user':
+        # User is creating transfer on behalf of their agent
+        if not current_user.get('agent_id'):
+            raise HTTPException(status_code=400, detail="المستخدم غير مربوط بصراف")
+        
+        # Fetch the agent details
+        agent = await db.users.find_one({'id': current_user['agent_id']}, {'_id': 0})
+        if not agent:
+            raise HTTPException(status_code=400, detail="الصراف المربوط غير موجود")
+        
+        actual_agent_id = agent['id']
+        actual_agent_name = agent['display_name']
+    
     # Calculate commission from commission rates (نشرة الأسعار)
     commission_percentage = 0.0
     commission = 0.0
     
     # Try to get commission rate for this agent
     commission_rates = await db.commission_rates.find({
-        'agent_id': current_user['id'],
+        'agent_id': actual_agent_id,
         'currency': transfer_data.currency
     }).to_list(length=None)
     
