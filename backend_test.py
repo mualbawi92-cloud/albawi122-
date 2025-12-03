@@ -468,62 +468,82 @@ class TransferCommissionTester:
             self.log_result("Ledger Commission Check", False, f"Error: {str(e)}")
             return False
     
-    def test_account_details_verification(self):
-        """Phase 5: Account Details Verification"""
-        print("\n=== Phase 5: Account Details Verification ===")
+    def test_additional_verification(self):
+        """Phase 5: Additional verification and edge cases"""
+        print("\n=== Phase 5: Additional Verification ===")
         
-        # Test governorate mapping
-        governorate_tests = [
-            ("BG", "بغداد"),
-            ("BS", "البصرة"),
-            ("NJ", "النجف")
-        ]
-        
-        for gov_code, expected_name in governorate_tests:
-            try:
-                test_agent_data = {
-                    "username": f"test_gov_{gov_code}_{int(time.time())}",
-                    "password": "test123",
-                    "display_name": f"صيرفة {expected_name}",
-                    "phone": "07701234571",
-                    "governorate": gov_code,
-                    "role": "agent",
-                    "wallet_limit_iqd": 5000000,
-                    "wallet_limit_usd": 10000
-                }
+        # Test 1: Verify transfer appears in sender's statement
+        try:
+            response = self.make_request('GET', f'/agents/{self.sender_user["id"]}/statement', 
+                                       token=self.admin_token)
+            if response.status_code == 200:
+                statement_data = response.json()
+                transfers = statement_data.get('transfers', [])
                 
-                response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
-                if response.status_code in [200, 201]:
-                    agent_data = response.json()
-                    account_code = agent_data.get('account_code')
-                    
-                    if account_code:
-                        # Get account details
-                        account_response = self.make_request('GET', f'/accounting/accounts/{account_code}', token=self.admin_token)
-                        if account_response.status_code == 200:
-                            account_data = account_response.json()
-                            account_name = account_data.get('name_ar', '')
-                            
-                            if expected_name in account_name:
-                                self.log_result(f"Governorate Mapping - {gov_code}", True, 
-                                              f"Correct governorate name in account: {account_name}")
-                            else:
-                                self.log_result(f"Governorate Mapping - {gov_code}", False, 
-                                              f"Incorrect governorate name: {account_name}")
-                        else:
-                            self.log_result(f"Governorate Mapping - {gov_code}", False, 
-                                          f"Failed to get account details: {account_response.status_code}")
-                    else:
-                        self.log_result(f"Governorate Mapping - {gov_code}", False, 
-                                      f"No account_code returned")
+                # Look for our transfer
+                our_transfer = next((t for t in transfers if t.get('id') == self.transfer_id), None)
+                
+                if our_transfer:
+                    self.log_result("Transfer in Sender Statement", True, 
+                                  f"Transfer found in sender's statement: {our_transfer.get('transfer_code')}")
                 else:
-                    self.log_result(f"Governorate Mapping - {gov_code}", False, 
-                                  f"Failed to register agent: {response.status_code}")
+                    self.log_result("Transfer in Sender Statement", False, 
+                                  f"Transfer not found in sender's statement")
+            else:
+                self.log_result("Sender Statement Access", False, 
+                              f"Failed to access sender statement: {response.status_code}")
+        except Exception as e:
+            self.log_result("Sender Statement Check", False, f"Error: {str(e)}")
+        
+        # Test 2: Verify transfer appears in receiver's statement
+        try:
+            response = self.make_request('GET', f'/agents/{self.receiver_user["id"]}/statement', 
+                                       token=self.admin_token)
+            if response.status_code == 200:
+                statement_data = response.json()
+                transfers = statement_data.get('transfers', [])
                 
-                time.sleep(1)  # Small delay
+                # Look for our transfer
+                our_transfer = next((t for t in transfers if t.get('id') == self.transfer_id), None)
                 
-            except Exception as e:
-                self.log_result(f"Governorate Mapping - {gov_code}", False, f"Error: {str(e)}")
+                if our_transfer:
+                    self.log_result("Transfer in Receiver Statement", True, 
+                                  f"Transfer found in receiver's statement: {our_transfer.get('transfer_code')}")
+                else:
+                    self.log_result("Transfer in Receiver Statement", False, 
+                                  f"Transfer not found in receiver's statement")
+            else:
+                self.log_result("Receiver Statement Access", False, 
+                              f"Failed to access receiver statement: {response.status_code}")
+        except Exception as e:
+            self.log_result("Receiver Statement Check", False, f"Error: {str(e)}")
+        
+        # Test 3: Check admin commissions
+        try:
+            response = self.make_request('GET', '/admin-commissions', token=self.admin_token)
+            if response.status_code == 200:
+                commissions = response.json()
+                
+                # Look for commissions related to our transfer
+                transfer_commissions = [c for c in commissions if c.get('transfer_id') == self.transfer_id]
+                
+                if transfer_commissions:
+                    self.log_result("Admin Commissions", True, 
+                                  f"Found {len(transfer_commissions)} commission entries for transfer")
+                    
+                    for commission in transfer_commissions:
+                        comm_type = commission.get('type', '')
+                        amount = commission.get('amount', 0)
+                        self.log_result(f"Commission Type: {comm_type}", True, 
+                                      f"Amount: {amount}, Agent: {commission.get('agent_name', 'Unknown')}")
+                else:
+                    self.log_result("Admin Commissions", False, 
+                                  f"No commission entries found for transfer")
+            else:
+                self.log_result("Admin Commissions Access", False, 
+                              f"Failed to access admin commissions: {response.status_code}")
+        except Exception as e:
+            self.log_result("Admin Commissions Check", False, f"Error: {str(e)}")
         
         return True
 
