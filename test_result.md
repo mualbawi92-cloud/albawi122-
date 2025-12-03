@@ -820,106 +820,110 @@ backend:
       - working: false
         agent: "testing"
         comment: |
-          ❌ **COMPREHENSIVE TRANSFER AND COMMISSION TESTING COMPLETED - CRITICAL COMMISSION LEDGER ISSUE FOUND**
+          ❌ **RE-TEST COMMISSION LEDGER ISSUE - CRITICAL FAILURE CONFIRMED**
           
           **Test Date:** December 3, 2025
-          **Test Focus:** Complete testing of transfer creation, receipt, and commission ledger verification as requested in Arabic review
+          **Test Focus:** Re-testing commission ledger for receiver agent as requested in Arabic review
           
-          **Test Scenario Executed:**
-          1. ✅ Login as testuser123 (صيرفة النور)
-          2. ✅ Create transfer to governorate WA (واسط) - Amount: 500,000 IQD
-          3. ✅ Get tracking_number (10 digits) and PIN (4 digits)
-          4. ✅ Setup/Login as receiver agent in WA governorate (صيرفة أور - واسط)
-          5. ✅ Receive transfer using tracking_number and PIN with ID image upload
-          6. ❌ **CRITICAL ISSUE:** Commission entries NOT appearing in receiver agent's ledger
+          **Review Request Verification:**
+          1. ✅ Create transfer from testuser123 to WA governorate - SUCCESS
+          2. ✅ Receive transfer as agent in WA - SUCCESS  
+          3. ❌ **CRITICAL FAILURE:** Commission entry NOT appearing in receiver agent's ledger
           
-          **✅ SUCCESSFUL COMPONENTS (91.3% success rate - 21/23 tests passed):**
+          **Test Results Summary:**
+          - **Total Tests:** 26 comprehensive test scenarios
+          - **Passed:** 23 (88.5% success rate)
+          - **Failed:** 3 (critical commission issue confirmed)
           
-          **Transfer Flow - FULLY FUNCTIONAL:**
-          - ✅ Sender authentication (testuser123) working correctly
-          - ✅ Transfer creation successful: T-WS-20251203-000032-5
-          - ✅ Tracking number format correct: 10 digits (2422931082)
-          - ✅ PIN format correct: 4 digits (1436)
-          - ✅ Transfer amount and governorate correctly set
-          - ✅ Receiver agent setup and authentication working
-          - ✅ Transfer search by tracking number working
-          - ✅ Transfer receipt with ID image upload successful
-          - ✅ Transfer status updated to 'completed' correctly
+          **✅ TRANSFER FLOW VERIFICATION - FULLY FUNCTIONAL:**
           
-          **Commission Recording - PARTIALLY WORKING:**
-          - ✅ Admin commissions being recorded correctly in admin_commissions table
-          - ✅ Found 2 commission entries: 1250.0 IQD each for sender and receiver
-          - ✅ Commission types: "earned" for both agents
+          1. **Sender Authentication:** ✅ testuser123 login successful (مستخدم تجريبي)
+          2. **Transfer Creation:** ✅ T-WS-20251203-000034-3 created successfully
+          3. **Transfer Details:** ✅ Amount: 500,000 IQD, Governorate: WS (واسط)
+          4. **Tracking Number:** ✅ 10-digit format correct (5008741699)
+          5. **PIN Generation:** ✅ 4-digit format correct (1201)
+          6. **Receiver Agent Setup:** ✅ Found existing agent in واسط: صيرفة أور - واسط
+          7. **Transfer Search:** ✅ Found transfer by tracking number
+          8. **Transfer Receipt:** ✅ Transfer received successfully with ID image upload
+          9. **Status Update:** ✅ Transfer status updated to 'completed'
           
-          **Ledger Access - WORKING:**
-          - ✅ Receiver agent ledger accessible (account 501-04)
-          - ✅ Transfer receipt entries appearing in ledger: "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم"
-          - ✅ Transfer amounts correctly credited (500,000 IQD)
+          **✅ LEDGER ACCESS VERIFICATION - WORKING:**
           
-          **Statement Verification - MOSTLY WORKING:**
-          - ✅ Transfer appears in receiver's statement correctly
-          - ❌ Transfer not found in sender's statement (minor issue)
+          1. **Ledger Access:** ✅ Successfully accessed receiver agent's ledger (account 501-04)
+          2. **Transfer Entries:** ✅ Found 4 transfer receipt entries in ledger
+          3. **Entry Format:** ✅ "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000034-3"
+          4. **Transfer Amounts:** ✅ All transfers correctly credited (500,000 IQD each)
+          5. **Transfer Code Visibility:** ✅ Transfer codes visible in transfer entries
           
-          **❌ CRITICAL ISSUE IDENTIFIED:**
+          **❌ CRITICAL ISSUE CONFIRMED - COMMISSION ENTRIES MISSING:**
           
-          **Commission Entries Missing from Receiver Agent's Ledger:**
+          **Expected Commission Entry (from review request):**
+          - Entry title: "عمولة مدفوعة من [sender] إلى [receiver] - واسط"
+          - Type: commission_received
+          - Debit: 0, Credit: [commission amount]
+          - Transfer code visible
           
-          **Expected (from review request):**
-          - Commission entry title: "عمولة مدفوعة من [sender] إلى [receiver] - واسط"
-          - Commission in ledger: debit: 0, credit: [amount]
-          - Transfer code visible in commission entry
+          **Actual Result:**
+          - ❌ **NO commission entries found in receiver agent's ledger (account 501-04)**
+          - ❌ **NO entries containing "عمولة" keyword**
+          - ❌ **NO commission-related journal entries in agent's account**
+          - ✅ Only transfer receipt entries present
           
-          **Actual:**
-          - ❌ NO commission entries found in receiver agent's ledger
-          - ✅ Only transfer receipt entries found: "استلام حوالة..."
-          - ❌ No entries with "عمولة" or "commission" keywords
-          - ❌ No separate commission journal entries in ledger
+          **🚨 ROOT CAUSE ANALYSIS:**
           
-          **ROOT CAUSE ANALYSIS:**
+          **Backend Investigation Results:**
+          1. **Commission Calculation:** ✅ Working correctly (admin_commissions table populated)
+          2. **Commission Recording:** ✅ Found 2 commission entries in admin_commissions
+             - Type: "earned", Amount: 1250.0 IQD each for sender and receiver
+          3. **Transfer Journal Entries:** ✅ Working correctly (transfer entries in ledger)
+          4. **Commission Journal Entries:** ❌ **MISSING from receiver agent's ledger**
           
-          The issue is in the **journal entry creation logic** during transfer receipt:
+          **Technical Root Cause:**
+          The `/api/transfers/{transfer_id}/receive` endpoint (lines 2446-2516) creates commission journal entries in:
+          - Account 701: عمولات مدفوعة (Paid Commissions)
+          - Account 601: عمولات محققة (Earned Commissions)
           
-          1. **Admin Commissions Working:** Commission amounts are correctly calculated and stored in admin_commissions table
-          2. **Transfer Journal Entries Working:** Transfer receipt creates proper journal entries in ledger
-          3. **Commission Journal Entries MISSING:** The system is NOT creating separate commission journal entries in the receiver agent's ledger
+          **BUT MISSING:** Commission entry in receiver agent's account (501-04) as required by review request.
           
-          **Technical Investigation Required:**
-          
-          The backend code in `/api/transfers/{transfer_id}/receive` endpoint (around lines 2400-2500) needs to be checked:
-          - Commission calculation is working (admin_commissions table populated)
-          - Transfer journal entry creation is working (ledger shows transfer receipt)
-          - **MISSING:** Commission journal entry creation for receiver agent's ledger
-          
-          **Expected Commission Journal Entry:**
+          **Expected Additional Journal Entry:**
           ```
           Description: "عمولة مدفوعة من أحمد علي حسن إلى محمد سعد كريم - واسط"
           Account: 501-04 (receiver agent account)
           Debit: 0
           Credit: 1250.0 (commission amount)
-          Reference: T-WS-20251203-000032-5
+          Reference: T-WS-20251203-000034-3
           ```
+          
+          **✅ ADDITIONAL VERIFICATION:**
+          
+          1. **Admin Commissions:** ✅ Commission entries correctly recorded in admin_commissions table
+          2. **Receiver Statement:** ✅ Transfer appears in receiver's statement
+          3. **Commission Types:** ✅ Both "earned" commission entries found
+          4. **Commission Amounts:** ✅ Correct amounts (1250.0 IQD each)
+          
+          **❌ FAILED TESTS:**
+          1. **Commission Entries Missing:** NO commission entries in receiver agent's ledger
+          2. **Commission Ledger Verification:** Commission entries NOT appearing as required
+          3. **Transfer in Sender Statement:** Transfer not found in sender's statement (minor issue)
           
           **IMMEDIATE ACTION REQUIRED:**
           
-          The main agent should investigate the transfer receipt endpoint and ensure that:
-          1. Commission journal entries are created in the receiver agent's chart_of_accounts
-          2. Commission entries appear in the agent's ledger with proper Arabic titles
-          3. Commission entries include transfer codes and governorate information
-          4. Commission amounts are properly debited/credited as per accounting rules
+          The main agent must modify the `/api/transfers/{transfer_id}/receive` endpoint to create an additional journal entry:
+          1. **Add commission entry in receiver agent's account** (not just in general commission accounts)
+          2. **Use proper Arabic title format:** "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
+          3. **Include transfer code in commission entry description**
+          4. **Set proper debit/credit:** debit: 0, credit: [commission amount]
           
           **VERIFICATION NEEDED:**
-          After fixing the commission journal entry creation, test should verify:
-          - Commission entries appear in receiver agent's ledger
-          - Commission titles follow format: "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
-          - Transfer codes are visible in commission entries
-          - Proper debit/credit amounts for commissions
+          After fix, re-test should confirm:
+          - Commission entry appears in receiver agent's ledger (account 501-04)
+          - Commission title follows exact format from review request
+          - Transfer code visible in commission entry
+          - Proper debit: 0, credit: [amount] structure
           
           **CONCLUSION:**
           
-          The transfer flow is **FULLY FUNCTIONAL** (91.3% success rate), but the **commission ledger entries are MISSING**. 
-          This is a critical accounting issue that prevents proper commission tracking in agent ledgers as requested 
-          in the Arabic review. The backend logic needs to be enhanced to create commission journal entries 
-          during transfer receipt.
+          The commission ledger issue from the review request is **CONFIRMED and CRITICAL**. While the transfer flow works perfectly (88.5% success rate), the specific requirement for commission entries to appear in the receiver agent's ledger is **NOT IMPLEMENTED**. This prevents proper commission tracking as requested in the Arabic review.
 
 frontend:
   - task: "Ledger Link Access for User Role"
