@@ -1068,16 +1068,11 @@ async def login(credentials: LoginRequest, request: Request):
     user.pop('_id', None)
     
     # If user has an agent_id, fetch and add agent_display_name
-    print(f"DEBUG: user role = {user.get('role')}, agent_id = {user.get('agent_id')}")
     if user.get('role') == 'user' and user.get('agent_id'):
-        print(f"DEBUG: Fetching agent...")
         agent = await db.users.find_one({'id': user['agent_id']}, {'_id': 0, 'display_name': 1})
-        print(f"DEBUG: Agent = {agent}")
         if agent:
             user['agent_display_name'] = agent['display_name']
-            print(f"DEBUG: Set agent_display_name = {agent['display_name']}")
     
-    print(f"DEBUG: Final user = {user.get('display_name')}, agent_display_name = {user.get('agent_display_name', 'NOT SET')}")
     return {'access_token': access_token, 'user': user}
 
 @api_router.get("/agents", response_model=List[User])
