@@ -22,6 +22,7 @@ const AgentLedgerPage = () => {
   const [dateTo, setDateTo] = useState(new Date().toISOString().split('T')[0]);
   const [selectedCurrency, setSelectedCurrency] = useState('');
   const [enabledCurrencies, setEnabledCurrencies] = useState([]);
+  const [agentName, setAgentName] = useState(null);
 
   // Only agents and users can access this page
   if (user?.role !== 'agent' && user?.role !== 'user') {
