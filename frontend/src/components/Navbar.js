@@ -101,6 +101,16 @@ const Navbar = () => {
                 📊 دفتر الأستاذ الخاص
               </Button>
             )}
+            {user?.role === 'user' && (
+              <Button
+                onClick={() => navigate('/agent-ledger')}
+                variant="ghost"
+                className="text-white hover:bg-white/10 font-bold text-sm"
+                data-testid="nav-user-ledger"
+              >
+                📊 دفتر الأستاذ
+              </Button>
+            )}
             
             {/* Agent Commissions Dropdown Menu */}
             {user?.role === 'agent' && (
