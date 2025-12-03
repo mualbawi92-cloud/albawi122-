@@ -2445,7 +2445,7 @@ async def receive_transfer(
             
             # قيد 2: العمولة المحققة (إذا وجدت)
             # مدين: عمولات مدفوعة (عند المدير)
-            # دائن: عمولات محققة (عند الوكيل المستلم)
+            # دائن: حساب الوكيل المستلم (العمولة تضاف لحساب الوكيل)
             if incoming_commission > 0:
                 # Get paid commission account from chart_of_accounts
                 paid_commission_account = await db.chart_of_accounts.find_one({'code': '701'})
@@ -2469,21 +2469,26 @@ async def receive_transfer(
                     }
                     await db.chart_of_accounts.insert_one(paid_commission_account)
                 
+                # Get governorate name
+                gov_name = GOVERNORATE_CODE_TO_NAME.get(transfer.get('to_governorate', ''), transfer.get('to_governorate', ''))
+                
                 journal_entry_commission = {
                     'id': str(uuid.uuid4()),
                     'entry_number': f"COM-REC-{transfer['transfer_code']}",
                     'date': datetime.now(timezone.utc).isoformat(),
-                    'description': f'عمولة محققة على استلام حوالة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {transfer["transfer_code"]}',
+                    'description': f'عمولة مدفوعة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {gov_name}',
                     'lines': [
                         {
                             'account_code': '701',  # عمولات مدفوعة (مدين - مصروف عند المدير)
                             'debit': incoming_commission,
-                            'credit': 0
+                            'credit': 0,
+                            'currency': transfer['currency']
                         },
                         {
-                            'account_code': '601',  # عمولات محققة (دائن - إيراد عند الوكيل المستلم)
+                            'account_code': receiver_account['code'],  # حساب الوكيل المستلم (دائن - العمولة تضاف للوكيل)
                             'debit': 0,
-                            'credit': incoming_commission
+                            'credit': incoming_commission,
+                            'currency': transfer['currency']
                         }
                     ],
                     'total_debit': incoming_commission,
@@ -2499,18 +2504,19 @@ async def receive_transfer(
                 
                 # Update balances for commission
                 # عمولات مدفوعة (مصروف يزداد بالمدين)
+                currency_field = f'balance_{transfer["currency"].lower()}'
                 await db.chart_of_accounts.update_one(
                     {'code': '701'},
-                    {'$inc': {'balance': incoming_commission, 'balance_iqd': incoming_commission}}
+                    {'$inc': {'balance': incoming_commission, currency_field: incoming_commission}}
                 )
                 
-                # عمولات محققة (إيراد يزداد بالدائن)
+                # حساب الوكيل المستلم (يزداد بالدائن)
                 await db.chart_of_accounts.update_one(
-                    {'code': '601'},
-                    {'$inc': {'balance': incoming_commission, 'balance_iqd': incoming_commission}}
+                    {'code': receiver_account['code']},
+                    {'$inc': {'balance': incoming_commission, currency_field: incoming_commission}}
                 )
                 
-                logger.info(f"Created journal entry for paid commission on transfer {transfer['transfer_code']}")
+                logger.info(f"Created journal entry for commission paid to receiver on transfer {transfer['transfer_code']}")
     except Exception as e:
         logger.error(f"Error creating journal entry for receiving transfer: {str(e)}")
     # ============ END ACCOUNTING ENTRY ============
