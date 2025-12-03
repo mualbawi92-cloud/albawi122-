@@ -5416,11 +5416,22 @@ async def get_agent_ledger(
     for transfer in outgoing_transfers:
         if transfer.get('currency') != currency:
             continue
+        
+        # Get governorate name
+        gov_code = transfer.get('to_governorate', '')
+        gov_names = {
+            'BG': 'بغداد', 'BA': 'البصرة', 'NJ': 'النجف', 'KR': 'كربلاء',
+            'AN': 'الأنبار', 'NI': 'نينوى', 'AR': 'أربيل', 'SU': 'السليمانية',
+            'DH': 'ذي قار', 'DI': 'ديالى', 'KI': 'كركوك', 'WA': 'واسط',
+            'SA': 'صلاح الدين', 'QA': 'القادسية', 'MY': 'ميسان', 'MU': 'المثنى',
+            'BA': 'بابل', 'DU': 'دهوك'
+        }
+        gov_name = gov_names.get(gov_code, gov_code)
             
         transactions.append({
             'date': transfer['created_at'],
             'type': 'outgoing',
-            'description': f"حوالة صادرة - {transfer['transfer_code']} إلى {transfer.get('receiver_name', 'غير معروف')}",
+            'description': f"حوالة صادرة من {transfer.get('sender_name', 'غير معروف')} إلى {transfer.get('receiver_name', 'غير معروف')} - {gov_name}",
             'debit': transfer['amount'],
             'credit': 0,
             'balance': 0,  # Will calculate later
@@ -5429,14 +5440,14 @@ async def get_agent_ledger(
             'transfer_code': transfer['transfer_code']
         })
         
-        # Add commission earned
+        # Add commission earned (مدين من حساب الوكيل)
         if transfer.get('commission', 0) > 0:
             transactions.append({
                 'date': transfer['created_at'],
                 'type': 'commission_earned',
-                'description': f"عمولة محققة - {transfer['transfer_code']}",
-                'debit': 0,
-                'credit': transfer['commission'],
+                'description': f"عمولة مدفوعة من {transfer.get('sender_name', 'غير معروف')} إلى {transfer.get('receiver_name', 'غير معروف')} - {gov_name}",
+                'debit': transfer['commission'],
+                'credit': 0,
                 'balance': 0,
                 'currency': transfer['currency'],
                 'transfer_id': transfer['id'],
