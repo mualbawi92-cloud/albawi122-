@@ -296,132 +296,57 @@ class TransferCommissionTester:
             self.log_result("Create Receiver Agent", False, f"Error: {str(e)}")
             return False
     
-    def test_validation_tests(self):
-        """Phase 3: Validation Tests"""
-        print("\n=== Phase 3: Validation Tests ===")
+    def test_receive_transfer(self):
+        """Phase 3: Receive transfer using tracking number and PIN"""
+        print("\n=== Phase 3: Receive Transfer ===")
         
-        # Test 1: Try to register agent with invalid account_code (doesn't exist)
+        if not hasattr(self, 'tracking_number') or not hasattr(self, 'pin'):
+            self.log_result("Transfer Receipt", False, "No tracking number or PIN available from transfer creation")
+            return False
+        
+        # Create test ID image (base64 encoded small image)
+        test_id_image_base64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        
+        # Prepare receipt data
+        receipt_data = {
+            "pin": self.pin,
+            "receiver_fullname": "محمد سعد كريم",
+            "id_image": test_id_image_base64
+        }
+        
         try:
-            invalid_agent_data = {
-                "username": f"test_invalid_{int(time.time())}",
-                "password": "test123",
-                "display_name": "صيرفة اختبار خطأ",
-                "phone": "07701234568",
-                "governorate": "BG",
-                "role": "agent",
-                "account_code": "9999",  # Non-existent account
-                "wallet_limit_iqd": 5000000,
-                "wallet_limit_usd": 10000
-            }
+            # Receive transfer
+            response = self.make_request('POST', f'/transfers/{self.tracking_number}/receive', 
+                                       token=self.receiver_token, json=receipt_data)
             
-            response = self.make_request('POST', '/register', token=self.admin_token, json=invalid_agent_data)
-            if response.status_code == 404:
-                error_text = response.text
-                if "9999" in error_text and "غير موجود" in error_text:
-                    self.log_result("Validation - Invalid Account Code", True, 
-                                  f"Properly rejected invalid account with Arabic error: {error_text}")
-                else:
-                    self.log_result("Validation - Invalid Account Code", True, 
-                                  f"Properly rejected invalid account: {response.status_code}")
-            else:
-                self.log_result("Validation - Invalid Account Code", False, 
-                              f"Should have rejected invalid account: {response.status_code}")
-        except Exception as e:
-            self.log_result("Validation - Invalid Account Code", False, f"Error: {str(e)}")
-        
-        # Test 2: Try to register agent with account from wrong category
-        try:
-            # First create an account in different category
-            wrong_category_code = "1999"
-            wrong_category_account = {
-                "code": wrong_category_code,
-                "name_ar": "حساب أصول تجريبي",
-                "name_en": "Test Assets Account",
-                "category": "أصول",  # Wrong category (should be شركات الصرافة)
-                "currencies": ["IQD", "USD"]
-            }
-            
-            create_response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=wrong_category_account)
-            if create_response.status_code in [200, 201]:
-                self.test_account_codes.append(wrong_category_code)
+            if response.status_code in [200, 201]:
+                receipt_response = response.json()
+                self.log_result("Transfer Receipt", True, 
+                              f"Transfer received successfully: {receipt_response.get('message', 'Success')}")
                 
-                # Now try to use it for agent registration
-                wrong_category_agent = {
-                    "username": f"test_wrong_cat_{int(time.time())}",
-                    "password": "test123",
-                    "display_name": "صيرفة فئة خاطئة",
-                    "phone": "07701234569",
-                    "governorate": "BG",
-                    "role": "agent",
-                    "account_code": wrong_category_code,
-                    "wallet_limit_iqd": 5000000,
-                    "wallet_limit_usd": 10000
-                }
-                
-                response = self.make_request('POST', '/register', token=self.admin_token, json=wrong_category_agent)
-                if response.status_code == 400:
-                    error_text = response.text
-                    if "شركات الصرافة" in error_text:
-                        self.log_result("Validation - Wrong Category", True, 
-                                      f"Properly rejected wrong category with Arabic error")
+                # Verify transfer status changed to completed
+                transfer_response = self.make_request('GET', f'/transfers/{self.transfer_id}', 
+                                                    token=self.admin_token)
+                if transfer_response.status_code == 200:
+                    transfer_data = transfer_response.json()
+                    if transfer_data.get('status') == 'completed':
+                        self.log_result("Transfer Status Update", True, 
+                                      f"Transfer status updated to completed")
                     else:
-                        self.log_result("Validation - Wrong Category", True, 
-                                      f"Properly rejected wrong category: {response.status_code}")
+                        self.log_result("Transfer Status Update", False, 
+                                      f"Transfer status not updated: {transfer_data.get('status')}")
                 else:
-                    self.log_result("Validation - Wrong Category", False, 
-                                  f"Should have rejected wrong category: {response.status_code}")
-            else:
-                self.log_result("Validation - Wrong Category Setup", False, 
-                              f"Failed to create wrong category account: {create_response.status_code}")
-        except Exception as e:
-            self.log_result("Validation - Wrong Category", False, f"Error: {str(e)}")
-        
-        # Test 3: Try to register agent with account already linked
-        try:
-            # Get an existing agent with account_code
-            agents_response = self.make_request('GET', '/agents', token=self.admin_token)
-            if agents_response.status_code == 200:
-                agents = agents_response.json()
-                linked_agent = next((a for a in agents if a.get('account_code')), None)
+                    self.log_result("Transfer Status Check", False, 
+                                  f"Failed to check transfer status: {transfer_response.status_code}")
                 
-                if linked_agent:
-                    linked_account_code = linked_agent['account_code']
-                    
-                    # Try to register another agent with the same account_code
-                    duplicate_agent = {
-                        "username": f"test_duplicate_{int(time.time())}",
-                        "password": "test123",
-                        "display_name": "صيرفة مكررة",
-                        "phone": "07701234570",
-                        "governorate": "BG",
-                        "role": "agent",
-                        "account_code": linked_account_code,  # Already linked account
-                        "wallet_limit_iqd": 5000000,
-                        "wallet_limit_usd": 10000
-                    }
-                    
-                    response = self.make_request('POST', '/register', token=self.admin_token, json=duplicate_agent)
-                    if response.status_code == 400:
-                        error_text = response.text
-                        if "مرتبط بالفعل" in error_text or "already" in error_text.lower():
-                            self.log_result("Validation - Already Linked Account", True, 
-                                          f"Properly rejected already linked account with Arabic error")
-                        else:
-                            self.log_result("Validation - Already Linked Account", True, 
-                                          f"Properly rejected already linked account: {response.status_code}")
-                    else:
-                        self.log_result("Validation - Already Linked Account", False, 
-                                      f"Should have rejected already linked account: {response.status_code}")
-                else:
-                    self.log_result("Validation - Already Linked Account", False, 
-                                  f"No agents with account_code found for testing")
+                return True
             else:
-                self.log_result("Validation - Already Linked Account", False, 
-                              f"Failed to get agents: {agents_response.status_code}")
+                self.log_result("Transfer Receipt", False, 
+                              f"Failed to receive transfer: {response.status_code} - {response.text}")
+                return False
         except Exception as e:
-            self.log_result("Validation - Already Linked Account", False, f"Error: {str(e)}")
-        
-        return True
+            self.log_result("Transfer Receipt", False, f"Error: {str(e)}")
+            return False
     
     def test_sequential_code_generation(self):
         """Phase 4: Sequential Code Generation"""
