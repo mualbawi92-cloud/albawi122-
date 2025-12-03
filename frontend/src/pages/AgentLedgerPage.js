@@ -215,7 +215,7 @@ const AgentLedgerPage = () => {
                     onClick={() => {
                       const html = generateAccountingReportHTML(
                         '📊 دفتر الأستاذ الخاص',
-                        `${user?.display_name}`,
+                        `${user?.role === 'user' && agentName ? agentName : user?.display_name}`,
                         `من ${dateFrom} إلى ${dateTo}`,
                         [
                           { 
