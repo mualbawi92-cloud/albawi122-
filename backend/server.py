@@ -1432,15 +1432,17 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         sender_account_code = None
         
         # First try to get from chart_of_accounts (preferred)
-        agent_account = await db.chart_of_accounts.find_one({'agent_id': current_user['id']})
+        # Use actual_agent_id instead of current_user['id'] to get correct agent's account
+        agent_account = await db.chart_of_accounts.find_one({'agent_id': actual_agent_id})
         if agent_account:
             sender_account_code = agent_account['code']
-        # Fallback to account_id in user table
-        elif current_user.get('account_id'):
-            sender_account_code = current_user['account_id']
-        # Last fallback to account_code
-        elif current_user.get('account_code'):
-            sender_account_code = current_user['account_code']
+        else:
+            # Fallback: Get agent's account from users table
+            agent_user = await db.users.find_one({'id': actual_agent_id}, {'_id': 0})
+            if agent_user and agent_user.get('account_id'):
+                sender_account_code = agent_user['account_id']
+            elif agent_user and agent_user.get('account_code'):
+                sender_account_code = agent_user['account_code']
         
         if not sender_account_code:
             logger.error(f"❌ Agent {current_user['id']} ({current_user.get('display_name')}) has no linked account in chart_of_accounts!")
