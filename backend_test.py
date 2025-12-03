@@ -709,7 +709,7 @@ class TransferCommissionTester:
 
 def main():
     """Main execution function"""
-    tester = AgentRegistrationAutoCreateTester()
+    tester = TransferCommissionTester()
     
     try:
         success = tester.run_all_tests()
