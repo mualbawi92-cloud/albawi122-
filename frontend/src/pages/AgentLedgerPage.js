@@ -40,13 +40,29 @@ const AgentLedgerPage = () => {
   useEffect(() => {
     const fetchEnabledCurrencies = async () => {
       try {
-        // Fetch agent's account from chart of accounts
-        const response = await axios.get(`${API}/agents`);
-        const agents = response.data;
-        const currentAgent = agents.find(a => a.id === user?.id);
+        let accountId = null;
         
-        if (currentAgent && currentAgent.account_id) {
-          const accountResponse = await axios.get(`${API}/accounting/accounts/${currentAgent.account_id}`);
+        // If user is an agent, use their own account
+        if (user?.role === 'agent') {
+          const response = await axios.get(`${API}/agents`);
+          const agents = response.data;
+          const currentAgent = agents.find(a => a.id === user?.id);
+          accountId = currentAgent?.account_id;
+        }
+        // If user is a regular user, get their agent's account
+        else if (user?.role === 'user' && user?.agent_id) {
+          try {
+            const agentResponse = await axios.get(`${API}/agents/${user.agent_id}`, {
+              headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            accountId = agentResponse.data?.account_id;
+          } catch (err) {
+            console.error('Error fetching user agent:', err);
+          }
+        }
+        
+        if (accountId) {
+          const accountResponse = await axios.get(`${API}/accounting/accounts/${accountId}`);
           const currencies = accountResponse.data.currencies || ['IQD', 'USD'];
           setEnabledCurrencies(currencies);
           setSelectedCurrency(currencies[0]); // Set first currency as default
