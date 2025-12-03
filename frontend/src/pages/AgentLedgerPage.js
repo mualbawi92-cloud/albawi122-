@@ -144,7 +144,7 @@ const AgentLedgerPage = () => {
         <Card className="shadow-xl">
           <CardHeader className="bg-gradient-to-l from-blue-50 to-blue-100 border-b-4 border-blue-500">
             <CardTitle className="text-3xl text-blue-800">
-              📊 دفتر الأستاذ الخاص - {user?.role === 'user' && agentName ? agentName : user?.display_name}
+              📊 دفتر الأستاذ الخاص - {user?.agent_display_name || user?.display_name}
             </CardTitle>
             <CardDescription className="text-base text-blue-700">
               عرض جميع حركاتك المالية والحوالات
