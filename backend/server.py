@@ -2302,8 +2302,8 @@ async def receive_transfer(
             'currency': transfer['currency'],
             'transfer_id': transfer_id,
             'transfer_code': transfer['transfer_code'],
-            'agent_id': current_user['id'],
-            'agent_name': current_user['display_name'],
+            'agent_id': receiving_agent_id,
+            'agent_name': receiving_agent_name,
             'commission_percentage': incoming_commission_percentage,
             'note': f'عمولة مدفوعة للمستلم على حوالة واردة',
             'created_at': datetime.now(timezone.utc).isoformat()
