@@ -143,167 +143,72 @@ class TransferCommissionTester:
             self.log_result("Sender Login", False, f"Sender login error: {str(e)}")
             return False
     
-    def test_auto_create_account_no_code_provided(self):
-        """Phase 1: Auto-Create Account (No account_code provided)"""
-        print("\n=== Phase 1: Auto-Create Account (No account_code provided) ===")
+    def test_create_transfer(self):
+        """Phase 1: Create transfer from testuser123 to WA governorate"""
+        print("\n=== Phase 1: Create Transfer (صيرفة النور → واسط) ===")
         
-        # Test 1: Register new agent WITHOUT account_code
-        test_agent_username = f"test_agent_auto_{int(time.time())}"
-        test_agent_data = {
-            "username": test_agent_username,
-            "password": "test123",
-            "display_name": "صيرفة الاختبار التلقائي",
-            "phone": "07701234567",
-            "governorate": "BG",  # Baghdad
-            "role": "agent",
-            "wallet_limit_iqd": 5000000,
-            "wallet_limit_usd": 10000
-            # Note: No account_code provided - should auto-create
+        # Create transfer data
+        transfer_data = {
+            "sender_name": "أحمد علي حسن",
+            "sender_phone": "+9647801234567",
+            "receiver_name": "محمد سعد كريم",
+            "amount": 500000,  # 500,000 IQD
+            "currency": "IQD",
+            "to_governorate": "WS",  # واسط
+            "note": "حوالة اختبار شاملة"
         }
         
-        created_agent_id = None
-        created_account_code = None
-        
         try:
-            response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
+            response = self.make_request('POST', '/transfers', token=self.sender_token, json=transfer_data)
             if response.status_code in [200, 201]:
-                agent_data = response.json()
-                created_agent_id = agent_data.get('id')
-                created_account_code = agent_data.get('account_code')
+                transfer_response = response.json()
+                self.transfer_id = transfer_response.get('id')
+                self.transfer_code = transfer_response.get('transfer_code')
+                self.tracking_number = transfer_response.get('tracking_number')
+                self.pin = transfer_response.get('pin')
                 
-                if created_account_code:
-                    self.log_result("Auto-Create Agent Registration", True, 
-                                  f"Agent created successfully with auto-generated account: {created_account_code}")
-                    
-                    # Verify account code follows pattern (2001, 2002, etc.)
-                    if created_account_code.startswith('20') and created_account_code.isdigit():
-                        self.log_result("Auto-Create Account Code Pattern", True, 
-                                      f"Account code follows pattern: {created_account_code}")
-                    else:
-                        self.log_result("Auto-Create Account Code Pattern", False, 
-                                      f"Account code doesn't follow pattern: {created_account_code}")
+                self.log_result("Transfer Creation", True, 
+                              f"Transfer created successfully: {self.transfer_code}")
+                
+                # Verify tracking number is 10 digits
+                if self.tracking_number and len(self.tracking_number) == 10 and self.tracking_number.isdigit():
+                    self.log_result("Tracking Number Format", True, 
+                                  f"Tracking number is 10 digits: {self.tracking_number}")
                 else:
-                    self.log_result("Auto-Create Agent Registration", False, 
-                                  f"Agent created but no account_code returned")
+                    self.log_result("Tracking Number Format", False, 
+                                  f"Tracking number format incorrect: {self.tracking_number}")
+                
+                # Verify PIN is 4 digits
+                if self.pin and len(self.pin) == 4 and self.pin.isdigit():
+                    self.log_result("PIN Format", True, 
+                                  f"PIN is 4 digits: {self.pin}")
+                else:
+                    self.log_result("PIN Format", False, 
+                                  f"PIN format incorrect: {self.pin}")
+                
+                # Verify transfer details
+                if transfer_response.get('amount') == transfer_data['amount']:
+                    self.log_result("Transfer Amount", True, 
+                                  f"Transfer amount correct: {transfer_response.get('amount')}")
+                else:
+                    self.log_result("Transfer Amount", False, 
+                                  f"Transfer amount incorrect: {transfer_response.get('amount')}")
+                
+                if transfer_response.get('to_governorate') == transfer_data['to_governorate']:
+                    self.log_result("Transfer Governorate", True, 
+                                  f"Transfer governorate correct: {transfer_response.get('to_governorate')}")
+                else:
+                    self.log_result("Transfer Governorate", False, 
+                                  f"Transfer governorate incorrect: {transfer_response.get('to_governorate')}")
+                
+                return True
             else:
-                self.log_result("Auto-Create Agent Registration", False, 
-                              f"Failed to register agent: {response.status_code} - {response.text}")
+                self.log_result("Transfer Creation", False, 
+                              f"Failed to create transfer: {response.status_code} - {response.text}")
                 return False
         except Exception as e:
-            self.log_result("Auto-Create Agent Registration", False, f"Error: {str(e)}")
+            self.log_result("Transfer Creation", False, f"Error: {str(e)}")
             return False
-        
-        # Test 2: GET /api/agents - Verify agent appears with account_code
-        try:
-            response = self.make_request('GET', '/agents', token=self.admin_token)
-            if response.status_code == 200:
-                agents = response.json()
-                created_agent = next((a for a in agents if a.get('id') == created_agent_id), None)
-                
-                if created_agent and created_agent.get('account_code') == created_account_code:
-                    self.log_result("Auto-Create Agent in List", True, 
-                                  f"Agent appears in list with account_code: {created_account_code}")
-                else:
-                    self.log_result("Auto-Create Agent in List", False, 
-                                  f"Agent not found in list or missing account_code")
-            else:
-                self.log_result("Auto-Create Agent in List", False, 
-                              f"Failed to get agents: {response.status_code}")
-        except Exception as e:
-            self.log_result("Auto-Create Agent in List", False, f"Error: {str(e)}")
-        
-        # Test 3: GET /api/accounting/accounts - Verify new account created
-        try:
-            response = self.make_request('GET', '/accounting/accounts', token=self.admin_token)
-            if response.status_code == 200:
-                data = response.json()
-                if isinstance(data, dict) and 'accounts' in data:
-                    accounts = data['accounts']
-                else:
-                    accounts = data
-                
-                created_account = next((a for a in accounts if a.get('code') == created_account_code), None)
-                
-                if created_account:
-                    # Verify account details
-                    expected_name = f"صيرفة {test_agent_data['display_name']} - بغداد"
-                    actual_name = created_account.get('name_ar', '')
-                    
-                    if expected_name in actual_name or "صيرفة الاختبار التلقائي" in actual_name:
-                        self.log_result("Auto-Create Account Name Format", True, 
-                                      f"Account name format correct: {actual_name}")
-                    else:
-                        self.log_result("Auto-Create Account Name Format", False, 
-                                      f"Account name format incorrect: {actual_name}")
-                    
-                    # Verify category
-                    if created_account.get('category') == 'شركات الصرافة':
-                        self.log_result("Auto-Create Account Category", True, 
-                                      f"Account category correct: شركات الصرافة")
-                    else:
-                        self.log_result("Auto-Create Account Category", False, 
-                                      f"Account category incorrect: {created_account.get('category')}")
-                    
-                    # Verify agent_id linkage
-                    if created_account.get('agent_id') == created_agent_id:
-                        self.log_result("Auto-Create Account Agent Linkage", True, 
-                                      f"Account linked to agent: {created_agent_id}")
-                    else:
-                        self.log_result("Auto-Create Account Agent Linkage", False, 
-                                      f"Account not linked to agent")
-                else:
-                    self.log_result("Auto-Create Account in Chart", False, 
-                                  f"Account {created_account_code} not found in chart_of_accounts")
-            else:
-                self.log_result("Auto-Create Account in Chart", False, 
-                              f"Failed to get accounts: {response.status_code}")
-        except Exception as e:
-            self.log_result("Auto-Create Account in Chart", False, f"Error: {str(e)}")
-        
-        # Test 4: GET /api/accounting/accounts/{code} - Get the new account details
-        if created_account_code:
-            try:
-                response = self.make_request('GET', f'/accounting/accounts/{created_account_code}', token=self.admin_token)
-                if response.status_code == 200:
-                    account_data = response.json()
-                    
-                    # Verify all required fields
-                    required_fields = ['code', 'name_ar', 'name_en', 'category', 'currencies', 'balance_iqd', 'balance_usd']
-                    missing_fields = [field for field in required_fields if field not in account_data]
-                    
-                    if not missing_fields:
-                        self.log_result("Auto-Create Account Details Complete", True, 
-                                      f"Account has all required fields")
-                        
-                        # Verify currencies
-                        currencies = account_data.get('currencies', [])
-                        if 'IQD' in currencies and 'USD' in currencies:
-                            self.log_result("Auto-Create Account Currencies", True, 
-                                          f"Account has correct currencies: {currencies}")
-                        else:
-                            self.log_result("Auto-Create Account Currencies", False, 
-                                          f"Account currencies incorrect: {currencies}")
-                        
-                        # Verify initial balances
-                        balance_iqd = account_data.get('balance_iqd', None)
-                        balance_usd = account_data.get('balance_usd', None)
-                        
-                        if balance_iqd == 0.0 and balance_usd == 0.0:
-                            self.log_result("Auto-Create Account Initial Balances", True, 
-                                          f"Initial balances correct: IQD={balance_iqd}, USD={balance_usd}")
-                        else:
-                            self.log_result("Auto-Create Account Initial Balances", False, 
-                                          f"Initial balances incorrect: IQD={balance_iqd}, USD={balance_usd}")
-                    else:
-                        self.log_result("Auto-Create Account Details Complete", False, 
-                                      f"Missing fields: {missing_fields}")
-                else:
-                    self.log_result("Auto-Create Account Details", False, 
-                                  f"Failed to get account details: {response.status_code}")
-            except Exception as e:
-                self.log_result("Auto-Create Account Details", False, f"Error: {str(e)}")
-        
-        return True
     
     def test_manual_account_selection(self):
         """Phase 2: Manual Account Selection (account_code provided)"""
