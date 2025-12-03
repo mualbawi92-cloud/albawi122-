@@ -265,10 +265,6 @@ const CreateTransferPage = () => {
               <div class="value">${result.amount.toLocaleString()} ${result.currency}</div>
             </div>
             <div>
-              <div class="label">رمز الحوالة</div>
-              <div class="value">${result.transfer_code}</div>
-            </div>
-            <div>
               <div class="label">إلى محافظة</div>
               <div class="value">${result.to_governorate}</div>
             </div>
