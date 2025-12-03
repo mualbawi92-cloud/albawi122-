@@ -5441,10 +5441,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Agent Users Management Features Testing"
-  stuck_tasks: []
+    - "Commission Ledger Entries for Receiver Agent"
+  stuck_tasks:
+    - "Comprehensive Transfer and Commission Testing"
   test_all: false
-  test_priority: "high_first"
+  test_priority: "stuck_first"
 
 agent_communication:
     - agent: "testing"
