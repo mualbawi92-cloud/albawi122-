@@ -771,6 +771,7 @@ class Transfer(BaseModel):
     id: str
     transfer_code: str
     transfer_number: Optional[str] = None  # رقم الحوالة 6 أرقام
+    tracking_number: Optional[str] = None  # رقم الحوالة للبحث (10 أرقام)
     seq_number: int
     from_agent_id: Optional[str] = None
     from_agent_name: Optional[str] = None
