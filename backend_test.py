@@ -641,7 +641,7 @@ class TransferCommissionTester:
     def print_test_summary(self):
         """Print comprehensive test summary"""
         print("\n" + "=" * 80)
-        print("🚨 AGENT REGISTRATION AUTO-CREATE CHART OF ACCOUNTS TESTING SUMMARY")
+        print("🚨 COMPREHENSIVE TRANSFER AND COMMISSION TESTING SUMMARY")
         print("=" * 80)
         
         total_tests = len(self.test_results)
@@ -664,50 +664,46 @@ class TransferCommissionTester:
             if result['success']:
                 print(f"   - {result['test']}: {result['message']}")
         
-        # Critical findings for agent registration auto-create
-        print(f"\n🎯 AGENT REGISTRATION AUTO-CREATE FINDINGS:")
+        # Critical findings for transfer and commission flow
+        print(f"\n🎯 TRANSFER AND COMMISSION FLOW FINDINGS:")
         
-        auto_create_tests = [r for r in self.test_results if 'Auto-Create' in r['test']]
-        auto_create_passed = len([r for r in auto_create_tests if r['success']])
-        print(f"   Auto-Create Account (No account_code): {auto_create_passed}/{len(auto_create_tests)} tests passed")
+        login_tests = [r for r in self.test_results if 'Login' in r['test']]
+        login_passed = len([r for r in login_tests if r['success']])
+        print(f"   Authentication: {login_passed}/{len(login_tests)} tests passed")
         
-        manual_tests = [r for r in self.test_results if 'Manual' in r['test']]
-        manual_passed = len([r for r in manual_tests if r['success']])
-        print(f"   Manual Account Selection: {manual_passed}/{len(manual_tests)} tests passed")
+        transfer_tests = [r for r in self.test_results if 'Transfer' in r['test'] and 'Commission' not in r['test']]
+        transfer_passed = len([r for r in transfer_tests if r['success']])
+        print(f"   Transfer Operations: {transfer_passed}/{len(transfer_tests)} tests passed")
         
-        validation_tests = [r for r in self.test_results if 'Validation' in r['test']]
-        validation_passed = len([r for r in validation_tests if r['success']])
-        print(f"   Validation Tests: {validation_passed}/{len(validation_tests)} tests passed")
+        commission_tests = [r for r in self.test_results if 'Commission' in r['test']]
+        commission_passed = len([r for r in commission_tests if r['success']])
+        print(f"   Commission Verification: {commission_passed}/{len(commission_tests)} tests passed")
         
-        sequential_tests = [r for r in self.test_results if 'Sequential' in r['test']]
-        sequential_passed = len([r for r in sequential_tests if r['success']])
-        print(f"   Sequential Code Generation: {sequential_passed}/{len(sequential_tests)} tests passed")
-        
-        details_tests = [r for r in self.test_results if 'Governorate' in r['test'] or 'Details' in r['test']]
-        details_passed = len([r for r in details_tests if r['success']])
-        print(f"   Account Details Verification: {details_passed}/{len(details_tests)} tests passed")
+        ledger_tests = [r for r in self.test_results if 'Ledger' in r['test']]
+        ledger_passed = len([r for r in ledger_tests if r['success']])
+        print(f"   Ledger Verification: {ledger_passed}/{len(ledger_tests)} tests passed")
         
         print("\n" + "=" * 80)
         
         # Check for critical issues
-        critical_failures = [r for r in self.test_results if not r['success'] and ('CRITICAL' in r['message'] or 'Auto-Create' in r['test'])]
+        critical_failures = [r for r in self.test_results if not r['success'] and ('CRITICAL' in r['message'] or 'Transfer' in r['test'] or 'Commission' in r['test'])]
         
         if failed_tests == 0:
-            print("🎉 ALL TESTS PASSED - AGENT REGISTRATION AUTO-CREATE IS FULLY FUNCTIONAL!")
-            print("✅ Auto-creation works without account_code")
-            print("✅ Manual selection works with valid account_code")
-            print("✅ Sequential code generation working")
-            print("✅ Proper validation for all error cases")
-            print("✅ Account-agent linkage bidirectional (account.agent_id ↔ user.account_code)")
-            print("✅ Governorate names properly mapped")
-            print("✅ No duplicate accounts created")
+            print("🎉 ALL TESTS PASSED - TRANSFER AND COMMISSION FLOW IS FULLY FUNCTIONAL!")
+            print("✅ Sender authentication working")
+            print("✅ Transfer creation working with proper tracking number and PIN")
+            print("✅ Receiver agent setup working")
+            print("✅ Transfer receipt working with ID verification")
+            print("✅ Commission entries appearing in ledger correctly")
+            print("✅ Transfer codes visible in commission entries")
+            print("✅ Proper debit/credit handling for commissions")
         elif critical_failures:
-            print("🚨 CRITICAL ISSUES FOUND - AGENT REGISTRATION AUTO-CREATE MAY HAVE FAILED!")
+            print("🚨 CRITICAL ISSUES FOUND - TRANSFER AND COMMISSION FLOW MAY HAVE FAILED!")
             for failure in critical_failures:
                 print(f"   ❌ {failure['test']}: {failure['message']}")
         else:
             print("⚠️  SOME TESTS FAILED - REVIEW ISSUES ABOVE")
-            print("Agent registration auto-create may be partially working")
+            print("Transfer and commission flow may be partially working")
         
         print("=" * 80)
 
