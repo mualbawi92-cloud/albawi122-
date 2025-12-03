@@ -5624,6 +5624,26 @@ agent_communication:
       **Test Results:** ✅ 100% SUCCESS RATE (8/8 tests passed)
       - ✅ Agent registration with account_code works correctly
       - ✅ Both account_code and account_id saved to database
+    -agent: "main"
+    -message: |
+      **NEW FIXES APPLIED - December 2025**
+      
+      **User reported issues from screenshots:**
+      
+      1. **Issue: Transfer creation page shows TWO fields (رمز الحوالة + رقم الحوالة)**
+         - Expected: Only show رقم الحوالة (10-digit tracking number)
+         - Fix Applied: Removed رمز الحوالة field from CreateTransferPage.js
+         - Files: /app/frontend/src/pages/CreateTransferPage.js (lines 332-342, 263-274)
+      
+      2. **Issue: Ledger for receiving agent shows duplicate entries**
+         - Expected: Only show one entry for received transfer + one entry for commission
+         - Root Cause: journal_entries were being added on top of manual transfer/commission entries
+         - Fix Applied: Skip ALL transfer-related journal entries (transfer_created, commission_earned, transfer_received, commission_received) if already in transfer_ids
+         - Files: /app/backend/server.py endpoint /api/agent-ledger (lines 5531-5537)
+      
+      **Ready for Testing:**
+      - Test transfer creation: verify only رقم الحوالة is shown (10 digits)
+      - Test agent ledger: verify no duplicate entries for received transfers/commissions
       - ✅ Both fields returned in API responses
       - ✅ Validation prevents duplicate account assignments
       - ✅ Proper Arabic error messages for validation failures
