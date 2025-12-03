@@ -5559,6 +5559,59 @@ test_plan:
 agent_communication:
     - agent: "testing"
       message: |
+        🚨 **DECEMBER 2025 ARABIC REVIEW REQUEST TESTING COMPLETED - CRITICAL ISSUE IDENTIFIED**
+        
+        **Test Date:** December 3, 2025
+        **Test Focus:** Arabic review request for two specific display issues
+        
+        I have completed comprehensive testing of the Arabic review request. Here are the critical findings:
+        
+        **✅ ISSUE 1 - TRANSFER DISPLAY: BACKEND READY FOR FRONTEND FIX**
+        
+        **Problem:** صفحة إصدار الحوالة - يجب عرض رقم الحوالة فقط
+        **Status:** ✅ BACKEND PROVIDES CORRECT DATA
+        
+        **Test Results:**
+        - ✅ Backend returns tracking_number (10 digits): 0898987249
+        - ✅ Backend returns transfer_code but should be hidden: T-KR-20251203-000037-0
+        - ✅ Frontend should display tracking_number as "رقم الحوالة" (10 digits)
+        - ✅ Frontend should NOT display transfer_code as "رمز الحوالة"
+        
+        **Action Required:** Frontend needs to display only tracking_number, hide transfer_code
+        
+        **❌ ISSUE 2 - COMMISSION LEDGER: CRITICAL BACKEND BUG CONFIRMED**
+        
+        **Problem:** كشف حساب الوكيل المستلم - إزالة التكرار
+        **Status:** ❌ CRITICAL BACKEND ISSUE
+        
+        **Test Results:**
+        - ✅ Transfer receipt entries: 1 entry (no duplication)
+        - ❌ Commission entries: 0 entries (MISSING - should be 1)
+        - ❌ Expected: "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
+        
+        **Root Cause:** `/api/transfers/{transfer_id}/receive` endpoint creates commission entries in accounts 701/601 but NOT in receiver agent's individual account ledger.
+        
+        **Action Required:** Add commission journal entry in receiver agent's account:
+        ```
+        Description: "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
+        Account: [receiver_agent_account_code]
+        Debit: 0, Credit: [commission_amount]
+        Reference: [transfer_code]
+        ```
+        
+        **🎯 COMPREHENSIVE TEST SUMMARY:**
+        
+        **Display Fixes Testing:** 11/14 tests passed (78.6%)
+        **Transfer Commission Testing:** 24/27 tests passed (88.9%)
+        
+        **PRIORITY ACTIONS:**
+        1. **HIGH:** Fix commission ledger entries in receiver agent accounts
+        2. **MEDIUM:** Frontend display fix for transfer numbers
+        
+        **VERIFICATION NEEDED:**
+        After commission fix, re-test should show commission entries in receiver agent ledger with proper Arabic titles and transfer codes visible.
+    - agent: "testing"
+      message: |
         ✅ **AGENT USERS MANAGEMENT TESTING COMPLETED - ALL REQUIREMENTS MET**
         
         I have successfully completed comprehensive testing of the Agent Users Management features 
