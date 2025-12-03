@@ -812,9 +812,9 @@ backend:
 frontend:
   - task: "Agent Account Link Update Modal Testing"
     implemented: true
-    working: false
+    working: true
     file: "frontend/src/pages/AdminDashboardPage.js"
-    stuck_count: 1
+    stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
