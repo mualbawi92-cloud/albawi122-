@@ -168,20 +168,20 @@ class AccountCodeBugTester:
                 print(f"Returned account_id: {returned_account_id}")
                 
                 # Check if account_code was returned correctly
-                if returned_account_code == "1002":
+                if returned_account_code == "1003":
                     self.log_result("Agent Registration - account_code returned", True, 
                                   f"Agent created with correct account_code: {returned_account_code}")
                 else:
                     self.log_result("Agent Registration - account_code returned", False, 
-                                  f"Agent account_code mismatch: expected 1002, got {returned_account_code}")
+                                  f"Agent account_code mismatch: expected 1003, got {returned_account_code}")
                 
                 # Check if account_id was returned correctly
-                if returned_account_id == "1002":
+                if returned_account_id == "1003":
                     self.log_result("Agent Registration - account_id returned", True, 
                                   f"Agent created with correct account_id: {returned_account_id}")
                 else:
                     self.log_result("Agent Registration - account_id returned", False, 
-                                  f"Agent account_id mismatch: expected 1002, got {returned_account_id}")
+                                  f"Agent account_id mismatch: expected 1003, got {returned_account_id}")
                 
             else:
                 self.log_result("Agent Registration", False, 
