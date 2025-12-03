@@ -93,12 +93,19 @@ const AgentLedgerPage = () => {
     
     setLoading(true);
     try {
+      const params = {
+        date_from: dateFrom,
+        date_to: dateTo,
+        currency: selectedCurrency
+      };
+      
+      // If user is not an agent, add agent_id to request
+      if (user?.role === 'user' && user?.agent_id) {
+        params.agent_id = user.agent_id;
+      }
+      
       const response = await axios.get(`${API}/agent-ledger`, {
-        params: {
-          date_from: dateFrom,
-          date_to: dateTo,
-          currency: selectedCurrency
-        }
+        params: params
       });
       setLedgerData(response.data);
       setEnabledCurrencies(response.data.enabled_currencies || enabledCurrencies);
