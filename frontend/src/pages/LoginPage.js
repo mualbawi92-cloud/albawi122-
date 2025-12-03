@@ -26,14 +26,9 @@ const LoginPage = () => {
       });
       
       // Check user role and redirect accordingly
-      console.log('Login result:', result);
-      console.log('User role:', result.user?.role);
-      
       if (result.user && result.user.role === 'admin') {
-        console.log('Redirecting admin to /admin/dashboard');
         navigate('/admin/dashboard');
       } else {
-        console.log('Redirecting user to /dashboard');
         navigate('/dashboard');
       }
     } else {
