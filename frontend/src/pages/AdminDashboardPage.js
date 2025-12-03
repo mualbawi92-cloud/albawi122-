@@ -116,10 +116,19 @@ const DashboardPageNew = () => {
       setAccounts(accountsData);
       
       // Enrich agents with account info
+      console.log('=== ENRICHMENT DEBUG ===');
+      console.log('Total agents:', agentUsers.length);
+      console.log('Total accounts:', accountsData.length);
+      console.log('First 3 accounts:', accountsData.slice(0, 3).map(a => ({code: a.code, type: typeof a.code, name: a.name_ar || a.name})));
+      
       const enrichedAgents = agentUsers.map(agent => {
-        console.log(`Agent: ${agent.display_name}, account_id: ${agent.account_id}`);
-        const linkedAccount = accountsData.find(acc => acc.code === agent.account_id);
-        console.log(`Found linked account:`, linkedAccount);
+        console.log(`Agent: ${agent.display_name}, account_id: ${agent.account_id} (type: ${typeof agent.account_id})`);
+        // Try both exact match and string comparison
+        const linkedAccount = accountsData.find(acc => 
+          acc.code === agent.account_id || 
+          String(acc.code) === String(agent.account_id)
+        );
+        console.log(`Found linked account:`, linkedAccount ? {code: linkedAccount.code, name: linkedAccount.name_ar || linkedAccount.name} : 'NOT FOUND');
         return {
           ...agent,
           account_name: linkedAccount ? (linkedAccount.name_ar || linkedAccount.name) : 'غير محدد'
