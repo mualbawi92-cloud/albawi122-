@@ -26,8 +26,7 @@ const LoginPage = () => {
       });
       
       // Check user role and redirect accordingly
-      const userData = JSON.parse(localStorage.getItem('user'));
-      if (userData && userData.role === 'admin') {
+      if (result.user && result.user.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/dashboard');
