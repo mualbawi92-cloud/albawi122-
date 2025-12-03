@@ -555,32 +555,55 @@ class TransferCommissionTester:
     
     # Old transfer operations test methods removed - focusing on agent registration auto-create
     
-    def test_agent_registration_auto_create_comprehensive(self):
-        """Run comprehensive agent registration auto-create tests"""
-        print("\n🚨 AGENT REGISTRATION AUTO-CREATE CHART OF ACCOUNTS COMPREHENSIVE TESTING")
+    def test_comprehensive_transfer_commission_flow(self):
+        """Run comprehensive transfer and commission testing"""
+        print("\n🚨 COMPREHENSIVE TRANSFER AND COMMISSION TESTING")
         print("=" * 80)
-        print("Testing agent registration with automatic chart of accounts creation")
+        print("Testing complete transfer flow with commission verification")
         print("=" * 80)
         
-        # Phase 1: Auto-Create Account (No account_code provided)
-        print("\n--- PHASE 1: AUTO-CREATE ACCOUNT (NO ACCOUNT_CODE PROVIDED) ---")
-        self.test_auto_create_account_no_code_provided()
+        # Initialize class variables
+        self.sender_token = None
+        self.sender_user = None
+        self.receiver_token = None
+        self.receiver_user = None
+        self.receiver_agent = None
+        self.transfer_id = None
+        self.transfer_code = None
+        self.tracking_number = None
+        self.pin = None
         
-        # Phase 2: Manual Account Selection (account_code provided)
-        print("\n--- PHASE 2: MANUAL ACCOUNT SELECTION (ACCOUNT_CODE PROVIDED) ---")
-        self.test_manual_account_selection()
+        # Phase 1: Login as sender (testuser123)
+        print("\n--- PHASE 1: SENDER LOGIN (testuser123) ---")
+        if not self.test_sender_login():
+            print("❌ Sender login failed - cannot continue")
+            return False
         
-        # Phase 3: Validation Tests
-        print("\n--- PHASE 3: VALIDATION TESTS ---")
-        self.test_validation_tests()
+        # Phase 2: Create transfer to WA governorate
+        print("\n--- PHASE 2: CREATE TRANSFER (صيرفة النور → واسط) ---")
+        if not self.test_create_transfer():
+            print("❌ Transfer creation failed - cannot continue")
+            return False
         
-        # Phase 4: Sequential Code Generation
-        print("\n--- PHASE 4: SEQUENTIAL CODE GENERATION ---")
-        self.test_sequential_code_generation()
+        # Phase 3: Setup receiver agent in WA
+        print("\n--- PHASE 3: SETUP RECEIVER AGENT (واسط) ---")
+        if not self.test_setup_receiver_agent():
+            print("❌ Receiver agent setup failed - cannot continue")
+            return False
         
-        # Phase 5: Account Details Verification
-        print("\n--- PHASE 5: ACCOUNT DETAILS VERIFICATION ---")
-        self.test_account_details_verification()
+        # Phase 4: Receive transfer
+        print("\n--- PHASE 4: RECEIVE TRANSFER ---")
+        if not self.test_receive_transfer():
+            print("❌ Transfer receipt failed - cannot continue")
+            return False
+        
+        # Phase 5: Verify commission in ledger
+        print("\n--- PHASE 5: VERIFY COMMISSION IN LEDGER ---")
+        self.test_verify_commission_in_ledger()
+        
+        # Phase 6: Additional verification
+        print("\n--- PHASE 6: ADDITIONAL VERIFICATION ---")
+        self.test_additional_verification()
         
         return True
     
