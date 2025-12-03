@@ -5242,15 +5242,28 @@ async def get_agent_ledger(
     date_from: str = None,
     date_to: str = None,
     currency: str = None,  # فلتر العملة
+    agent_id: str = None,  # للمستخدمين: معرف الوكيل
     current_user: dict = Depends(get_current_user)
 ):
     """Get agent's own ledger with all transactions filtered by currency"""
     
-    # Only agents can access
-    if current_user['role'] != 'agent':
-        raise HTTPException(status_code=403, detail="هذه الصفحة مخصصة للصرافين فقط")
+    # Agents can access their own ledger
+    if current_user['role'] == 'agent':
+        agent_id = current_user['id']
+    # Users can access their agent's ledger
+    elif current_user['role'] == 'user':
+        # If agent_id not provided, try to get from user record
+        if not agent_id:
+            user_data = await db.users.find_one({'id': current_user['id']}, {'_id': 0})
+            agent_id = user_data.get('agent_id') if user_data else None
+        
+        if not agent_id:
+            raise HTTPException(status_code=403, detail="المستخدم غير مرتبط بوكيل")
+    else:
+        raise HTTPException(status_code=403, detail="غير مصرح لك بالوصول")
     
-    agent_id = current_user['id']
+    if not agent_id:
+        raise HTTPException(status_code=400, detail="معرف الوكيل مطلوب")
     
     # Parse dates
     from datetime import datetime, timezone
