@@ -5478,6 +5478,9 @@ async def get_agent_ledger(
     # Get agent's account code from chart_of_accounts
     agent_account_coa = await db.chart_of_accounts.find_one({'agent_id': agent_id})
     
+    # Collect transfer IDs to avoid duplicates
+    transfer_ids = set([t['transfer_id'] for t in transactions if 'transfer_id' in t])
+    
     if agent_account_coa:
         account_code = agent_account_coa['code']
         
@@ -5492,6 +5495,11 @@ async def get_agent_ledger(
         
         # Filter and add journal entries (with currency filtering)
         for entry in journal_entries:
+            # Skip if this is a transfer-related entry (already added from transfers)
+            if entry.get('reference_type') in ['transfer_created', 'commission_earned', 'transfer_received', 'commission_paid']:
+                if entry.get('reference_id') in transfer_ids:
+                    continue
+            
             for line in entry.get('lines', []):
                 if line.get('account_code') == account_code:
                     # Get currency from line, fallback to IQD if not set
@@ -5507,7 +5515,7 @@ async def get_agent_ledger(
                     transactions.append({
                         'date': entry['date'],
                         'type': 'journal_entry',
-                        'description': f"{entry['description']} - قيد رقم {entry['entry_number']}",
+                        'description': f"{entry['description']} - قيد يدوي",
                         'debit': debit,
                         'credit': credit,
                         'balance': 0,
