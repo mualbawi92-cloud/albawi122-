@@ -1538,15 +1538,17 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 {'$inc': {'balance': transfer_data.amount, 'balance_iqd': transfer_data.amount}}
             )
             
-            # قيد 2: العمولة فقط (إذا وجدت)
+            # قيد 2: العمولة المدفوعة من الوكيل المُرسل (إذا وجدت)
+            # مدين: حساب الوكيل المُرسل (عمولة مدفوعة)
+            # دائن: حساب 4020 (عمولات محققة عند المدير)
             if commission_amount > 0:
                 # Get earned commission account from chart_of_accounts
-                commission_account = await db.chart_of_accounts.find_one({'code': '601'})
+                commission_account = await db.chart_of_accounts.find_one({'code': '4020'})
                 if not commission_account:
                     commission_account = {
-                        'id': 'earned_commissions_601',
-                        'code': '601',
-                        'name': 'عمولة حواله محققه',
+                        'id': 'earned_commissions_4020',
+                        'code': '4020',
+                        'name': 'عمولات محققة',
                         'name_ar': 'عمولات محققة',
                         'name_en': 'Earned Commissions',
                         'category': 'الإيرادات',
@@ -1562,28 +1564,33 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                     }
                     await db.chart_of_accounts.insert_one(commission_account)
                 
+                # Get governorate name for description
+                gov_name = GOVERNORATE_CODE_TO_NAME.get(transfer_data.to_governorate, transfer_data.to_governorate)
+                
                 journal_entry_commission = {
                     'id': str(uuid.uuid4()),
-                    'entry_number': f"COM-{transfer_code}",
+                    'entry_number': f"COM-PAID-{transfer_code}",
                     'date': datetime.now(timezone.utc).isoformat(),
-                    'description': f'عمولة حوالة من {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {transfer_code}',
+                    'description': f'عمولة مدفوعة من {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {gov_name}',
                     'lines': [
                         {
-                            'account_code': sender_account_code,
+                            'account_code': sender_account_code,  # حساب الوكيل المُرسل (مدين - عمولة مدفوعة)
                             'debit': commission_amount,
-                            'credit': 0
+                            'credit': 0,
+                            'currency': transfer_data.currency
                         },
                         {
-                            'account_code': '601',
+                            'account_code': '4020',  # عمولات محققة (دائن - إيراد عند المدير)
                             'debit': 0,
-                            'credit': commission_amount
+                            'credit': commission_amount,
+                            'currency': transfer_data.currency
                         }
                     ],
                     'total_debit': commission_amount,
                     'total_credit': commission_amount,
                     'reference_type': 'commission_earned',
                     'reference_id': transfer_id,
-                    'created_by': current_user['id'],
+                    'created_by': actual_agent_id,
                     'created_at': datetime.now(timezone.utc).isoformat(),
                     'is_cancelled': False
                 }
@@ -1591,14 +1598,17 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 await db.journal_entries.insert_one(journal_entry_commission)
                 
                 # Update balances for commission
+                # حساب الوكيل المُرسل (مدين - عمولة مدفوعة)
+                currency_field = f'balance_{transfer_data.currency.lower()}'
                 await db.chart_of_accounts.update_one(
                     {'code': sender_account_code},
-                    {'$inc': {'balance': commission_amount, 'balance_iqd': commission_amount}}
+                    {'$inc': {'balance': commission_amount, currency_field: commission_amount}}
                 )
                 
+                # حساب 4020 عمولات محققة (دائن - إيراد)
                 await db.chart_of_accounts.update_one(
-                    {'code': '601'},
-                    {'$inc': {'balance': -commission_amount, 'balance_iqd': -commission_amount}}
+                    {'code': '4020'},
+                    {'$inc': {'balance': -commission_amount, currency_field: -commission_amount}}
                 )
             
             logger.info(f"Created journal entry for transfer {transfer_code}")
