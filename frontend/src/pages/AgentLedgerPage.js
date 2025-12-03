@@ -23,8 +23,8 @@ const AgentLedgerPage = () => {
   const [selectedCurrency, setSelectedCurrency] = useState('');
   const [enabledCurrencies, setEnabledCurrencies] = useState([]);
 
-  // Only agents can access this page
-  if (user?.role !== 'agent') {
+  // Only agents and users can access this page
+  if (user?.role !== 'agent' && user?.role !== 'user') {
     navigate('/dashboard');
     return null;
   }
