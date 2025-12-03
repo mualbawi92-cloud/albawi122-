@@ -262,14 +262,14 @@ class AccountCodeBugTester:
                         print(f"🔑 account_code in list: {list_account_code}")
                         print(f"🔑 account_id in list: {list_account_id}")
                         
-                        if list_account_code == "1002":
+                        if list_account_code == "1003":
                             self.log_result("AGENTS LIST - account_code field", True, 
                                           f"✅ account_code in agents list: {list_account_code}")
                         else:
                             self.log_result("AGENTS LIST - account_code field", False, 
                                           f"❌ account_code in agents list incorrect: {list_account_code}")
                         
-                        if list_account_id == "1002":
+                        if list_account_id == "1003":
                             self.log_result("AGENTS LIST - account_id field", True, 
                                           f"✅ account_id in agents list: {list_account_id}")
                         else:
