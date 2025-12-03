@@ -210,101 +210,91 @@ class TransferCommissionTester:
             self.log_result("Transfer Creation", False, f"Error: {str(e)}")
             return False
     
-    def test_manual_account_selection(self):
-        """Phase 2: Manual Account Selection (account_code provided)"""
-        print("\n=== Phase 2: Manual Account Selection (account_code provided) ===")
+    def test_setup_receiver_agent(self):
+        """Phase 2: Setup or find receiver agent in WA governorate"""
+        print("\n=== Phase 2: Setup Receiver Agent (واسط) ===")
         
-        # Test 1: First, create an available account manually
-        manual_account_code = "2999"
+        # First, try to find existing agent in WA governorate
         try:
-            manual_account = {
-                "code": manual_account_code,
-                "name_ar": "صيرفة الاختبار اليدوي",
-                "name_en": "Manual Test Exchange",
-                "category": "شركات الصرافة",
-                "currencies": ["IQD", "USD"]
-            }
-            
-            response = self.make_request('POST', '/accounting/accounts', token=self.admin_token, json=manual_account)
-            if response.status_code in [200, 201]:
-                self.test_account_codes.append(manual_account_code)
-                self.log_result("Manual Account Creation", True, 
-                              f"Successfully created manual account {manual_account_code}")
-            elif response.status_code == 400 and "already exists" in response.text:
-                self.log_result("Manual Account Creation", True, 
-                              f"Account {manual_account_code} already exists (acceptable)")
+            response = self.make_request('GET', '/agents?governorate=WS', token=self.admin_token)
+            if response.status_code == 200:
+                agents = response.json()
+                wa_agents = [agent for agent in agents if agent.get('governorate') == 'WS']
+                
+                if wa_agents:
+                    # Use existing agent
+                    self.receiver_agent = wa_agents[0]
+                    self.log_result("Find Existing WA Agent", True, 
+                                  f"Found existing agent in واسط: {self.receiver_agent.get('display_name')}")
+                    
+                    # Try to login as this agent
+                    for password in POSSIBLE_PASSWORDS:
+                        try:
+                            receiver_creds = {"username": self.receiver_agent.get('username'), "password": password}
+                            login_response = self.make_request('POST', '/login', json=receiver_creds)
+                            if login_response.status_code == 200:
+                                login_data = login_response.json()
+                                self.receiver_token = login_data['access_token']
+                                self.receiver_user = login_data['user']
+                                self.log_result("Receiver Agent Login", True, 
+                                              f"Logged in as receiver agent: {self.receiver_user.get('display_name')}")
+                                return True
+                        except:
+                            continue
+                    
+                    # If login failed, create new agent
+                    self.log_result("Receiver Agent Login", False, 
+                                  f"Could not login to existing agent, will create new one")
+                else:
+                    self.log_result("Find Existing WA Agent", False, 
+                                  f"No existing agents in واسط governorate")
             else:
-                self.log_result("Manual Account Creation", False, 
-                              f"Failed to create manual account: {response.status_code} - {response.text}")
-                return False
+                self.log_result("Find Existing WA Agent", False, 
+                              f"Failed to get agents: {response.status_code}")
         except Exception as e:
-            self.log_result("Manual Account Creation", False, f"Error: {str(e)}")
-            return False
+            self.log_result("Find Existing WA Agent", False, f"Error: {str(e)}")
         
-        # Test 2: POST /api/register - Register agent WITH account_code
-        test_agent_username = f"test_agent_manual_{int(time.time())}"
-        test_agent_data = {
-            "username": test_agent_username,
+        # Create new receiver agent in WA governorate
+        receiver_username = f"receiver_wa_{int(time.time())}"
+        receiver_data = {
+            "username": receiver_username,
             "password": "test123",
-            "display_name": "صيرفة الاختبار اليدوي",
-            "phone": "07709876543",
-            "governorate": "BS",  # Basra
+            "display_name": "صيرفة أور - واسط",
+            "phone": "07801234567",
+            "governorate": "WS",  # واسط
             "role": "agent",
-            "account_code": manual_account_code,  # Provide existing account code
-            "wallet_limit_iqd": 5000000,
-            "wallet_limit_usd": 10000
+            "wallet_limit_iqd": 10000000,
+            "wallet_limit_usd": 20000
         }
         
-        created_agent_id = None
-        
         try:
-            response = self.make_request('POST', '/register', token=self.admin_token, json=test_agent_data)
+            response = self.make_request('POST', '/register', token=self.admin_token, json=receiver_data)
             if response.status_code in [200, 201]:
-                agent_data = response.json()
-                created_agent_id = agent_data.get('id')
-                returned_account_code = agent_data.get('account_code')
+                self.receiver_agent = response.json()
+                self.log_result("Create Receiver Agent", True, 
+                              f"Created new receiver agent: {self.receiver_agent.get('display_name')}")
                 
-                if returned_account_code == manual_account_code:
-                    self.log_result("Manual Account Agent Registration", True, 
-                                  f"Agent created successfully using existing account: {manual_account_code}")
+                # Login as new receiver agent
+                receiver_creds = {"username": receiver_username, "password": "test123"}
+                login_response = self.make_request('POST', '/login', json=receiver_creds)
+                if login_response.status_code == 200:
+                    login_data = login_response.json()
+                    self.receiver_token = login_data['access_token']
+                    self.receiver_user = login_data['user']
+                    self.log_result("New Receiver Agent Login", True, 
+                                  f"Logged in as new receiver agent: {self.receiver_user.get('display_name')}")
+                    return True
                 else:
-                    self.log_result("Manual Account Agent Registration", False, 
-                                  f"Agent account_code mismatch: expected {manual_account_code}, got {returned_account_code}")
+                    self.log_result("New Receiver Agent Login", False, 
+                                  f"Failed to login as new receiver agent: {login_response.status_code}")
+                    return False
             else:
-                self.log_result("Manual Account Agent Registration", False, 
-                              f"Failed to register agent with manual account: {response.status_code} - {response.text}")
+                self.log_result("Create Receiver Agent", False, 
+                              f"Failed to create receiver agent: {response.status_code} - {response.text}")
                 return False
         except Exception as e:
-            self.log_result("Manual Account Agent Registration", False, f"Error: {str(e)}")
+            self.log_result("Create Receiver Agent", False, f"Error: {str(e)}")
             return False
-        
-        # Test 3: Verify account is now linked to agent
-        try:
-            response = self.make_request('GET', f'/accounting/accounts/{manual_account_code}', token=self.admin_token)
-            if response.status_code == 200:
-                account_data = response.json()
-                
-                if account_data.get('agent_id') == created_agent_id:
-                    self.log_result("Manual Account Agent Linkage", True, 
-                                  f"Account {manual_account_code} correctly linked to agent")
-                    
-                    # Verify agent_name field is set
-                    if account_data.get('agent_name'):
-                        self.log_result("Manual Account Agent Name", True, 
-                                      f"Account has agent_name: {account_data.get('agent_name')}")
-                    else:
-                        self.log_result("Manual Account Agent Name", False, 
-                                      f"Account missing agent_name field")
-                else:
-                    self.log_result("Manual Account Agent Linkage", False, 
-                                  f"Account not linked to agent: expected {created_agent_id}, got {account_data.get('agent_id')}")
-            else:
-                self.log_result("Manual Account Agent Linkage", False, 
-                              f"Failed to verify account linkage: {response.status_code}")
-        except Exception as e:
-            self.log_result("Manual Account Agent Linkage", False, f"Error: {str(e)}")
-        
-        return True
     
     def test_validation_tests(self):
         """Phase 3: Validation Tests"""
