@@ -5627,4 +5627,59 @@ agent_communication:
       
       **Action for Main Agent:** The bug is fixed. You can now mark this task as complete and 
       proceed with frontend testing to verify the UI displays account names correctly.
+    - agent: "testing"
+      message: |
+        🚨 **COMPREHENSIVE TRANSFER AND COMMISSION TESTING COMPLETED - CRITICAL COMMISSION LEDGER ISSUE FOUND**
+        
+        **Test Execution:** Successfully completed the Arabic review request testing scenario:
+        إنشاء واستلام حوالة وفحص دفتر الأستاذ
+        
+        **✅ EXCELLENT RESULTS (91.3% success rate - 21/23 tests passed):**
+        
+        **Transfer Flow - FULLY FUNCTIONAL:**
+        - ✅ Complete transfer creation and receipt flow working perfectly
+        - ✅ Tracking number (10 digits) and PIN (4 digits) generation correct
+        - ✅ Transfer search by tracking number working
+        - ✅ ID image upload and transfer receipt successful
+        - ✅ Transfer status updates correctly to 'completed'
+        - ✅ Admin commissions recorded correctly (1250.0 IQD each)
+        
+        **❌ CRITICAL ISSUE IDENTIFIED:**
+        
+        **Commission Entries Missing from Receiver Agent's Ledger**
+        
+        **Expected (from Arabic review):**
+        - Commission entry title: "عمولة مدفوعة من [sender] إلى [receiver] - واسط"
+        - Commission in ledger: debit: 0, credit: [amount]
+        - Transfer code visible in commission entry
+        
+        **Actual:**
+        - ❌ NO commission entries found in receiver agent's ledger
+        - ✅ Only transfer receipt entries: "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم"
+        - ❌ Missing commission journal entries with "عمولة مدفوعة" titles
+        
+        **ROOT CAUSE:**
+        The `/api/transfers/{transfer_id}/receive` endpoint creates transfer journal entries but 
+        **does NOT create commission journal entries** in the receiver agent's ledger.
+        
+        **IMMEDIATE ACTION REQUIRED:**
+        
+        Main agent must enhance the transfer receipt endpoint to create commission journal entries:
+        
+        1. **Add Commission Journal Entry Creation** in transfer receipt logic
+        2. **Use Arabic title format:** "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
+        3. **Include transfer code** in commission entry description
+        4. **Credit commission amount** to receiver agent's account
+        5. **Test commission entries appear** in agent's ledger
+        
+        **Technical Location:** 
+        Backend file: `backend/server.py`, around lines 2400-2500 in transfer receipt endpoint
+        
+        **VERIFICATION NEEDED:**
+        After fixing, re-run the test to verify commission entries appear in receiver agent's 
+        ledger with proper Arabic titles and transfer codes as requested in the review.
+        
+        **CONCLUSION:**
+        Transfer flow is excellent, but commission ledger entries are missing. This is a critical 
+        accounting feature that needs immediate attention to meet the Arabic review requirements.
 
