@@ -104,8 +104,8 @@ class AccountCodeBugTester:
         """Test the critical account_code bug as described in review request"""
         print("\n=== 🚨 CRITICAL BUG TEST: ACCOUNT_CODE NOT BEING SAVED ===")
         
-        # Step 1: Create a test account in chart_of_accounts first (account_code "1002")
-        test_account_code = "1002"
+        # Step 1: Create a test account in chart_of_accounts first (account_code "1003")
+        test_account_code = "1003"
         
         # Check if account 1002 exists, if not create it
         try:
