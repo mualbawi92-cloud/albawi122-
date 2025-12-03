@@ -37,7 +37,7 @@ const AgentLedgerPage = () => {
     setDateFrom(thirtyDaysAgo.toISOString().split('T')[0]);
   }, []);
 
-  // Fetch enabled currencies on mount
+  // Fetch enabled currencies and agent name on mount
   useEffect(() => {
     const fetchEnabledCurrencies = async () => {
       try {
@@ -50,13 +50,14 @@ const AgentLedgerPage = () => {
           const currentAgent = agents.find(a => a.id === user?.id);
           accountId = currentAgent?.account_id;
         }
-        // If user is a regular user, get their agent's account
+        // If user is a regular user, get their agent's account and name
         else if (user?.role === 'user' && user?.agent_id) {
           try {
             const agentResponse = await axios.get(`${API}/agents/${user.agent_id}`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             accountId = agentResponse.data?.account_id;
+            setAgentName(agentResponse.data?.display_name); // Set agent name for display
           } catch (err) {
             console.error('Error fetching user agent:', err);
           }
