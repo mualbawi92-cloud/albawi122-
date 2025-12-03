@@ -5461,14 +5461,7 @@ async def get_agent_ledger(
         
         # Get sender's governorate if available
         sender_gov = transfer.get('from_governorate', '')
-        gov_names = {
-            'BG': 'بغداد', 'BA': 'البصرة', 'NJ': 'النجف', 'KR': 'كربلاء',
-            'AN': 'الأنبار', 'NI': 'نينوى', 'AR': 'أربيل', 'SU': 'السليمانية',
-            'DH': 'ذي قار', 'DI': 'ديالى', 'KI': 'كركوك', 'WA': 'واسط',
-            'SA': 'صلاح الدين', 'QA': 'القادسية', 'MY': 'ميسان', 'MU': 'المثنى',
-            'BA': 'بابل', 'DU': 'دهوك'
-        }
-        sender_gov_name = gov_names.get(sender_gov, sender_gov) if sender_gov else ''
+        sender_gov_name = GOVERNORATE_CODE_TO_NAME.get(sender_gov, sender_gov) if sender_gov else ''
         gov_info = f" - {sender_gov_name}" if sender_gov_name else ""
             
         transactions.append({
