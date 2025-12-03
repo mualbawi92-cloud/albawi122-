@@ -87,8 +87,8 @@ const DashboardPage = () => {
       <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-8">
         {/* Welcome Section */}
         <div className="bg-gradient-to-l from-primary to-primary/80 rounded-xl sm:rounded-2xl p-4 sm:p-8 text-white shadow-xl">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">مرحباً {user?.display_name}</h1>
-          <p className="text-base sm:text-xl opacity-90">{user?.governorate} - {user?.role === 'admin' ? 'مدير' : 'صراف'}</p>
+          <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">مرحباً مستخدم تجريبي</h1>
+          <p className="text-base sm:text-xl opacity-90">{user?.governorate} - صراف</p>
         </div>
 
         {/* Stats Cards */}
