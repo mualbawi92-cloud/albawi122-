@@ -108,6 +108,41 @@ class TransferCommissionTester:
             self.log_result("Admin Login", False, f"Admin login error: {str(e)}")
             return False
     
+    def test_sender_login(self):
+        """Test login as testuser123 (صيرفة النور)"""
+        print("\n=== Testing Sender Login (testuser123) ===")
+        
+        sender_credentials = {"username": "testuser123", "password": "test123"}
+        
+        try:
+            response = self.make_request('POST', '/login', json=sender_credentials)
+            if response.status_code == 200:
+                data = response.json()
+                self.sender_token = data['access_token']
+                self.sender_user = data['user']
+                self.log_result("Sender Login", True, f"Sender authenticated successfully: {self.sender_user.get('display_name')}")
+                return True
+            else:
+                # Try different passwords
+                for password in POSSIBLE_PASSWORDS:
+                    try:
+                        test_creds = {"username": "testuser123", "password": password}
+                        response = self.make_request('POST', '/login', json=test_creds)
+                        if response.status_code == 200:
+                            data = response.json()
+                            self.sender_token = data['access_token']
+                            self.sender_user = data['user']
+                            self.log_result("Sender Login", True, f"Sender authenticated with password '{password}': {self.sender_user.get('display_name')}")
+                            return True
+                    except:
+                        continue
+                
+                self.log_result("Sender Login", False, f"Sender login failed: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_result("Sender Login", False, f"Sender login error: {str(e)}")
+            return False
+    
     def test_auto_create_account_no_code_provided(self):
         """Phase 1: Auto-Create Account (No account_code provided)"""
         print("\n=== Phase 1: Auto-Create Account (No account_code provided) ===")
