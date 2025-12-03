@@ -5803,9 +5803,17 @@ agent_communication:
          - Fix Applied: Skip ALL transfer-related journal entries (transfer_created, commission_earned, transfer_received, commission_received) if already in transfer_ids
          - Files: /app/backend/server.py endpoint /api/agent-ledger (lines 5531-5537)
       
+      3. **CRITICAL: Commission for received transfer not appearing in receiver's ledger**
+         - Expected: Commission entry should appear in receiver agent's ledger with proper Arabic title
+         - Root Cause: Commission journal entry was using account 601 (general commission account) instead of receiver's account
+         - Fix Applied: Changed commission journal entry to credit receiver's account directly (line 2437)
+         - Description format: "عمولة مدفوعة من [sender] إلى [receiver] - [governorate]"
+         - Files: /app/backend/server.py endpoint /api/transfers/{id}/receive (lines 2446-2513)
+      
       **Ready for Testing:**
       - Test transfer creation: verify only رقم الحوالة is shown (10 digits)
       - Test agent ledger: verify no duplicate entries for received transfers/commissions
+      - Test commission display: verify commission appears in receiver agent's ledger
       - ✅ Both fields returned in API responses
       - ✅ Validation prevents duplicate account assignments
       - ✅ Proper Arabic error messages for validation failures
