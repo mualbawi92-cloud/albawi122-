@@ -1226,8 +1226,9 @@ async def get_agent_statement(agent_id: str, current_user: dict = Depends(get_cu
 @api_router.post("/transfers", response_model=TransferWithPin)
 async def create_transfer(transfer_data: TransferCreate, current_user: dict = Depends(get_current_user)):
     """Create new transfer"""
-    if current_user['role'] != 'agent':
-        raise HTTPException(status_code=403, detail="فقط الصرافين يمكنهم إنشاء حوالات")
+    # Both agents and their users can create transfers
+    if current_user['role'] not in ['agent', 'user']:
+        raise HTTPException(status_code=403, detail="غير مصرح لك بإنشاء حوالات")
     
     # Validate input
     if not transfer_data.sender_name or len(transfer_data.sender_name) < 3:
