@@ -442,6 +442,19 @@ class TransferCommissionTester:
                         # Check if this is a commission entry
                         if 'عمولة' in description:
                             expected_commission_found = True
+                
+                # ALSO check commission entries separately (they might not contain transfer code)
+                if commission_entries:
+                    for entry in commission_entries:
+                        description = entry.get('description', '')
+                        debit = entry.get('debit', 0)
+                        credit = entry.get('credit', 0)
+                        
+                        # Check if this commission entry is related to our transfer
+                        # Look for sender and receiver names in the description
+                        if ('أحمد علي حسن' in description and 'محمد سعد كريم' in description) or \
+                           (self.transfer_code and self.transfer_code in description):
+                            expected_commission_found = True
                             
                             # Verify commission title format
                             expected_patterns = [
