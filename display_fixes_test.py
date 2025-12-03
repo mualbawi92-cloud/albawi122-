@@ -307,16 +307,41 @@ class DisplayFixesTester:
         print("\n=== Issue 2: Agent Ledger Duplication Check ===")
         print("🎯 Testing: Receiver agent ledger should have no duplicate entries")
         
-        if not hasattr(self, 'receiver_agent') or not self.receiver_agent.get('account_code'):
-            self.log_result("Issue 2 - Prerequisites", False, "Receiver agent with account_code required")
+        if not hasattr(self, 'receiver_agent'):
+            self.log_result("Issue 2 - Prerequisites", False, "Receiver agent required")
             return False
         
-        receiver_account_code = self.receiver_agent.get('account_code')
+        # First, try to authenticate as the receiver agent
+        receiver_username = self.receiver_agent.get('username')
+        receiver_token = None
+        
+        if receiver_username:
+            for password in POSSIBLE_PASSWORDS:
+                try:
+                    credentials = {"username": receiver_username, "password": password}
+                    response = self.make_request('POST', '/login', json=credentials)
+                    if response.status_code == 200:
+                        data = response.json()
+                        receiver_token = data['access_token']
+                        self.log_result("Receiver Agent Authentication", True, 
+                                      f"Authenticated as receiver agent: {receiver_username}")
+                        break
+                except:
+                    continue
+        
+        if not receiver_token:
+            self.log_result("Receiver Agent Authentication", False, 
+                          f"Could not authenticate as receiver agent: {receiver_username}")
+            # Try using admin token with accounting/ledger endpoint instead
+            receiver_account_code = self.receiver_agent.get('account_code')
+            if receiver_account_code:
+                return self.test_issue_2_with_accounting_ledger(receiver_account_code)
+            else:
+                return False
         
         try:
-            # Get agent ledger using /api/agent-ledger endpoint
-            response = self.make_request('GET', f'/agent-ledger?account_code={receiver_account_code}', 
-                                       token=self.admin_token)
+            # Get agent ledger using /api/agent-ledger endpoint (agent accessing their own ledger)
+            response = self.make_request('GET', '/agent-ledger', token=receiver_token)
             
             if response.status_code == 200:
                 ledger_data = response.json()
