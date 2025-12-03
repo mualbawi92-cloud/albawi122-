@@ -564,6 +564,122 @@ class DisplayFixesTester:
                 print("⚠️ MINOR ISSUES FOUND - MAIN FUNCTIONALITY WORKING")
         
         print("=" * 80)
+    
+    def test_issue_2_with_accounting_ledger(self, receiver_account_code):
+        """
+        Fallback method: Test agent ledger using accounting/ledger endpoint with admin token
+        """
+        print(f"\n=== Issue 2: Using Accounting Ledger Endpoint (Account: {receiver_account_code}) ===")
+        
+        try:
+            # Get ledger using accounting/ledger endpoint with admin token
+            response = self.make_request('GET', f'/accounting/ledger/{receiver_account_code}', 
+                                       token=self.admin_token)
+            
+            if response.status_code == 200:
+                ledger_data = response.json()
+                entries = ledger_data.get('entries', [])
+                
+                self.log_result("Accounting Ledger Access", True, 
+                              f"Successfully accessed accounting ledger for {receiver_account_code}, found {len(entries)} entries")
+                
+                # Filter entries related to our completed transfer
+                transfer_related_entries = []
+                commission_entries = []
+                
+                for entry in entries:
+                    description = entry.get('description', '').lower()
+                    
+                    # Check if entry is related to our completed transfer
+                    if (self.completed_transfer_code and self.completed_transfer_code.lower() in description):
+                        transfer_related_entries.append(entry)
+                        
+                        # Categorize entry type
+                        if 'عمولة' in description or 'commission' in description:
+                            commission_entries.append(entry)
+                
+                # CRITICAL TEST 1: Check for transfer receipt entries
+                transfer_receipt_entries = [e for e in transfer_related_entries 
+                                          if 'استلام' in e.get('description', '') or 'received' in e.get('description', '').lower()]
+                
+                if len(transfer_receipt_entries) == 1:
+                    self.log_result("✅ Transfer Receipt Entry", True, 
+                                  f"Found exactly 1 transfer receipt entry (no duplication)")
+                elif len(transfer_receipt_entries) > 1:
+                    self.log_result("❌ Transfer Receipt Duplication", False, 
+                                  f"Found {len(transfer_receipt_entries)} transfer receipt entries (duplication detected)")
+                    
+                    # Show duplicate entries
+                    for i, entry in enumerate(transfer_receipt_entries):
+                        print(f"   Duplicate {i+1}: {entry.get('description', '')}")
+                else:
+                    self.log_result("Transfer Receipt Missing", False, 
+                                  f"No transfer receipt entries found for {self.completed_transfer_code}")
+                
+                # CRITICAL TEST 2: Check for commission entries
+                if len(commission_entries) == 1:
+                    self.log_result("✅ Commission Entry", True, 
+                                  f"Found exactly 1 commission entry (no duplication)")
+                    
+                    # Verify commission entry details
+                    commission_entry = commission_entries[0]
+                    description = commission_entry.get('description', '')
+                    debit = commission_entry.get('debit', 0)
+                    credit = commission_entry.get('credit', 0)
+                    
+                    # Check if it's properly credited (commission received should be credit)
+                    if credit > 0 and debit == 0:
+                        self.log_result("Commission Entry Format", True, 
+                                      f"Commission properly credited: debit={debit}, credit={credit}")
+                    else:
+                        self.log_result("Commission Entry Format", False, 
+                                      f"Commission entry format unclear: debit={debit}, credit={credit}")
+                    
+                elif len(commission_entries) > 1:
+                    self.log_result("❌ Commission Entry Duplication", False, 
+                                  f"Found {len(commission_entries)} commission entries (duplication detected)")
+                    
+                    # Show duplicate commission entries
+                    for i, entry in enumerate(commission_entries):
+                        print(f"   Duplicate Commission {i+1}: {entry.get('description', '')}")
+                        print(f"      Debit: {entry.get('debit', 0)}, Credit: {entry.get('credit', 0)}")
+                else:
+                    self.log_result("❌ Commission Entry Missing", False, 
+                                  f"No commission entries found for {self.completed_transfer_code}")
+                
+                # CRITICAL TEST 3: Overall duplication check
+                total_related_entries = len(transfer_related_entries)
+                expected_entries = 2  # 1 transfer receipt + 1 commission
+                
+                if total_related_entries == expected_entries:
+                    self.log_result("✅ Issue 2 - No Duplication", True, 
+                                  f"Found exactly {expected_entries} entries (1 transfer + 1 commission) - no duplication")
+                elif total_related_entries > expected_entries:
+                    self.log_result("❌ Issue 2 - Duplication Detected", False, 
+                                  f"Found {total_related_entries} entries, expected {expected_entries} - duplication detected")
+                else:
+                    self.log_result("❌ Issue 2 - Missing Entries", False, 
+                                  f"Found {total_related_entries} entries, expected {expected_entries} - entries missing")
+                
+                # Debug: Show all related entries
+                print(f"\n🔍 LEDGER ENTRIES ANALYSIS:")
+                for i, entry in enumerate(transfer_related_entries):
+                    desc = entry.get('description', '')
+                    debit = entry.get('debit', 0)
+                    credit = entry.get('credit', 0)
+                    entry_type = entry.get('type', 'unknown')
+                    print(f"   Entry {i+1}: {desc}")
+                    print(f"      Type: {entry_type}, Debit: {debit}, Credit: {credit}")
+                
+                return True
+            else:
+                self.log_result("Accounting Ledger Access Failed", False, 
+                              f"Failed to access accounting ledger: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Accounting Ledger Error", False, f"Error: {str(e)}")
+            return False
 
 def main():
     """Main execution function"""
