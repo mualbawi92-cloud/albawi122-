@@ -1066,6 +1066,12 @@ async def login(credentials: LoginRequest, request: Request):
     user.pop('password_hash', None)
     user.pop('_id', None)
     
+    # If user has an agent_id, fetch and add agent_display_name
+    if user.get('role') == 'user' and user.get('agent_id'):
+        agent = await db.users.find_one({'id': user['agent_id']}, {'_id': 0, 'display_name': 1})
+        if agent:
+            user['agent_display_name'] = agent['display_name']
+    
     return {'access_token': access_token, 'user': user}
 
 @api_router.get("/agents", response_model=List[User])
