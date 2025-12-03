@@ -304,17 +304,15 @@ class TransferCommissionTester:
             self.log_result("Transfer Receipt", False, "No tracking number or PIN available from transfer creation")
             return False
         
-        # Create a small test image file
-        import io
-        from PIL import Image
-        
-        # Create a small 1x1 pixel image
-        img = Image.new('RGB', (1, 1), color='white')
-        img_bytes = io.BytesIO()
-        img.save(img_bytes, format='PNG')
-        img_bytes.seek(0)
-        
         try:
+            # Create a minimal PNG file (1x1 pixel transparent PNG)
+            import io
+            import base64
+            
+            # Minimal PNG data (1x1 transparent pixel)
+            png_data = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=')
+            img_bytes = io.BytesIO(png_data)
+            
             # Prepare form data for multipart upload
             files = {
                 'id_image': ('test_id.png', img_bytes, 'image/png')
