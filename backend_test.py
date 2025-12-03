@@ -1,50 +1,37 @@
 #!/usr/bin/env python3
 """
-🚨 AGENT REGISTRATION AUTO-CREATE CHART OF ACCOUNTS TESTING
+🚨 COMPREHENSIVE TRANSFER AND COMMISSION TESTING
 
-**Test Objective:** Comprehensive testing of agent registration with automatic chart of accounts creation
+**Test Objective:** Complete testing of transfer creation, receipt, and commission ledger verification
 
 **Review Request Focus:**
-Testing the enhanced agent registration system that automatically creates accounts in chart_of_accounts
-when no account_code is provided, and validates existing accounts when account_code is provided.
+اختبار شامل: إنشاء واستلام حوالة وفحص دفتر الأستاذ
 
-**Testing Requirements:**
+**Testing Scenario:**
+1. إنشاء حوالة من "صيرفة النور" (testuser123)
+2. استلام الحوالة من "صيرفة أور" (user_ur أو إنشاء وكيل جديد)
+3. فحص دفتر الأستاذ للوكيل المستلم والتحقق من:
+   - عنوان العمولة: "عمولة مدفوعة"
+   - رقم الحوالة (10 أرقام) موجود
+   - العمولة دائن أم مدين؟
 
-**Phase 1: Auto-Create Account (No account_code provided)**
-1. POST /api/register - Register new agent WITHOUT account_code
-   - Agent created successfully
-   - New account automatically created in chart_of_accounts
-   - Account code follows pattern (e.g., 2001, 2002, etc.)
-   - Account name: "صيرفة [display_name] - [governorate]"
-   - agent.account_code and agent.account_id set correctly
-   - account.agent_id links back to agent
+**Test Steps:**
+1. Login as testuser123
+2. Create transfer to governorate WA (واسط)
+3. Get tracking_number and PIN
+4. Login as agent in WA governorate (or create one)
+5. Receive the transfer using tracking_number and PIN
+6. Get ledger for receiving agent
+7. Check commission entry: title, debit/credit, transfer_code
 
-2. GET /api/agents - Verify agent appears with account_code
-3. GET /api/accounting/accounts - Verify new account created
-4. GET /api/accounting/accounts/{code} - Get the new account details
+**Expected Result:**
+- Commission entry title: "عمولة مدفوعة من [sender] إلى [receiver] - واسط"
+- Commission in ledger: debit: 0, credit: [amount]
+- Transfer code visible in ledger
 
-**Phase 2: Manual Account Selection (account_code provided)**
-1. Create an available account manually
-2. POST /api/register - Register agent WITH account_code
-   - Agent created successfully
-   - Uses existing account (no new account created)
-   - agent.account_code matches provided code
-   - account.agent_id links to agent
-
-**Phase 3: Validation Tests**
-1. Try to register agent with invalid account_code (doesn't exist)
-2. Try to register agent with account from wrong category
-3. Try to register agent with account already linked
-
-**Phase 4: Sequential Code Generation**
-1. Register multiple agents without account_code
-2. Verify account codes are sequential
-
-**Phase 5: Account Details Verification**
-- Verify name format: "صيرفة {display_name} - {governorate_name}"
-- Verify governorate mapping (BG → بغداد, BS → البصرة, etc.)
-- Verify default currencies: ['IQD', 'USD']
-- Verify initial balances: 0.0
+**Important:**
+- Use actual file upload for ID image (create a test image)
+- Verify commission appears correctly in receiving agent's ledger
 
 **Admin Credentials:**
 username: admin
