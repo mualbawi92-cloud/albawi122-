@@ -1484,6 +1484,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             commission_amount = transfer_doc.get('commission', 0)
             
             # قيد 1: مبلغ الحوالة فقط
+            # عند إصدار الحوالة: المُرسل يدفع → حسابه دائن، والحوالة في الطريق (Transit) → مدين
             journal_entry_transfer = {
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-{transfer_code}",
@@ -1491,13 +1492,13 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 'description': f'حوالة من {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {transfer_code}',
                 'lines': [
                     {
-                        'account_code': sender_account_code,
+                        'account_code': '901',  # Transit Account (مدين) - الحوالة في الطريق
                         'debit': transfer_data.amount,
                         'credit': 0,
                         'currency': 'IQD'  # العملة
                     },
                     {
-                        'account_code': '901',
+                        'account_code': sender_account_code,  # Sender Account (دائن) - دفع المبلغ
                         'debit': 0,
                         'credit': transfer_data.amount,
                         'currency': 'IQD'  # العملة
@@ -1507,7 +1508,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                 'total_credit': transfer_data.amount,
                 'reference_type': 'transfer_created',
                 'reference_id': transfer_id,
-                'created_by': current_user['id'],
+                'created_by': actual_agent_id,
                 'created_at': datetime.now(timezone.utc).isoformat(),
                 'is_cancelled': False
             }
@@ -1515,13 +1516,15 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             await db.journal_entries.insert_one(journal_entry_transfer)
             
             # Update balances for transfer
+            # Transit account increases (debit for assets - الحوالات في الطريق)
             await db.chart_of_accounts.update_one(
-                {'code': sender_account_code},
+                {'code': '901'},
                 {'$inc': {'balance': transfer_data.amount, 'balance_iqd': transfer_data.amount}}
             )
             
+            # Sender account decreases (credit for assets - دفع نقدية)
             await db.chart_of_accounts.update_one(
-                {'code': '901'},
+                {'code': sender_account_code},
                 {'$inc': {'balance': -transfer_data.amount, 'balance_iqd': -transfer_data.amount}}
             )
             
