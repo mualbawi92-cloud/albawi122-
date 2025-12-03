@@ -2110,7 +2110,9 @@ async def receive_transfer(
         raise HTTPException(status_code=400, detail="Transfer already processed")
     
     # Prevent sender from receiving their own transfer
-    if transfer['from_agent_id'] == current_user['id']:
+    # Check both direct user ID and their agent ID (for users linked to agents)
+    user_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+    if transfer['from_agent_id'] == current_user['id'] or transfer['from_agent_id'] == user_agent_id:
         raise HTTPException(status_code=403, detail="لا يمكن للمُرسل استلام حوالته الخاصة")
     
     # Check rate limit for PIN attempts
