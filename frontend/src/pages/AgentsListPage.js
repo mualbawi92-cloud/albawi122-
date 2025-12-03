@@ -99,17 +99,43 @@ const AgentsListPage = () => {
 العنوان: ${agent.address || 'غير محدد'}
 الهاتف: ${agent.phone || 'غير محدد'}`;
 
-    navigator.clipboard.writeText(agentInfo).then(() => {
-      setCopiedId(agent.id);
+    // Try modern clipboard API first, fallback if blocked
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(agentInfo).then(() => {
+        setCopiedId(agent.id);
+        toast.success('تم نسخ معلومات الوكيل');
+        
+        // إخفاء رسالة النسخ بعد ثانيتين
+        setTimeout(() => {
+          setCopiedId(null);
+        }, 2000);
+      }).catch(() => {
+        // Fallback to old method
+        fallbackCopy(agentInfo, agent.id);
+      });
+    } else {
+      fallbackCopy(agentInfo, agent.id);
+    }
+  };
+
+  const fallbackCopy = (text, agentId) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    
+    try {
+      document.execCommand('copy');
+      setCopiedId(agentId);
       toast.success('تم نسخ معلومات الوكيل');
-      
-      // إخفاء رسالة النسخ بعد ثانيتين
-      setTimeout(() => {
-        setCopiedId(null);
-      }, 2000);
-    }).catch(() => {
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
       toast.error('فشل نسخ المعلومات');
-    });
+    }
+    
+    document.body.removeChild(textArea);
   };
 
 
