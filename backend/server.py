@@ -2332,13 +2332,20 @@ async def receive_transfer(
         # Get receiver agent account from chart_of_accounts (preferred) or old accounts table
         receiver_account_code = None
         
+        # Determine actual receiving agent ID (for users, use their linked agent)
+        receiving_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+        
         # First try to get from chart_of_accounts (preferred)
-        receiver_coa = await db.chart_of_accounts.find_one({'agent_id': current_user['id']})
+        receiver_coa = await db.chart_of_accounts.find_one({'agent_id': receiving_agent_id})
         if receiver_coa:
             receiver_account_code = receiver_coa['code']
-        # Fallback to account_id in user table
-        elif current_user.get('account_id'):
-            receiver_account_code = current_user['account_id']
+        else:
+            # Fallback: Get agent's account from users table
+            agent_user = await db.users.find_one({'id': receiving_agent_id}, {'_id': 0})
+            if agent_user and agent_user.get('account_id'):
+                receiver_account_code = agent_user['account_id']
+            elif agent_user and agent_user.get('account_code'):
+                receiver_account_code = agent_user['account_code']
         
         if not receiver_account_code:
             logger.error(f"❌ Receiver agent {current_user['id']} ({current_user.get('display_name')}) has no linked account in chart_of_accounts!")
