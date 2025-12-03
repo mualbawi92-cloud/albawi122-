@@ -29,7 +29,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional, List
 
 # Configuration
-BASE_URL = "https://agent-ui-revamp.preview.emergentagent.com/api"
+BASE_URL = "https://account-sync-7.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
 
 # Try different possible passwords for test agents
