@@ -71,7 +71,7 @@ const DashboardPage = () => {
         {/* Welcome Section */}
         <div className="bg-gradient-to-l from-primary to-primary/80 rounded-xl sm:rounded-2xl p-4 sm:p-8 text-white shadow-xl">
           <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">
-            مرحباً {user?.role === 'user' && agentName ? agentName : user?.display_name}
+            مرحباً {user?.agent_display_name || user?.display_name}
           </h1>
           <p className="text-base sm:text-xl opacity-90">{user?.governorate} - صراف</p>
         </div>
