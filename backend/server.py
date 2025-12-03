@@ -1341,10 +1341,19 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         if to_agent:
             to_agent_name = to_agent['display_name']
     
+    # Generate 10-digit tracking number
+    import random
+    tracking_number = ''.join([str(random.randint(0, 9)) for _ in range(10)])
+    
+    # Ensure tracking number is unique
+    while await db.transfers.find_one({'tracking_number': tracking_number}):
+        tracking_number = ''.join([str(random.randint(0, 9)) for _ in range(10)])
+    
     transfer_doc = {
         'id': transfer_id,
         'transfer_code': transfer_code,
         'transfer_number': transfer_number,
+        'tracking_number': tracking_number,  # رقم الحوالة (10 أرقام)
         'seq_number': seq_num,
         'from_agent_id': actual_agent_id,
         'from_agent_name': actual_agent_name,
