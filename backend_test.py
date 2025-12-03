@@ -304,20 +304,32 @@ class TransferCommissionTester:
             self.log_result("Transfer Receipt", False, "No tracking number or PIN available from transfer creation")
             return False
         
-        # Create test ID image (base64 encoded small image)
-        test_id_image_base64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        # Create a small test image file
+        import io
+        from PIL import Image
         
-        # Prepare receipt data
-        receipt_data = {
-            "pin": self.pin,
-            "receiver_fullname": "محمد سعد كريم",
-            "id_image": test_id_image_base64
-        }
+        # Create a small 1x1 pixel image
+        img = Image.new('RGB', (1, 1), color='white')
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='PNG')
+        img_bytes.seek(0)
         
         try:
-            # Receive transfer
-            response = self.make_request('POST', f'/transfers/{self.tracking_number}/receive', 
-                                       token=self.receiver_token, json=receipt_data)
+            # Prepare form data for multipart upload
+            files = {
+                'id_image': ('test_id.png', img_bytes, 'image/png')
+            }
+            
+            data = {
+                'pin': self.pin,
+                'receiver_fullname': 'محمد سعد كريم'
+            }
+            
+            # Make request with form data and file upload
+            url = f"{BASE_URL}/transfers/{self.tracking_number}/receive"
+            headers = {'Authorization': f'Bearer {self.receiver_token}'}
+            
+            response = requests.post(url, data=data, files=files, headers=headers)
             
             if response.status_code in [200, 201]:
                 receipt_response = response.json()
