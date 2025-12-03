@@ -5686,4 +5686,65 @@ agent_communication:
         **CONCLUSION:**
         Transfer flow is excellent, but commission ledger entries are missing. This is a critical 
         accounting feature that needs immediate attention to meet the Arabic review requirements.
+    - agent: "testing"
+      message: |
+        🚨 **RE-TEST COMMISSION LEDGER ISSUE - CRITICAL FAILURE CONFIRMED**
+        
+        **Test Date:** December 3, 2025
+        **Test Focus:** Re-testing commission ledger for receiver agent as requested in Arabic review
+        
+        **Review Request Verification:**
+        1. ✅ Create transfer from testuser123 to WA governorate - SUCCESS
+        2. ✅ Receive transfer as agent in WA - SUCCESS  
+        3. ❌ **CRITICAL FAILURE:** Commission entry NOT appearing in receiver agent's ledger
+        
+        **Test Results:** 26 tests, 23 passed (88.5% success rate), 3 failed
+        
+        **✅ TRANSFER FLOW - FULLY FUNCTIONAL:**
+        - Transfer creation: T-WS-20251203-000034-3 ✅
+        - Tracking number: 5008741699 (10 digits) ✅
+        - PIN: 1201 (4 digits) ✅
+        - Transfer receipt with ID upload ✅
+        - Status update to 'completed' ✅
+        
+        **❌ CRITICAL ISSUE CONFIRMED:**
+        
+        **Commission entries are NOT appearing in receiver agent's ledger (account 501-04)**
+        
+        **Expected:** "عمولة مدفوعة من [sender] إلى [receiver] - واسط"
+        **Actual:** NO commission entries found in ledger
+        
+        **ROOT CAUSE IDENTIFIED:**
+        The `/api/transfers/{transfer_id}/receive` endpoint creates commission journal entries in:
+        - Account 701: عمولات مدفوعة 
+        - Account 601: عمولات محققة
+        
+        **BUT MISSING:** Commission entry in receiver agent's account (501-04)
+        
+        **IMMEDIATE FIX REQUIRED:**
+        
+        Main agent must add commission journal entry creation in receiver agent's account:
+        
+        ```
+        Description: "عمولة مدفوعة من أحمد علي حسن إلى محمد سعد كريم - واسط"
+        Account: 501-04 (receiver agent account)
+        Debit: 0
+        Credit: 1250.0 (commission amount)
+        Reference: T-WS-20251203-000034-3
+        ```
+        
+        **Technical Location:** 
+        File: `backend/server.py`
+        Endpoint: `/api/transfers/{transfer_id}/receive` (lines 2446-2516)
+        
+        **Action Required:**
+        1. Add additional journal entry in receiver agent's account for commission
+        2. Use exact Arabic title format from review request
+        3. Include transfer code in description
+        4. Set debit: 0, credit: [commission amount]
+        
+        **VERIFICATION:**
+        After fix, commission entries should appear in receiver agent's ledger with proper format.
+        
+        **PRIORITY:** HIGH - This is a critical accounting requirement from the Arabic review request.
 
