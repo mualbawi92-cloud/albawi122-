@@ -1423,7 +1423,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         currency=transfer_data.currency,
         operation='add',
         reference_id=transfer_id,
-        note=f'حوالة واردة من {current_user["display_name"]} - {transfer_code}'
+        note=f'حوالة واردة من {actual_agent_name} - {transfer_code}'
     )
     
     # ============ CREATE ACCOUNTING JOURNAL ENTRY ============
