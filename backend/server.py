@@ -1410,8 +1410,8 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             'currency': transfer_data.currency,
             'transfer_id': transfer_id,
             'transfer_code': transfer_code,
-            'agent_id': current_user['id'],
-            'agent_name': current_user['display_name'],
+            'agent_id': actual_agent_id,
+            'agent_name': actual_agent_name,
             'commission_percentage': commission_percentage,
             'note': f'عمولة محققة من حوالة صادرة',
             'created_at': datetime.now(timezone.utc).isoformat()
