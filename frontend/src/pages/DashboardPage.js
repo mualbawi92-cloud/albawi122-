@@ -17,27 +17,10 @@ const DashboardPage = () => {
   const [stats, setStats] = useState(null);
   const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [agentName, setAgentName] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
-    fetchAgentName();
   }, []);
-
-  const fetchAgentName = async () => {
-    // If user is a regular user (role='user'), fetch their agent's name
-    if (user?.role === 'user' && user?.agent_id) {
-      try {
-        const response = await axios.get(`${API}/users`);
-        const agent = response.data.find(u => u.id === user.agent_id);
-        if (agent) {
-          setAgentName(agent.display_name);
-        }
-      } catch (error) {
-        console.error('Error fetching agent name:', error);
-      }
-    }
-  };
 
   const fetchDashboardData = async () => {
     try {
