@@ -2453,16 +2453,16 @@ async def receive_transfer(
             
             logger.info(f"Created journal entry for receiving transfer {transfer['transfer_code']}")
             
-            # قيد 2: العمولة المحققة (إذا وجدت)
-            # مدين: عمولات مدفوعة (عند المدير)
-            # دائن: حساب الوكيل المستلم (العمولة تضاف لحساب الوكيل)
+            # قيد 2: العمولة المحققة للوكيل المستلم (إذا وجدت)
+            # مدين: حساب 5110 (عمولات مدفوعة عند المدير)
+            # دائن: حساب الوكيل المستلم (عمولة محققة)
             if incoming_commission > 0:
                 # Get paid commission account from chart_of_accounts
-                paid_commission_account = await db.chart_of_accounts.find_one({'code': '701'})
+                paid_commission_account = await db.chart_of_accounts.find_one({'code': '5110'})
                 if not paid_commission_account:
                     paid_commission_account = {
-                        'id': 'paid_commissions_transfer_701',
-                        'code': '701',
+                        'id': 'paid_commissions_5110',
+                        'code': '5110',
                         'name': 'عمولات مدفوعة',
                         'name_ar': 'عمولات حوالات مدفوعة',
                         'name_en': 'Transfer Commission Paid',
@@ -2484,18 +2484,18 @@ async def receive_transfer(
                 
                 journal_entry_commission = {
                     'id': str(uuid.uuid4()),
-                    'entry_number': f"COM-REC-{transfer['transfer_code']}",
+                    'entry_number': f"COM-EARNED-{transfer['transfer_code']}",
                     'date': datetime.now(timezone.utc).isoformat(),
-                    'description': f'عمولة مدفوعة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {gov_name}',
+                    'description': f'عمولة محققة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {gov_name}',
                     'lines': [
                         {
-                            'account_code': '701',  # عمولات مدفوعة (مدين - مصروف عند المدير)
+                            'account_code': '5110',  # عمولات مدفوعة (مدين - مصروف عند المدير)
                             'debit': incoming_commission,
                             'credit': 0,
                             'currency': transfer['currency']
                         },
                         {
-                            'account_code': receiver_account['code'],  # حساب الوكيل المستلم (دائن - العمولة تضاف للوكيل)
+                            'account_code': receiver_account['code'],  # حساب الوكيل المستلم (دائن - عمولة محققة)
                             'debit': 0,
                             'credit': incoming_commission,
                             'currency': transfer['currency']
@@ -2513,20 +2513,20 @@ async def receive_transfer(
                 await db.journal_entries.insert_one(journal_entry_commission)
                 
                 # Update balances for commission
-                # عمولات مدفوعة (مصروف يزداد بالمدين)
+                # حساب 5110 عمولات مدفوعة (مدين - مصروف عند المدير)
                 currency_field = f'balance_{transfer["currency"].lower()}'
                 await db.chart_of_accounts.update_one(
-                    {'code': '701'},
+                    {'code': '5110'},
                     {'$inc': {'balance': incoming_commission, currency_field: incoming_commission}}
                 )
                 
-                # حساب الوكيل المستلم (يزداد بالدائن)
+                # حساب الوكيل المستلم (دائن - عمولة محققة)
                 await db.chart_of_accounts.update_one(
                     {'code': receiver_account['code']},
                     {'$inc': {'balance': incoming_commission, currency_field: incoming_commission}}
                 )
                 
-                logger.info(f"Created journal entry for commission paid to receiver on transfer {transfer['transfer_code']}")
+                logger.info(f"Created journal entry for earned commission to receiver on transfer {transfer['transfer_code']}")
     except Exception as e:
         logger.error(f"Error creating journal entry for receiving transfer: {str(e)}")
     # ============ END ACCOUNTING ENTRY ============
