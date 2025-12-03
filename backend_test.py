@@ -378,8 +378,9 @@ class TransferCommissionTester:
             return False
     
     def test_verify_commission_in_ledger(self):
-        """Phase 4: Verify commission entry in receiver agent's ledger"""
-        print("\n=== Phase 4: Verify Commission in Ledger ===")
+        """Phase 4: Verify commission entry in receiver agent's ledger - CRITICAL TEST"""
+        print("\n=== Phase 4: Verify Commission in Ledger - CRITICAL TEST ===")
+        print("🚨 TESTING SPECIFIC ISSUE: Commission entries missing from receiver agent's ledger")
         
         if not hasattr(self, 'receiver_user') or not self.receiver_user.get('account_code'):
             self.log_result("Ledger Commission Check", False, "No receiver agent account code available")
@@ -425,6 +426,9 @@ class TransferCommissionTester:
                     self.log_result(f"Entry {i+1}", True, 
                                   f"Desc: {desc}, Debit: {debit}, Credit: {credit}")
                 
+                # CRITICAL TEST: Look for expected commission entry format
+                expected_commission_found = False
+                
                 if transfer_related_entries:
                     self.log_result("Transfer Related Entries", True, 
                                   f"Found {len(transfer_related_entries)} entries related to transfer {self.transfer_code}")
@@ -437,6 +441,8 @@ class TransferCommissionTester:
                         
                         # Check if this is a commission entry
                         if 'عمولة' in description:
+                            expected_commission_found = True
+                            
                             # Verify commission title format
                             expected_patterns = [
                                 'عمولة مدفوعة',
@@ -461,7 +467,7 @@ class TransferCommissionTester:
                                 self.log_result("Transfer Code in Commission", False, 
                                               f"Transfer code not found in commission entry")
                             
-                            # Check debit/credit amounts
+                            # Check debit/credit amounts (should be credit for receiver)
                             if credit > 0 and debit == 0:
                                 self.log_result("Commission Debit/Credit", True, 
                                               f"Commission correctly credited: debit={debit}, credit={credit}")
@@ -483,6 +489,7 @@ class TransferCommissionTester:
                     self.log_result("Transfer Related Entries", False, 
                                   f"No entries found related to transfer {self.transfer_code}")
                 
+                # CRITICAL FINDING: Check if commission entries exist at all
                 if commission_entries:
                     self.log_result("Commission Entries Found", True, 
                                   f"Found {len(commission_entries)} commission entries in ledger")
@@ -495,8 +502,32 @@ class TransferCommissionTester:
                         self.log_result(f"Commission Entry {i+1}", True, 
                                       f"Description: {description}, Debit: {debit}, Credit: {credit}")
                 else:
-                    self.log_result("Commission Entries Found", False, 
-                                  f"No commission entries found in ledger")
+                    # THIS IS THE CRITICAL ISSUE
+                    self.log_result("❌ CRITICAL ISSUE: Commission Entries Missing", False, 
+                                  f"NO commission entries found in receiver agent's ledger for account {receiver_account_code}")
+                    
+                    print(f"\n🚨 ROOT CAUSE ANALYSIS:")
+                    print(f"   - Transfer receipt successful: ✅")
+                    print(f"   - Transfer entries in ledger: ✅ (found {len(transfer_related_entries)} entries)")
+                    print(f"   - Commission entries in ledger: ❌ (found 0 entries)")
+                    print(f"   - Expected commission entry format: 'عمولة مدفوعة من [sender] إلى [receiver] - واسط'")
+                    print(f"   - Expected in account: {receiver_account_code}")
+                    print(f"   - Expected debit: 0, credit: [commission amount]")
+                    print(f"   - Expected transfer code: {self.transfer_code}")
+                    
+                    print(f"\n🔍 BACKEND INVESTIGATION NEEDED:")
+                    print(f"   - Check /api/transfers/{{transfer_id}}/receive endpoint")
+                    print(f"   - Commission journal entries are created in accounts 701/601")
+                    print(f"   - But NO commission entry created in receiver agent's account ({receiver_account_code})")
+                    print(f"   - Need to create additional journal entry in receiver's account for commission")
+                
+                # Final assessment
+                if not expected_commission_found:
+                    self.log_result("❌ COMMISSION LEDGER VERIFICATION FAILED", False, 
+                                  f"Commission entries are NOT appearing in receiver agent's ledger as required by review request")
+                else:
+                    self.log_result("✅ COMMISSION LEDGER VERIFICATION PASSED", True, 
+                                  f"Commission entries correctly appearing in receiver agent's ledger")
                 
                 return True
             else:
