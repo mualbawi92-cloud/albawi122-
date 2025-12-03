@@ -5458,11 +5458,23 @@ async def get_agent_ledger(
     for transfer in incoming_transfers:
         if transfer.get('currency') != currency:
             continue
+        
+        # Get sender's governorate if available
+        sender_gov = transfer.get('from_governorate', '')
+        gov_names = {
+            'BG': 'بغداد', 'BA': 'البصرة', 'NJ': 'النجف', 'KR': 'كربلاء',
+            'AN': 'الأنبار', 'NI': 'نينوى', 'AR': 'أربيل', 'SU': 'السليمانية',
+            'DH': 'ذي قار', 'DI': 'ديالى', 'KI': 'كركوك', 'WA': 'واسط',
+            'SA': 'صلاح الدين', 'QA': 'القادسية', 'MY': 'ميسان', 'MU': 'المثنى',
+            'BA': 'بابل', 'DU': 'دهوك'
+        }
+        sender_gov_name = gov_names.get(sender_gov, sender_gov) if sender_gov else ''
+        gov_info = f" - {sender_gov_name}" if sender_gov_name else ""
             
         transactions.append({
             'date': transfer.get('updated_at', transfer['created_at']),
             'type': 'incoming',
-            'description': f"حوالة واردة - {transfer['transfer_code']} من {transfer.get('sender_name', 'غير معروف')}",
+            'description': f"حوالة واردة من {transfer.get('sender_name', 'غير معروف')} إلى {transfer.get('receiver_name', 'غير معروف')}{gov_info}",
             'debit': 0,
             'credit': transfer['amount'],
             'balance': 0,
@@ -5476,7 +5488,7 @@ async def get_agent_ledger(
             transactions.append({
                 'date': transfer.get('updated_at', transfer['created_at']),
                 'type': 'commission_paid',
-                'description': f"عمولة مدفوعة - {transfer['transfer_code']}",
+                'description': f"عمولة مدفوعة من {transfer.get('sender_name', 'غير معروف')} إلى {transfer.get('receiver_name', 'غير معروف')}{gov_info}",
                 'debit': 0,
                 'credit': transfer['incoming_commission'],
                 'balance': 0,
