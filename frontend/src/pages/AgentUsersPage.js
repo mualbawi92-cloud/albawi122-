@@ -21,6 +21,7 @@ const AgentUsersPage = () => {
   const [agent, setAgent] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [linkedAccount, setLinkedAccount] = useState(null);
   
   // Edit Modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
