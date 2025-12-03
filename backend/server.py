@@ -1795,8 +1795,17 @@ async def get_transfer_details(transfer_id: str, current_user: dict = Depends(ge
     
     # Check access
     if current_user['role'] != 'admin':
+        # Allow access if:
+        # 1. User is the sender agent OR sender agent's user
+        # 2. User is the receiver agent
+        # 3. Transfer is to user's governorate
+        
+        user_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+        
         if (transfer['from_agent_id'] != current_user['id'] and 
+            transfer['from_agent_id'] != user_agent_id and
             transfer.get('to_agent_id') != current_user['id'] and
+            transfer.get('to_agent_id') != user_agent_id and
             transfer['to_governorate'] != current_user.get('governorate')):
             raise HTTPException(status_code=403, detail="Access denied")
     
