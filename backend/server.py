@@ -2454,15 +2454,15 @@ async def receive_transfer(
             logger.info(f"Created journal entry for receiving transfer {transfer['transfer_code']}")
             
             # قيد 2: العمولة المحققة للوكيل المستلم (إذا وجدت)
-            # مدين: حساب 5110 (عمولات مدفوعة عند المدير)
+            # مدين: حساب 701 (عمولات مدفوعة عند المدير)
             # دائن: حساب الوكيل المستلم (عمولة محققة)
             if incoming_commission > 0:
                 # Get paid commission account from chart_of_accounts
-                paid_commission_account = await db.chart_of_accounts.find_one({'code': '5110'})
+                paid_commission_account = await db.chart_of_accounts.find_one({'code': '701'})
                 if not paid_commission_account:
                     paid_commission_account = {
-                        'id': 'paid_commissions_5110',
-                        'code': '5110',
+                        'id': 'paid_commissions_701',
+                        'code': '701',
                         'name': 'عمولات مدفوعة',
                         'name_ar': 'عمولات حوالات مدفوعة',
                         'name_en': 'Transfer Commission Paid',
@@ -2489,7 +2489,7 @@ async def receive_transfer(
                     'description': f'عمولة محققة من {transfer.get("sender_name", "غير معروف")} إلى {transfer.get("receiver_name", "غير معروف")} - {gov_name}',
                     'lines': [
                         {
-                            'account_code': '5110',  # عمولات مدفوعة (مدين - مصروف عند المدير)
+                            'account_code': '701',  # عمولات مدفوعة (مدين - مصروف عند المدير)
                             'debit': incoming_commission,
                             'credit': 0,
                             'currency': transfer['currency']
@@ -2513,10 +2513,10 @@ async def receive_transfer(
                 await db.journal_entries.insert_one(journal_entry_commission)
                 
                 # Update balances for commission
-                # حساب 5110 عمولات مدفوعة (مدين - مصروف عند المدير)
+                # حساب 701 عمولات مدفوعة (مدين - مصروف عند المدير)
                 currency_field = f'balance_{transfer["currency"].lower()}'
                 await db.chart_of_accounts.update_one(
-                    {'code': '5110'},
+                    {'code': '701'},
                     {'$inc': {'balance': incoming_commission, currency_field: incoming_commission}}
                 )
                 
