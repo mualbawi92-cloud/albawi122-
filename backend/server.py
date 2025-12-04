@@ -1540,14 +1540,14 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             
             # قيد 2: العمولة المدفوعة من الوكيل المُرسل (إذا وجدت)
             # مدين: حساب الوكيل المُرسل (عمولة مدفوعة)
-            # دائن: حساب 4020 (عمولات محققة عند المدير)
+            # دائن: حساب 601 (عمولات محققة عند المدير)
             if commission_amount > 0:
                 # Get earned commission account from chart_of_accounts
-                commission_account = await db.chart_of_accounts.find_one({'code': '4020'})
+                commission_account = await db.chart_of_accounts.find_one({'code': '601'})
                 if not commission_account:
                     commission_account = {
-                        'id': 'earned_commissions_4020',
-                        'code': '4020',
+                        'id': 'earned_commissions_601',
+                        'code': '601',
                         'name': 'عمولات محققة',
                         'name_ar': 'عمولات محققة',
                         'name_en': 'Earned Commissions',
@@ -1580,7 +1580,7 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                             'currency': transfer_data.currency
                         },
                         {
-                            'account_code': '4020',  # عمولات محققة (دائن - إيراد عند المدير)
+                            'account_code': '601',  # عمولات محققة (دائن - إيراد عند المدير)
                             'debit': 0,
                             'credit': commission_amount,
                             'currency': transfer_data.currency
@@ -1605,9 +1605,9 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
                     {'$inc': {'balance': commission_amount, currency_field: commission_amount}}
                 )
                 
-                # حساب 4020 عمولات محققة (دائن - إيراد)
+                # حساب 601 عمولات محققة (دائن - إيراد)
                 await db.chart_of_accounts.update_one(
-                    {'code': '4020'},
+                    {'code': '601'},
                     {'$inc': {'balance': -commission_amount, currency_field: -commission_amount}}
                 )
             
