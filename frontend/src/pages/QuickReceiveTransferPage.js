@@ -117,61 +117,182 @@ const QuickReceiveTransferPage = () => {
   return (
     <div className="min-h-screen bg-background" data-testid="quick-receive-page">
       <Navbar />
-      <div className="container mx-auto p-4 sm:p-6">
+      <div className="container mx-auto p-4 sm:p-6 max-w-4xl">
         <Card className="shadow-xl">
           <CardHeader className="bg-gradient-to-l from-green-50 to-green-100 border-b-4 border-green-500">
             <CardTitle className="text-2xl sm:text-3xl text-green-800">
-              ⚡ تسليم حوالة سريع
+              📥 تسليم حوالة واردة
             </CardTitle>
             <CardDescription className="text-base text-green-700">
-              ابحث عن الحوالة وسلمها بشكل مباشر وسريع
+              أدخل رقم الحوالة وكود التحقق لتسليم الحوالة
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            {/* Search Section */}
-            <div className="bg-gradient-to-l from-blue-50 to-blue-100 rounded-xl p-6 mb-6 border-2 border-blue-200">
-              <h3 className="text-xl font-bold text-blue-800 mb-4">🔍 البحث عن الحوالة</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div className="space-y-2">
-                  <Label htmlFor="receiver-name" className="text-base font-semibold">
-                    🙋 البحث باسم المستلم
-                  </Label>
-                  <Input
-                    id="receiver-name"
-                    type="text"
-                    value={searchReceiverName}
-                    onChange={(e) => setSearchReceiverName(e.target.value)}
-                    placeholder="أدخل اسم المستلم..."
-                    className="h-12 text-base"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  />
-                </div>
+            {/* Step 1: Enter Transfer Number */}
+            {step === 1 && (
+              <div className="bg-gradient-to-l from-blue-50 to-blue-100 rounded-xl p-6 border-2 border-blue-200">
+                <h3 className="text-xl font-bold text-blue-800 mb-4">🔢 الخطوة 1: أدخل رقم الحوالة</h3>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="transfer-id" className="text-base font-semibold">
-                    🔢 البحث برقم الحوالة
-                  </Label>
-                  <Input
-                    id="transfer-id"
-                    type="text"
-                    value={searchTransferId}
-                    onChange={(e) => setSearchTransferId(e.target.value)}
-                    placeholder="أدخل رقم الحوالة..."
-                    className="h-12 text-base"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  />
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="transfer-number" className="text-base font-semibold">
+                      رقم الحوالة (10 أرقام)
+                    </Label>
+                    <Input
+                      id="transfer-number"
+                      type="text"
+                      value={transferNumber}
+                      onChange={(e) => setTransferNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                      placeholder="أدخل رقم الحوالة المكون من 10 أرقام..."
+                      className="h-14 text-lg text-center font-bold"
+                      maxLength={10}
+                      dir="ltr"
+                      onKeyPress={(e) => e.key === 'Enter' && handleSearchByNumber()}
+                    />
+                  </div>
+                  
+                  <Button
+                    onClick={handleSearchByNumber}
+                    disabled={loading || transferNumber.length !== 10}
+                    className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold"
+                  >
+                    {loading ? '🔄 جاري البحث...' : '➡️ التالي'}
+                  </Button>
                 </div>
               </div>
-              
-              <Button
-                onClick={handleSearch}
-                disabled={loading}
-                className="w-full md:w-auto h-12 bg-blue-600 hover:bg-blue-700 text-white text-base font-bold px-8"
-              >
-                {loading ? '🔄 جاري البحث...' : '🔍 بحث'}
-              </Button>
-            </div>
+            )}
+
+            {/* Step 2: Enter PIN */}
+            {step === 2 && transfer && (
+              <div className="space-y-6">
+                <div className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
+                  <h3 className="text-xl font-bold text-green-800 mb-4">✅ تم العثور على الحوالة</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">المرسل:</span>
+                      <span className="font-bold ml-2">{transfer.sender_name}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">المستفيد:</span>
+                      <span className="font-bold ml-2">{transfer.receiver_name}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">المبلغ:</span>
+                      <span className="font-bold ml-2">{transfer.amount.toLocaleString()} {transfer.currency}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-l from-orange-50 to-orange-100 rounded-xl p-6 border-2 border-orange-200">
+                  <h3 className="text-xl font-bold text-orange-800 mb-4">🔐 الخطوة 2: أدخل كود الحوالة</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="pin" className="text-base font-semibold">
+                        كود الحوالة (4 أرقام)
+                      </Label>
+                      <Input
+                        id="pin"
+                        type="password"
+                        value={pin}
+                        onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                        placeholder="••••"
+                        className="h-14 text-2xl text-center font-bold tracking-widest"
+                        maxLength={4}
+                        dir="ltr"
+                        onKeyPress={(e) => e.key === 'Enter' && handleVerifyPin()}
+                      />
+                    </div>
+                    
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={() => {
+                          setStep(1);
+                          setPin('');
+                          setTransfer(null);
+                        }}
+                        variant="outline"
+                        className="flex-1 h-12"
+                      >
+                        ↩️ رجوع
+                      </Button>
+                      <Button
+                        onClick={handleVerifyPin}
+                        disabled={loading || pin.length !== 4}
+                        className="flex-1 h-12 bg-orange-600 hover:bg-orange-700 text-white font-bold"
+                      >
+                        {loading ? '🔄 جاري التحقق...' : '✅ تحقق'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Show Details & Confirm */}
+            {step === 3 && transfer && (
+              <div className="space-y-6">
+                <div className="bg-green-50 rounded-xl p-6 border-2 border-green-300">
+                  <h3 className="text-2xl font-bold text-green-800 mb-6 text-center">✅ تفاصيل الحوالة</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white p-4 rounded-lg border">
+                        <span className="text-sm text-gray-600">رقم الحوالة</span>
+                        <p className="font-bold text-lg">{transfer.tracking_number || transfer.transfer_number}</p>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border">
+                        <span className="text-sm text-gray-600">رمز الحوالة</span>
+                        <p className="font-bold text-lg">{transfer.transfer_code}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg border">
+                      <span className="text-sm text-gray-600">المرسل</span>
+                      <p className="font-bold text-lg">{transfer.sender_name}</p>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg border">
+                      <span className="text-sm text-gray-600">المستفيد</span>
+                      <p className="font-bold text-lg">{transfer.receiver_name}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white p-4 rounded-lg border">
+                        <span className="text-sm text-gray-600">المبلغ</span>
+                        <p className="font-bold text-2xl text-green-700">{transfer.amount.toLocaleString()} {transfer.currency}</p>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border">
+                        <span className="text-sm text-gray-600">العمولة</span>
+                        <p className="font-bold text-lg">{transfer.incoming_commission?.toLocaleString() || 0} {transfer.currency}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => {
+                      setStep(1);
+                      setPin('');
+                      setTransfer(null);
+                      setTransferNumber('');
+                    }}
+                    variant="outline"
+                    className="flex-1 h-14 text-lg"
+                  >
+                    ❌ إلغاء
+                  </Button>
+                  <Button
+                    onClick={handleReceiveTransfer}
+                    disabled={submitting}
+                    className="flex-1 h-14 bg-green-600 hover:bg-green-700 text-white text-lg font-bold"
+                  >
+                    {submitting ? '⏳ جاري التسليم...' : '✅ تأكيد التسليم'}
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Results Section */}
             {transfers.length > 0 && (
