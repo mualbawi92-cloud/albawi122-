@@ -710,12 +710,20 @@ export const generateVoucherHTML = (transfer) => {
       <!-- Main Information Table -->
       <table class="main-table">
         <tr>
-          <td class="label-col">اسم المرسل / رقم الهاتف</td>
-          <td class="value-col">${transfer.sender_name || ''} ${transfer.sender_phone ? ' / ' + transfer.sender_phone : ''}</td>
+          <td class="label-col">اسم المرسل</td>
+          <td class="value-col">${transfer.sender_name || ''}</td>
         </tr>
         <tr>
-          <td class="label-col">اسم المستلم / رقم الهاتف</td>
-          <td class="value-col">${transfer.receiver_name || ''} ${transfer.receiver_phone ? ' / ' + transfer.receiver_phone : ''}</td>
+          <td class="label-col">رقم الهاتف</td>
+          <td class="value-col">${transfer.sender_phone || ''}</td>
+        </tr>
+        <tr>
+          <td class="label-col">اسم المستفيد</td>
+          <td class="value-col">${transfer.receiver_name || ''}</td>
+        </tr>
+        <tr>
+          <td class="label-col">رقم الهاتف</td>
+          <td class="value-col">${transfer.receiver_phone || ''}</td>
         </tr>
         <tr>
           <td class="label-col">المحافظة</td>
