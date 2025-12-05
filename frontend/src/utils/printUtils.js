@@ -755,15 +755,6 @@ export const generateVoucherHTML = (transfer) => {
         </tbody>
       </table>
 
-      <!-- PIN Section -->
-      ${transfer.pin_encrypted ? `
-      <div class="pin-section">
-        <div class="pin-label">الرقم السري للاستلام (PIN)</div>
-        <div class="pin-code">${transfer.decrypted_pin || '****'}</div>
-        <div class="warning-text">⚠️ يُرجى الاحتفاظ بهذا الرقم بسرية تامة وإعطاؤه للمستلم فقط</div>
-      </div>
-      ` : ''}
-
       <!-- Notes -->
       ${transfer.note ? `
       <div class="notes-box">
