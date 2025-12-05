@@ -413,13 +413,6 @@ const CreateTransferPage = () => {
             </tbody>
           </table>
 
-          <!-- PIN Section -->
-          <div class="pin-section">
-            <div class="pin-label">الرقم السري للاستلام (PIN)</div>
-            <div class="pin-code">${result.pin}</div>
-            <div class="warning-text">⚠️ يُرجى الاحتفاظ بهذا الرقم بسرية تامة وإعطاؤه للمستلم فقط</div>
-          </div>
-
           <!-- Notes -->
           ${result.note ? `
           <div class="notes-box">
