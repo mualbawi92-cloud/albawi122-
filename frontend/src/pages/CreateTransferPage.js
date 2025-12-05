@@ -60,13 +60,6 @@ const CreateTransferPage = () => {
     loading: false
   });
 
-  // Set sender governorate on mount
-  useEffect(() => {
-    if (user?.governorate) {
-      setFormData(prev => ({ ...prev, sender_governorate: user.governorate }));
-    }
-  }, [user]);
-
   // Calculate commission when amount, currency, or governorate changes
   useEffect(() => {
     const calculateCommission = async () => {
