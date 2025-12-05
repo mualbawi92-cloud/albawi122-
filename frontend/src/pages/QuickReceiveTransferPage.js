@@ -82,7 +82,7 @@ const QuickReceiveTransferPage = () => {
   const handleReceiveTransfer = async () => {
     setSubmitting(true);
     try {
-      await axios.post(`${API}/transfers/${transfer.id}/receive`, {
+      await axios.post(`${API}/transfers/${transfer.id}/receive-simple`, {
         pin: pin
       });
 
