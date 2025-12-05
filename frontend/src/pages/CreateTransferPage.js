@@ -362,65 +362,148 @@ const CreateTransferPage = () => {
         </style>
       </head>
       <body>
-        <div class="header">
-          <div class="title">🏦 نظام الحوالات المالية</div>
-          <div class="transfer-number">رقم الحوالة: ${result.transfer_number || 'غير متوفر'}</div>
-        </div>
-
-        <div class="section">
-          <div class="grid">
-            <div>
-              <div class="label">اسم المرسل</div>
-              <div class="value">${result.sender_name}</div>
+        <div class="voucher-container">
+          <!-- Header Wave -->
+          <div class="header-wave">
+            <div class="header-content">
+              <div class="voucher-info">
+                <div class="voucher-label">رقم الوصل</div>
+                <div class="voucher-value">${result.tracking_number || result.transfer_number || 'غير متوفر'}</div>
+              </div>
+              <div class="voucher-title">وصل إرسال حوالة</div>
+              <div class="voucher-info">
+                <div class="voucher-label">التاريخ</div>
+                <div class="voucher-value">${new Date().toLocaleDateString('ar-IQ')}</div>
+              </div>
             </div>
-            ${result.sender_phone ? `
-            <div>
-              <div class="label">رقم تلفون المرسل</div>
-              <div class="value">${result.sender_phone}</div>
-            </div>
-            ` : ''}
-            <div>
-              <div class="label">اسم المستلم</div>
-              <div class="value">${result.receiver_name}</div>
-            </div>
-            <div>
-              <div class="label">المبلغ</div>
-              <div class="value">${result.amount.toLocaleString()} ${result.currency}</div>
-            </div>
-            <div>
-              <div class="label">إلى محافظة</div>
-              <div class="value">${result.to_governorate}</div>
-            </div>
-            ${result.from_agent_name ? `
-            <div>
-              <div class="label">الصراف المرسل</div>
-              <div class="value">${result.from_agent_name}</div>
-            </div>
-            ` : ''}
-            ${result.to_agent_name ? `
-            <div>
-              <div class="label">الصراف المستلم</div>
-              <div class="value">${result.to_agent_name}</div>
-            </div>
-            ` : ''}
           </div>
-        </div>
 
-        <div class="pin-section">
-          <div class="label">الرقم السري (PIN)</div>
-          <div class="pin">${result.pin}</div>
-          <div class="warning">⚠️ أعطِ هذا الرقم للمستلِم فقط! احتفظ بهذه الورقة بأمان.</div>
-        </div>
+          <!-- Main Content -->
+          <div class="main-content">
+            <!-- Left Side: Sender & Receiver -->
+            <div>
+              <!-- Sender Information -->
+              <div class="sender-section">
+                <div class="section-title">معلومات المرسل</div>
+                <div class="info-line">
+                  <span class="info-label">الاسم:</span>
+                  <span class="info-value">${result.sender_name}</span>
+                </div>
+                ${result.sender_phone ? `
+                <div class="info-line">
+                  <span class="info-label">الهاتف:</span>
+                  <span class="info-value">${result.sender_phone}</span>
+                </div>
+                ` : ''}
+                ${result.from_agent_name ? `
+                <div class="info-line">
+                  <span class="info-label">الوكيل:</span>
+                  <span class="info-value">${result.from_agent_name}</span>
+                </div>
+                ` : ''}
+              </div>
 
-        <div class="footer">
-          <p>تاريخ الإنشاء: ${new Date().toLocaleDateString('ar-IQ')} - ${new Date().toLocaleTimeString('ar-IQ')}</p>
-          <p>نظام الحوالات المالية - جميع الحقوق محفوظة</p>
-        </div>
+              <!-- Receiver Information -->
+              <div class="receiver-section">
+                <div class="section-title">معلومات المستفيد</div>
+                <div class="info-line">
+                  <span class="info-label">الاسم:</span>
+                  <span class="info-value">${result.receiver_name}</span>
+                </div>
+                ${result.receiver_phone ? `
+                <div class="info-line">
+                  <span class="info-label">الهاتف:</span>
+                  <span class="info-value">${result.receiver_phone}</span>
+                </div>
+                ` : ''}
+                <div class="info-line">
+                  <span class="info-label">المحافظة:</span>
+                  <span class="info-value">${result.to_governorate}</span>
+                </div>
+                ${result.to_agent_name ? `
+                <div class="info-line">
+                  <span class="info-label">الوكيل:</span>
+                  <span class="info-value">${result.to_agent_name}</span>
+                </div>
+                ` : ''}
+              </div>
+            </div>
 
-        <div style="text-align: center; margin-top: 30px;">
-          <button onclick="window.print()" style="padding: 15px 40px; font-size: 18px; background: #1e3a5f; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-            🖨️ طباعة
-          </button>
+            <!-- Right Side: Transfer Details -->
+            <div>
+              <div class="details-box">
+                <div class="section-title">تفاصيل التحويل</div>
+                <table class="details-table">
+                  <thead>
+                    <tr>
+                      <th>البيان</th>
+                      <th>القيمة</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>المبلغ</td>
+                      <td>${result.amount.toLocaleString()} ${result.currency}</td>
+                    </tr>
+                    <tr>
+                      <td>العملة</td>
+                      <td>${result.currency === 'IQD' ? 'دينار عراقي' : 'دولار أمريكي'}</td>
+                    </tr>
+                    <tr>
+                      <td>العمولة</td>
+                      <td>${result.commission ? result.commission.toLocaleString() : '0'} ${result.currency}</td>
+                    </tr>
+                    <tr>
+                      <td>رمز التحويل</td>
+                      <td>${result.transfer_code || 'غير متوفر'}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- PIN Box -->
+                <div class="pin-box">
+                  <div class="pin-label">الرقم السري (PIN)</div>
+                  <div class="pin-value">${result.pin}</div>
+                  <div style="font-size: 12px; color: #e53e3e; margin-top: 10px;">
+                    ⚠️ احتفظ بهذا الرقم بأمان وأعطه للمستلم فقط
+                  </div>
+                </div>
+
+                ${result.note ? `
+                <div class="notes-section">
+                  <div class="notes-label">ملاحظات:</div>
+                  <div style="font-size: 13px; color: #555;">${result.note}</div>
+                </div>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+
+          <!-- Signatures -->
+          <div class="signatures">
+            <div class="signature-box">
+              <div class="signature-line"></div>
+              <div class="signature-label">توقيع المدير</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line"></div>
+              <div class="signature-label">توقيع الموظف</div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-line"></div>
+              <div class="signature-label">توقيع المرسل</div>
+            </div>
+          </div>
+
+          <!-- Footer Wave -->
+          <div class="footer-wave"></div>
+
+          <!-- Print Button -->
+          <div style="text-align: center; margin-top: 20px;">
+            <button onclick="window.print()" style="padding: 12px 35px; font-size: 16px; background: #5a9cb8; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
+              🖨️ طباعة الوصل
+            </button>
+          </div>
         </div>
       </body>
       </html>
