@@ -1364,7 +1364,6 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'to_agent_name': to_agent_name,
         'sender_name': transfer_data.sender_name,
         'sender_phone': transfer_data.sender_phone,
-        'sender_governorate': transfer_data.sender_governorate,
         'receiver_name': transfer_data.receiver_name,
         'receiver_phone': transfer_data.receiver_phone,
         'amount': transfer_data.amount,
