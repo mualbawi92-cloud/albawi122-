@@ -2158,13 +2158,14 @@ async def verify_transfer_pin(
     
     return {'valid': True}
 
-@api_router.post("/transfers/{transfer_id}/receive")
-async def receive_transfer(
+@api_router.post("/transfers/{transfer_id}/receive-simple")
+async def receive_transfer_simple(
     transfer_id: str,
     pin_data: dict,
+    request: Request = None,
     current_user: dict = Depends(get_current_user)
 ):
-    """Receive/complete transfer (simplified for new quick receive flow)"""
+    """Receive/complete transfer (simplified for new quick receive flow - no ID image required)"""
     pin = pin_data.get('pin')
     if not pin:
         raise HTTPException(status_code=400, detail="PIN is required")
@@ -2179,12 +2180,225 @@ async def receive_transfer(
     
     # Prevent sender from receiving their own transfer
     user_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
-    if transfer.get('from_agent_id') == current_user['id'] or transfer.get('from_agent_id') == user_agent_id:
+    sending_agent_id = transfer.get('from_agent_id') or transfer.get('sending_agent')
+    if sending_agent_id == current_user['id'] or sending_agent_id == user_agent_id:
         raise HTTPException(status_code=403, detail="لا يمكن للمُرسل استلام حوالته الخاصة")
     
     # Verify PIN
     if not verify_pin(pin, transfer['pin_hash']):
         raise HTTPException(status_code=401, detail="الرقم السري غير صحيح")
+    
+    # Determine actual receiving agent
+    receiving_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+    receiving_agent_name = current_user['display_name']
+    
+    # If user, get agent's display name
+    if current_user['role'] == 'user' and current_user.get('agent_id'):
+        agent = await db.users.find_one({'id': current_user['agent_id']}, {'_id': 0})
+        if agent:
+            receiving_agent_name = agent['display_name']
+    
+    # Calculate incoming commission
+    incoming_commission = 0.0
+    incoming_commission_percentage = 0.0
+    
+    commission_rates = await db.commission_rates.find({
+        'agent_id': receiving_agent_id,
+        'currency': transfer['currency']
+    }).to_list(length=None)
+    
+    if commission_rates:
+        rate = commission_rates[0]
+        for tier_data in rate.get('tiers', []):
+            if tier_data.get('type') != 'incoming':
+                continue
+            
+            from_amount = tier_data.get('from_amount', 0)
+            to_amount = tier_data.get('to_amount', float('inf'))
+            
+            if from_amount <= transfer['amount'] <= to_amount:
+                incoming_commission_percentage = tier_data.get('percentage', 0)
+                incoming_commission = (transfer['amount'] * incoming_commission_percentage) / 100
+                break
+    
+    # Update transfer status
+    await db.transfers.update_one(
+        {'id': transfer_id},
+        {'$set': {
+            'status': 'completed',
+            'to_agent_id': receiving_agent_id,
+            'to_agent_name': receiving_agent_name,
+            'incoming_commission': incoming_commission,
+            'incoming_commission_percentage': incoming_commission_percentage,
+            'received_at': datetime.now(timezone.utc).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    # Subtract amount from transit account
+    await update_transit_balance(
+        amount=transfer['amount'],
+        currency=transfer['currency'],
+        operation='subtract',
+        reference_id=transfer_id,
+        note=f'حوالة مُسلَّمة إلى {receiving_agent_name} - {transfer.get("transfer_code", transfer.get("tracking_number"))}'
+    )
+    
+    # Update receiver's wallet
+    wallet_field = f'wallet_balance_{transfer["currency"].lower()}'
+    total_amount_to_add = transfer['amount'] + incoming_commission
+    await db.users.update_one(
+        {'id': receiving_agent_id},
+        {'$inc': {wallet_field: total_amount_to_add}}
+    )
+    
+    # Log wallet transaction
+    await db.wallet_transactions.insert_one({
+        'id': str(uuid.uuid4()),
+        'user_id': receiving_agent_id,
+        'user_display_name': receiving_agent_name,
+        'amount': transfer['amount'],
+        'currency': transfer['currency'],
+        'transaction_type': 'transfer_received',
+        'reference_id': transfer_id,
+        'note': f'حوالة مستلمة: {transfer.get("transfer_code", transfer.get("tracking_number"))}',
+        'created_at': datetime.now(timezone.utc).isoformat()
+    })
+    
+    # Create journal entries for incoming commission
+    if incoming_commission > 0:
+        # Get receiver agent account
+        receiver_account = await db.chart_of_accounts.find_one({'linked_agent_id': receiving_agent_id}, {'_id': 0})
+        receiver_account_code = receiver_account['account_code'] if receiver_account else None
+        
+        journal_entries = []
+        
+        # Entry 1: Debit 601 (عمولة محققة), Credit Agent Account
+        journal_entries.append({
+            'id': str(uuid.uuid4()),
+            'date': datetime.now(timezone.utc).isoformat(),
+            'account_code': '601',
+            'account_name': 'عمولة محققة',
+            'debit': incoming_commission,
+            'credit': 0,
+            'currency': transfer['currency'],
+            'description': f'عمولة محققة - حوالة واردة {transfer.get("transfer_code", transfer.get("tracking_number"))}',
+            'reference_type': 'transfer_receive',
+            'reference_id': transfer_id,
+            'created_by': current_user['id'],
+            'created_at': datetime.now(timezone.utc).isoformat()
+        })
+        
+        if receiver_account_code:
+            journal_entries.append({
+                'id': str(uuid.uuid4()),
+                'date': datetime.now(timezone.utc).isoformat(),
+                'account_code': receiver_account_code,
+                'account_name': receiver_account['account_name'],
+                'debit': 0,
+                'credit': incoming_commission,
+                'currency': transfer['currency'],
+                'description': f'عمولة محققة - حوالة واردة {transfer.get("transfer_code", transfer.get("tracking_number"))}',
+                'reference_type': 'transfer_receive',
+                'reference_id': transfer_id,
+                'created_by': current_user['id'],
+                'created_at': datetime.now(timezone.utc).isoformat()
+            })
+        
+        if journal_entries:
+            await db.journal_entries.insert_many(journal_entries)
+    
+    return {
+        'success': True,
+        'message': 'تم تسليم الحوالة بنجاح',
+        'transfer_id': transfer_id,
+        'amount': transfer['amount'],
+        'commission': incoming_commission
+    }
+
+@api_router.post("/transfers/{transfer_id}/receive")
+async def receive_transfer(
+    transfer_id: str,
+    pin: str = Form(...),
+    receiver_fullname: str = Form(...),
+    id_image: UploadFile = File(...),
+    request: Request = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Receive/complete transfer (original flow with ID image)"""
+    # Get transfer
+    transfer = await db.transfers.find_one({'id': transfer_id})
+    if not transfer:
+        raise HTTPException(status_code=404, detail="Transfer not found")
+    
+    if transfer['status'] != 'pending':
+        raise HTTPException(status_code=400, detail="Transfer already processed")
+    
+    # Prevent sender from receiving their own transfer
+    user_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
+    if transfer.get('from_agent_id') == current_user['id'] or transfer.get('from_agent_id') == user_agent_id:
+        raise HTTPException(status_code=403, detail="لا يمكن للمُرسل استلام حوالته الخاصة")
+    
+    # Check rate limit for PIN attempts
+    rate_limit_key = f"{transfer_id}_{current_user['id']}"
+    if not check_rate_limit(rate_limit_key, pin_attempts_cache, MAX_PIN_ATTEMPTS, LOCKOUT_DURATION):
+        raise HTTPException(status_code=429, detail="Too many PIN attempts. Try again later.")
+    
+    # Verify receiver full name
+    expected_receiver_name = transfer.get('receiver_name', '')
+    
+    if expected_receiver_name:
+        from iraqi_id_validator import validate_receiver_name
+        
+        is_valid, validation_message = validate_receiver_name(
+            expected_receiver_name,
+            receiver_fullname
+        )
+        
+        if not is_valid:
+            await db.pin_attempts.insert_one({
+                'id': str(uuid.uuid4()),
+                'transfer_id': transfer_id,
+                'attempted_by_agent': current_user['id'],
+                'attempt_ip': request.client.host if request else None,
+                'success': False,
+                'failure_reason': 'incorrect_name',
+                'created_at': datetime.now(timezone.utc).isoformat()
+            })
+            await log_audit(transfer_id, current_user['id'], 'name_failed', {
+                'ip': request.client.host if request else None,
+                'attempted_name': receiver_fullname,
+                'expected_name': expected_receiver_name
+            })
+            raise HTTPException(status_code=400, detail=f"الاسم الأول غير مطابق. {validation_message}")
+    
+    # Verify PIN
+    if not verify_pin(pin, transfer['pin_hash']):
+        await db.pin_attempts.insert_one({
+            'id': str(uuid.uuid4()),
+            'transfer_id': transfer_id,
+            'attempted_by_agent': current_user['id'],
+            'attempt_ip': request.client.host if request else None,
+            'success': False,
+            'failure_reason': 'incorrect_pin',
+            'created_at': datetime.now(timezone.utc).isoformat()
+        })
+        await log_audit(transfer_id, current_user['id'], 'pin_failed', {'ip': request.client.host if request else None})
+        raise HTTPException(status_code=401, detail="الرقم السري غير صحيح")
+    
+    # Upload ID image to Cloudinary
+    try:
+        contents = await id_image.read()
+        upload_result = cloudinary.uploader.upload(
+            contents,
+            folder="money_transfer/id_images",
+            resource_type="image",
+            format="jpg"
+        )
+        id_image_url = upload_result['secure_url']
+    except Exception as e:
+        logging.error(f"Cloudinary upload error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to upload ID image")
     
     # ============ AI MONITORING ============
     
