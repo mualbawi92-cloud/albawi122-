@@ -368,12 +368,20 @@ const CreateTransferPage = () => {
           <!-- Main Information Table -->
           <table class="main-table">
             <tr>
-              <td class="label-col">اسم المرسل / رقم الهاتف</td>
-              <td class="value-col">${result.sender_name || ''} ${result.sender_phone ? ' / ' + result.sender_phone : ''}</td>
+              <td class="label-col">اسم المرسل</td>
+              <td class="value-col">${result.sender_name || ''}</td>
             </tr>
             <tr>
-              <td class="label-col">اسم المستلم / رقم الهاتف</td>
-              <td class="value-col">${result.receiver_name || ''} ${result.receiver_phone ? ' / ' + result.receiver_phone : ''}</td>
+              <td class="label-col">رقم الهاتف</td>
+              <td class="value-col">${result.sender_phone || ''}</td>
+            </tr>
+            <tr>
+              <td class="label-col">اسم المستفيد</td>
+              <td class="value-col">${result.receiver_name || ''}</td>
+            </tr>
+            <tr>
+              <td class="label-col">رقم الهاتف</td>
+              <td class="value-col">${result.receiver_phone || ''}</td>
             </tr>
             <tr>
               <td class="label-col">المحافظة</td>
