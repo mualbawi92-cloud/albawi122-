@@ -528,27 +528,39 @@ const CreateTransferPage = () => {
                 {/* 6. الوكيل المسلم */}
                 <div className="col-span-2 space-y-1">
                   <Label htmlFor="to_agent_id" className="text-xs font-bold">الوكيل المسلم</Label>
-                  {agents.length > 0 ? (
-                    <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
-                      <SelectTrigger data-testid="agent-select" className="h-9 text-sm">
-                        <SelectValue placeholder="الكل" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-60">
-                        <SelectItem value="all">الكل</SelectItem>
-                        {agents.map((agent) => (
-                          <SelectItem key={agent.id} value={agent.id}>
-                            {agent.display_name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
-                      <p className="text-xs text-muted-foreground">
-                        {formData.to_governorate ? 'لا يوجد' : 'اختر المدينة'}
-                      </p>
-                    </div>
-                  )}
+                  <div className="flex gap-1">
+                    {agents.length > 0 ? (
+                      <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
+                        <SelectTrigger data-testid="agent-select" className="h-9 text-sm flex-1">
+                          <SelectValue placeholder="الكل" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          <SelectItem value="all">الكل</SelectItem>
+                          {agents.map((agent) => (
+                            <SelectItem key={agent.id} value={agent.id}>
+                              {agent.display_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md flex-1">
+                        <p className="text-xs text-muted-foreground">
+                          {formData.to_governorate ? 'لا يوجد' : 'اختر المدينة'}
+                        </p>
+                      </div>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-9 w-9 p-0"
+                      disabled={!formData.to_agent_id || formData.to_agent_id === "all"}
+                      onClick={handleShowAgentInfo}
+                    >
+                      👁️
+                    </Button>
+                  </div>
                 </div>
               </div>
 
