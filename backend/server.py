@@ -5475,11 +5475,11 @@ async def get_agent_ledger(
             'transfer_code': transfer['transfer_code']
         })
         
-        # Add commission earned (مدين من حساب الوكيل)
+        # Add commission paid (مدين من حساب الوكيل - عمولة مدفوعة)
         if transfer.get('commission', 0) > 0:
             transactions.append({
                 'date': transfer['created_at'],
-                'type': 'commission_earned',
+                'type': 'commission_paid',
                 'description': f"عمولة مدفوعة من {transfer.get('sender_name', 'غير معروف')} إلى {transfer.get('receiver_name', 'غير معروف')} - {gov_name}",
                 'debit': transfer['commission'],
                 'credit': 0,
