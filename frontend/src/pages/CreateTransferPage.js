@@ -414,52 +414,24 @@ const CreateTransferPage = () => {
             <CardTitle className="text-2xl sm:text-3xl text-primary">إنشاء حوالة جديدة</CardTitle>
             <CardDescription className="text-sm sm:text-base">املأ بيانات الحوالة بعناية</CardDescription>
           </CardHeader>
-          <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+          <CardContent className="pt-6 p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="sender_name" className="text-base font-bold">اسم المرسل الثلاثي *</Label>
-                <Input
-                  id="sender_name"
-                  data-testid="sender-name-input"
-                  value={formData.sender_name}
-                  onChange={(e) => setFormData({ ...formData, sender_name: e.target.value })}
-                  required
-                  maxLength={100}
-                  className="text-base h-12"
-                  placeholder="أدخل اسم المرسل الثلاثي"
-                />
+              {/* Header: تاريخ الإصدار ورقم الحوالة */}
+              <div className="flex justify-between items-center pb-4 border-b-2 border-gray-200">
+                <div>
+                  <Label className="text-sm text-muted-foreground">تاريخ الإصدار</Label>
+                  <p className="text-lg font-bold">{new Date().toLocaleDateString('ar-IQ')}</p>
+                </div>
+                <div className="text-left">
+                  <Label className="text-sm text-muted-foreground">رقم الحوالة</Label>
+                  <p className="text-lg font-bold text-secondary">سيتم توليده تلقائياً</p>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="sender_phone" className="text-base font-bold">رقم تلفون المرسل</Label>
-                <Input
-                  id="sender_phone"
-                  type="tel"
-                  value={formData.sender_phone}
-                  onChange={(e) => setFormData({ ...formData, sender_phone: e.target.value })}
-                  className="text-base h-12"
-                  placeholder="+9647801234567"
-                  dir="ltr"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="receiver_name" className="text-base font-bold">اسم المستلم الثلاثي *</Label>
-                <Input
-                  id="receiver_name"
-                  data-testid="receiver-name-input"
-                  value={formData.receiver_name}
-                  onChange={(e) => setFormData({ ...formData, receiver_name: e.target.value })}
-                  required
-                  maxLength={100}
-                  className="text-base h-12"
-                  placeholder="أدخل اسم المستلم الثلاثي"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* المبلغ والعمولة */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="amount" className="text-base font-bold">المبلغ *</Label>
+                  <Label htmlFor="amount" className="text-sm font-bold">مبلغ الحوالة *</Label>
                   <Input
                     id="amount"
                     data-testid="amount-input"
@@ -469,119 +441,173 @@ const CreateTransferPage = () => {
                     required
                     min="0"
                     step="0.01"
-                    className="text-base h-12"
+                    className="text-base h-11"
                     placeholder="0.00"
                   />
-                  {formData.amount && parseFloat(formData.amount) > 0 && (
-                    <p className="text-xs text-gray-600 italic bg-gray-50 p-2 rounded border border-gray-200">
-                      💬 {formatAmountInWords(parseFloat(formData.amount), formData.currency)}
-                    </p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="currency" className="text-base font-bold">العملة *</Label>
+                  <Label htmlFor="currency" className="text-sm font-bold">العملة *</Label>
                   <Select value={formData.currency} onValueChange={(value) => setFormData({ ...formData, currency: value })}>
-                    <SelectTrigger data-testid="currency-select" className="h-12 text-base">
-                      <SelectValue placeholder="اختر العملة" />
+                    <SelectTrigger data-testid="currency-select" className="h-11 text-base">
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="IQD">دينار عراقي (IQD)</SelectItem>
-                      <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
+                      <SelectItem value="IQD">IQD</SelectItem>
+                      <SelectItem value="USD">USD</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="to_governorate" className="text-base font-bold">إلى محافظة *</Label>
-                <Select value={formData.to_governorate} onValueChange={handleGovernorateChange}>
-                  <SelectTrigger data-testid="governorate-select" className="h-12 text-base">
-                    <SelectValue placeholder="اختر المحافظة" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-80">
-                    {IRAQI_GOVERNORATES.map((gov) => (
-                      <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {agents.length > 0 && (
                 <div className="space-y-2">
-                  <Label htmlFor="to_agent_id" className="text-base font-bold">اختر صراف محدد (اختياري)</Label>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    {agents.length} صراف متوفر في {IRAQI_GOVERNORATES.find(g => g.code === formData.to_governorate)?.name}
-                  </p>
-                  <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
-                    <SelectTrigger data-testid="agent-select" className="h-12 text-base">
-                      <SelectValue placeholder="إرسال لكل الصرافين" />
+                  <Label className="text-sm font-bold">نسبة العمولة</Label>
+                  <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
+                    <p className="text-base font-bold text-blue-700">
+                      {commissionData.loading ? '...' : `${commissionData.percentage.toFixed(2)}%`}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">مبلغ العمولة</Label>
+                  <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
+                    <p className="text-base font-bold text-blue-700">
+                      {commissionData.loading ? '...' : commissionData.amount.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* بيانات المرسل */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="sender_name" className="text-sm font-bold">اسم المرسل *</Label>
+                  <Input
+                    id="sender_name"
+                    data-testid="sender-name-input"
+                    value={formData.sender_name}
+                    onChange={(e) => setFormData({ ...formData, sender_name: e.target.value })}
+                    required
+                    maxLength={100}
+                    className="text-base h-11"
+                    placeholder="الاسم الثلاثي"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sender_phone" className="text-sm font-bold">رقم هاتف المرسل</Label>
+                  <Input
+                    id="sender_phone"
+                    type="tel"
+                    value={formData.sender_phone}
+                    onChange={(e) => setFormData({ ...formData, sender_phone: e.target.value })}
+                    className="text-base h-11"
+                    placeholder="+9647801234567"
+                    dir="ltr"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sender_governorate" className="text-sm font-bold">مدينة الإرسال *</Label>
+                  <Select 
+                    value={formData.sender_governorate} 
+                    onValueChange={(value) => setFormData({ ...formData, sender_governorate: value })}
+                  >
+                    <SelectTrigger className="h-11 text-base">
+                      <SelectValue placeholder="اختر المدينة" />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
-                      <SelectItem value="all">🌐 إرسال لكل صرافي المحافظة</SelectItem>
-                      {agents.map((agent) => (
-                        <SelectItem key={agent.id} value={agent.id}>
-                          {agent.display_name} - {agent.phone}
-                        </SelectItem>
+                      {IRAQI_GOVERNORATES.map((gov) => (
+                        <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-              )}
+              </div>
 
-              {formData.to_governorate && agents.length === 0 && (
-                <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg">
-                  <p className="text-sm text-yellow-800">
-                    ⚠️ لا يوجد صرافين نشطين في {IRAQI_GOVERNORATES.find(g => g.code === formData.to_governorate)?.name}
-                  </p>
+              {/* بيانات المستفيد */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="receiver_name" className="text-sm font-bold">اسم المستفيد *</Label>
+                  <Input
+                    id="receiver_name"
+                    data-testid="receiver-name-input"
+                    value={formData.receiver_name}
+                    onChange={(e) => setFormData({ ...formData, receiver_name: e.target.value })}
+                    required
+                    maxLength={100}
+                    className="text-base h-11"
+                    placeholder="الاسم الثلاثي"
+                  />
                 </div>
-              )}
 
+                <div className="space-y-2">
+                  <Label htmlFor="receiver_phone" className="text-sm font-bold">رقم هاتف المستفيد</Label>
+                  <Input
+                    id="receiver_phone"
+                    type="tel"
+                    value={formData.receiver_phone}
+                    onChange={(e) => setFormData({ ...formData, receiver_phone: e.target.value })}
+                    className="text-base h-11"
+                    placeholder="+9647801234567"
+                    dir="ltr"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="to_governorate" className="text-sm font-bold">مدينة الاستلام *</Label>
+                  <Select value={formData.to_governorate} onValueChange={handleGovernorateChange}>
+                    <SelectTrigger data-testid="governorate-select" className="h-11 text-base">
+                      <SelectValue placeholder="اختر المدينة" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {IRAQI_GOVERNORATES.map((gov) => (
+                        <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="to_agent_id" className="text-sm font-bold">الوكيل المسلم</Label>
+                  {agents.length > 0 ? (
+                    <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
+                      <SelectTrigger data-testid="agent-select" className="h-11 text-base">
+                        <SelectValue placeholder="الكل" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-60">
+                        <SelectItem value="all">الكل</SelectItem>
+                        {agents.map((agent) => (
+                          <SelectItem key={agent.id} value={agent.id}>
+                            {agent.display_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
+                      <p className="text-sm text-muted-foreground">
+                        {formData.to_governorate ? 'لا يوجد' : 'اختر المدينة'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* ملاحظات */}
               <div className="space-y-2">
-                <Label htmlFor="note" className="text-base font-bold">ملاحظات (اختياري)</Label>
+                <Label htmlFor="note" className="text-sm font-bold">ملاحظات (اختياري)</Label>
                 <Input
                   id="note"
                   data-testid="note-input"
                   value={formData.note}
                   onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                  className="text-base h-12"
+                  className="text-base h-11"
                   placeholder="ملاحظات إضافية"
                 />
               </div>
 
-              {/* Commission Display */}
-              {formData.amount && parseFloat(formData.amount) > 0 && formData.to_governorate && (
-                <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-bold text-blue-900">نسبة العمولة على الحوالة</Label>
-                    {commissionData.loading && (
-                      <span className="text-xs text-blue-600">جاري الحساب...</span>
-                    )}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white p-3 rounded border border-blue-200">
-                      <Label className="text-xs text-muted-foreground">نسبة العمولة</Label>
-                      <p className="text-2xl font-bold text-blue-700" data-testid="commission-percentage">
-                        {commissionData.percentage.toFixed(2)}%
-                      </p>
-                    </div>
-                    <div className="bg-white p-3 rounded border border-blue-200">
-                      <Label className="text-xs text-muted-foreground">مبلغ العمولة</Label>
-                      <p className="text-2xl font-bold text-blue-700" data-testid="commission-amount">
-                        {commissionData.amount.toLocaleString()} {formData.currency}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {commissionData.percentage === 0 && !commissionData.loading && (
-                    <p className="text-xs text-blue-700">
-                      ℹ️ لم يتم تحديد نسبة عمولة لهذه الحوالة من قبل المدير
-                    </p>
-                  )}
-                </div>
-              )}
-
+              {/* الأزرار */}
               <div className="flex gap-4 pt-4">
                 <Button
                   type="button"
@@ -598,7 +624,7 @@ const CreateTransferPage = () => {
                   className="flex-1 bg-secondary hover:bg-secondary/90 text-primary h-12 text-lg font-bold"
                   data-testid="submit-transfer-btn"
                 >
-                  {loading ? 'جاري الإنشاء...' : 'إنشاء الحوالة'}
+                  {loading ? 'جاري الإنشاء...' : 'إرسال الحوالة'}
                 </Button>
               </div>
             </form>
