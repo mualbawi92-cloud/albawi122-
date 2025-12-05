@@ -639,18 +639,18 @@ const CreateTransferPage = () => {
                   data-testid="note-input"
                   value={formData.note}
                   onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                  className="text-sm h-9"
+                  className="text-sm h-10 md:h-9"
                   placeholder="ملاحظات إضافية"
                 />
               </div>
 
               {/* الأزرار */}
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
                 <Button
                   type="button"
                   onClick={() => navigate('/dashboard')}
                   variant="outline"
-                  className="flex-1 h-10 text-base font-bold border-2"
+                  className="flex-1 h-11 sm:h-10 text-base font-bold border-2"
                   data-testid="cancel-btn"
                 >
                   إلغاء
@@ -658,7 +658,7 @@ const CreateTransferPage = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 bg-secondary hover:bg-secondary/90 text-primary h-10 text-base font-bold"
+                  className="flex-1 bg-secondary hover:bg-secondary/90 text-primary h-11 sm:h-10 text-base font-bold"
                   data-testid="submit-transfer-btn"
                 >
                   {loading ? 'جاري الإنشاء...' : 'إرسال الحوالة'}
