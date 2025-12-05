@@ -572,13 +572,13 @@ const CreateTransferPage = () => {
               </div>
 
               {/* بيانات المرسل والمستفيد */}
-              <div className="grid grid-cols-2 gap-6 pt-4">
+              <div className="grid grid-cols-2 gap-4 pt-2">
                 {/* المرسل */}
-                <div className="space-y-4 border-l-2 border-gray-200 pl-6">
-                  <h3 className="text-lg font-bold text-center text-primary">بيانات المرسل</h3>
+                <div className="space-y-2 border-l-2 border-gray-200 pl-4">
+                  <h3 className="text-sm font-bold text-center text-primary">بيانات المرسل</h3>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="sender_name" className="text-sm font-bold">اسم المرسل *</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="sender_name" className="text-xs font-bold">اسم المرسل *</Label>
                     <Input
                       id="sender_name"
                       data-testid="sender-name-input"
@@ -586,19 +586,19 @@ const CreateTransferPage = () => {
                       onChange={(e) => setFormData({ ...formData, sender_name: e.target.value })}
                       required
                       maxLength={100}
-                      className="text-base h-11"
+                      className="text-sm h-9"
                       placeholder="الاسم الثلاثي"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="sender_phone" className="text-sm font-bold">رقم هاتف المرسل</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="sender_phone" className="text-xs font-bold">رقم هاتف المرسل</Label>
                     <Input
                       id="sender_phone"
                       type="tel"
                       value={formData.sender_phone}
                       onChange={(e) => setFormData({ ...formData, sender_phone: e.target.value })}
-                      className="text-base h-11"
+                      className="text-sm h-9"
                       placeholder="+9647801234567"
                       dir="ltr"
                     />
@@ -606,11 +606,11 @@ const CreateTransferPage = () => {
                 </div>
 
                 {/* المستفيد */}
-                <div className="space-y-4 pr-6">
-                  <h3 className="text-lg font-bold text-center text-primary">بيانات المستفيد</h3>
+                <div className="space-y-2 pr-4">
+                  <h3 className="text-sm font-bold text-center text-primary">بيانات المستفيد</h3>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="receiver_name" className="text-sm font-bold">اسم المستفيد *</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="receiver_name" className="text-xs font-bold">اسم المستفيد *</Label>
                     <Input
                       id="receiver_name"
                       data-testid="receiver-name-input"
@@ -618,19 +618,19 @@ const CreateTransferPage = () => {
                       onChange={(e) => setFormData({ ...formData, receiver_name: e.target.value })}
                       required
                       maxLength={100}
-                      className="text-base h-11"
+                      className="text-sm h-9"
                       placeholder="الاسم الثلاثي"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="receiver_phone" className="text-sm font-bold">رقم هاتف المستفيد</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="receiver_phone" className="text-xs font-bold">رقم هاتف المستفيد</Label>
                     <Input
                       id="receiver_phone"
                       type="tel"
                       value={formData.receiver_phone}
                       onChange={(e) => setFormData({ ...formData, receiver_phone: e.target.value })}
-                      className="text-base h-11"
+                      className="text-sm h-9"
                       placeholder="+9647801234567"
                       dir="ltr"
                     />
