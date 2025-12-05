@@ -435,28 +435,34 @@ const CreateTransferPage = () => {
                 </div>
               </div>
 
-              {/* المبلغ والعمولة */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
+              {/* المبلغ والعمولة والمدن */}
+              <div className="grid grid-cols-12 gap-3">
+                {/* مبلغ الحوالة */}
+                <div className="col-span-3 space-y-2">
                   <Label htmlFor="amount" className="text-sm font-bold">مبلغ الحوالة *</Label>
                   <Input
                     id="amount"
                     data-testid="amount-input"
-                    type="number"
-                    value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    type="text"
+                    value={formData.amount ? parseFloat(formData.amount).toLocaleString('en-US') : ''}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/,/g, '');
+                      if (!isNaN(value) || value === '') {
+                        setFormData({ ...formData, amount: value });
+                      }
+                    }}
                     required
-                    min="0"
-                    step="0.01"
-                    className="text-base h-11"
-                    placeholder="0.00"
+                    className="text-base h-11 text-right"
+                    placeholder="0"
+                    dir="ltr"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="currency" className="text-sm font-bold">العملة *</Label>
+                {/* العملة */}
+                <div className="col-span-1 space-y-2">
+                  <Label htmlFor="currency" className="text-sm font-bold">العملة</Label>
                   <Select value={formData.currency} onValueChange={(value) => setFormData({ ...formData, currency: value })}>
-                    <SelectTrigger data-testid="currency-select" className="h-11 text-base">
+                    <SelectTrigger data-testid="currency-select" className="h-11">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -466,61 +472,34 @@ const CreateTransferPage = () => {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
+                {/* نسبة العمولة */}
+                <div className="col-span-2 space-y-2">
                   <Label className="text-sm font-bold">نسبة العمولة</Label>
                   <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
-                    <p className="text-base font-bold text-blue-700">
+                    <p className="text-sm font-bold text-blue-700">
                       {commissionData.loading ? '...' : `${commissionData.percentage.toFixed(2)}%`}
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                {/* مبلغ العمولة */}
+                <div className="col-span-3 space-y-2">
                   <Label className="text-sm font-bold">مبلغ العمولة</Label>
                   <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
-                    <p className="text-base font-bold text-blue-700">
-                      {commissionData.loading ? '...' : commissionData.amount.toLocaleString()}
+                    <p className="text-sm font-bold text-blue-700">
+                      {commissionData.loading ? '...' : commissionData.amount.toLocaleString('en-US')}
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* بيانات المرسل */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="sender_name" className="text-sm font-bold">اسم المرسل *</Label>
-                  <Input
-                    id="sender_name"
-                    data-testid="sender-name-input"
-                    value={formData.sender_name}
-                    onChange={(e) => setFormData({ ...formData, sender_name: e.target.value })}
-                    required
-                    maxLength={100}
-                    className="text-base h-11"
-                    placeholder="الاسم الثلاثي"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="sender_phone" className="text-sm font-bold">رقم هاتف المرسل</Label>
-                  <Input
-                    id="sender_phone"
-                    type="tel"
-                    value={formData.sender_phone}
-                    onChange={(e) => setFormData({ ...formData, sender_phone: e.target.value })}
-                    className="text-base h-11"
-                    placeholder="+9647801234567"
-                    dir="ltr"
-                  />
-                </div>
-
-                <div className="space-y-2">
+                {/* مدينة الإرسال */}
+                <div className="col-span-3 space-y-2">
                   <Label htmlFor="sender_governorate" className="text-sm font-bold">مدينة الإرسال *</Label>
                   <Select 
                     value={formData.sender_governorate} 
                     onValueChange={(value) => setFormData({ ...formData, sender_governorate: value })}
                   >
-                    <SelectTrigger className="h-11 text-base">
+                    <SelectTrigger className="h-11">
                       <SelectValue placeholder="اختر المدينة" />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
@@ -530,41 +509,12 @@ const CreateTransferPage = () => {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
 
-              {/* بيانات المستفيد */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="receiver_name" className="text-sm font-bold">اسم المستفيد *</Label>
-                  <Input
-                    id="receiver_name"
-                    data-testid="receiver-name-input"
-                    value={formData.receiver_name}
-                    onChange={(e) => setFormData({ ...formData, receiver_name: e.target.value })}
-                    required
-                    maxLength={100}
-                    className="text-base h-11"
-                    placeholder="الاسم الثلاثي"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="receiver_phone" className="text-sm font-bold">رقم هاتف المستفيد</Label>
-                  <Input
-                    id="receiver_phone"
-                    type="tel"
-                    value={formData.receiver_phone}
-                    onChange={(e) => setFormData({ ...formData, receiver_phone: e.target.value })}
-                    className="text-base h-11"
-                    placeholder="+9647801234567"
-                    dir="ltr"
-                  />
-                </div>
-
-                <div className="space-y-2">
+                {/* مدينة الاستلام */}
+                <div className="col-span-3 space-y-2">
                   <Label htmlFor="to_governorate" className="text-sm font-bold">مدينة الاستلام *</Label>
                   <Select value={formData.to_governorate} onValueChange={handleGovernorateChange}>
-                    <SelectTrigger data-testid="governorate-select" className="h-11 text-base">
+                    <SelectTrigger data-testid="governorate-select" className="h-11">
                       <SelectValue placeholder="اختر المدينة" />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
@@ -575,18 +525,19 @@ const CreateTransferPage = () => {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
+                {/* الوكيل المسلم */}
+                <div className="col-span-8 space-y-2">
                   <Label htmlFor="to_agent_id" className="text-sm font-bold">الوكيل المسلم</Label>
                   {agents.length > 0 ? (
                     <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
-                      <SelectTrigger data-testid="agent-select" className="h-11 text-base">
+                      <SelectTrigger data-testid="agent-select" className="h-11">
                         <SelectValue placeholder="الكل" />
                       </SelectTrigger>
                       <SelectContent className="max-h-60">
-                        <SelectItem value="all">الكل</SelectItem>
+                        <SelectItem value="all">🌐 إرسال لكل الوكلاء</SelectItem>
                         {agents.map((agent) => (
                           <SelectItem key={agent.id} value={agent.id}>
-                            {agent.display_name}
+                            {agent.display_name} - {agent.phone || 'بدون رقم'}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -594,10 +545,96 @@ const CreateTransferPage = () => {
                   ) : (
                     <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
                       <p className="text-sm text-muted-foreground">
-                        {formData.to_governorate ? 'لا يوجد' : 'اختر المدينة'}
+                        {formData.to_governorate ? 'لا يوجد وكلاء' : 'اختر مدينة الاستلام أولاً'}
                       </p>
                     </div>
                   )}
+                </div>
+
+                {/* عين معلومات الوكيل */}
+                <div className="col-span-1 space-y-2">
+                  <Label className="text-sm font-bold opacity-0">.</Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-11 w-full"
+                    disabled={!formData.to_agent_id || formData.to_agent_id === "all"}
+                    onClick={() => {
+                      const selectedAgent = agents.find(a => a.id === formData.to_agent_id);
+                      if (selectedAgent) {
+                        toast.info(`معلومات الوكيل: ${selectedAgent.display_name}\nالهاتف: ${selectedAgent.phone || 'غير متوفر'}\nالمحافظة: ${IRAQI_GOVERNORATES.find(g => g.code === selectedAgent.governorate)?.name || 'غير محدد'}`);
+                      }
+                    }}
+                  >
+                    👁️
+                  </Button>
+                </div>
+              </div>
+
+              {/* بيانات المرسل والمستفيد */}
+              <div className="grid grid-cols-2 gap-6 pt-4">
+                {/* المرسل */}
+                <div className="space-y-4 border-l-2 border-gray-200 pl-6">
+                  <h3 className="text-lg font-bold text-center text-primary">بيانات المرسل</h3>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="sender_name" className="text-sm font-bold">اسم المرسل *</Label>
+                    <Input
+                      id="sender_name"
+                      data-testid="sender-name-input"
+                      value={formData.sender_name}
+                      onChange={(e) => setFormData({ ...formData, sender_name: e.target.value })}
+                      required
+                      maxLength={100}
+                      className="text-base h-11"
+                      placeholder="الاسم الثلاثي"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="sender_phone" className="text-sm font-bold">رقم هاتف المرسل</Label>
+                    <Input
+                      id="sender_phone"
+                      type="tel"
+                      value={formData.sender_phone}
+                      onChange={(e) => setFormData({ ...formData, sender_phone: e.target.value })}
+                      className="text-base h-11"
+                      placeholder="+9647801234567"
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+
+                {/* المستفيد */}
+                <div className="space-y-4 pr-6">
+                  <h3 className="text-lg font-bold text-center text-primary">بيانات المستفيد</h3>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="receiver_name" className="text-sm font-bold">اسم المستفيد *</Label>
+                    <Input
+                      id="receiver_name"
+                      data-testid="receiver-name-input"
+                      value={formData.receiver_name}
+                      onChange={(e) => setFormData({ ...formData, receiver_name: e.target.value })}
+                      required
+                      maxLength={100}
+                      className="text-base h-11"
+                      placeholder="الاسم الثلاثي"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="receiver_phone" className="text-sm font-bold">رقم هاتف المستفيد</Label>
+                    <Input
+                      id="receiver_phone"
+                      type="tel"
+                      value={formData.receiver_phone}
+                      onChange={(e) => setFormData({ ...formData, receiver_phone: e.target.value })}
+                      className="text-base h-11"
+                      placeholder="+9647801234567"
+                      dir="ltr"
+                    />
+                  </div>
                 </div>
               </div>
 
