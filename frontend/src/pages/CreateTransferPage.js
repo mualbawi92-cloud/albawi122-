@@ -183,7 +183,7 @@ const CreateTransferPage = () => {
             @page { margin: 1cm; }
           }
           @page {
-            size: A5;
+            size: A5 landscape;
             margin: 0;
           }
           * {
@@ -195,10 +195,10 @@ const CreateTransferPage = () => {
             font-family: 'Arial', sans-serif;
             direction: rtl;
             background: white;
-            width: 148mm;
-            height: 210mm;
+            width: 210mm;
+            height: 148mm;
             margin: 0 auto;
-            padding: 10mm;
+            padding: 8mm;
           }
           .voucher {
             border: 2px solid #000;
