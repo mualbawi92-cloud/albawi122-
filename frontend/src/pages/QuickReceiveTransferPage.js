@@ -16,13 +16,11 @@ const API = `${BACKEND_URL}/api`;
 const QuickReceiveTransferPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [searchReceiverName, setSearchReceiverName] = useState('');
-  const [searchTransferId, setSearchTransferId] = useState('');
+  const [transferNumber, setTransferNumber] = useState('');
+  const [pin, setPin] = useState('');
+  const [step, setStep] = useState(1); // 1: enter number, 2: enter PIN, 3: show details
   const [loading, setLoading] = useState(false);
-  const [transfers, setTransfers] = useState([]);
-  const [selectedTransfer, setSelectedTransfer] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [receivingAmount, setReceivingAmount] = useState('');
+  const [transfer, setTransfer] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSearch = async () => {
