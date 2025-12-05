@@ -2133,16 +2133,42 @@ async def search_transfer_by_code(transfer_code: str, current_user: dict = Depen
         'created_at': transfer.get('created_at')
     }
 
+@api_router.post("/transfers/{transfer_id}/verify-pin")
+async def verify_transfer_pin(
+    transfer_id: str,
+    pin_data: dict,
+    current_user: dict = Depends(get_current_user)
+):
+    """Verify PIN for transfer (step 2 of new quick receive)"""
+    pin = pin_data.get('pin')
+    if not pin:
+        raise HTTPException(status_code=400, detail="PIN is required")
+    
+    # Get transfer
+    transfer = await db.transfers.find_one({'id': transfer_id})
+    if not transfer:
+        raise HTTPException(status_code=404, detail="Transfer not found")
+    
+    if transfer['status'] != 'pending':
+        raise HTTPException(status_code=400, detail="Transfer already processed")
+    
+    # Verify PIN
+    if not verify_pin(pin, transfer['pin_hash']):
+        return {'valid': False}
+    
+    return {'valid': True}
+
 @api_router.post("/transfers/{transfer_id}/receive")
 async def receive_transfer(
     transfer_id: str,
-    pin: str = Form(...),
-    receiver_fullname: str = Form(...),
-    id_image: UploadFile = File(...),
-    request: Request = None,
+    pin_data: dict,
     current_user: dict = Depends(get_current_user)
 ):
-    """Receive/complete transfer"""
+    """Receive/complete transfer (simplified for new quick receive flow)"""
+    pin = pin_data.get('pin')
+    if not pin:
+        raise HTTPException(status_code=400, detail="PIN is required")
+    
     # Get transfer
     transfer = await db.transfers.find_one({'id': transfer_id})
     if not transfer:
