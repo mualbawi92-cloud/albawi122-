@@ -499,6 +499,30 @@ export const generateWalletDepositReceiptHTML = (depositData, agent, admin) => {
  * Generate Transfer Voucher HTML (A5 Landscape)
  */
 export const generateVoucherHTML = (transfer) => {
+  // Governorate mapping
+  const GOVERNORATE_MAP = {
+    'BG': 'بغداد',
+    'BA': 'البصرة',
+    'NJ': 'النجف',
+    'KR': 'كربلاء',
+    'AN': 'الأنبار',
+    'NI': 'نينوى',
+    'DH': 'ذي قار',
+    'DI': 'ديالى',
+    'KI': 'كركوك',
+    'SA': 'صلاح الدين',
+    'WA': 'واسط',
+    'MI': 'ميسان',
+    'MU': 'المثنى',
+    'QA': 'القادسية',
+    'BB': 'بابل',
+    'SU': 'السليمانية',
+    'ER': 'أربيل',
+    'DU': 'دهوك'
+  };
+  
+  const governorateName = GOVERNORATE_MAP[transfer.to_governorate] || transfer.to_governorate;
+  
   return `
     <style>
       @page {
