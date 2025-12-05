@@ -337,23 +337,23 @@ const CreateTransferPage = () => {
           <!-- Header -->
           <div class="header">
             <div class="logo">🏦</div>
-            <div class="title">وصل تحويل مالي</div>
+            <div class="title">ارسال حوالة</div>
             <div class="barcode-area"></div>
           </div>
 
           <!-- Basic Info -->
           <div class="info-row">
             <div class="info-box">
-              <span class="info-label">رقم الوصل:</span>
+              <span class="info-label">رمز الحوالة:</span>
+              <span>${result.transfer_code || 'غير متوفر'}</span>
+            </div>
+            <div class="info-box">
+              <span class="info-label">رقم الحوالة:</span>
               <span>${result.tracking_number || result.transfer_number || 'غير متوفر'}</span>
             </div>
             <div class="info-box">
-              <span class="info-label">التاريخ:</span>
-              <span>${new Date().toLocaleDateString('ar-IQ')}</span>
-            </div>
-            <div class="info-box">
-              <span class="info-label">الوقت:</span>
-              <span>${new Date().toLocaleTimeString('ar-IQ', {hour: '2-digit', minute: '2-digit'})}</span>
+              <span class="info-label">التاريخ والوقت:</span>
+              <span>${new Date().toLocaleDateString('ar-IQ')} - ${new Date().toLocaleTimeString('ar-IQ', {hour: '2-digit', minute: '2-digit'})}</span>
             </div>
           </div>
 
