@@ -417,9 +417,11 @@ const CreateTransferPage = () => {
           </div>
 
           <!-- Notes -->
+          ${result.note ? `
           <div class="notes-box">
-            <strong>ملاحظات:</strong> ${result.note || 'لا توجد ملاحظات'}
+            <strong>ملاحظات:</strong> ${result.note}
           </div>
+          ` : ''}
 
           <!-- Signatures -->
           <div class="signatures">
