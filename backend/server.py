@@ -753,7 +753,6 @@ class LoginResponse(BaseModel):
 class TransferCreate(BaseModel):
     sender_name: str
     sender_phone: Optional[str] = None  # رقم تلفون المرسل
-    sender_governorate: Optional[str] = None  # محافظة المرسل
     receiver_name: str  # اسم المستلم الثلاثي
     receiver_phone: Optional[str] = None  # رقم هاتف المستفيد
     amount: float
