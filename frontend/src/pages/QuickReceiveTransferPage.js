@@ -79,23 +79,11 @@ const QuickReceiveTransferPage = () => {
     }
   };
 
-  const handleOpenModal = (transfer) => {
-    setSelectedTransfer(transfer);
-    setReceivingAmount(transfer.receiving_amount?.toString() || '');
-    setModalOpen(true);
-  };
-
   const handleReceiveTransfer = async () => {
-    if (!receivingAmount || parseFloat(receivingAmount) <= 0) {
-      toast.error('يرجى إدخال مبلغ الاستلام');
-      return;
-    }
-
     setSubmitting(true);
     try {
-      await axios.post(`${API}/transfers/${selectedTransfer.transfer_id}/receive`, {
-        receiving_amount: parseFloat(receivingAmount),
-        received_by: user.user_id
+      await axios.post(`${API}/transfers/${transfer.id}/receive`, {
+        pin: pin
       });
 
       toast.success('تم تسليم الحوالة بنجاح ✅');
