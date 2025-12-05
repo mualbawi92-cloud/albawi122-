@@ -493,7 +493,7 @@ export const generateWalletDepositReceiptHTML = (depositData, agent, admin) => {
       <p style="font-size: 11px;">© ${new Date().getFullYear()} جميع الحقوق محفوظة</p>
     </div>
   `;
-
+};
 
 /**
  * Generate Transfer Voucher HTML (A5 Landscape)
