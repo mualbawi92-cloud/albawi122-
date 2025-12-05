@@ -87,11 +87,11 @@ const QuickReceiveTransferPage = () => {
       });
 
       toast.success('تم تسليم الحوالة بنجاح ✅');
-      setModalOpen(false);
-      setSelectedTransfer(null);
-      
-      // Refresh search results
-      handleSearch();
+      // Reset form
+      setTransferNumber('');
+      setPin('');
+      setTransfer(null);
+      setStep(1);
     } catch (error) {
       console.error('Error receiving transfer:', error);
       toast.error(error.response?.data?.detail || 'خطأ في تسليم الحوالة');
