@@ -182,182 +182,153 @@ const CreateTransferPage = () => {
           @media print {
             @page { margin: 1cm; }
           }
+          @page {
+            size: A5;
+            margin: 0;
+          }
           * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
           }
           body {
-            font-family: 'Cairo', 'Arial', sans-serif;
+            font-family: 'Arial', sans-serif;
             direction: rtl;
-            padding: 0;
             background: white;
-          }
-          .voucher-container {
-            max-width: 1000px;
+            width: 148mm;
+            height: 210mm;
             margin: 0 auto;
-            padding: 20px;
-            background: white;
+            padding: 10mm;
           }
-          .header-wave {
-            position: relative;
-            background: linear-gradient(135deg, #5a9cb8 0%, #7eb3c7 50%, #8b9a9e 100%);
-            height: 120px;
-            margin-bottom: 30px;
-            clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
+          .voucher {
+            border: 2px solid #000;
+            padding: 8mm;
+            height: 100%;
           }
-          .header-content {
-            position: relative;
-            z-index: 2;
-            padding: 20px 40px;
+          .header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5mm;
+            margin-bottom: 5mm;
           }
-          .voucher-title {
-            font-size: 36px;
-            font-weight: 300;
-            color: white;
-            text-align: center;
-            flex: 1;
-          }
-          .voucher-info {
-            background: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-align: center;
-          }
-          .voucher-label {
-            font-size: 12px;
-            color: #666;
-          }
-          .voucher-value {
-            font-size: 16px;
+          .logo {
+            font-size: 24px;
             font-weight: bold;
             color: #333;
           }
-          .main-content {
-            padding: 0 40px;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 40px;
-            margin-bottom: 40px;
-          }
-          .sender-section, .receiver-section {
-            margin-bottom: 30px;
-          }
-          .section-title {
+          .title {
             font-size: 20px;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #5a9cb8;
-          }
-          .info-line {
-            display: flex;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px dotted #ddd;
-          }
-          .info-label {
-            font-size: 14px;
-            color: #666;
-            min-width: 100px;
-          }
-          .info-value {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
+            text-align: center;
             flex: 1;
           }
-          .details-box {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+          .barcode-area {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #ccc;
           }
-          .details-table {
+          .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3mm;
+            font-size: 11px;
+          }
+          .info-box {
+            display: flex;
+            gap: 5px;
+          }
+          .info-label {
+            font-weight: bold;
+          }
+          .main-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin: 5mm 0;
+            font-size: 11px;
           }
-          .details-table th {
-            background: #5a9cb8;
+          .main-table td {
+            border: 1px solid #000;
+            padding: 3mm 2mm;
+          }
+          .main-table .label-col {
+            width: 30%;
+            font-weight: bold;
+            background: #f0f0f0;
+          }
+          .main-table .value-col {
+            width: 70%;
+          }
+          .amounts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 5mm 0;
+            font-size: 11px;
+          }
+          .amounts-table th {
+            border: 1px solid #000;
+            padding: 2mm;
+            background: #333;
             color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 13px;
-            border: 1px solid #5a9cb8;
-          }
-          .details-table td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-            background: white;
-            font-size: 14px;
             font-weight: bold;
           }
-          .pin-box {
-            background: #fff5f5;
-            border: 2px solid #e53e3e;
-            padding: 15px;
-            border-radius: 8px;
+          .amounts-table td {
+            border: 1px solid #000;
+            padding: 2mm;
             text-align: center;
-            margin: 20px 0;
+          }
+          .pin-section {
+            border: 2px solid #e53e3e;
+            background: #fff5f5;
+            padding: 3mm;
+            text-align: center;
+            margin: 5mm 0;
           }
           .pin-label {
-            font-size: 14px;
+            font-size: 12px;
             color: #e53e3e;
             font-weight: bold;
+            margin-bottom: 2mm;
           }
-          .pin-value {
-            font-size: 32px;
+          .pin-code {
+            font-size: 28px;
             font-weight: bold;
             color: #e53e3e;
-            letter-spacing: 10px;
-            margin: 10px 0;
+            letter-spacing: 8px;
+            margin: 2mm 0;
           }
-          .notes-section {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
+          .warning-text {
+            font-size: 9px;
+            color: #e53e3e;
+            margin-top: 2mm;
           }
-          .notes-label {
-            font-size: 14px;
-            font-weight: bold;
-            color: #666;
-            margin-bottom: 5px;
+          .notes-box {
+            border: 1px solid #000;
+            padding: 3mm;
+            margin: 3mm 0;
+            min-height: 15mm;
+            font-size: 10px;
           }
           .signatures {
             display: flex;
             justify-content: space-around;
-            margin-top: 50px;
-            padding: 0 40px;
+            margin-top: 8mm;
           }
-          .signature-box {
+          .sig-box {
             text-align: center;
-            min-width: 200px;
+            width: 30%;
           }
-          .signature-line {
-            border-top: 2px solid #333;
-            margin-bottom: 10px;
-            padding-top: 5px;
+          .sig-line {
+            border-top: 1px solid #000;
+            margin-bottom: 2mm;
           }
-          .signature-label {
-            font-size: 14px;
+          .sig-label {
+            font-size: 10px;
             font-weight: bold;
-            color: #333;
-          }
-          .footer-wave {
-            height: 30px;
-            background: linear-gradient(135deg, #5a9cb8 0%, #8b9a9e 100%);
-            margin-top: 40px;
           }
           @media print {
-            button { display: none; }
-            body { padding: 0; }
+            button { display: none !important; }
           }
         </style>
       </head>
