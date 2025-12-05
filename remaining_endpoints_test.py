@@ -8,7 +8,7 @@ import json
 from datetime import datetime, timedelta
 
 # Configuration
-BASE_URL = "https://accounting-fixes-3.preview.emergentagent.com/api"
+BASE_URL = "https://secure-payment-ui-1.preview.emergentagent.com/api"
 ADMIN_CREDENTIALS = {"username": "admin", "password": "admin123"}
 
 class RemainingEndpointsTest:
