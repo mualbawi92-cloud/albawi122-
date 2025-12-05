@@ -751,6 +751,70 @@ const CreateTransferPage = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Agent Info Modal */}
+        <Dialog open={showAgentInfoModal} onOpenChange={setShowAgentInfoModal}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-lg text-primary">معلومات الوكيل</DialogTitle>
+              <DialogDescription className="text-sm">
+                تفاصيل الوكيل المختار
+              </DialogDescription>
+            </DialogHeader>
+            
+            {selectedAgentInfo && (
+              <div className="space-y-4 py-4">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                    <div className="text-2xl">👤</div>
+                    <div className="flex-1">
+                      <Label className="text-xs text-muted-foreground">اسم الوكيل</Label>
+                      <p className="font-bold text-base">{selectedAgentInfo.display_name}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                    <div className="text-2xl">📱</div>
+                    <div className="flex-1">
+                      <Label className="text-xs text-muted-foreground">رقم الهاتف</Label>
+                      <p className="font-bold text-base" dir="ltr">
+                        {selectedAgentInfo.phone || 'غير متوفر'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                    <div className="text-2xl">📍</div>
+                    <div className="flex-1">
+                      <Label className="text-xs text-muted-foreground">المحافظة</Label>
+                      <p className="font-bold text-base">
+                        {IRAQI_GOVERNORATES.find(g => g.code === selectedAgentInfo.governorate)?.name || 'غير محدد'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowAgentInfoModal(false)}
+                className="flex-1"
+              >
+                إغلاق
+              </Button>
+              <Button
+                type="button"
+                onClick={handleCopyAgentInfo}
+                className="flex-1 bg-secondary hover:bg-secondary/90 text-primary"
+              >
+                📋 نسخ المعلومات
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
