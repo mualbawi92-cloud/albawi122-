@@ -435,9 +435,9 @@ const CreateTransferPage = () => {
                 </div>
               </div>
 
-              {/* المبلغ والعمولة والمدن */}
+              {/* السطر الأول: المبلغ والعمولة والمدن والوكيل */}
               <div className="grid grid-cols-12 gap-2">
-                {/* مبلغ الحوالة */}
+                {/* 1. مبلغ الحوالة */}
                 <div className="col-span-3 space-y-1">
                   <Label htmlFor="amount" className="text-xs font-bold">مبلغ الحوالة *</Label>
                   <Input
@@ -458,7 +458,7 @@ const CreateTransferPage = () => {
                   />
                 </div>
 
-                {/* العملة */}
+                {/* 2. عملة الحوالة */}
                 <div className="col-span-1 space-y-1">
                   <Label htmlFor="currency" className="text-xs font-bold">العملة</Label>
                   <Select value={formData.currency} onValueChange={(value) => setFormData({ ...formData, currency: value })}>
@@ -472,7 +472,17 @@ const CreateTransferPage = () => {
                   </Select>
                 </div>
 
-                {/* نسبة العمولة */}
+                {/* 3. مبلغ العمولة */}
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-xs font-bold">مبلغ العمولة</Label>
+                  <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                    <p className="text-xs font-bold text-blue-700">
+                      {commissionData.loading ? '...' : commissionData.amount.toLocaleString('en-US')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 4. نسبة العمولة */}
                 <div className="col-span-2 space-y-1">
                   <Label className="text-xs font-bold">نسبة العمولة</Label>
                   <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
@@ -482,17 +492,50 @@ const CreateTransferPage = () => {
                   </div>
                 </div>
 
-                {/* مبلغ العمولة */}
-                <div className="col-span-3 space-y-1">
-                  <Label className="text-xs font-bold">مبلغ العمولة</Label>
-                  <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
-                    <p className="text-xs font-bold text-blue-700">
-                      {commissionData.loading ? '...' : commissionData.amount.toLocaleString('en-US')}
-                    </p>
-                  </div>
+                {/* 5. مدينة الاستلام */}
+                <div className="col-span-2 space-y-1">
+                  <Label htmlFor="to_governorate" className="text-xs font-bold">مدينة الاستلام *</Label>
+                  <Select value={formData.to_governorate} onValueChange={handleGovernorateChange}>
+                    <SelectTrigger data-testid="governorate-select" className="h-9 text-sm">
+                      <SelectValue placeholder="اختر المدينة" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {IRAQI_GOVERNORATES.map((gov) => (
+                        <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                {/* مدينة الإرسال */}
+                {/* 6. الوكيل المسلم */}
+                <div className="col-span-2 space-y-1">
+                  <Label htmlFor="to_agent_id" className="text-xs font-bold">الوكيل المسلم</Label>
+                  {agents.length > 0 ? (
+                    <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
+                      <SelectTrigger data-testid="agent-select" className="h-9 text-sm">
+                        <SelectValue placeholder="الكل" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-60">
+                        <SelectItem value="all">الكل</SelectItem>
+                        {agents.map((agent) => (
+                          <SelectItem key={agent.id} value={agent.id}>
+                            {agent.display_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                      <p className="text-xs text-muted-foreground">
+                        {formData.to_governorate ? 'لا يوجد' : 'اختر المدينة'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* السطر الثاني: مدينة الإرسال */}
+              <div className="grid grid-cols-12 gap-2">
                 <div className="col-span-3 space-y-1">
                   <Label htmlFor="sender_governorate" className="text-xs font-bold">مدينة الإرسال *</Label>
                   <Select 
@@ -508,66 +551,6 @@ const CreateTransferPage = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                </div>
-
-                {/* مدينة الاستلام */}
-                <div className="col-span-3 space-y-1">
-                  <Label htmlFor="to_governorate" className="text-xs font-bold">مدينة الاستلام *</Label>
-                  <Select value={formData.to_governorate} onValueChange={handleGovernorateChange}>
-                    <SelectTrigger data-testid="governorate-select" className="h-9 text-sm">
-                      <SelectValue placeholder="اختر المدينة" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-60">
-                      {IRAQI_GOVERNORATES.map((gov) => (
-                        <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* الوكيل المسلم */}
-                <div className="col-span-8 space-y-1">
-                  <Label htmlFor="to_agent_id" className="text-xs font-bold">الوكيل المسلم</Label>
-                  {agents.length > 0 ? (
-                    <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
-                      <SelectTrigger data-testid="agent-select" className="h-9 text-sm">
-                        <SelectValue placeholder="الكل" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-60">
-                        <SelectItem value="all">🌐 إرسال لكل الوكلاء</SelectItem>
-                        {agents.map((agent) => (
-                          <SelectItem key={agent.id} value={agent.id}>
-                            {agent.display_name} - {agent.phone || 'بدون رقم'}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
-                      <p className="text-xs text-muted-foreground">
-                        {formData.to_governorate ? 'لا يوجد وكلاء' : 'اختر مدينة الاستلام أولاً'}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* عين معلومات الوكيل */}
-                <div className="col-span-1 space-y-1">
-                  <Label className="text-xs font-bold opacity-0">.</Label>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="h-9 w-full text-sm"
-                    disabled={!formData.to_agent_id || formData.to_agent_id === "all"}
-                    onClick={() => {
-                      const selectedAgent = agents.find(a => a.id === formData.to_agent_id);
-                      if (selectedAgent) {
-                        toast.info(`معلومات الوكيل: ${selectedAgent.display_name}\nالهاتف: ${selectedAgent.phone || 'غير متوفر'}\nالمحافظة: ${IRAQI_GOVERNORATES.find(g => g.code === selectedAgent.governorate)?.name || 'غير محدد'}`);
-                      }
-                    }}
-                  >
-                    👁️
-                  </Button>
                 </div>
               </div>
 
