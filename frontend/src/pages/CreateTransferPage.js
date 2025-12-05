@@ -421,8 +421,8 @@ const CreateTransferPage = () => {
             <CardTitle className="text-2xl sm:text-3xl text-primary">إنشاء حوالة جديدة</CardTitle>
             <CardDescription className="text-sm sm:text-base">املأ بيانات الحوالة بعناية</CardDescription>
           </CardHeader>
-          <CardContent className="pt-6 p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <CardContent className="pt-4 p-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               {/* Header: تاريخ الإصدار ورقم الحوالة */}
               <div className="flex justify-between items-center pb-4 border-b-2 border-gray-200">
                 <div>
