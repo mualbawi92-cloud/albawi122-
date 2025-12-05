@@ -705,25 +705,21 @@ export const generateVoucherHTML = (transfer) => {
           <td class="label-col">اسم المرسل</td>
           <td class="value-col">${transfer.sender_name || ''}</td>
         </tr>
-        ${transfer.sender_phone ? `
         <tr>
           <td class="label-col">رقم هاتف المرسل</td>
-          <td class="value-col">${transfer.sender_phone}</td>
+          <td class="value-col">${transfer.sender_phone || ''}</td>
         </tr>
-        ` : ''}
         <tr>
           <td class="label-col">اسم المستلم</td>
           <td class="value-col">${transfer.receiver_name || ''}</td>
         </tr>
-        ${transfer.receiver_phone ? `
         <tr>
           <td class="label-col">رقم هاتف المستلم</td>
-          <td class="value-col">${transfer.receiver_phone}</td>
+          <td class="value-col">${transfer.receiver_phone || ''}</td>
         </tr>
-        ` : ''}
         <tr>
           <td class="label-col">المحافظة</td>
-          <td class="value-col">${transfer.to_governorate || ''}</td>
+          <td class="value-col">${governorateName}</td>
         </tr>
         ${transfer.to_agent_name ? `
         <tr>
