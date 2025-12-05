@@ -691,8 +691,8 @@ export const generateVoucherHTML = (transfer) => {
             <span>${transfer.tracking_number || transfer.transfer_number || 'غير متوفر'}</span>
           </div>
           <div class="info-box">
-            <span class="info-label">رمز الحوالة:</span>
-            <span>${transfer.transfer_code || 'غير متوفر'}</span>
+            <span class="info-label">رمز الحوالة (PIN):</span>
+            <span>${transfer.decrypted_pin || transfer.pin || '****'}</span>
           </div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 3px;">
