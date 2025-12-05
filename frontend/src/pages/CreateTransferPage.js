@@ -110,6 +110,30 @@ const CreateTransferPage = () => {
     }
   };
 
+  const handleShowAgentInfo = () => {
+    if (!formData.to_agent_id || formData.to_agent_id === "all") {
+      toast.error('الرجاء اختيار وكيل محدد');
+      return;
+    }
+    const agent = agents.find(a => a.id === formData.to_agent_id);
+    if (agent) {
+      setSelectedAgentInfo(agent);
+      setShowAgentInfoModal(true);
+    }
+  };
+
+  const handleCopyAgentInfo = () => {
+    if (!selectedAgentInfo) return;
+    const govName = IRAQI_GOVERNORATES.find(g => g.code === selectedAgentInfo.governorate)?.name || 'غير محدد';
+    const info = `اسم الوكيل: ${selectedAgentInfo.display_name}\nرقم الهاتف: ${selectedAgentInfo.phone || 'غير متوفر'}\nالمحافظة: ${govName}`;
+    
+    navigator.clipboard.writeText(info).then(() => {
+      toast.success('تم نسخ معلومات الوكيل');
+    }).catch(() => {
+      toast.error('فشل النسخ');
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Show confirmation modal instead of submitting directly
