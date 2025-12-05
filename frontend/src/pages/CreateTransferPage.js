@@ -424,14 +424,14 @@ const CreateTransferPage = () => {
           <CardContent className="pt-4 p-4">
             <form onSubmit={handleSubmit} className="space-y-3">
               {/* Header: تاريخ الإصدار ورقم الحوالة */}
-              <div className="flex justify-between items-center pb-4 border-b-2 border-gray-200">
+              <div className="flex justify-between items-center pb-2 border-b border-gray-200">
                 <div>
-                  <Label className="text-sm text-muted-foreground">تاريخ الإصدار</Label>
-                  <p className="text-lg font-bold">{new Date().toLocaleDateString('ar-IQ')}</p>
+                  <Label className="text-xs text-muted-foreground">تاريخ الإصدار</Label>
+                  <p className="text-sm font-bold">{new Date().toLocaleDateString('ar-IQ')}</p>
                 </div>
                 <div className="text-left">
-                  <Label className="text-sm text-muted-foreground">رقم الحوالة</Label>
-                  <p className="text-lg font-bold text-secondary">سيتم توليده تلقائياً</p>
+                  <Label className="text-xs text-muted-foreground">رقم الحوالة</Label>
+                  <p className="text-sm font-bold text-secondary">سيتم توليده تلقائياً</p>
                 </div>
               </div>
 
