@@ -258,7 +258,7 @@ const TransferDetailsPage = () => {
                 <CardDescription className="text-base">تفاصيل الحوالة</CardDescription>
               </div>
               <div className="flex items-center gap-3">
-                {/* Print Button */}
+                {/* Print Buttons */}
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -268,6 +268,29 @@ const TransferDetailsPage = () => {
                   className="bg-white hover:bg-gray-50"
                 >
                   🖨️ طباعة الإيصال
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    // Get PIN if not available
+                    let transferWithPin = {...transfer};
+                    if (!transfer.decrypted_pin && transfer.status === 'pending') {
+                      try {
+                        const response = await axios.get(`${API}/transfers/${transfer.id}/pin`, {
+                          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                        });
+                        transferWithPin.decrypted_pin = response.data.pin;
+                      } catch (error) {
+                        console.error('Error fetching PIN:', error);
+                      }
+                    }
+                    const { generateVoucherHTML } = await import('../utils/printUtils');
+                    const html = generateVoucherHTML(transferWithPin);
+                    printDocument(html, `وصل حوالة ${transfer.transfer_number || transfer.transfer_code}`);
+                  }}
+                  className="bg-secondary hover:bg-secondary/90 text-primary"
+                >
+                  📄 طباعة الوصل
                 </Button>
                 {getStatusBadge(transfer.status)}
               </div>
