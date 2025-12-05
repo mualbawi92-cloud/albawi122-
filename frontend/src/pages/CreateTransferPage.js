@@ -526,26 +526,6 @@ const CreateTransferPage = () => {
                 </div>
               </div>
 
-              {/* السطر الثاني: مدينة الإرسال */}
-              <div className="grid grid-cols-12 gap-2">
-                <div className="col-span-3 space-y-1">
-                  <Label htmlFor="sender_governorate" className="text-xs font-bold">مدينة الإرسال *</Label>
-                  <Select 
-                    value={formData.sender_governorate} 
-                    onValueChange={(value) => setFormData({ ...formData, sender_governorate: value })}
-                  >
-                    <SelectTrigger className="h-9 text-sm">
-                      <SelectValue placeholder="اختر المدينة" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-60">
-                      {IRAQI_GOVERNORATES.map((gov) => (
-                        <SelectItem key={gov.code} value={gov.code}>{gov.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
               {/* بيانات المرسل والمستفيد */}
               <div className="grid grid-cols-2 gap-4 pt-2">
                 {/* المرسل */}
