@@ -361,23 +361,27 @@ const CreateTransferPage = () => {
           <table class="main-table">
             <tr>
               <td class="label-col">اسم المرسل</td>
-              <td class="value-col">${result.sender_name}</td>
+              <td class="value-col">${result.sender_name || ''}</td>
             </tr>
+            ${result.sender_phone ? `
             <tr>
               <td class="label-col">رقم هاتف المرسل</td>
-              <td class="value-col">${result.sender_phone || 'غير متوفر'}</td>
+              <td class="value-col">${result.sender_phone}</td>
             </tr>
+            ` : ''}
             <tr>
               <td class="label-col">اسم المستلم</td>
-              <td class="value-col">${result.receiver_name}</td>
+              <td class="value-col">${result.receiver_name || ''}</td>
             </tr>
+            ${result.receiver_phone ? `
             <tr>
               <td class="label-col">رقم هاتف المستلم</td>
-              <td class="value-col">${result.receiver_phone || 'غير متوفر'}</td>
+              <td class="value-col">${result.receiver_phone}</td>
             </tr>
+            ` : ''}
             <tr>
               <td class="label-col">المحافظة</td>
-              <td class="value-col">${result.to_governorate}</td>
+              <td class="value-col">${result.to_governorate || ''}</td>
             </tr>
             ${result.to_agent_name ? `
             <tr>
