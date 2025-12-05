@@ -493,4 +493,272 @@ export const generateWalletDepositReceiptHTML = (depositData, agent, admin) => {
       <p style="font-size: 11px;">© ${new Date().getFullYear()} جميع الحقوق محفوظة</p>
     </div>
   `;
+
+
+/**
+ * Generate Transfer Voucher HTML (A5 Landscape)
+ */
+export const generateVoucherHTML = (transfer) => {
+  return `
+    <style>
+      @page {
+        size: A5 landscape;
+        margin: 0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Arial', sans-serif;
+        direction: rtl;
+        background: white;
+        width: 210mm;
+        height: 148mm;
+        margin: 0 auto;
+        padding: 8mm;
+      }
+      .voucher {
+        border: 2px solid #000;
+        padding: 6mm;
+        height: 100%;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 3mm;
+        margin-bottom: 3mm;
+      }
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+      }
+      .title {
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        flex: 1;
+      }
+      .barcode-area {
+        width: 50px;
+        height: 50px;
+        border: 1px solid #ccc;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2mm;
+        font-size: 11px;
+      }
+      .info-box {
+        display: flex;
+        gap: 5px;
+      }
+      .info-label {
+        font-weight: bold;
+      }
+      .main-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 3mm 0;
+        font-size: 11px;
+      }
+      .main-table td {
+        border: 1px solid #000;
+        padding: 2mm;
+      }
+      .main-table .label-col {
+        width: 25%;
+        font-weight: bold;
+        background: #f0f0f0;
+      }
+      .main-table .value-col {
+        width: 75%;
+      }
+      .amounts-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 3mm 0;
+        font-size: 11px;
+      }
+      .amounts-table th {
+        border: 1px solid #000;
+        padding: 2mm;
+        background: #333;
+        color: white;
+        font-weight: bold;
+      }
+      .amounts-table td {
+        border: 1px solid #000;
+        padding: 2mm;
+        text-align: center;
+      }
+      .pin-section {
+        border: 2px solid #e53e3e;
+        background: #fff5f5;
+        padding: 3mm;
+        text-align: center;
+        margin: 3mm 0;
+      }
+      .pin-label {
+        font-size: 11px;
+        color: #e53e3e;
+        font-weight: bold;
+        margin-bottom: 2mm;
+      }
+      .pin-code {
+        font-size: 24px;
+        font-weight: bold;
+        color: #e53e3e;
+        letter-spacing: 6px;
+        margin: 2mm 0;
+      }
+      .warning-text {
+        font-size: 9px;
+        color: #e53e3e;
+        margin-top: 1mm;
+      }
+      .notes-box {
+        border: 1px solid #000;
+        padding: 2mm;
+        margin: 2mm 0;
+        min-height: 12mm;
+        font-size: 10px;
+      }
+      .signatures {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 5mm;
+      }
+      .sig-box {
+        text-align: center;
+        width: 30%;
+      }
+      .sig-line {
+        border-top: 1px solid #000;
+        margin-bottom: 2mm;
+        margin-top: 8mm;
+      }
+      .sig-label {
+        font-size: 10px;
+        font-weight: bold;
+      }
+      @media print {
+        button { display: none !important; }
+      }
+    </style>
+    <div class="voucher">
+      <!-- Header -->
+      <div class="header">
+        <div class="logo">🏦</div>
+        <div class="title">وصل تحويل مالي</div>
+        <div class="barcode-area"></div>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="info-row">
+        <div class="info-box">
+          <span class="info-label">رقم الوصل:</span>
+          <span>${transfer.tracking_number || transfer.transfer_number || 'غير متوفر'}</span>
+        </div>
+        <div class="info-box">
+          <span class="info-label">التاريخ:</span>
+          <span>${new Date(transfer.created_at).toLocaleDateString('ar-IQ')}</span>
+        </div>
+        <div class="info-box">
+          <span class="info-label">الوقت:</span>
+          <span>${new Date(transfer.created_at).toLocaleTimeString('ar-IQ', {hour: '2-digit', minute: '2-digit'})}</span>
+        </div>
+      </div>
+
+      <!-- Main Information Table -->
+      <table class="main-table">
+        <tr>
+          <td class="label-col">اسم المرسل</td>
+          <td class="value-col">${transfer.sender_name || ''}</td>
+        </tr>
+        ${transfer.sender_phone ? `
+        <tr>
+          <td class="label-col">رقم هاتف المرسل</td>
+          <td class="value-col">${transfer.sender_phone}</td>
+        </tr>
+        ` : ''}
+        <tr>
+          <td class="label-col">اسم المستلم</td>
+          <td class="value-col">${transfer.receiver_name || ''}</td>
+        </tr>
+        ${transfer.receiver_phone ? `
+        <tr>
+          <td class="label-col">رقم هاتف المستلم</td>
+          <td class="value-col">${transfer.receiver_phone}</td>
+        </tr>
+        ` : ''}
+        <tr>
+          <td class="label-col">المحافظة</td>
+          <td class="value-col">${transfer.to_governorate || ''}</td>
+        </tr>
+        ${transfer.to_agent_name ? `
+        <tr>
+          <td class="label-col">الوكيل المستلم</td>
+          <td class="value-col">${transfer.to_agent_name}</td>
+        </tr>
+        ` : ''}
+      </table>
+
+      <!-- Amounts Table -->
+      <table class="amounts-table">
+        <thead>
+          <tr>
+            <th>المبلغ (${transfer.currency})</th>
+            <th>العمولة</th>
+            <th>المبلغ الإجمالي</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${transfer.amount.toLocaleString()}</td>
+            <td>${transfer.commission ? transfer.commission.toLocaleString() : '0'}</td>
+            <td>${(parseFloat(transfer.amount) + parseFloat(transfer.commission || 0)).toLocaleString()}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- PIN Section -->
+      ${transfer.pin_encrypted ? `
+      <div class="pin-section">
+        <div class="pin-label">الرقم السري للاستلام (PIN)</div>
+        <div class="pin-code">${transfer.decrypted_pin || '****'}</div>
+        <div class="warning-text">⚠️ يُرجى الاحتفاظ بهذا الرقم بسرية تامة وإعطاؤه للمستلم فقط</div>
+      </div>
+      ` : ''}
+
+      <!-- Notes -->
+      ${transfer.note ? `
+      <div class="notes-box">
+        <strong>ملاحظات:</strong> ${transfer.note}
+      </div>
+      ` : ''}
+
+      <!-- Signatures -->
+      <div class="signatures">
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-label">توقيع المرسل</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-label">توقيع الموظف</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-label">ختم الشركة</div>
+        </div>
+      </div>
+    </div>
+  `;
+};
 };
