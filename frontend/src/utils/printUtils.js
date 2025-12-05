@@ -685,17 +685,25 @@ export const generateVoucherHTML = (transfer) => {
 
       <!-- Basic Info -->
       <div class="info-row">
-        <div class="info-box">
-          <span class="info-label">رمز الحوالة:</span>
-          <span>${transfer.transfer_code || 'غير متوفر'}</span>
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <div class="info-box">
+            <span class="info-label">رقم الحوالة:</span>
+            <span>${transfer.tracking_number || transfer.transfer_number || 'غير متوفر'}</span>
+          </div>
+          <div class="info-box">
+            <span class="info-label">رمز الحوالة:</span>
+            <span>${transfer.transfer_code || 'غير متوفر'}</span>
+          </div>
         </div>
-        <div class="info-box">
-          <span class="info-label">رقم الحوالة:</span>
-          <span>${transfer.tracking_number || transfer.transfer_number || 'غير متوفر'}</span>
-        </div>
-        <div class="info-box">
-          <span class="info-label">التاريخ والوقت:</span>
-          <span>${new Date(transfer.created_at).toLocaleDateString('ar-IQ')} - ${new Date(transfer.created_at).toLocaleTimeString('ar-IQ', {hour: '2-digit', minute: '2-digit'})}</span>
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <div class="info-box">
+            <span class="info-label">التاريخ:</span>
+            <span>${new Date(transfer.created_at).toLocaleDateString('ar-IQ')}</span>
+          </div>
+          <div class="info-box">
+            <span class="info-label">الوقت:</span>
+            <span>${new Date(transfer.created_at).toLocaleTimeString('ar-IQ', {hour: '2-digit', minute: '2-digit'})}</span>
+          </div>
         </div>
       </div>
 
