@@ -23,35 +23,57 @@ const QuickReceiveTransferPage = () => {
   const [transfer, setTransfer] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSearch = async () => {
-    if (!searchReceiverName && !searchTransferId) {
-      toast.error('يرجى إدخال اسم المستلم أو رقم الحوالة للبحث');
+  const handleSearchByNumber = async () => {
+    if (!transferNumber || transferNumber.length !== 10) {
+      toast.error('يرجى إدخال رقم الحوالة المكون من 10 أرقام');
       return;
     }
 
     setLoading(true);
     try {
-      const params = {};
-      if (searchReceiverName) params.receiver_name = searchReceiverName;
-      if (searchTransferId) params.transfer_id = searchTransferId;
-
-      const response = await axios.get(`${API}/transfers/search`, { params });
+      const response = await axios.get(`${API}/transfers/search/${transferNumber}`);
       
-      // Filter only pending transfers that are ready to be received
-      const pendingTransfers = response.data.transfers.filter(
-        t => t.status === 'pending' && t.to_agent_id === user.user_id
-      );
-      
-      setTransfers(pendingTransfers);
-      
-      if (pendingTransfers.length === 0) {
-        toast.info('لم يتم العثور على حوالات جاهزة للتسليم');
+      if (response.data && response.data.status === 'pending') {
+        setTransfer(response.data);
+        setStep(2); // الانتقال لإدخال PIN
+        toast.success('تم العثور على الحوالة - يرجى إدخال كود الحوالة');
+      } else if (response.data && response.data.status !== 'pending') {
+        toast.error('هذه الحوالة تم تسليمها مسبقاً أو ملغاة');
       } else {
-        toast.success(`تم العثور على ${pendingTransfers.length} حوالة`);
+        toast.error('لم يتم العثور على الحوالة');
       }
     } catch (error) {
-      console.error('Error searching transfers:', error);
-      toast.error('خطأ في البحث عن الحوالات');
+      console.error('Error searching transfer:', error);
+      toast.error('لم يتم العثور على الحوالة بهذا الرقم');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyPin = async () => {
+    if (!pin || pin.length !== 4) {
+      toast.error('يرجى إدخال كود الحوالة المكون من 4 أرقام');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Verify PIN
+      const response = await axios.post(`${API}/transfers/${transfer.id}/verify-pin`, {
+        pin: pin
+      });
+
+      if (response.data.valid) {
+        setStep(3); // عرض التفاصيل
+        toast.success('تم التحقق بنجاح - يمكنك الآن استلام الحوالة');
+      } else {
+        toast.error('كود الحوالة غير صحيح');
+        setPin('');
+      }
+    } catch (error) {
+      console.error('Error verifying PIN:', error);
+      toast.error('كود الحوالة غير صحيح');
+      setPin('');
     } finally {
       setLoading(false);
     }
