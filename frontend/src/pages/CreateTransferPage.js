@@ -182,86 +182,182 @@ const CreateTransferPage = () => {
           @media print {
             @page { margin: 1cm; }
           }
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
           body {
             font-family: 'Cairo', 'Arial', sans-serif;
             direction: rtl;
-            text-align: right;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+            padding: 0;
+            background: white;
           }
-          .header {
+          .voucher-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+          }
+          .header-wave {
+            position: relative;
+            background: linear-gradient(135deg, #5a9cb8 0%, #7eb3c7 50%, #8b9a9e 100%);
+            height: 120px;
+            margin-bottom: 30px;
+            clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
+          }
+          .header-content {
+            position: relative;
+            z-index: 2;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+          }
+          .voucher-title {
+            font-size: 36px;
+            font-weight: 300;
+            color: white;
             text-align: center;
-            border-bottom: 3px solid #1e3a5f;
-            padding-bottom: 20px;
+            flex: 1;
+          }
+          .voucher-info {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+          }
+          .voucher-label {
+            font-size: 12px;
+            color: #666;
+          }
+          .voucher-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+          }
+          .main-content {
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+          }
+          .sender-section, .receiver-section {
             margin-bottom: 30px;
           }
-          .title {
-            font-size: 32px;
-            font-weight: bold;
-            color: #1e3a5f;
-            margin-bottom: 10px;
-          }
-          .transfer-number {
-            font-size: 28px;
-            font-weight: bold;
-            color: #d4af37;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 20px 0;
-          }
-          .section {
-            margin: 25px 0;
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-          }
-          .label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
-          }
-          .value {
-            font-size: 18px;
+          .section-title {
+            font-size: 20px;
             font-weight: bold;
             color: #333;
             margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #5a9cb8;
           }
-          .pin-section {
-            background: #fff5f5;
-            border: 3px solid #e53e3e;
+          .info-line {
+            display: flex;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dotted #ddd;
+          }
+          .info-label {
+            font-size: 14px;
+            color: #666;
+            min-width: 100px;
+          }
+          .info-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            flex: 1;
+          }
+          .details-box {
+            background: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
-            text-align: center;
+            border: 1px solid #ddd;
           }
-          .pin {
-            font-size: 48px;
+          .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          .details-table th {
+            background: #5a9cb8;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 13px;
+            border: 1px solid #5a9cb8;
+          }
+          .details-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 14px;
             font-weight: bold;
-            color: #e53e3e;
-            letter-spacing: 8px;
+          }
+          .pin-box {
+            background: #fff5f5;
+            border: 2px solid #e53e3e;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
             margin: 20px 0;
           }
-          .warning {
+          .pin-label {
+            font-size: 14px;
             color: #e53e3e;
             font-weight: bold;
-            font-size: 16px;
           }
-          .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #e0e0e0;
-            text-align: center;
-            color: #666;
+          .pin-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #e53e3e;
+            letter-spacing: 10px;
+            margin: 10px 0;
+          }
+          .notes-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+          }
+          .notes-label {
             font-size: 14px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
           }
-          .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+          .signatures {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+            padding: 0 40px;
+          }
+          .signature-box {
+            text-align: center;
+            min-width: 200px;
+          }
+          .signature-line {
+            border-top: 2px solid #333;
+            margin-bottom: 10px;
+            padding-top: 5px;
+          }
+          .signature-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+          }
+          .footer-wave {
+            height: 30px;
+            background: linear-gradient(135deg, #5a9cb8 0%, #8b9a9e 100%);
+            margin-top: 40px;
           }
           @media print {
             button { display: none; }
+            body { padding: 0; }
           }
         </style>
       </head>
