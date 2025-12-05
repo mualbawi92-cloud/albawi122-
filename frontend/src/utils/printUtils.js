@@ -761,4 +761,3 @@ export const generateVoucherHTML = (transfer) => {
     </div>
   `;
 };
-};
