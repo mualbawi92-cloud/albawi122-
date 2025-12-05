@@ -54,6 +54,8 @@ const CreateTransferPage = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showAgentInfoModal, setShowAgentInfoModal] = useState(false);
+  const [selectedAgentInfo, setSelectedAgentInfo] = useState(null);
   const [commissionData, setCommissionData] = useState({
     percentage: 0,
     amount: 0,
