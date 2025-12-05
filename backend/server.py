@@ -5511,12 +5511,12 @@ async def get_agent_ledger(
             'transfer_code': transfer['transfer_code']
         })
         
-        # Add commission received - shown as دائن in ledger
+        # Add commission received - shown as دائن in ledger (عمولة محققة)
         if transfer.get('incoming_commission', 0) > 0:
             transactions.append({
                 'date': transfer.get('updated_at', transfer['created_at']),
-                'type': 'commission_received',
-                'description': f"عمولة مدفوعة من {transfer.get('sender_name', 'غير معروف')} إلى {transfer.get('receiver_name', 'غير معروف')}{gov_info}",
+                'type': 'commission_earned',
+                'description': f"عمولة محققة من {transfer.get('sender_name', 'غير معروف')} إلى {transfer.get('receiver_name', 'غير معروف')}{gov_info}",
                 'debit': 0,
                 'credit': transfer['incoming_commission'],
                 'balance': 0,
