@@ -2178,76 +2178,13 @@ async def receive_transfer(
         raise HTTPException(status_code=400, detail="Transfer already processed")
     
     # Prevent sender from receiving their own transfer
-    # Check both direct user ID and their agent ID (for users linked to agents)
     user_agent_id = current_user.get('agent_id') if current_user['role'] == 'user' else current_user['id']
-    if transfer['from_agent_id'] == current_user['id'] or transfer['from_agent_id'] == user_agent_id:
+    if transfer.get('from_agent_id') == current_user['id'] or transfer.get('from_agent_id') == user_agent_id:
         raise HTTPException(status_code=403, detail="لا يمكن للمُرسل استلام حوالته الخاصة")
-    
-    # Check rate limit for PIN attempts
-    rate_limit_key = f"{transfer_id}_{current_user['id']}"
-    if not check_rate_limit(rate_limit_key, pin_attempts_cache, MAX_PIN_ATTEMPTS, LOCKOUT_DURATION):
-        raise HTTPException(status_code=429, detail="Too many PIN attempts. Try again later.")
-    
-    # Verify receiver full name - only check first name matches
-    expected_receiver_name = transfer.get('receiver_name', '')
-    
-    # If no receiver_name in old transfers, skip name validation
-    if expected_receiver_name:
-        # Import the name matching function
-        from iraqi_id_validator import validate_receiver_name
-        
-        # Validate first name match
-        is_valid, validation_message = validate_receiver_name(
-            expected_receiver_name,
-            receiver_fullname
-        )
-        
-        if not is_valid:
-            # Log failed attempt for incorrect name
-            await db.pin_attempts.insert_one({
-                'id': str(uuid.uuid4()),
-                'transfer_id': transfer_id,
-                'attempted_by_agent': current_user['id'],
-                'attempt_ip': request.client.host if request else None,
-                'success': False,
-                'failure_reason': 'incorrect_name',
-                'created_at': datetime.now(timezone.utc).isoformat()
-            })
-            await log_audit(transfer_id, current_user['id'], 'name_failed', {
-                'ip': request.client.host if request else None,
-                'attempted_name': receiver_fullname,
-                'expected_name': expected_receiver_name
-            })
-            raise HTTPException(status_code=400, detail=f"الاسم الأول غير مطابق. {validation_message}")
     
     # Verify PIN
     if not verify_pin(pin, transfer['pin_hash']):
-        # Log failed attempt
-        await db.pin_attempts.insert_one({
-            'id': str(uuid.uuid4()),
-            'transfer_id': transfer_id,
-            'attempted_by_agent': current_user['id'],
-            'attempt_ip': request.client.host if request else None,
-            'success': False,
-            'failure_reason': 'incorrect_pin',
-            'created_at': datetime.now(timezone.utc).isoformat()
-        })
-        await log_audit(transfer_id, current_user['id'], 'pin_failed', {'ip': request.client.host if request else None})
         raise HTTPException(status_code=401, detail="الرقم السري غير صحيح")
-    
-    # Upload ID image to Cloudinary
-    try:
-        contents = await id_image.read()
-        upload_result = cloudinary.uploader.upload(
-            contents,
-            folder="money_transfer/id_images",
-            resource_type="image",
-            format="jpg"
-        )
-        id_image_url = upload_result['secure_url']
-    except Exception as e:
-        logging.error(f"Cloudinary upload error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to upload ID image")
     
     # ============ AI MONITORING ============
     
