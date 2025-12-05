@@ -365,24 +365,41 @@ const CreateTransferPage = () => {
             </div>
           </div>
 
-          <!-- Main Information Table -->
+          <!-- Main Information - Split -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; margin: 3mm 0;">
+            <!-- معلومات المرسل - اليمين -->
+            <table class="main-table">
+              <tr>
+                <td colspan="2" style="background: #333; color: white; text-align: center; font-weight: bold; padding: 2mm;">معلومات المرسل</td>
+              </tr>
+              <tr>
+                <td class="label-col">الاسم</td>
+                <td class="value-col">${result.sender_name || ''}</td>
+              </tr>
+              <tr>
+                <td class="label-col">رقم الهاتف</td>
+                <td class="value-col">${result.sender_phone || ''}</td>
+              </tr>
+            </table>
+
+            <!-- معلومات المستفيد - اليسار -->
+            <table class="main-table">
+              <tr>
+                <td colspan="2" style="background: #333; color: white; text-align: center; font-weight: bold; padding: 2mm;">معلومات المستفيد</td>
+              </tr>
+              <tr>
+                <td class="label-col">الاسم</td>
+                <td class="value-col">${result.receiver_name || ''}</td>
+              </tr>
+              <tr>
+                <td class="label-col">رقم الهاتف</td>
+                <td class="value-col">${result.receiver_phone || ''}</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- معلومات إضافية -->
           <table class="main-table">
-            <tr>
-              <td class="label-col">اسم المرسل</td>
-              <td class="value-col">${result.sender_name || ''}</td>
-            </tr>
-            <tr>
-              <td class="label-col">رقم الهاتف</td>
-              <td class="value-col">${result.sender_phone || ''}</td>
-            </tr>
-            <tr>
-              <td class="label-col">اسم المستفيد</td>
-              <td class="value-col">${result.receiver_name || ''}</td>
-            </tr>
-            <tr>
-              <td class="label-col">رقم الهاتف</td>
-              <td class="value-col">${result.receiver_phone || ''}</td>
-            </tr>
             <tr>
               <td class="label-col">المحافظة</td>
               <td class="value-col">${result.to_governorate || ''}</td>
