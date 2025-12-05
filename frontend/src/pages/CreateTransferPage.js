@@ -415,7 +415,7 @@ const CreateTransferPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto p-3 sm:p-6 max-w-2xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-7xl">
         <Card className="shadow-xl" data-testid="create-transfer-form">
           <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5 p-4 sm:p-6">
             <CardTitle className="text-2xl sm:text-3xl text-primary">إنشاء حوالة جديدة</CardTitle>
