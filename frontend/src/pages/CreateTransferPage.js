@@ -436,10 +436,10 @@ const CreateTransferPage = () => {
               </div>
 
               {/* المبلغ والعمولة والمدن */}
-              <div className="grid grid-cols-12 gap-3">
+              <div className="grid grid-cols-12 gap-2">
                 {/* مبلغ الحوالة */}
-                <div className="col-span-3 space-y-2">
-                  <Label htmlFor="amount" className="text-sm font-bold">مبلغ الحوالة *</Label>
+                <div className="col-span-3 space-y-1">
+                  <Label htmlFor="amount" className="text-xs font-bold">مبلغ الحوالة *</Label>
                   <Input
                     id="amount"
                     data-testid="amount-input"
@@ -452,17 +452,17 @@ const CreateTransferPage = () => {
                       }
                     }}
                     required
-                    className="text-base h-11 text-right"
+                    className="text-sm h-9 text-right"
                     placeholder="0"
                     dir="ltr"
                   />
                 </div>
 
                 {/* العملة */}
-                <div className="col-span-1 space-y-2">
-                  <Label htmlFor="currency" className="text-sm font-bold">العملة</Label>
+                <div className="col-span-1 space-y-1">
+                  <Label htmlFor="currency" className="text-xs font-bold">العملة</Label>
                   <Select value={formData.currency} onValueChange={(value) => setFormData({ ...formData, currency: value })}>
-                    <SelectTrigger data-testid="currency-select" className="h-11">
+                    <SelectTrigger data-testid="currency-select" className="h-9 text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -473,33 +473,33 @@ const CreateTransferPage = () => {
                 </div>
 
                 {/* نسبة العمولة */}
-                <div className="col-span-2 space-y-2">
-                  <Label className="text-sm font-bold">نسبة العمولة</Label>
-                  <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
-                    <p className="text-sm font-bold text-blue-700">
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-xs font-bold">نسبة العمولة</Label>
+                  <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                    <p className="text-xs font-bold text-blue-700">
                       {commissionData.loading ? '...' : `${commissionData.percentage.toFixed(2)}%`}
                     </p>
                   </div>
                 </div>
 
                 {/* مبلغ العمولة */}
-                <div className="col-span-3 space-y-2">
-                  <Label className="text-sm font-bold">مبلغ العمولة</Label>
-                  <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
-                    <p className="text-sm font-bold text-blue-700">
+                <div className="col-span-3 space-y-1">
+                  <Label className="text-xs font-bold">مبلغ العمولة</Label>
+                  <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                    <p className="text-xs font-bold text-blue-700">
                       {commissionData.loading ? '...' : commissionData.amount.toLocaleString('en-US')}
                     </p>
                   </div>
                 </div>
 
                 {/* مدينة الإرسال */}
-                <div className="col-span-3 space-y-2">
-                  <Label htmlFor="sender_governorate" className="text-sm font-bold">مدينة الإرسال *</Label>
+                <div className="col-span-3 space-y-1">
+                  <Label htmlFor="sender_governorate" className="text-xs font-bold">مدينة الإرسال *</Label>
                   <Select 
                     value={formData.sender_governorate} 
                     onValueChange={(value) => setFormData({ ...formData, sender_governorate: value })}
                   >
-                    <SelectTrigger className="h-11">
+                    <SelectTrigger className="h-9 text-sm">
                       <SelectValue placeholder="اختر المدينة" />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
@@ -511,10 +511,10 @@ const CreateTransferPage = () => {
                 </div>
 
                 {/* مدينة الاستلام */}
-                <div className="col-span-3 space-y-2">
-                  <Label htmlFor="to_governorate" className="text-sm font-bold">مدينة الاستلام *</Label>
+                <div className="col-span-3 space-y-1">
+                  <Label htmlFor="to_governorate" className="text-xs font-bold">مدينة الاستلام *</Label>
                   <Select value={formData.to_governorate} onValueChange={handleGovernorateChange}>
-                    <SelectTrigger data-testid="governorate-select" className="h-11">
+                    <SelectTrigger data-testid="governorate-select" className="h-9 text-sm">
                       <SelectValue placeholder="اختر المدينة" />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
@@ -526,11 +526,11 @@ const CreateTransferPage = () => {
                 </div>
 
                 {/* الوكيل المسلم */}
-                <div className="col-span-8 space-y-2">
-                  <Label htmlFor="to_agent_id" className="text-sm font-bold">الوكيل المسلم</Label>
+                <div className="col-span-8 space-y-1">
+                  <Label htmlFor="to_agent_id" className="text-xs font-bold">الوكيل المسلم</Label>
                   {agents.length > 0 ? (
                     <Select value={formData.to_agent_id || "all"} onValueChange={(value) => setFormData({ ...formData, to_agent_id: value === "all" ? "" : value })}>
-                      <SelectTrigger data-testid="agent-select" className="h-11">
+                      <SelectTrigger data-testid="agent-select" className="h-9 text-sm">
                         <SelectValue placeholder="الكل" />
                       </SelectTrigger>
                       <SelectContent className="max-h-60">
@@ -543,8 +543,8 @@ const CreateTransferPage = () => {
                       </SelectContent>
                     </Select>
                   ) : (
-                    <div className="h-11 flex items-center px-3 bg-gray-50 border rounded-md">
-                      <p className="text-sm text-muted-foreground">
+                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                      <p className="text-xs text-muted-foreground">
                         {formData.to_governorate ? 'لا يوجد وكلاء' : 'اختر مدينة الاستلام أولاً'}
                       </p>
                     </div>
@@ -552,12 +552,12 @@ const CreateTransferPage = () => {
                 </div>
 
                 {/* عين معلومات الوكيل */}
-                <div className="col-span-1 space-y-2">
-                  <Label className="text-sm font-bold opacity-0">.</Label>
+                <div className="col-span-1 space-y-1">
+                  <Label className="text-xs font-bold opacity-0">.</Label>
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-11 w-full"
+                    className="h-9 w-full text-sm"
                     disabled={!formData.to_agent_id || formData.to_agent_id === "all"}
                     onClick={() => {
                       const selectedAgent = agents.find(a => a.id === formData.to_agent_id);
