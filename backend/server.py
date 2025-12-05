@@ -2128,8 +2128,10 @@ async def search_transfer_by_code(transfer_code: str, current_user: dict = Depen
         'receiver_name': transfer.get('receiver_name'),
         'amount': transfer.get('amount'),
         'currency': transfer.get('currency', 'IQD'),
+        'incoming_commission': transfer.get('incoming_commission', 0),
         'from_agent_name': transfer.get('from_agent_name'),
         'to_governorate': transfer.get('to_governorate'),
+        'status': transfer.get('status'),
         'created_at': transfer.get('created_at')
     }
 
