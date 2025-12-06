@@ -349,7 +349,7 @@ const CreateTransferPage = () => {
                 <span>${result.tracking_number || result.transfer_number || 'غير متوفر'}</span>
               </div>
               <div class="info-box">
-                <span class="info-label">رمز الحوالة (PIN):</span>
+                <span class="info-label">كود الحوالة:</span>
                 <span>${result.pin || '****'}</span>
               </div>
             </div>
