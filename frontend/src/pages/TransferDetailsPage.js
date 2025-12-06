@@ -251,47 +251,31 @@ const TransferDetailsPage = () => {
       <Navbar />
       <div className="container mx-auto p-6 max-w-4xl">
         <Card className="shadow-2xl">
-          <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5">
-            <div className="flex items-center justify-between flex-wrap gap-4">
+          <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5 py-6">
+            <div className="flex items-start justify-between">
+              {/* Right Side - رقم الحوالة وكود الحوالة */}
               <div>
-                <CardTitle className="text-3xl text-primary mb-2" data-testid="transfer-code">{transfer.transfer_code}</CardTitle>
-                <CardDescription className="text-base">تفاصيل الحوالة</CardDescription>
+                <div className="mb-2">
+                  <Label className="text-xs text-muted-foreground">رقم الحوالة</Label>
+                  <p className="text-2xl font-bold text-blue-600" data-testid="tracking-number">
+                    {transfer.tracking_number || transfer.transfer_number || transfer.transfer_code}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">كود الحوالة</Label>
+                  <p className="text-xl font-bold text-primary" data-testid="transfer-code">
+                    {transfer.transfer_code}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                {/* Print Buttons */}
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const html = generateTransferReceiptHTML(transfer, user, user);
-                    printDocument(html, `إيصال حوالة ${transfer.transfer_code}`);
-                  }}
-                  className="bg-white hover:bg-gray-50"
-                >
-                  🖨️ طباعة الإيصال
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={async () => {
-                    // Get PIN if not available
-                    let transferWithPin = {...transfer};
-                    if (!transfer.decrypted_pin && transfer.status === 'pending') {
-                      try {
-                        const response = await axios.get(`${API}/transfers/${transfer.id}/pin`, {
-                          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                        });
-                        transferWithPin.decrypted_pin = response.data.pin;
-                      } catch (error) {
-                        console.error('Error fetching PIN:', error);
-                      }
-                    }
-                    const { generateVoucherHTML } = await import('../utils/printUtils');
-                    const html = generateVoucherHTML(transferWithPin);
-                    printDocument(html, `وصل حوالة ${transfer.transfer_number || transfer.transfer_code}`);
-                  }}
-                  className="bg-secondary hover:bg-secondary/90 text-primary"
-                >
-                  📄 طباعة الوصل
-                </Button>
+
+              {/* Center - عنوان الصفحة */}
+              <div className="text-center">
+                <CardTitle className="text-3xl text-primary">تسليم حوالة</CardTitle>
+              </div>
+
+              {/* Left Side - حالة الحوالة */}
+              <div>
                 {getStatusBadge(transfer.status)}
               </div>
             </div>
