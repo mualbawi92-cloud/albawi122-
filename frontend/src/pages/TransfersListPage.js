@@ -299,14 +299,50 @@ const TransfersListPage = () => {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold">بحث برقم الحوالة</Label>
-                  <Input
-                    placeholder="أدخل رقم الحوالة..."
-                    value={searchCode}
-                    onChange={(e) => setSearchCode(e.target.value)}
-                    className="h-10"
-                  />
+                {/* New Search Filters */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">بحث حسب رقم الحوالة</Label>
+                    <Input
+                      placeholder="رقم الحوالة (10 أرقام)..."
+                      value={searchTrackingNumber}
+                      onChange={(e) => setSearchTrackingNumber(e.target.value)}
+                      className="h-10"
+                      dir="ltr"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">بحث حسب اسم المرسل</Label>
+                    <Input
+                      placeholder="اسم المرسل..."
+                      value={searchSenderName}
+                      onChange={(e) => setSearchSenderName(e.target.value)}
+                      className="h-10"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">بحث حسب اسم المستفيد</Label>
+                    <Input
+                      placeholder="اسم المستفيد..."
+                      value={searchReceiverName}
+                      onChange={(e) => setSearchReceiverName(e.target.value)}
+                      className="h-10"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">بحث حسب المبلغ</Label>
+                    <Input
+                      type="number"
+                      placeholder="المبلغ..."
+                      value={searchAmount}
+                      onChange={(e) => setSearchAmount(e.target.value)}
+                      className="h-10"
+                      dir="ltr"
+                    />
+                  </div>
                 </div>
               </div>
             )}
