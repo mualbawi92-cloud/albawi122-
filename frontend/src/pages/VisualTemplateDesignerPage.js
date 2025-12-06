@@ -140,7 +140,7 @@ const VisualTemplateDesignerPage = () => {
     if (selectedElement === id) setSelectedElement(null);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (applyAsDefault = false) => {
     if (!templateName.trim()) {
       toast.error('يرجى إدخال اسم التصميم');
       return;
@@ -152,6 +152,7 @@ const VisualTemplateDesignerPage = () => {
         template_type: templateType,
         page_size: pageSize,
         elements: elements,
+        is_active: applyAsDefault,
       };
 
       if (currentTemplate) {
@@ -160,6 +161,10 @@ const VisualTemplateDesignerPage = () => {
       } else {
         await axios.post(`${API}/visual-templates`, payload);
         toast.success('تم حفظ التصميم بنجاح');
+      }
+
+      if (applyAsDefault) {
+        toast.success(`✅ تم تطبيق التصميم على: ${templateType === 'send_transfer' ? 'وصولات الإرسال' : 'وصولات التسليم'}`);
       }
 
       fetchTemplates();
