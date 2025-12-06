@@ -380,7 +380,7 @@ const TransfersListPage = () => {
                   <table className="w-full text-sm">
                     <thead className="bg-gray-100">
                       <tr>
-                        <th className="p-3 text-right">رمز الحوالة</th>
+                        <th className="p-3 text-right">رقم الحوالة</th>
                         <th className="p-3 text-right">المرسل</th>
                         <th className="p-3 text-right">المستلم</th>
                         <th className="p-3 text-right">المبلغ</th>
@@ -393,7 +393,9 @@ const TransfersListPage = () => {
                     <tbody>
                       {transfers.map((transfer) => (
                         <tr key={transfer.id} className="border-t hover:bg-gray-50">
-                          <td className="p-3 font-mono">{transfer.transfer_code}</td>
+                          <td className="p-3 font-mono font-bold text-blue-600">
+                            {transfer.tracking_number || transfer.transfer_code}
+                          </td>
                           <td className="p-3">{transfer.sender_name}</td>
                           <td className="p-3">{transfer.receiver_name}</td>
                           <td className="p-3 font-bold">{transfer.amount?.toLocaleString()}</td>
@@ -402,14 +404,34 @@ const TransfersListPage = () => {
                           <td className="p-3 text-sm">
                             {new Date(transfer.created_at).toLocaleDateString('ar-IQ')}
                           </td>
-                          <td className="p-3 text-center">
-                            <Button
-                              size="sm"
-                              onClick={() => navigate(`/transfers/${transfer.id}`)}
-                              className="bg-blue-600 hover:bg-blue-700"
-                            >
-                              عرض
-                            </Button>
+                          <td className="p-3">
+                            <div className="flex gap-2 justify-center flex-wrap">
+                              <Button
+                                size="sm"
+                                onClick={() => navigate(`/transfers/${transfer.id}`)}
+                                className="bg-blue-600 hover:bg-blue-700 text-xs"
+                              >
+                                عرض
+                              </Button>
+                              {activeTab === 'inquiry' && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handlePrintTransfer(transfer)}
+                                    className="bg-green-600 hover:bg-green-700 text-xs"
+                                  >
+                                    طباعة
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleCopyTransferInfo(transfer)}
+                                    className="bg-purple-600 hover:bg-purple-700 text-xs"
+                                  >
+                                    نسخ
+                                  </Button>
+                                </>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}
