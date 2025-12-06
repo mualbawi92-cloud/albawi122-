@@ -619,118 +619,112 @@ const TransfersListPage = () => {
               
             {/* Inquiry-specific filters */}
             {activeTab === 'inquiry' && (
-              <>
-                {/* Status Filters - Top Left */}
-                <div className="flex justify-end mt-4 mb-3">
-                  <div className="flex gap-4 items-center bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
-                    <Label className="text-sm font-semibold text-blue-900">نوع الحوالة:</Label>
-                    <div className="flex gap-4">
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <Checkbox
-                          id="pending"
-                          checked={statusFilters.pending}
-                          onCheckedChange={(checked) => 
-                            setStatusFilters({ ...statusFilters, pending: checked })
-                          }
-                        />
-                        <label htmlFor="pending" className="text-sm font-medium cursor-pointer">
-                          قيد الانتظار (صادرة)
-                        </label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <Checkbox
-                          id="completed"
-                          checked={statusFilters.completed}
-                          onCheckedChange={(checked) => 
-                            setStatusFilters({ ...statusFilters, completed: checked })
-                          }
-                        />
-                        <label htmlFor="completed" className="text-sm font-medium cursor-pointer">
-                          مسلّمة
-                        </label>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <Checkbox
-                          id="cancelled"
-                          checked={statusFilters.cancelled}
-                          onCheckedChange={(checked) => 
-                            setStatusFilters({ ...statusFilters, cancelled: checked })
-                          }
-                        />
-                        <label htmlFor="cancelled" className="text-sm font-medium cursor-pointer">
-                          ملغاة
-                        </label>
-                      </div>
+              <div className="bg-gray-50 p-4 rounded-lg mt-3 space-y-3">
+                {/* Status Filters - Top */}
+                <div className="flex items-center gap-4 pb-3 border-b border-gray-300">
+                  <Label className="text-sm font-semibold text-gray-700">نوع الحوالة:</Label>
+                  <div className="flex gap-6">
+                    <div className="flex items-center space-x-2 space-x-reverse">
+                      <Checkbox
+                        id="pending"
+                        checked={statusFilters.pending}
+                        onCheckedChange={(checked) => 
+                          setStatusFilters({ ...statusFilters, pending: checked })
+                        }
+                      />
+                      <label htmlFor="pending" className="text-sm font-medium cursor-pointer">
+                        قيد الانتظار
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 space-x-reverse">
+                      <Checkbox
+                        id="completed"
+                        checked={statusFilters.completed}
+                        onCheckedChange={(checked) => 
+                          setStatusFilters({ ...statusFilters, completed: checked })
+                        }
+                      />
+                      <label htmlFor="completed" className="text-sm font-medium cursor-pointer">
+                        مسلّمة
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 space-x-reverse">
+                      <Checkbox
+                        id="cancelled"
+                        checked={statusFilters.cancelled}
+                        onCheckedChange={(checked) => 
+                          setStatusFilters({ ...statusFilters, cancelled: checked })
+                        }
+                      />
+                      <label htmlFor="cancelled" className="text-sm font-medium cursor-pointer">
+                        ملغاة
+                      </label>
                     </div>
                   </div>
                 </div>
                 
-                {/* Search Filters */}
-                <div className="bg-gray-50 p-4 rounded-lg space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold">بحث حسب رقم الحوالة</Label>
-                      <Input
-                        placeholder="رقم الحوالة (10 أرقام)..."
-                        value={searchTrackingNumber}
-                        onChange={(e) => setSearchTrackingNumber(e.target.value)}
-                        className="h-10"
-                        dir="ltr"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold">بحث حسب اسم المرسل</Label>
-                      <Input
-                        placeholder="اسم المرسل..."
-                        value={searchSenderName}
-                        onChange={(e) => setSearchSenderName(e.target.value)}
-                        className="h-10"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold">بحث حسب اسم المستفيد</Label>
-                      <Input
-                        placeholder="اسم المستفيد..."
-                        value={searchReceiverName}
-                        onChange={(e) => setSearchReceiverName(e.target.value)}
-                        className="h-10"
-                      />
-                    </div>
+                {/* All Search Filters in One Section */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-gray-600">رقم الحوالة</Label>
+                    <Input
+                      placeholder="10 أرقام..."
+                      value={searchTrackingNumber}
+                      onChange={(e) => setSearchTrackingNumber(e.target.value)}
+                      className="h-9 text-sm"
+                      dir="ltr"
+                    />
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold">بحث حسب المبلغ</Label>
-                      <Input
-                        type="number"
-                        placeholder="المبلغ..."
-                        value={searchAmount}
-                        onChange={(e) => setSearchAmount(e.target.value)}
-                        className="h-10"
-                        dir="ltr"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold">العملة</Label>
-                      <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                        <SelectTrigger className="h-10">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">كل العملات</SelectItem>
-                          <SelectItem value="IQD">IQD</SelectItem>
-                          <SelectItem value="USD">USD</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-gray-600">اسم المرسل</Label>
+                    <Input
+                      placeholder="اسم المرسل..."
+                      value={searchSenderName}
+                      onChange={(e) => setSearchSenderName(e.target.value)}
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <Label className="text-xs text-gray-600">اسم المستفيد</Label>
+                    <Input
+                      placeholder="اسم المستفيد..."
+                      value={searchReceiverName}
+                      onChange={(e) => setSearchReceiverName(e.target.value)}
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <Label className="text-xs text-gray-600">المبلغ</Label>
+                    <Input
+                      type="number"
+                      placeholder="المبلغ..."
+                      value={searchAmount}
+                      onChange={(e) => setSearchAmount(e.target.value)}
+                      className="h-9 text-sm"
+                      dir="ltr"
+                    />
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <Label className="text-xs text-gray-600">العملة</Label>
+                    <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">كل العملات</SelectItem>
+                        <SelectItem value="IQD">IQD</SelectItem>
+                        <SelectItem value="USD">USD</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-              </>
+              </div>
             )}
             
             {/* Action Buttons */}
