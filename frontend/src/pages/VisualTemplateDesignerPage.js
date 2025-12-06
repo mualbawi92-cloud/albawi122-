@@ -782,7 +782,7 @@ const VisualTemplateDesignerPage = () => {
               </div>
 
               {/* القائمة اليسرى - خصائص العنصر */}
-              <div className="col-span-3">
+              <div className="col-span-2">
                 <div className="border rounded-lg p-3 sticky top-4">
                   <h3 className="font-bold mb-3">خصائص العنصر</h3>
                   {selectedElementData ? (
