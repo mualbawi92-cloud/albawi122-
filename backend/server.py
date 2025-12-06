@@ -6956,12 +6956,17 @@ async def analyze_receipt_design(
     request: dict,
     current_user: dict = Depends(require_admin)
 ):
-    """Analyze receipt image and generate design elements (placeholder for now)"""
+    """Analyze receipt image and generate design elements using AI"""
     try:
-        # في الوقت الحالي، نعطي قالب بسيط كمثال
-        # يمكن تطويره لاحقاً مع integration صحيح
+        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        import os
+        import json as json_lib
         
+        image_data = request.get('image', '')
         page_size = request.get('page_size', 'A5_landscape')
+        
+        if not image_data:
+            raise HTTPException(status_code=400, detail="لم يتم إرفاق صورة")
         
         page_sizes = {
             'A4_portrait': {'width': 794, 'height': 1123},
@@ -6972,70 +6977,105 @@ async def analyze_receipt_design(
         }
         page_config = page_sizes.get(page_size, page_sizes['A5_landscape'])
         
-        # قالب بسيط كمثال
-        result = {
-            "suggested_name": "تصميم من صورة",
-            "elements": [
-                {
-                    "id": "1",
-                    "type": "static_text",
-                    "x": int(page_config['width'] / 2 - 100),
-                    "y": 30,
-                    "width": 200,
-                    "height": 40,
-                    "text": "عنوان الوصل",
-                    "fontSize": 24,
-                    "fontWeight": "bold",
-                    "color": "#000000",
-                    "textAlign": "center",
-                    "fontFamily": "Arial",
-                    "backgroundColor": "transparent",
-                    "borderStyle": "solid",
-                    "letterSpacing": "0",
-                    "opacity": 1,
-                    "rotation": 0,
-                    "borderWidth": 0,
-                    "borderColor": "#000000"
-                },
-                {
-                    "id": "2",
-                    "type": "rectangle",
-                    "x": 30,
-                    "y": 20,
-                    "width": page_config['width'] - 60,
-                    "height": page_config['height'] - 40,
-                    "borderWidth": 2,
-                    "borderColor": "#000000",
-                    "backgroundColor": "transparent",
-                    "borderStyle": "solid",
-                    "opacity": 1,
-                    "rotation": 0,
-                    "fontFamily": "Arial",
-                    "letterSpacing": "0"
-                },
-                {
-                    "id": "3",
-                    "type": "static_text",
-                    "x": 50,
-                    "y": 100,
-                    "width": 150,
-                    "height": 25,
-                    "text": "رقم الحوالة:",
-                    "fontSize": 14,
-                    "fontWeight": "bold",
-                    "color": "#000000",
-                    "textAlign": "right",
-                    "fontFamily": "Arial",
-                    "backgroundColor": "transparent",
-                    "borderStyle": "solid",
-                    "letterSpacing": "0",
-                    "opacity": 1,
-                    "rotation": 0,
-                    "borderWidth": 0,
-                    "borderColor": "#000000"
-                }
-            ]
-        }
+        # الحصول على المفتاح
+        llm_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not llm_key:
+            raise HTTPException(status_code=500, detail="مفتاح الذكاء الاصطناعي غير متوفر")
+        
+        # إزالة بادئة data:image إذا موجودة
+        if image_data.startswith('data:'):
+            image_data = image_data.split(',')[1]
+        
+        # إنشاء chat instance
+        chat = LlmChat(
+            api_key=llm_key,
+            session_id=f"design_analysis_{current_user.get('id')}",
+            system_message="أنت خبير في تحليل تصميم الوثائق والوصولات. مهمتك تحليل الصور واستخراج التصميم بالتفصيل."
+        ).with_model("openai", "gpt-4o")
+        
+        prompt = f"""حلل هذه الصورة لوصل/فاتورة بدقة وأعطني تصميمها الكامل.
+
+أبعاد الصفحة المستهدفة: {page_config['width']}px عرض × {page_config['height']}px ارتفاع
+
+يرجى استخراج:
+1. جميع النصوص والعناوين (موقعها بالضبط، حجمها، لونها)
+2. الحقول والبيانات المتغيرة
+3. الإطارات والمستطيلات
+4. الخطوط الفاصلة
+5. الألوان المستخدمة
+
+أعطني النتيجة بصيغة JSON صارمة بهذا الشكل:
+{{
+  "suggested_name": "اسم مقترح للتصميم",
+  "elements": [
+    {{
+      "id": "1",
+      "type": "static_text",
+      "x": 100,
+      "y": 20,
+      "width": 200,
+      "height": 30,
+      "text": "النص بالضبط من الصورة",
+      "fontSize": 18,
+      "fontWeight": "bold",
+      "color": "#000000",
+      "textAlign": "center"
+    }}
+  ]
+}}
+
+أنواع العناصر المتاحة:
+- static_text: للنصوص الثابتة
+- text_field: للحقول المتغيرة (استخدم field: "field_name")
+- rectangle: للإطارات
+- line: للخطوط الأفقية
+- vertical_line: للخطوط العمودية
+
+ملاحظات مهمة:
+1. استخرج كل نص تشوفه في الصورة
+2. حدد المواقع بدقة نسبياً للأبعاد المذكورة
+3. للبيانات المتغيرة (أرقام، أسماء) استخدم text_field
+4. أعطني JSON فقط بدون أي نص إضافي"""
+
+        # إنشاء محتوى الصورة
+        image_content = ImageContent(image_base64=image_data)
+        
+        # إرسال الرسالة
+        user_message = UserMessage(
+            text=prompt,
+            file_contents=[image_content]
+        )
+        
+        response = await chat.send_message(user_message)
+        
+        # تنظيف الاستجابة
+        response_text = response.strip()
+        if response_text.startswith('```json'):
+            response_text = response_text[7:]
+        if response_text.startswith('```'):
+            response_text = response_text[3:]
+        if response_text.endswith('```'):
+            response_text = response_text[:-3]
+        response_text = response_text.strip()
+        
+        # تحويل إلى JSON
+        result = json_lib.loads(response_text)
+        
+        # إضافة الخصائص الافتراضية
+        for element in result.get('elements', []):
+            element.setdefault('id', str(len(element)))
+            element.setdefault('fontFamily', 'Arial')
+            element.setdefault('backgroundColor', 'transparent')
+            element.setdefault('borderStyle', 'solid')
+            element.setdefault('letterSpacing', '0')
+            element.setdefault('opacity', 1)
+            element.setdefault('rotation', 0)
+            element.setdefault('borderWidth', 0)
+            element.setdefault('borderColor', '#000000')
+            element.setdefault('textAlign', 'right')
+            element.setdefault('fontSize', 14)
+            element.setdefault('fontWeight', 'normal')
+            element.setdefault('color', '#000000')
         
         return result
         
