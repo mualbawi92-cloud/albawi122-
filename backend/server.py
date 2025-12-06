@@ -888,6 +888,7 @@ class VisualTemplate(BaseModel):
     template_type: str  # send_transfer, receive_transfer, etc.
     page_size: str  # A4_portrait, A5_landscape, etc.
     elements: List[Dict[str, Any]]
+    is_active: Optional[bool] = False
     created_at: str
     updated_at: str
     created_by: Optional[str] = None
@@ -897,12 +898,14 @@ class VisualTemplateCreate(BaseModel):
     template_type: str
     page_size: str
     elements: List[Dict[str, Any]]
+    is_active: Optional[bool] = False
 
 class VisualTemplateUpdate(BaseModel):
     name: Optional[str] = None
     template_type: Optional[str] = None
     page_size: Optional[str] = None
     elements: Optional[List[Dict[str, Any]]] = None
+    is_active: Optional[bool] = None
 
 # ============ API Routes ============
 
