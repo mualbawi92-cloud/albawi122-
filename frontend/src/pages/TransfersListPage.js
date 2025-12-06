@@ -148,7 +148,7 @@ const TransfersListPage = () => {
   const handleCopyTransferInfo = (transfer) => {
     const info = `
 رقم الحوالة: ${transfer.tracking_number || transfer.transfer_code}
-رمز الحوالة: ${transfer.transfer_code}
+كود الحوالة: ${transfer.transfer_code}
 المرسل: ${transfer.sender_name || '-'}
 هاتف المرسل: ${transfer.sender_phone || '-'}
 المستلم: ${transfer.receiver_name || '-'}
