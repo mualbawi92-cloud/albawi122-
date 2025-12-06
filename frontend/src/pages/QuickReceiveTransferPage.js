@@ -55,29 +55,28 @@ const QuickReceiveTransferPage = () => {
   };
 
   const handleVerifyPin = async () => {
-    if (!pin || pin.length !== 4) {
+    if (pin.length !== 4) {
       toast.error('يرجى إدخال كود الحوالة المكون من 4 أرقام');
       return;
     }
 
     setLoading(true);
     try {
-      // Verify PIN
       const response = await axios.post(`${API}/transfers/${transfer.id}/verify-pin`, {
         pin: pin
       });
 
       if (response.data.valid) {
-        setStep(3); // عرض التفاصيل
-        toast.success('تم التحقق بنجاح - يمكنك الآن استلام الحوالة');
+        toast.success('✅ تم التحقق بنجاح');
+        // Set receiver phone from transfer data
+        setReceiverPhone(transfer.receiver_phone || '');
+        setStep(3);
       } else {
         toast.error('كود الحوالة غير صحيح');
-        setPin('');
       }
     } catch (error) {
       console.error('Error verifying PIN:', error);
-      toast.error('كود الحوالة غير صحيح');
-      setPin('');
+      toast.error(error.response?.data?.detail || 'خطأ في التحقق من كود الحوالة');
     } finally {
       setLoading(false);
     }
