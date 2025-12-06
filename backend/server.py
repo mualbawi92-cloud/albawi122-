@@ -6975,7 +6975,14 @@ async def analyze_receipt_design(
         page_config = page_sizes.get(page_size, page_sizes['A5_landscape'])
         
         # استخدام OpenAI Vision لتحليل الصورة
-        from emergentintegrations import openai_gpt
+        import os
+        import base64
+        import httpx
+        
+        # الحصول على المفتاح
+        llm_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not llm_key:
+            raise HTTPException(status_code=500, detail="مفتاح الذكاء الاصطناعي غير متوفر")
         
         prompt = f"""
 أنت خبير في تحليل تصميم الوثائق. حلل هذه الصورة لوصل/فاتورة وأعطني تصميمه بالتفصيل.
