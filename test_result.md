@@ -5840,7 +5840,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Visual Template Designer Page Testing"
+    - "Commission Ledger Entries for Receiver Agent"
   stuck_tasks:
     - "Comprehensive Transfer and Commission Testing"
   test_all: false
