@@ -6933,6 +6933,24 @@ async def delete_visual_template(template_id: str, current_user: dict = Depends(
         raise HTTPException(status_code=500, detail=f"خطأ في حذف التصميم: {str(e)}")
 
 
+@api_router.get("/visual-templates/active/{template_type}", response_model=VisualTemplate)
+async def get_active_template(template_type: str, current_user: dict = Depends(get_current_user)):
+    """Get the active template for a specific type"""
+    try:
+        template = await db.visual_templates.find_one(
+            {"template_type": template_type, "is_active": True},
+            {"_id": 0}
+        )
+        if not template:
+            raise HTTPException(status_code=404, detail="لا يوجد تصميم نشط لهذا النوع")
+        return template
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error fetching active template: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في جلب التصميم النشط: {str(e)}")
+
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
