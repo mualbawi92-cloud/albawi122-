@@ -782,6 +782,9 @@ class Transfer(BaseModel):
     sender_name: str
     sender_phone: Optional[str] = None  # رقم تلفون المرسل
     receiver_name: Optional[str] = None  # اسم المستلم الثلاثي (Optional for old transfers)
+    receiver_phone: Optional[str] = None  # رقم تلفون المستلم
+    sending_city: Optional[str] = None  # مدينة الإرسال
+    receiving_city: Optional[str] = None  # مدينة الاستلام
     amount: float
     currency: str = "IQD"
     commission: float = 0.0  # Outgoing commission (للمرسل)
