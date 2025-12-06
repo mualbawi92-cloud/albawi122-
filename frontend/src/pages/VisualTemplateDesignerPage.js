@@ -86,6 +86,7 @@ const VisualTemplateDesignerPage = () => {
       const el = elements.find(el => el.id === selectedElement);
       if (!el) return;
       
+      const currentPageConfig = PAGE_SIZES[pageSize] || PAGE_SIZES['A5_landscape'];
       const step = e.shiftKey ? 1 : 10; // Shift للتحريك الدقيق
       
       if (e.key === 'ArrowUp') {
@@ -93,13 +94,13 @@ const VisualTemplateDesignerPage = () => {
         updateElement(selectedElement, { y: Math.max(0, el.y - step) });
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        updateElement(selectedElement, { y: Math.min(pageConfig.height - el.height, el.y + step) });
+        updateElement(selectedElement, { y: Math.min(currentPageConfig.height - el.height, el.y + step) });
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         updateElement(selectedElement, { x: Math.max(0, el.x - step) });
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
-        updateElement(selectedElement, { x: Math.min(pageConfig.width - el.width, el.x + step) });
+        updateElement(selectedElement, { x: Math.min(currentPageConfig.width - el.width, el.x + step) });
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
         e.preventDefault();
         deleteElement(selectedElement);
@@ -114,7 +115,7 @@ const VisualTemplateDesignerPage = () => {
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedElement, elements, pageConfig]);
+  }, [selectedElement, elements, pageSize]);
 
   const fetchTemplates = async () => {
     try {
