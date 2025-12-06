@@ -22,6 +22,9 @@ const QuickReceiveTransferPage = () => {
   const [loading, setLoading] = useState(false);
   const [transfer, setTransfer] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [idImage, setIdImage] = useState(null);
+  const [idImagePreview, setIdImagePreview] = useState(null);
+  const [nameVerification, setNameVerification] = useState(null);
 
   const handleSearchByNumber = async () => {
     if (!transferNumber || transferNumber.length !== 10) {
