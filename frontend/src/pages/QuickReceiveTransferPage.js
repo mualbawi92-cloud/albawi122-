@@ -82,11 +82,113 @@ const QuickReceiveTransferPage = () => {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setIdImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setIdImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      
+      // Verify name from ID image
+      verifyNameFromImage(file);
+    }
+  };
+
+  const handleCaptureImage = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+
+      // Wait for video to load
+      await new Promise((resolve) => {
+        video.onloadedmetadata = resolve;
+      });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+
+      // Stop camera
+      stream.getTracks().forEach(track => track.stop());
+
+      // Convert to blob
+      canvas.toBlob((blob) => {
+        const file = new File([blob], 'id-photo.jpg', { type: 'image/jpeg' });
+        setIdImage(file);
+        setIdImagePreview(canvas.toDataURL('image/jpeg'));
+        
+        // Verify name from captured image
+        verifyNameFromImage(file);
+      }, 'image/jpeg');
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      toast.error('لا يمكن الوصول إلى الكاميرا');
+    }
+  };
+
+  const verifyNameFromImage = async (imageFile) => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('id_image', imageFile);
+      formData.append('receiver_name', transfer.receiver_name);
+
+      const response = await axios.post(`${API}/transfers/verify-id-name`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      setNameVerification(response.data);
+      
+      if (response.data.match_status === 'exact_match') {
+        toast.success('✅ الاسم مطابق بشكل كامل');
+      } else if (response.data.match_status === 'partial_match') {
+        toast.warning('⚠️ الاسم مطابق جزئياً - يرجى التحقق');
+      } else if (response.data.match_status === 'no_match') {
+        toast.error('❌ الاسم غير مطابق - لا يمكن التسليم');
+      }
+    } catch (error) {
+      console.error('Error verifying name:', error);
+      toast.error('خطأ في التحقق من الاسم');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleReceiveTransfer = async () => {
+    if (!idImage) {
+      toast.error('يرجى إرفاق صورة الهوية');
+      return;
+    }
+
+    if (!nameVerification) {
+      toast.error('يرجى انتظار التحقق من الاسم');
+      return;
+    }
+
+    if (nameVerification.match_status === 'no_match') {
+      toast.error('لا يمكن تسليم الحوالة - الاسم غير مطابق');
+      return;
+    }
+
     setSubmitting(true);
     try {
-      await axios.post(`${API}/transfers/${transfer.id}/receive-simple`, {
-        pin: pin
+      const formData = new FormData();
+      formData.append('pin', pin);
+      formData.append('id_image', idImage);
+      formData.append('name_verification', JSON.stringify(nameVerification));
+
+      await axios.post(`${API}/transfers/${transfer.id}/receive-with-id`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
       toast.success('تم تسليم الحوالة بنجاح ✅');
@@ -94,6 +196,9 @@ const QuickReceiveTransferPage = () => {
       setTransferNumber('');
       setPin('');
       setTransfer(null);
+      setIdImage(null);
+      setIdImagePreview(null);
+      setNameVerification(null);
       setStep(1);
     } catch (error) {
       console.error('Error receiving transfer:', error);
