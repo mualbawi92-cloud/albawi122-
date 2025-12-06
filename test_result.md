@@ -6045,6 +6045,77 @@ agent_communication:
         **Recommendation:**
         The task can be marked as complete. All features from the review request have been implemented and verified working correctly.
 
+  - task: "Visual Template Designer Page Testing"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/VisualTemplateDesignerPage.js, frontend/src/components/Navbar.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ **VISUAL TEMPLATE DESIGNER PAGE IMPLEMENTED**
+          
+          **Implementation Summary:**
+          
+          1. **Page Route:** /visual-designer accessible via navbar link "🎨 مصمم القوالب"
+          2. **Admin Access Control:** Only admin users can access the page
+          3. **Complete Visual Designer Interface:** 3-column layout with tools, design area, and properties
+          
+          **Features Implemented:**
+          
+          **Page Settings:**
+          - Design name input field
+          - Page size selector (A4 عمودي، A4 أفقي، A5 عمودي، A5 أفقي، حراري 80 ملم)
+          - Grid toggle option ("إظهار الشبكة")
+          
+          **Tools Panel:**
+          - نص ثابت (Static Text) button
+          - مستطيل (Rectangle) button  
+          - خط فاصل (Line/Separator) button
+          
+          **Available Fields Panel:**
+          - 16 available fields including: رقم الحوالة، اسم المرسل، اسم المستفيد، المبلغ، etc.
+          - Click to add field to design area
+          
+          **Design Area:**
+          - Visual canvas with selected page size dimensions
+          - Grid background (toggleable)
+          - Drag and drop functionality using react-rnd
+          - Element selection and highlighting
+          - Bounds checking (elements stay within page)
+          
+          **Properties Panel:**
+          - Element-specific properties (text, font size, color, position, etc.)
+          - Delete element button
+          - Position and size controls (X, Y, Width, Height)
+          - Font properties (size, weight, alignment, color)
+          - Background and border properties
+          
+          **Template Management:**
+          - Save template functionality
+          - Load saved templates
+          - Delete templates
+          - Templates list with load/delete buttons
+          
+          **Preview Functionality:**
+          - Opens new window with formatted template
+          - Uses sample Arabic data for preview
+          - Print-ready CSS styling
+          
+          **Backend Integration:**
+          - GET /api/visual-templates (fetch templates)
+          - POST /api/visual-templates (save new template)
+          - PUT /api/visual-templates/{id} (update template)
+          - DELETE /api/visual-templates/{id} (delete template)
+          
+          **Ready for Testing:**
+          - Login with admin/admin123
+          - Navigate to /visual-designer via navbar link
+          - Test all functionality as described in Arabic review request
+
 agent_communication:
     -agent: "testing"
     -message: |
