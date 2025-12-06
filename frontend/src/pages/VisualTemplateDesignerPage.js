@@ -502,7 +502,7 @@ const VisualTemplateDesignerPage = () => {
           <CardContent>
             <div className="grid grid-cols-12 gap-4">
               {/* القائمة اليمنى - الحقول والأدوات */}
-              <div className="col-span-3 space-y-4">
+              <div className="col-span-2 space-y-4">
                 {/* إعدادات التصميم */}
                 <div className="border rounded-lg p-3">
                   <h3 className="font-bold mb-3">إعدادات التصميم</h3>
