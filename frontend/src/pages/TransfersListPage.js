@@ -176,7 +176,292 @@ const TransfersListPage = () => {
   };
 
   const handlePrintTransfer = (transfer) => {
-    navigate(`/transfers/${transfer.id}?print=true`);
+    // Generate A5 landscape voucher HTML (two copies)
+    const voucherHTML = generateA5Voucher(transfer);
+    
+    // Open print window
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    
+    if (!printWindow) {
+      toast.error('يرجى السماح بفتح النوافذ المنبثقة للطباعة');
+      return;
+    }
+
+    printWindow.document.write(voucherHTML);
+    printWindow.document.close();
+    
+    // Wait for content to load then print
+    printWindow.onload = () => {
+      setTimeout(() => {
+        printWindow.print();
+      }, 250);
+    };
+  };
+  
+  const generateA5Voucher = (transfer) => {
+    const createdDate = new Date(transfer.created_at);
+    const dateStr = createdDate.toLocaleDateString('ar-IQ');
+    const timeStr = createdDate.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' });
+    
+    // Single voucher template
+    const singleVoucher = `
+      <div class="voucher-page">
+        <div class="voucher-header">
+          <div class="header-right">
+            <h1 class="title">ارسال حوالة</h1>
+          </div>
+          <div class="header-center">
+            <div class="tracking-info">
+              <div class="info-item">
+                <span class="label">رقم الحوالة:</span>
+                <span class="value">${transfer.tracking_number || transfer.transfer_code}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">رمز الحوالة:</span>
+                <span class="value">${transfer.transfer_code}</span>
+              </div>
+            </div>
+          </div>
+          <div class="header-left">
+            <div class="date-time">
+              <div>${dateStr}</div>
+              <div>${timeStr}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="voucher-body">
+          <div class="info-section">
+            <div class="column">
+              <h3 class="section-title">معلومات المرسل</h3>
+              <div class="info-row">
+                <span class="info-label">الاسم:</span>
+                <span class="info-value">${transfer.sender_name || '-'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">رقم الهاتف:</span>
+                <span class="info-value">${transfer.sender_phone || '-'}</span>
+              </div>
+            </div>
+            
+            <div class="column">
+              <h3 class="section-title">معلومات المستلم</h3>
+              <div class="info-row">
+                <span class="info-label">الاسم:</span>
+                <span class="info-value">${transfer.receiver_name || '-'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">رقم الهاتف:</span>
+                <span class="info-value">${transfer.receiver_phone || '-'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="voucher-footer">
+          <table class="amounts-table">
+            <tr>
+              <td class="label-cell">المبلغ:</td>
+              <td class="value-cell">${transfer.amount?.toLocaleString()} ${transfer.currency}</td>
+              <td class="label-cell">مدينة الإرسال:</td>
+              <td class="value-cell">${transfer.sending_city || '-'}</td>
+            </tr>
+            <tr>
+              <td class="label-cell">مدينة الاستلام:</td>
+              <td class="value-cell">${transfer.receiving_city || '-'}</td>
+              <td class="label-cell">الحالة:</td>
+              <td class="value-cell">${transfer.status === 'pending' ? 'قيد الانتظار' : transfer.status === 'completed' ? 'مكتملة' : 'ملغاة'}</td>
+            </tr>
+          </table>
+          
+          <div class="signature-section">
+            <div class="signature-box">
+              <span>توقيع المرسل: _______________</span>
+            </div>
+            <div class="signature-box">
+              <span>توقيع المستلم: _______________</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Return HTML with TWO copies
+    return `
+      <!DOCTYPE html>
+      <html dir="rtl" lang="ar">
+      <head>
+        <meta charset="UTF-8">
+        <title>وصل الحوالة - ${transfer.tracking_number || transfer.transfer_code}</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          
+          body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            direction: rtl;
+            background: white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          
+          @page {
+            size: A5 landscape;
+            margin: 10mm;
+          }
+          
+          .voucher-page {
+            width: 100%;
+            height: 148mm;
+            padding: 15px;
+            page-break-after: always;
+            border: 2px solid #333;
+            background: white;
+          }
+          
+          .voucher-page:last-child {
+            page-break-after: auto;
+          }
+          
+          .voucher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+          }
+          
+          .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+          }
+          
+          .tracking-info {
+            text-align: center;
+          }
+          
+          .info-item {
+            margin: 5px 0;
+            font-size: 16px;
+          }
+          
+          .label {
+            font-weight: bold;
+            margin-left: 8px;
+          }
+          
+          .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+          }
+          
+          .date-time {
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+          }
+          
+          .voucher-body {
+            margin: 20px 0;
+          }
+          
+          .info-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+          }
+          
+          .column {
+            flex: 1;
+            border: 2px solid #333;
+            padding: 15px;
+            background: #f9f9f9;
+          }
+          
+          .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #333;
+          }
+          
+          .info-row {
+            display: flex;
+            margin: 8px 0;
+            font-size: 14px;
+          }
+          
+          .info-label {
+            font-weight: bold;
+            min-width: 80px;
+          }
+          
+          .info-value {
+            flex: 1;
+          }
+          
+          .voucher-footer {
+            border-top: 2px solid #333;
+            padding-top: 15px;
+          }
+          
+          .amounts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 14px;
+          }
+          
+          .amounts-table td {
+            padding: 8px;
+            border: 1px solid #333;
+          }
+          
+          .label-cell {
+            font-weight: bold;
+            background: #f0f0f0;
+            width: 25%;
+          }
+          
+          .value-cell {
+            width: 25%;
+          }
+          
+          .signature-section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-size: 14px;
+          }
+          
+          .signature-box {
+            text-align: center;
+          }
+          
+          @media print {
+            body {
+              background: white;
+            }
+            
+            .voucher-page {
+              border: 2px solid #000;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        ${singleVoucher}
+        ${singleVoucher}
+      </body>
+      </html>
+    `;
   };
 
   return (
