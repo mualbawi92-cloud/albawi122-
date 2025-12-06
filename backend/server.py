@@ -7032,15 +7032,46 @@ async def analyze_receipt_design(
 - احرص على التناسب مع أبعاد الصفحة المذكورة
 """
         
-        response = openai_gpt(
-            prompt=prompt,
-            images=[image_data],
-            model="gpt-4o",
-            response_format="json"
-        )
+        # إزالة بادئة data:image
+        if image_data.startswith('data:'):
+            image_data = image_data.split(',')[1]
+        
+        # استدعاء OpenAI API مباشرة
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {llm_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "gpt-4o",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": prompt},
+                                {
+                                    "type": "image_url",
+                                    "image_url": {
+                                        "url": f"data:image/jpeg;base64,{image_data}"
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "response_format": {"type": "json_object"},
+                    "max_tokens": 4000
+                }
+            )
+        
+        if response.status_code != 200:
+            raise HTTPException(status_code=500, detail=f"خطأ من OpenAI: {response.text}")
         
         import json
-        result = json.loads(response)
+        ai_response = response.json()
+        content = ai_response['choices'][0]['message']['content']
+        result = json.loads(content)
         
         # إضافة خصائص افتراضية للعناصر
         for element in result.get('elements', []):
