@@ -502,16 +502,18 @@ const VisualTemplateDesignerPage = () => {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: el.textAlign === 'right' ? 'flex-end' : el.textAlign === 'center' ? 'center' : 'flex-start',
-                            padding: '5px',
+                            padding: el.type === ELEMENT_TYPES.LINE || el.type === ELEMENT_TYPES.VERTICAL_LINE ? '0' : '5px',
                             fontSize: `${el.fontSize}px`,
                             fontWeight: el.fontWeight,
                             textAlign: el.textAlign,
                             color: el.color,
                             backgroundColor: el.backgroundColor,
-                            borderWidth: el.type === ELEMENT_TYPES.RECTANGLE ? `${el.borderWidth}px` : '0',
+                            borderWidth: (el.type === ELEMENT_TYPES.RECTANGLE || el.type === ELEMENT_TYPES.CIRCLE) ? `${el.borderWidth}px` : '0',
                             borderColor: el.borderColor,
-                            borderStyle: 'solid',
+                            borderStyle: el.borderStyle || 'solid',
+                            borderRadius: el.type === ELEMENT_TYPES.CIRCLE ? '50%' : '0',
                             cursor: 'move',
+                            overflow: el.type === ELEMENT_TYPES.IMAGE ? 'hidden' : 'visible',
                           }}
                         >
                           {el.type === ELEMENT_TYPES.TEXT_FIELD && el.field && (
@@ -519,6 +521,15 @@ const VisualTemplateDesignerPage = () => {
                           )}
                           {el.type === ELEMENT_TYPES.STATIC_TEXT && (
                             <span>{el.text || 'نص جديد'}</span>
+                          )}
+                          {el.type === ELEMENT_TYPES.IMAGE && (
+                            el.imageUrl ? (
+                              <img src={el.imageUrl} alt="لوجو" className="w-full h-full object-contain" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
+                                🖼️ صورة
+                              </div>
+                            )
                           )}
                         </Rnd>
                       ))}
