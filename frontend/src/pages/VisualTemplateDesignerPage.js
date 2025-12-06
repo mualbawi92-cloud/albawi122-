@@ -78,6 +78,44 @@ const VisualTemplateDesignerPage = () => {
     fetchTemplates();
   }, [user, navigate]);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!selectedElement) return;
+      
+      const el = elements.find(el => el.id === selectedElement);
+      if (!el) return;
+      
+      const step = e.shiftKey ? 1 : 10; // Shift للتحريك الدقيق
+      
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        updateElement(selectedElement, { y: Math.max(0, el.y - step) });
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        updateElement(selectedElement, { y: Math.min(pageConfig.height - el.height, el.y + step) });
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        updateElement(selectedElement, { x: Math.max(0, el.x - step) });
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        updateElement(selectedElement, { x: Math.min(pageConfig.width - el.width, el.x + step) });
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault();
+        deleteElement(selectedElement);
+      } else if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        // نسخ
+        const newEl = { ...el, id: Date.now().toString(), x: el.x + 20, y: el.y + 20 };
+        setElements([...elements, newEl]);
+        setSelectedElement(newEl.id);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedElement, elements, pageConfig]);
+
   const fetchTemplates = async () => {
     try {
       const response = await axios.get(`${API}/visual-templates`);
