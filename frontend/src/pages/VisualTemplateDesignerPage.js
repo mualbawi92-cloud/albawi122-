@@ -388,12 +388,36 @@ const VisualTemplateDesignerPage = () => {
                       <Square className="ml-2 h-4 w-4" /> مستطيل
                     </Button>
                     <Button
+                      onClick={() => addElement(ELEMENT_TYPES.CIRCLE)}
+                      variant="outline"
+                      className="w-full justify-start"
+                      size="sm"
+                    >
+                      ⭕ دائرة
+                    </Button>
+                    <Button
                       onClick={() => addElement(ELEMENT_TYPES.LINE)}
                       variant="outline"
                       className="w-full justify-start"
                       size="sm"
                     >
-                      <Minus className="ml-2 h-4 w-4" /> خط فاصل
+                      <Minus className="ml-2 h-4 w-4" /> خط أفقي
+                    </Button>
+                    <Button
+                      onClick={() => addElement(ELEMENT_TYPES.VERTICAL_LINE)}
+                      variant="outline"
+                      className="w-full justify-start"
+                      size="sm"
+                    >
+                      │ خط عمودي
+                    </Button>
+                    <Button
+                      onClick={() => addElement(ELEMENT_TYPES.IMAGE)}
+                      variant="outline"
+                      className="w-full justify-start"
+                      size="sm"
+                    >
+                      🖼️ صورة/لوجو
                     </Button>
                   </div>
                 </div>
