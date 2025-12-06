@@ -344,27 +344,64 @@ const QuickReceiveTransferPage = () => {
                   <h3 className="text-2xl font-bold text-green-800 mb-6 text-center">✅ تفاصيل الحوالة</h3>
                   
                   <div className="space-y-4">
+                    {/* Transfer Number and Code */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-white p-4 rounded-lg border">
                         <span className="text-sm text-gray-600">رقم الحوالة</span>
                         <p className="font-bold text-lg">{transfer.tracking_number || transfer.transfer_number}</p>
                       </div>
                       <div className="bg-white p-4 rounded-lg border">
-                        <span className="text-sm text-gray-600">رمز الحوالة</span>
+                        <span className="text-sm text-gray-600">كود الحوالة</span>
                         <p className="font-bold text-lg">{transfer.transfer_code}</p>
                       </div>
                     </div>
                     
-                    <div className="bg-white p-4 rounded-lg border">
-                      <span className="text-sm text-gray-600">المرسل</span>
-                      <p className="font-bold text-lg">{transfer.sender_name}</p>
+                    {/* Sender Information - Row 1 */}
+                    <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-300">
+                      <p className="text-sm font-semibold text-blue-800 mb-3">معلومات المرسل</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="bg-white p-3 rounded-lg border">
+                          <span className="text-xs text-gray-600">الاسم</span>
+                          <p className="font-bold text-base">{transfer.sender_name}</p>
+                        </div>
+                        <div className="bg-white p-3 rounded-lg border">
+                          <span className="text-xs text-gray-600">رقم الهاتف</span>
+                          <p className="font-bold text-base" dir="ltr">{transfer.sender_phone || '-'}</p>
+                        </div>
+                        <div className="bg-white p-3 rounded-lg border">
+                          <span className="text-xs text-gray-600">مدينة الإرسال</span>
+                          <p className="font-bold text-base">{transfer.sending_city || '-'}</p>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div className="bg-white p-4 rounded-lg border">
-                      <span className="text-sm text-gray-600">المستفيد</span>
-                      <p className="font-bold text-lg">{transfer.receiver_name}</p>
+                    {/* Receiver Information - Row 2 */}
+                    <div className="bg-green-50 p-4 rounded-lg border-2 border-green-300">
+                      <p className="text-sm font-semibold text-green-800 mb-3">معلومات المستفيد</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="bg-white p-3 rounded-lg border">
+                          <span className="text-xs text-gray-600">الاسم</span>
+                          <p className="font-bold text-base">{transfer.receiver_name}</p>
+                        </div>
+                        <div className="bg-white p-3 rounded-lg border">
+                          <Label className="text-xs text-gray-600">رقم الهاتف (قابل للتعديل)</Label>
+                          <Input
+                            type="tel"
+                            value={receiverPhone}
+                            onChange={(e) => setReceiverPhone(e.target.value)}
+                            className="h-9 font-bold text-base mt-1"
+                            dir="ltr"
+                            placeholder="07XXXXXXXXX"
+                          />
+                        </div>
+                        <div className="bg-white p-3 rounded-lg border">
+                          <span className="text-xs text-gray-600">مدينة الاستلام</span>
+                          <p className="font-bold text-base">{transfer.receiving_city || '-'}</p>
+                        </div>
+                      </div>
                     </div>
                     
+                    {/* Amount and Commission */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-white p-4 rounded-lg border">
                         <span className="text-sm text-gray-600">المبلغ</span>
