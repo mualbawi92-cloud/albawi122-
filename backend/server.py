@@ -6710,6 +6710,97 @@ async def export_all_data(current_user: dict = Depends(require_admin)):
         raise HTTPException(status_code=500, detail=f"خطأ في تصدير النسخة الاحتياطية: {str(e)}")
 
 
+# ============ Templates Endpoints ============
+
+@api_router.get("/templates", response_model=List[Template])
+async def get_templates(current_user: dict = Depends(get_current_user)):
+    """Get all templates"""
+    try:
+        templates = await db.templates.find({}, {"_id": 0}).to_list(length=1000)
+        return templates
+    except Exception as e:
+        logging.error(f"Error fetching templates: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في جلب التصاميم: {str(e)}")
+
+
+@api_router.get("/templates/{template_id}", response_model=Template)
+async def get_template(template_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a specific template by ID"""
+    template = await db.templates.find_one({"id": template_id}, {"_id": 0})
+    if not template:
+        raise HTTPException(status_code=404, detail="التصميم غير موجود")
+    return template
+
+
+@api_router.post("/templates", response_model=Template)
+async def create_template(template_data: TemplateCreate, current_user: dict = Depends(require_admin)):
+    """Create a new template (Admin only)"""
+    try:
+        template_id = str(uuid4())
+        now = datetime.now(timezone.utc).isoformat()
+        
+        new_template = {
+            "id": template_id,
+            "name": template_data.name,
+            "type": template_data.type,
+            "html_content": template_data.html_content,
+            "css_content": template_data.css_content or "",
+            "created_at": now,
+            "updated_at": now,
+            "created_by": current_user.get("id")
+        }
+        
+        await db.templates.insert_one(new_template)
+        new_template.pop("_id", None)
+        return new_template
+        
+    except Exception as e:
+        logging.error(f"Error creating template: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في إنشاء التصميم: {str(e)}")
+
+
+@api_router.put("/templates/{template_id}", response_model=Template)
+async def update_template(
+    template_id: str,
+    template_data: TemplateUpdate,
+    current_user: dict = Depends(require_admin)
+):
+    """Update an existing template (Admin only)"""
+    try:
+        template = await db.templates.find_one({"id": template_id})
+        if not template:
+            raise HTTPException(status_code=404, detail="التصميم غير موجود")
+        
+        update_data = {k: v for k, v in template_data.model_dump().items() if v is not None}
+        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        
+        await db.templates.update_one(
+            {"id": template_id},
+            {"$set": update_data}
+        )
+        
+        updated_template = await db.templates.find_one({"id": template_id}, {"_id": 0})
+        return updated_template
+        
+    except Exception as e:
+        logging.error(f"Error updating template: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في تحديث التصميم: {str(e)}")
+
+
+@api_router.delete("/templates/{template_id}")
+async def delete_template(template_id: str, current_user: dict = Depends(require_admin)):
+    """Delete a template (Admin only)"""
+    try:
+        result = await db.templates.delete_one({"id": template_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="التصميم غير موجود")
+        return {"message": "تم حذف التصميم بنجاح"}
+        
+    except Exception as e:
+        logging.error(f"Error deleting template: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في حذف التصميم: {str(e)}")
+
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
