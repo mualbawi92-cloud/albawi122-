@@ -146,6 +146,7 @@ const VisualTemplateDesignerPage = () => {
     try {
       const payload = {
         name: templateName,
+        template_type: templateType,
         page_size: pageSize,
         elements: elements,
       };
