@@ -30,6 +30,9 @@ const ELEMENT_TYPES = {
   STATIC_TEXT: 'static_text',
   LINE: 'line',
   RECTANGLE: 'rectangle',
+  CIRCLE: 'circle',
+  IMAGE: 'image',
+  VERTICAL_LINE: 'vertical_line',
 };
 
 // الحقول المتاحة
