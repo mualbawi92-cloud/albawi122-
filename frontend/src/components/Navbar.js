@@ -411,7 +411,7 @@ const Navbar = () => {
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
-                  navigate('/template-designer');
+                  navigate('/designs');
                   setMobileMenuOpen(false);
                 }}
                 variant="ghost"
