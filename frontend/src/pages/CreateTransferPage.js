@@ -170,9 +170,43 @@ const CreateTransferPage = () => {
     setLoading(false);
   };
 
-  const handlePrint = () => {
-    const printWindow = window.open('', '_blank');
-    const printContent = `
+  const handlePrint = async () => {
+    // محاولة جلب التصميم المخصص
+    let printContent;
+    try {
+      const response = await axios.get(`${API}/visual-templates/active/send_transfer`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      
+      if (response.data) {
+        // استخدام التصميم المخصص
+        const { generateHTMLFromVisualTemplate } = await import('../utils/printUtils');
+        const transferData = {
+          tracking_number: result.transfer_number,
+          transfer_code: result.decrypted_pin || result.transfer_code,
+          sender_name: result.sender_name,
+          sender_phone: result.sender_phone,
+          sending_city: IRAQI_GOVERNORATES.find(g => g.code === result.from_governorate)?.name || result.from_governorate,
+          receiver_name: result.receiver_name,
+          receiver_phone: result.receiver_phone,
+          receiving_city: IRAQI_GOVERNORATES.find(g => g.code === result.to_governorate)?.name || result.to_governorate,
+          amount: result.amount,
+          currency: result.currency || 'IQD',
+          outgoing_commission: result.outgoing_commission,
+          incoming_commission: result.incoming_commission,
+          created_date: result.created_at || new Date().toISOString(),
+          from_agent_name: user?.name || '',
+          to_agent_name: '',
+        };
+        printContent = generateHTMLFromVisualTemplate(response.data, transferData);
+      }
+    } catch (error) {
+      console.log('Using default template');
+    }
+    
+    // إذا لم يكن هناك تصميم مخصص، استخدم التصميم الافتراضي
+    if (!printContent) {
+      printContent = `
       <!DOCTYPE html>
       <html dir="rtl" lang="ar">
       <head>
