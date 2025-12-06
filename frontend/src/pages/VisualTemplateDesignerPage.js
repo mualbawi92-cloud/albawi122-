@@ -625,6 +625,25 @@ const VisualTemplateDesignerPage = () => {
                       {(selectedElementData.type === ELEMENT_TYPES.TEXT_FIELD || selectedElementData.type === ELEMENT_TYPES.STATIC_TEXT) && (
                         <>
                           <div>
+                            <Label className="text-sm">نوع الخط</Label>
+                            <Select
+                              value={selectedElementData.fontFamily || 'Arial'}
+                              onValueChange={(value) => updateElement(selectedElement, { fontFamily: value })}
+                            >
+                              <SelectTrigger className="mt-1">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Arial">Arial</SelectItem>
+                                <SelectItem value="Tahoma">Tahoma</SelectItem>
+                                <SelectItem value="Verdana">Verdana</SelectItem>
+                                <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+                                <SelectItem value="Courier New">Courier New</SelectItem>
+                                <SelectItem value="Georgia">Georgia</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
                             <Label className="text-sm">حجم الخط</Label>
                             <Input
                               type="number"
@@ -634,7 +653,7 @@ const VisualTemplateDesignerPage = () => {
                             />
                           </div>
                           <div>
-                            <Label className="text-sm">وزن الخط</Label>
+                            <Label className="text-sm">سُمك الخط</Label>
                             <Select
                               value={selectedElementData.fontWeight}
                               onValueChange={(value) => updateElement(selectedElement, { fontWeight: value })}
@@ -643,10 +662,28 @@ const VisualTemplateDesignerPage = () => {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="normal">عادي</SelectItem>
-                                <SelectItem value="bold">عريض</SelectItem>
+                                <SelectItem value="100">100 - رفيع جداً</SelectItem>
+                                <SelectItem value="200">200 - رفيع</SelectItem>
+                                <SelectItem value="300">300 - خفيف</SelectItem>
+                                <SelectItem value="normal">400 - عادي</SelectItem>
+                                <SelectItem value="500">500 - متوسط</SelectItem>
+                                <SelectItem value="600">600 - نصف عريض</SelectItem>
+                                <SelectItem value="bold">700 - عريض</SelectItem>
+                                <SelectItem value="800">800 - عريض جداً</SelectItem>
+                                <SelectItem value="900">900 - أسود</SelectItem>
                               </SelectContent>
                             </Select>
+                          </div>
+                          <div>
+                            <Label className="text-sm">تباعد الأحرف</Label>
+                            <Input
+                              type="number"
+                              value={selectedElementData.letterSpacing || 0}
+                              onChange={(e) => updateElement(selectedElement, { letterSpacing: e.target.value })}
+                              className="mt-1"
+                              step="0.5"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">بكسل (px)</p>
                           </div>
                           <div>
                             <Label className="text-sm">المحاذاة</Label>
