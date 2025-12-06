@@ -99,6 +99,7 @@ function AppRoutes() {
       <Route path="/currency-revaluation" element={<ProtectedRoute><CurrencyRevaluationPage /></ProtectedRoute>} />
       <Route path="/backup-management" element={<ProtectedRoute><BackupManagementPage /></ProtectedRoute>} />
       <Route path="/designs" element={<ProtectedRoute><TemplateDesignerPage /></ProtectedRoute>} />
+      <Route path="/visual-designer" element={<ProtectedRoute><VisualTemplateDesignerPage /></ProtectedRoute>} />
       <Route path="/statement" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
       <Route path="/statement/:agentId" element={<ProtectedRoute><AgentStatementPage /></ProtectedRoute>} />
       <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
