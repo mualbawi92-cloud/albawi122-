@@ -881,6 +881,26 @@ class TemplateUpdate(BaseModel):
     html_content: Optional[str] = None
     css_content: Optional[str] = None
 
+class VisualTemplate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    name: str
+    page_size: str  # A4_portrait, A5_landscape, etc.
+    elements: List[Dict[str, Any]]
+    created_at: str
+    updated_at: str
+    created_by: Optional[str] = None
+
+class VisualTemplateCreate(BaseModel):
+    name: str
+    page_size: str
+    elements: List[Dict[str, Any]]
+
+class VisualTemplateUpdate(BaseModel):
+    name: Optional[str] = None
+    page_size: Optional[str] = None
+    elements: Optional[List[Dict[str, Any]]] = None
+
 # ============ API Routes ============
 
 @api_router.post("/register", response_model=User)
