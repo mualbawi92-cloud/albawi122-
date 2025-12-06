@@ -5840,11 +5840,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Commission Ledger Entries for Receiver Agent"
+    - "Visual Template Designer Page Testing"
   stuck_tasks:
     - "Comprehensive Transfer and Commission Testing"
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
 agent_communication:
     - agent: "testing"
