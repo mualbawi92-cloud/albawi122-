@@ -68,6 +68,7 @@ const VisualTemplateDesignerPage = () => {
   const [showGrid, setShowGrid] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [multiSelect, setMultiSelect] = useState([]);
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     if (user?.role !== 'admin') {
