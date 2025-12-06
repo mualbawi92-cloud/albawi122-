@@ -113,6 +113,7 @@ const VisualTemplateDesignerPage = () => {
       height,
       field: field,
       text: type === ELEMENT_TYPES.STATIC_TEXT ? 'نص جديد' : '',
+      fontFamily: 'Arial',
       fontSize: 14,
       fontWeight: 'normal',
       textAlign: 'right',
@@ -121,8 +122,10 @@ const VisualTemplateDesignerPage = () => {
       borderWidth: (type === ELEMENT_TYPES.RECTANGLE || type === ELEMENT_TYPES.CIRCLE) ? 1 : 0,
       borderColor: '#000000',
       borderStyle: 'solid',
-      imageUrl: '',
+      letterSpacing: '0',
+      opacity: 1,
       rotation: 0,
+      imageUrl: '',
     };
     setElements([...elements, newElement]);
     setSelectedElement(newElement.id);
