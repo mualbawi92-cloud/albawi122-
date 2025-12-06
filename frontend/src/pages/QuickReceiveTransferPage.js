@@ -178,11 +178,17 @@ const QuickReceiveTransferPage = () => {
       return;
     }
 
+    if (!receiverPhone || receiverPhone.length < 10) {
+      toast.error('يرجى إدخال رقم هاتف صحيح للمستفيد');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const formData = new FormData();
       formData.append('pin', pin);
       formData.append('id_image', idImage);
+      formData.append('receiver_phone', receiverPhone);
       formData.append('name_verification', JSON.stringify(nameVerification));
 
       await axios.post(`${API}/transfers/${transfer.id}/receive-with-id`, formData, {
@@ -199,6 +205,7 @@ const QuickReceiveTransferPage = () => {
       setIdImage(null);
       setIdImagePreview(null);
       setNameVerification(null);
+      setReceiverPhone('');
       setStep(1);
     } catch (error) {
       console.error('Error receiving transfer:', error);
