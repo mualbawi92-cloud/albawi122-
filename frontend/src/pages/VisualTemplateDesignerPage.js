@@ -283,13 +283,17 @@ const VisualTemplateDesignerPage = () => {
       left: ${el.x}px;
       width: ${el.width}px;
       height: ${el.height}px;
+      font-family: ${el.fontFamily || 'Arial'};
       font-size: ${el.fontSize}px;
       font-weight: ${el.fontWeight};
       text-align: ${el.textAlign};
+      letter-spacing: ${el.letterSpacing || 0}px;
       color: ${el.color};
       background-color: ${el.backgroundColor};
       border: ${el.borderWidth}px ${borderStyle} ${el.borderColor};
       border-radius: ${borderRadius};
+      opacity: ${el.opacity || 1};
+      transform: rotate(${el.rotation || 0}deg);
       display: flex;
       align-items: center;
       justify-content: ${el.textAlign === 'right' ? 'flex-end' : el.textAlign === 'center' ? 'center' : 'flex-start'};
