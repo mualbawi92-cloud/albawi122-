@@ -498,6 +498,9 @@ const CreateTransferPage = () => {
       </html>
     `;
     
+    }
+    
+    const printWindow = window.open('', '_blank');
     printWindow.document.write(printContent);
     printWindow.document.close();
     printWindow.focus();
