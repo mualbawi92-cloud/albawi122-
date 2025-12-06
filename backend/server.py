@@ -2349,6 +2349,7 @@ async def receive_transfer_with_id(
             'to_agent_name': receiving_agent_name,
             'incoming_commission': incoming_commission,
             'incoming_commission_percentage': incoming_commission_percentage,
+            'receiver_phone': receiver_phone,
             'received_at': datetime.now(timezone.utc).isoformat(),
             'updated_at': datetime.now(timezone.utc).isoformat(),
             'id_image_url': id_image_url,
