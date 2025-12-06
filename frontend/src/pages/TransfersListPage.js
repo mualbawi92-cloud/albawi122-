@@ -510,32 +510,150 @@ const TransfersListPage = () => {
           </div>
           
           <CardContent className="p-4 sm:p-6">
-            {/* Filters Section using QuickDateFilter Component */}
-            <QuickDateFilter
-              startDate={startDate}
-              endDate={endDate}
-              onStartDateChange={setStartDate}
-              onEndDateChange={setEndDate}
-              onSearch={handleSearch}
-              selectedFilter={selectedQuickFilter}
-              onQuickFilterChange={setSelectedQuickFilter}
-              showSearchButton={true}
-              additionalFilters={
-                <div className="space-y-2">
-                  <Label className="text-xs text-gray-600">العملة</Label>
-                  <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                    <SelectTrigger className="h-9">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">كل العملات</SelectItem>
-                      <SelectItem value="IQD">IQD</SelectItem>
-                      <SelectItem value="USD">USD</SelectItem>
-                    </SelectContent>
-                  </Select>
+            {/* Custom Filters Section */}
+            <div className="bg-gray-50 p-4 rounded-lg space-y-4">
+              {/* Quick Date Filters */}
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">فلترة سريعة حسب التاريخ:</Label>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={selectedQuickFilter === 'today' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      const today = new Date().toISOString().split('T')[0];
+                      setStartDate(today);
+                      setEndDate(today);
+                      setSelectedQuickFilter('today');
+                      setTimeout(() => handleSearch(), 100);
+                    }}
+                    className="text-sm"
+                  >
+                    📅 اليوم
+                  </Button>
+                  <Button
+                    variant={selectedQuickFilter === 'last7' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      const today = new Date();
+                      const last7 = new Date();
+                      last7.setDate(today.getDate() - 7);
+                      setStartDate(last7.toISOString().split('T')[0]);
+                      setEndDate(today.toISOString().split('T')[0]);
+                      setSelectedQuickFilter('last7');
+                      setTimeout(() => handleSearch(), 100);
+                    }}
+                    className="text-sm"
+                  >
+                    📅 آخر 7 أيام
+                  </Button>
+                  <Button
+                    variant={selectedQuickFilter === 'last30' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      const today = new Date();
+                      const last30 = new Date();
+                      last30.setDate(today.getDate() - 30);
+                      setStartDate(last30.toISOString().split('T')[0]);
+                      setEndDate(today.toISOString().split('T')[0]);
+                      setSelectedQuickFilter('last30');
+                      setTimeout(() => handleSearch(), 100);
+                    }}
+                    className="text-sm"
+                  >
+                    📅 آخر 30 يوم
+                  </Button>
+                  <Button
+                    variant={selectedQuickFilter === 'thisMonth' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      const today = new Date();
+                      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+                      setStartDate(firstDay.toISOString().split('T')[0]);
+                      setEndDate(today.toISOString().split('T')[0]);
+                      setSelectedQuickFilter('thisMonth');
+                      setTimeout(() => handleSearch(), 100);
+                    }}
+                    className="text-sm"
+                  >
+                    📅 هذا الشهر
+                  </Button>
+                  <Button
+                    variant={selectedQuickFilter === 'all' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => {
+                      setStartDate('');
+                      setEndDate('');
+                      setSelectedQuickFilter('all');
+                      setTimeout(() => handleSearch(), 100);
+                    }}
+                    className="text-sm"
+                  >
+                    📋 كل السجلات
+                  </Button>
                 </div>
-              }
-            />
+              </div>
+              
+              {/* Manual Date Selection - New Layout */}
+              <div className="border-t pt-3">
+                <Label className="text-sm font-semibold mb-2 block">أو اختر تاريخ محدد:</Label>
+                <div className="flex gap-4">
+                  {/* Left side - Date inputs stacked vertically */}
+                  <div className="flex flex-col gap-3">
+                    <div className="space-y-2">
+                      <Label className="text-xs text-gray-600">من تاريخ</Label>
+                      <Input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                          setSelectedQuickFilter('custom');
+                        }}
+                        className="h-9 w-48"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-xs text-gray-600">إلى تاريخ</Label>
+                      <Input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                          setSelectedQuickFilter('custom');
+                        }}
+                        className="h-9 w-48"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Right side - Currency filter next to search button */}
+                  <div className="flex-1 flex gap-3 items-end">
+                    <div className="space-y-2 flex-1">
+                      <Label className="text-xs text-gray-600">العملة</Label>
+                      <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                        <SelectTrigger className="h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">كل العملات</SelectItem>
+                          <SelectItem value="IQD">IQD</SelectItem>
+                          <SelectItem value="USD">USD</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Button 
+                        onClick={handleSearch} 
+                        className="h-9 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8"
+                      >
+                        🔍 بحث
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
               
             {/* Inquiry-specific filters */}
             {activeTab === 'inquiry' && (
