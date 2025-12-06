@@ -339,6 +339,22 @@ const VisualTemplateDesignerPage = () => {
                   <h3 className="font-bold mb-3">إعدادات التصميم</h3>
                   <div className="space-y-3">
                     <div>
+                      <Label className="text-sm">نوع الوصل</Label>
+                      <Select value={templateType} onValueChange={setTemplateType}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="send_transfer">📤 إرسال حوالة</SelectItem>
+                          <SelectItem value="receive_transfer">📥 تسليم حوالة</SelectItem>
+                          <SelectItem value="commission_receipt">💰 وصل عمولة</SelectItem>
+                          <SelectItem value="account_statement">📋 كشف حساب</SelectItem>
+                          <SelectItem value="deposit_receipt">💵 وصل إيداع</SelectItem>
+                          <SelectItem value="general_receipt">📄 وصل عام</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
                       <Label className="text-sm">اسم التصميم</Label>
                       <Input
                         value={templateName}
