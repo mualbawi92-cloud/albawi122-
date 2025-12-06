@@ -703,7 +703,7 @@ const TransfersListPage = () => {
                 </div>
                 
                 {/* New Search Filters */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label className="text-sm font-semibold">بحث حسب رقم الحوالة</Label>
                     <Input
@@ -734,7 +734,9 @@ const TransfersListPage = () => {
                       className="h-10"
                     />
                   </div>
-                  
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   <div className="space-y-2">
                     <Label className="text-sm font-semibold">بحث حسب المبلغ</Label>
                     <Input
@@ -745,6 +747,20 @@ const TransfersListPage = () => {
                       className="h-10"
                       dir="ltr"
                     />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">العملة</Label>
+                    <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">كل العملات</SelectItem>
+                        <SelectItem value="IQD">IQD</SelectItem>
+                        <SelectItem value="USD">USD</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
