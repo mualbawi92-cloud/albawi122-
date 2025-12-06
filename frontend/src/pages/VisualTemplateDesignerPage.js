@@ -470,6 +470,29 @@ const VisualTemplateDesignerPage = () => {
                   </div>
                 </div>
 
+                {/* القوالب الافتراضية */}
+                <div className="border rounded-lg p-3 bg-blue-50">
+                  <h3 className="font-bold mb-3">⭐ القوالب الافتراضية</h3>
+                  <div className="space-y-2">
+                    <Button
+                      onClick={() => loadDefaultTemplate('send_transfer')}
+                      variant="outline"
+                      className="w-full text-sm justify-start bg-white"
+                      size="sm"
+                    >
+                      📤 وصل إرسال حوالة
+                    </Button>
+                    <Button
+                      onClick={() => loadDefaultTemplate('receive_transfer')}
+                      variant="outline"
+                      className="w-full text-sm justify-start bg-white"
+                      size="sm"
+                    >
+                      📥 وصل تسليم حوالة
+                    </Button>
+                  </div>
+                </div>
+
                 {/* التصاميم المحفوظة */}
                 <div className="border rounded-lg p-3">
                   <h3 className="font-bold mb-3">التصاميم المحفوظة</h3>
