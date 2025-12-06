@@ -1005,6 +1005,77 @@ const VisualTemplateDesignerPage = () => {
                     </div>
                   </div>
                 </div>
+                
+                {/* أدوات مساعدة */}
+                <div className="border rounded-lg p-2 mt-3 bg-white">
+                  <div className="flex gap-2 items-center flex-wrap text-sm">
+                    <span className="font-bold">مساعدة:</span>
+                    <Button
+                      onClick={() => {
+                        if (elements.length > 0) {
+                          const minY = Math.min(...elements.map(e => e.y));
+                          elements.forEach(el => {
+                            updateElement(el.id, { y: minY });
+                          });
+                          toast.success('تم محاذاة الكل للأعلى');
+                        }
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                    >
+                      محاذاة الكل للأعلى
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        const step = 20;
+                        let currentY = 50;
+                        elements.forEach(el => {
+                          updateElement(el.id, { y: currentY });
+                          currentY += el.height + step;
+                        });
+                        toast.success('تم ترتيب العناصر عمودياً');
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                    >
+                      رص عمودي متساوي
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        const step = 20;
+                        let currentX = 50;
+                        elements.forEach(el => {
+                          updateElement(el.id, { x: currentX });
+                          currentX += el.width + step;
+                        });
+                        toast.success('تم ترتيب العناصر أفقياً');
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                    >
+                      رص أفقي متساوي
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setElements([]);
+                        setSelectedElement(null);
+                        toast.success('تم مسح كل العناصر');
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs text-red-600"
+                    >
+                      مسح الكل
+                    </Button>
+                    <span className="text-xs text-gray-500 mr-auto">
+                      عدد العناصر: {elements.length} | 
+                      استخدم السهم + Shift لتحريك دقيق
+                    </span>
+                  </div>
+                </div>
               </div>
 
               {/* القائمة اليسرى - خصائص العنصر */}
