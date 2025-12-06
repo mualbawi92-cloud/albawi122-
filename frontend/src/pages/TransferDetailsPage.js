@@ -494,8 +494,25 @@ const TransferDetailsPage = () => {
                         console.error('Error fetching PIN:', error);
                       }
                     }
-                    const { generateVoucherHTML } = await import('../utils/printUtils');
-                    const html = generateVoucherHTML(transferWithPin);
+                    // محاولة جلب التصميم المخصص
+                    let html;
+                    try {
+                      const templateType = transfer.status === 'completed' ? 'receive_transfer' : 'send_transfer';
+                      const templateResponse = await axios.get(`${API}/visual-templates/active/${templateType}`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                      });
+                      
+                      if (templateResponse.data) {
+                        html = generateHTMLFromVisualTemplate(templateResponse.data, transferWithPin);
+                      } else {
+                        throw new Error('No active template');
+                      }
+                    } catch (error) {
+                      // استخدام التصميم الافتراضي القديم
+                      const { generateVoucherHTML } = await import('../utils/printUtils');
+                      html = generateVoucherHTML(transferWithPin);
+                    }
+                    
                     printDocument(html, `وصل حوالة ${transfer.transfer_number || transfer.transfer_code}`);
                   }}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-6"
