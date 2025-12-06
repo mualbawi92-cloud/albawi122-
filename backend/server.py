@@ -6853,6 +6853,13 @@ async def get_visual_template(template_id: str, current_user: dict = Depends(get
 async def create_visual_template(template_data: VisualTemplateCreate, current_user: dict = Depends(require_admin)):
     """Create a new visual template (Admin only)"""
     try:
+        # إذا كان is_active = True، قم بإلغاء تفعيل جميع القوالب الأخرى من نفس النوع
+        if template_data.is_active:
+            await db.visual_templates.update_many(
+                {"template_type": template_data.template_type},
+                {"$set": {"is_active": False}}
+            )
+        
         template_id = str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
         
@@ -6862,6 +6869,7 @@ async def create_visual_template(template_data: VisualTemplateCreate, current_us
             "template_type": template_data.template_type,
             "page_size": template_data.page_size,
             "elements": template_data.elements,
+            "is_active": template_data.is_active,
             "created_at": now,
             "updated_at": now,
             "created_by": current_user.get("id")
