@@ -684,7 +684,7 @@ const VisualTemplateDesignerPage = () => {
 
               {/* منطقة التصميم */}
               <div className="col-span-6">
-                <div className="border rounded-lg p-4 bg-gray-100 overflow-auto" style={{ minHeight: '600px' }}>
+                <div className="border rounded-lg p-4 bg-gray-100 overflow-auto" style={{ height: '700px', maxHeight: '700px' }}>
                   <div className="flex justify-center">
                     <div
                       className="relative bg-white shadow-lg"
