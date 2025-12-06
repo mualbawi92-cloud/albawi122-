@@ -203,7 +203,7 @@ const TransfersListPage = () => {
               <span>${transfer.tracking_number || transfer.transfer_code}</span>
             </div>
             <div class="info-box">
-              <span class="info-label">رمز الحوالة:</span>
+              <span class="info-label">كود الحوالة:</span>
               <span>${transfer.transfer_code}</span>
             </div>
           </div>
