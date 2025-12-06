@@ -668,7 +668,7 @@ const TransfersListPage = () => {
                         <th className="p-3 text-right">رقم الحوالة</th>
                         <th className="p-3 text-right">المرسل</th>
                         <th className="p-3 text-right">المستلم</th>
-                        <th className="p-3 text-right">مدينة الإرسال</th>
+                        <th className="p-3 text-right">مدينة الاستلام</th>
                         <th className="p-3 text-right">المبلغ</th>
                         <th className="p-3 text-right">العملة</th>
                         <th className="p-3 text-right">الحالة</th>
@@ -684,7 +684,7 @@ const TransfersListPage = () => {
                           </td>
                           <td className="p-3">{transfer.sender_name}</td>
                           <td className="p-3">{transfer.receiver_name}</td>
-                          <td className="p-3 text-sm">{transfer.sending_city || '-'}</td>
+                          <td className="p-3 text-sm">{transfer.receiving_city || '-'}</td>
                           <td className="p-3 font-bold">{transfer.amount?.toLocaleString()}</td>
                           <td className="p-3">{transfer.currency}</td>
                           <td className="p-3">{getStatusBadge(transfer.status)}</td>
