@@ -97,6 +97,36 @@ const TransfersListPage = () => {
         );
       }
       
+      // New search filters for inquiry tab
+      if (activeTab === 'inquiry') {
+        if (searchTrackingNumber) {
+          fetchedTransfers = fetchedTransfers.filter(t => 
+            t.tracking_number?.includes(searchTrackingNumber)
+          );
+        }
+        
+        if (searchSenderName) {
+          fetchedTransfers = fetchedTransfers.filter(t => 
+            t.sender_name?.toLowerCase().includes(searchSenderName.toLowerCase())
+          );
+        }
+        
+        if (searchReceiverName) {
+          fetchedTransfers = fetchedTransfers.filter(t => 
+            t.receiver_name?.toLowerCase().includes(searchReceiverName.toLowerCase())
+          );
+        }
+        
+        if (searchAmount) {
+          const amount = parseFloat(searchAmount);
+          if (!isNaN(amount)) {
+            fetchedTransfers = fetchedTransfers.filter(t => 
+              t.amount === amount
+            );
+          }
+        }
+      }
+      
       setTransfers(fetchedTransfers);
       setLoading(false);
     } catch (error) {
