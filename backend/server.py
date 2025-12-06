@@ -6821,6 +6821,96 @@ async def delete_template(template_id: str, current_user: dict = Depends(require
         raise HTTPException(status_code=500, detail=f"خطأ في حذف التصميم: {str(e)}")
 
 
+# ============ Visual Templates Endpoints ============
+
+@api_router.get("/visual-templates", response_model=List[VisualTemplate])
+async def get_visual_templates(current_user: dict = Depends(get_current_user)):
+    """Get all visual templates"""
+    try:
+        templates = await db.visual_templates.find({}, {"_id": 0}).to_list(length=1000)
+        return templates
+    except Exception as e:
+        logging.error(f"Error fetching visual templates: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في جلب التصاميم: {str(e)}")
+
+
+@api_router.get("/visual-templates/{template_id}", response_model=VisualTemplate)
+async def get_visual_template(template_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a specific visual template by ID"""
+    template = await db.visual_templates.find_one({"id": template_id}, {"_id": 0})
+    if not template:
+        raise HTTPException(status_code=404, detail="التصميم غير موجود")
+    return template
+
+
+@api_router.post("/visual-templates", response_model=VisualTemplate)
+async def create_visual_template(template_data: VisualTemplateCreate, current_user: dict = Depends(require_admin)):
+    """Create a new visual template (Admin only)"""
+    try:
+        template_id = str(uuid.uuid4())
+        now = datetime.now(timezone.utc).isoformat()
+        
+        new_template = {
+            "id": template_id,
+            "name": template_data.name,
+            "page_size": template_data.page_size,
+            "elements": template_data.elements,
+            "created_at": now,
+            "updated_at": now,
+            "created_by": current_user.get("id")
+        }
+        
+        await db.visual_templates.insert_one(new_template)
+        new_template.pop("_id", None)
+        return new_template
+        
+    except Exception as e:
+        logging.error(f"Error creating visual template: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في إنشاء التصميم: {str(e)}")
+
+
+@api_router.put("/visual-templates/{template_id}", response_model=VisualTemplate)
+async def update_visual_template(
+    template_id: str,
+    template_data: VisualTemplateUpdate,
+    current_user: dict = Depends(require_admin)
+):
+    """Update an existing visual template (Admin only)"""
+    try:
+        template = await db.visual_templates.find_one({"id": template_id})
+        if not template:
+            raise HTTPException(status_code=404, detail="التصميم غير موجود")
+        
+        update_data = {k: v for k, v in template_data.model_dump().items() if v is not None}
+        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        
+        await db.visual_templates.update_one(
+            {"id": template_id},
+            {"$set": update_data}
+        )
+        
+        updated_template = await db.visual_templates.find_one({"id": template_id}, {"_id": 0})
+        return updated_template
+        
+    except Exception as e:
+        logging.error(f"Error updating visual template: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في تحديث التصميم: {str(e)}")
+
+
+@api_router.delete("/visual-templates/{template_id}")
+async def delete_visual_template(template_id: str, current_user: dict = Depends(require_admin)):
+    """Delete a visual template (Admin only)"""
+    try:
+        result = await db.visual_templates.delete_one({"id": template_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="التصميم غير موجود")
+        return {"message": "تم حذف التصميم بنجاح"}
+        
+    except Exception as e:
+        logging.error(f"Error deleting visual template: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في حذف التصميم: {str(e)}")
+
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
