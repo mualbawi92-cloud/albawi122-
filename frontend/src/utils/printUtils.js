@@ -3,6 +3,119 @@
  * Simple and effective printing by opening a new window
  */
 
+// تحويل التصميم المرئي إلى HTML
+export const generateHTMLFromVisualTemplate = (template, transferData) => {
+  const PAGE_SIZES = {
+    'A4_portrait': { width: 794, height: 1123 },
+    'A4_landscape': { width: 1123, height: 794 },
+    'A5_portrait': { width: 559, height: 794 },
+    'A5_landscape': { width: 794, height: 559 },
+    'thermal_80mm': { width: 302, height: 600 },
+  };
+
+  const pageConfig = PAGE_SIZES[template.page_size] || PAGE_SIZES['A5_landscape'];
+
+  // نموذج البيانات
+  const fieldValues = {
+    tracking_number: transferData.tracking_number || '',
+    transfer_code: transferData.transfer_code || '',
+    sender_name: transferData.sender_name || '',
+    sender_phone: transferData.sender_phone || '',
+    sending_city: transferData.sending_city || '',
+    receiver_name: transferData.receiver_name || '',
+    receiver_phone: transferData.receiver_phone || '',
+    receiving_city: transferData.receiving_city || '',
+    amount: transferData.amount ? new Intl.NumberFormat('en-US').format(transferData.amount) : '',
+    currency: transferData.currency || 'IQD',
+    outgoing_commission: transferData.outgoing_commission ? new Intl.NumberFormat('en-US').format(transferData.outgoing_commission) : '',
+    incoming_commission: transferData.incoming_commission ? new Intl.NumberFormat('en-US').format(transferData.incoming_commission) : '',
+    created_date: transferData.created_date ? new Date(transferData.created_date).toLocaleDateString('ar-IQ') : '',
+    created_time: transferData.created_date ? new Date(transferData.created_date).toLocaleTimeString('ar-IQ') : '',
+    from_agent_name: transferData.from_agent_name || '',
+    to_agent_name: transferData.to_agent_name || '',
+  };
+
+  let html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>${template.name}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Arial', sans-serif; direction: rtl; background: white; }
+    @page { size: ${pageConfig.width}px ${pageConfig.height}px; margin: 0; }
+    .page {
+      width: ${pageConfig.width}px;
+      height: ${pageConfig.height}px;
+      position: relative;
+      background: white;
+      margin: 20px auto;
+    }
+    .element {
+      position: absolute;
+      overflow: hidden;
+    }
+    @media print {
+      .page { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+`;
+
+  // إضافة العناصر
+  template.elements.forEach(el => {
+    let content = '';
+    
+    if (el.type === 'text_field' && el.field) {
+      content = fieldValues[el.field] || '';
+    } else if (el.type === 'static_text') {
+      content = el.text || '';
+    } else if (el.type === 'image' && el.imageUrl) {
+      content = `<img src="${el.imageUrl}" alt="صورة" style="width:100%;height:100%;object-fit:contain;" />`;
+    }
+
+    const borderRadius = el.type === 'circle' ? '50%' : '0';
+    const borderStyle = el.borderStyle || 'solid';
+    const padding = (el.type === 'line' || el.type === 'vertical_line') ? '0' : '5px';
+
+    html += `
+    <div class="element" style="
+      top: ${el.y}px;
+      left: ${el.x}px;
+      width: ${el.width}px;
+      height: ${el.height}px;
+      font-family: ${el.fontFamily || 'Arial'};
+      font-size: ${el.fontSize}px;
+      font-weight: ${el.fontWeight};
+      text-align: ${el.textAlign};
+      letter-spacing: ${el.letterSpacing || 0}px;
+      color: ${el.color};
+      background-color: ${el.backgroundColor};
+      border: ${el.borderWidth}px ${borderStyle} ${el.borderColor};
+      border-radius: ${borderRadius};
+      opacity: ${el.opacity || 1};
+      transform: rotate(${el.rotation || 0}deg);
+      display: flex;
+      align-items: center;
+      justify-content: ${el.textAlign === 'right' ? 'flex-end' : el.textAlign === 'center' ? 'center' : 'flex-start'};
+      padding: ${padding};
+      overflow: hidden;
+    ">${content}</div>
+`;
+  });
+
+  html += `
+  </div>
+</body>
+</html>
+`;
+
+  return html;
+};
+
 export const printDocument = (htmlContent, title = 'طباعة') => {
   // Open new window
   const printWindow = window.open('', '_blank', 'width=800,height=600');
