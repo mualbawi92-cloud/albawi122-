@@ -93,7 +93,7 @@ const Navbar = () => {
             </Button>
             {user?.role === 'admin' && (
               <Button
-                onClick={() => navigate('/template-designer')}
+                onClick={() => navigate('/designs')}
                 variant="ghost"
                 className="text-white hover:bg-white/10 font-bold text-sm"
                 data-testid="nav-templates"
