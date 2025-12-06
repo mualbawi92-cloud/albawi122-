@@ -61,6 +61,7 @@ const VisualTemplateDesignerPage = () => {
   const [templates, setTemplates] = useState([]);
   const [currentTemplate, setCurrentTemplate] = useState(null);
   const [templateName, setTemplateName] = useState('');
+  const [templateType, setTemplateType] = useState('send_transfer'); // نوع الوصل
   const [pageSize, setPageSize] = useState('A5_landscape');
   const [elements, setElements] = useState([]);
   const [selectedElement, setSelectedElement] = useState(null);
