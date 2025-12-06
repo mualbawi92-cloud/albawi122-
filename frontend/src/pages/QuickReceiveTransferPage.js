@@ -378,6 +378,81 @@ const QuickReceiveTransferPage = () => {
                   </div>
                 </div>
 
+                {/* ID Image Upload Section */}
+                <div className="bg-blue-50 rounded-xl p-6 border-2 border-blue-300">
+                  <h3 className="text-xl font-bold text-blue-800 mb-4">📸 صورة الهوية</h3>
+                  
+                  <div className="space-y-4">
+                    {/* Image Preview */}
+                    {idImagePreview && (
+                      <div className="relative">
+                        <img 
+                          src={idImagePreview} 
+                          alt="معاينة الهوية" 
+                          className="w-full h-64 object-contain border-2 border-gray-300 rounded-lg bg-white"
+                        />
+                        {nameVerification && (
+                          <div className={`mt-3 p-3 rounded-lg ${
+                            nameVerification.match_status === 'exact_match' ? 'bg-green-100 border-green-400' :
+                            nameVerification.match_status === 'partial_match' ? 'bg-yellow-100 border-yellow-400' :
+                            'bg-red-100 border-red-400'
+                          } border-2`}>
+                            <p className="font-bold text-sm mb-1">
+                              {nameVerification.match_status === 'exact_match' ? '✅ الاسم مطابق بشكل كامل' :
+                               nameVerification.match_status === 'partial_match' ? '⚠️ الاسم مطابق جزئياً' :
+                               '❌ الاسم غير مطابق'}
+                            </p>
+                            <p className="text-xs">الاسم في الهوية: {nameVerification.extracted_name || 'غير متوفر'}</p>
+                            <p className="text-xs">الاسم المطلوب: {transfer.receiver_name}</p>
+                            {nameVerification.match_status === 'partial_match' && (
+                              <p className="text-xs mt-2 font-semibold text-yellow-800">
+                                ⚠️ يرجى التحقق من المستفيد قبل التسليم
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Upload Buttons */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <input
+                          type="file"
+                          id="id-image-input"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="hidden"
+                        />
+                        <Button
+                          type="button"
+                          onClick={() => document.getElementById('id-image-input').click()}
+                          variant="outline"
+                          className="w-full h-12 border-2 border-blue-400 hover:bg-blue-50"
+                          disabled={loading}
+                        >
+                          📁 إرفاق صورة الهوية
+                        </Button>
+                      </div>
+                      
+                      <Button
+                        type="button"
+                        onClick={handleCaptureImage}
+                        variant="outline"
+                        className="w-full h-12 border-2 border-blue-400 hover:bg-blue-50"
+                        disabled={loading}
+                      >
+                        📷 التقاط صورة
+                      </Button>
+                    </div>
+                    
+                    {loading && (
+                      <p className="text-center text-sm text-blue-600">⏳ جاري التحقق من الاسم...</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
                 <div className="flex gap-3">
                   <Button
                     onClick={() => {
@@ -385,6 +460,9 @@ const QuickReceiveTransferPage = () => {
                       setPin('');
                       setTransfer(null);
                       setTransferNumber('');
+                      setIdImage(null);
+                      setIdImagePreview(null);
+                      setNameVerification(null);
                     }}
                     variant="outline"
                     className="flex-1 h-14 text-lg"
@@ -393,8 +471,8 @@ const QuickReceiveTransferPage = () => {
                   </Button>
                   <Button
                     onClick={handleReceiveTransfer}
-                    disabled={submitting}
-                    className="flex-1 h-14 bg-green-600 hover:bg-green-700 text-white text-lg font-bold"
+                    disabled={submitting || !idImage || !nameVerification || nameVerification.match_status === 'no_match'}
+                    className="flex-1 h-14 bg-green-600 hover:bg-green-700 text-white text-lg font-bold disabled:bg-gray-400"
                   >
                     {submitting ? '⏳ جاري التسليم...' : '✅ تأكيد التسليم'}
                   </Button>
