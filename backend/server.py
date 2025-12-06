@@ -6736,7 +6736,7 @@ async def get_template(template_id: str, current_user: dict = Depends(get_curren
 async def create_template(template_data: TemplateCreate, current_user: dict = Depends(require_admin)):
     """Create a new template (Admin only)"""
     try:
-        template_id = str(uuid4())
+        template_id = str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
         
         new_template = {
