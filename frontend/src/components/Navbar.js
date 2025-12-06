@@ -411,14 +411,14 @@ const Navbar = () => {
             {user?.role === 'admin' && (
               <Button
                 onClick={() => {
-                  navigate('/designs');
+                  navigate('/visual-designer');
                   setMobileMenuOpen(false);
                 }}
                 variant="ghost"
                 className="w-full text-white hover:bg-white/10 font-bold justify-start"
                 data-testid="mobile-nav-templates"
               >
-                🎨 التصاميم
+                🎨 مصمم القوالب
               </Button>
             )}
             {user?.role === 'agent' && (
