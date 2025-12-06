@@ -146,6 +146,39 @@ const TransfersListPage = () => {
     return <Badge className={config.className}>{config.label}</Badge>;
   };
 
+  const handleCopyTransferInfo = (transfer) => {
+    const info = `
+رقم الحوالة: ${transfer.tracking_number || transfer.transfer_code}
+رمز الحوالة: ${transfer.transfer_code}
+المرسل: ${transfer.sender_name || '-'}
+هاتف المرسل: ${transfer.sender_phone || '-'}
+المستلم: ${transfer.receiver_name || '-'}
+هاتف المستلم: ${transfer.receiver_phone || '-'}
+المبلغ: ${transfer.amount?.toLocaleString()} ${transfer.currency}
+مدينة الإرسال: ${transfer.sending_city || '-'}
+مدينة الاستلام: ${transfer.receiving_city || '-'}
+الحالة: ${transfer.status === 'pending' ? 'قيد الانتظار' : transfer.status === 'completed' ? 'مكتملة' : 'ملغاة'}
+تاريخ الإنشاء: ${new Date(transfer.created_at).toLocaleString('ar-IQ')}
+    `.trim();
+    
+    navigator.clipboard.writeText(info).then(() => {
+      toast.success('تم نسخ معلومات الحوالة ✅');
+    }).catch(() => {
+      // Fallback method
+      const textArea = document.createElement('textarea');
+      textArea.value = info;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      toast.success('تم نسخ معلومات الحوالة ✅');
+    });
+  };
+
+  const handlePrintTransfer = (transfer) => {
+    navigate(`/transfers/${transfer.id}?print=true`);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
