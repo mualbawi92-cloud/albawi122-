@@ -858,6 +858,29 @@ class AgentStatement(BaseModel):
     # Transfers
     transfers: List[Transfer]
 
+class Template(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    name: str
+    type: str  # transfer_receipt, invoice, report
+    html_content: str
+    css_content: Optional[str] = ""
+    created_at: str
+    updated_at: str
+    created_by: Optional[str] = None
+
+class TemplateCreate(BaseModel):
+    name: str
+    type: str
+    html_content: str
+    css_content: Optional[str] = ""
+
+class TemplateUpdate(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    html_content: Optional[str] = None
+    css_content: Optional[str] = None
+
 # ============ API Routes ============
 
 @api_router.post("/register", response_model=User)
