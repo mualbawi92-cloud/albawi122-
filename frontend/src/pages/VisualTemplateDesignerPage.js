@@ -170,6 +170,7 @@ const VisualTemplateDesignerPage = () => {
   const handleLoad = (template) => {
     setCurrentTemplate(template);
     setTemplateName(template.name);
+    setTemplateType(template.template_type || 'send_transfer');
     setPageSize(template.page_size);
     setElements(template.elements || []);
     setSelectedElement(null);
