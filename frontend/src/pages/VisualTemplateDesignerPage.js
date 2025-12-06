@@ -548,8 +548,11 @@ const VisualTemplateDesignerPage = () => {
                         <span className="text-sm font-semibold">
                           {selectedElementData.type === ELEMENT_TYPES.TEXT_FIELD && '📝 حقل نصي'}
                           {selectedElementData.type === ELEMENT_TYPES.STATIC_TEXT && '🔤 نص ثابت'}
-                          {selectedElementData.type === ELEMENT_TYPES.LINE && '➖ خط'}
+                          {selectedElementData.type === ELEMENT_TYPES.LINE && '➖ خط أفقي'}
+                          {selectedElementData.type === ELEMENT_TYPES.VERTICAL_LINE && '│ خط عمودي'}
                           {selectedElementData.type === ELEMENT_TYPES.RECTANGLE && '◻️ مستطيل'}
+                          {selectedElementData.type === ELEMENT_TYPES.CIRCLE && '⭕ دائرة'}
+                          {selectedElementData.type === ELEMENT_TYPES.IMAGE && '🖼️ صورة'}
                         </span>
                         <Button
                           onClick={() => deleteElement(selectedElement)}
