@@ -204,6 +204,160 @@ const VisualTemplateDesignerPage = () => {
     setSelectedElement(null);
   };
 
+  const loadDefaultTemplate = (type) => {
+    handleNew();
+    
+    if (type === 'send_transfer') {
+      setTemplateName('وصل إرسال حوالة - افتراضي');
+      setTemplateType('send_transfer');
+      setPageSize('A5_landscape');
+      
+      // عناصر وصل الإرسال
+      const defaultElements = [
+        // العنوان
+        { id: '1', type: ELEMENT_TYPES.STATIC_TEXT, x: 300, y: 20, width: 200, height: 40, text: 'وصل إرسال حوالة', fontFamily: 'Arial', fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // إطار خارجي
+        { id: '2', type: ELEMENT_TYPES.RECTANGLE, x: 20, y: 10, width: 754, height: 520, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 2, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // خط فاصل بعد العنوان
+        { id: '3', type: ELEMENT_TYPES.LINE, x: 30, y: 70, width: 734, height: 2, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: '#000000', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // رقم الحوالة
+        { id: '4', type: ELEMENT_TYPES.STATIC_TEXT, x: 650, y: 85, width: 100, height: 25, text: 'رقم الحوالة:', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '5', type: ELEMENT_TYPES.TEXT_FIELD, field: 'tracking_number', x: 520, y: 85, width: 120, height: 25, text: '', fontFamily: 'Arial', fontSize: 12, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // كود الحوالة
+        { id: '6', type: ELEMENT_TYPES.STATIC_TEXT, x: 400, y: 85, width: 100, height: 25, text: 'كود الحوالة:', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'right', color: '#e53e3e', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '7', type: ELEMENT_TYPES.TEXT_FIELD, field: 'transfer_code', x: 300, y: 85, width: 90, height: 25, text: '', fontFamily: 'Arial', fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: '#e53e3e', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '3', opacity: 1, rotation: 0 },
+        
+        // التاريخ
+        { id: '8', type: ELEMENT_TYPES.STATIC_TEXT, x: 180, y: 85, width: 70, height: 25, text: 'التاريخ:', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '9', type: ELEMENT_TYPES.TEXT_FIELD, field: 'created_date', x: 50, y: 85, width: 120, height: 25, text: '', fontFamily: 'Arial', fontSize: 12, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // بيانات المرسل - عنوان
+        { id: '10', type: ELEMENT_TYPES.STATIC_TEXT, x: 600, y: 130, width: 150, height: 30, text: 'بيانات المرسل', fontFamily: 'Arial', fontSize: 14, fontWeight: 'bold', textAlign: 'center', color: '#ffffff', backgroundColor: '#333333', borderWidth: 1, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // اسم المرسل
+        { id: '11', type: ELEMENT_TYPES.STATIC_TEXT, x: 690, y: 170, width: 60, height: 25, text: 'الاسم:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '12', type: ELEMENT_TYPES.TEXT_FIELD, field: 'sender_name', x: 520, y: 170, width: 160, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // هاتف المرسل
+        { id: '13', type: ELEMENT_TYPES.STATIC_TEXT, x: 690, y: 200, width: 60, height: 25, text: 'الهاتف:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '14', type: ELEMENT_TYPES.TEXT_FIELD, field: 'sender_phone', x: 520, y: 200, width: 160, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // مدينة الإرسال
+        { id: '15', type: ELEMENT_TYPES.STATIC_TEXT, x: 690, y: 230, width: 60, height: 25, text: 'المدينة:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '16', type: ELEMENT_TYPES.TEXT_FIELD, field: 'sending_city', x: 520, y: 230, width: 160, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // بيانات المستفيد - عنوان
+        { id: '17', type: ELEMENT_TYPES.STATIC_TEXT, x: 50, y: 130, width: 150, height: 30, text: 'بيانات المستفيد', fontFamily: 'Arial', fontSize: 14, fontWeight: 'bold', textAlign: 'center', color: '#ffffff', backgroundColor: '#333333', borderWidth: 1, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // اسم المستفيد
+        { id: '18', type: ELEMENT_TYPES.STATIC_TEXT, x: 360, y: 170, width: 60, height: 25, text: 'الاسم:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '19', type: ELEMENT_TYPES.TEXT_FIELD, field: 'receiver_name', x: 190, y: 170, width: 160, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // هاتف المستفيد
+        { id: '20', type: ELEMENT_TYPES.STATIC_TEXT, x: 360, y: 200, width: 60, height: 25, text: 'الهاتف:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '21', type: ELEMENT_TYPES.TEXT_FIELD, field: 'receiver_phone', x: 190, y: 200, width: 160, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // مدينة الاستلام
+        { id: '22', type: ELEMENT_TYPES.STATIC_TEXT, x: 360, y: 230, width: 60, height: 25, text: 'المدينة:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '23', type: ELEMENT_TYPES.TEXT_FIELD, field: 'receiving_city', x: 190, y: 230, width: 160, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // خط فاصل
+        { id: '24', type: ELEMENT_TYPES.LINE, x: 30, y: 280, width: 734, height: 2, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: '#000000', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // معلومات المبلغ - عنوان
+        { id: '25', type: ELEMENT_TYPES.STATIC_TEXT, x: 320, y: 300, width: 150, height: 30, text: 'معلومات المبلغ', fontFamily: 'Arial', fontSize: 14, fontWeight: 'bold', textAlign: 'center', color: '#ffffff', backgroundColor: '#333333', borderWidth: 1, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // المبلغ
+        { id: '26', type: ELEMENT_TYPES.STATIC_TEXT, x: 690, y: 345, width: 60, height: 25, text: 'المبلغ:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '27', type: ELEMENT_TYPES.TEXT_FIELD, field: 'amount', x: 600, y: 345, width: 80, height: 25, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'bold', textAlign: 'center', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // العملة
+        { id: '28', type: ELEMENT_TYPES.STATIC_TEXT, x: 550, y: 345, width: 40, height: 25, text: 'IQD', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'center', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // العمولة
+        { id: '29', type: ELEMENT_TYPES.STATIC_TEXT, x: 400, y: 345, width: 60, height: 25, text: 'العمولة:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '30', type: ELEMENT_TYPES.TEXT_FIELD, field: 'outgoing_commission', x: 310, y: 345, width: 80, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'center', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // إطار كود الحوالة
+        { id: '31', type: ELEMENT_TYPES.RECTANGLE, x: 250, y: 390, width: 290, height: 80, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'center', color: '#000000', backgroundColor: '#fff5f5', borderWidth: 2, borderColor: '#e53e3e', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // نص كود الحوالة
+        { id: '32', type: ELEMENT_TYPES.STATIC_TEXT, x: 260, y: 400, width: 270, height: 20, text: '⚠️ كود الحوالة السري (احفظه جيداً)', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'center', color: '#e53e3e', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // كود الحوالة كبير
+        { id: '33', type: ELEMENT_TYPES.TEXT_FIELD, field: 'transfer_code', x: 260, y: 425, width: 270, height: 35, text: '', fontFamily: 'Arial', fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: '#e53e3e', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '8', opacity: 1, rotation: 0 },
+        
+        // ملاحظة
+        { id: '34', type: ELEMENT_TYPES.STATIC_TEXT, x: 50, y: 490, width: 700, height: 20, text: 'يرجى الاحتفاظ بهذا الوصل لحين استلام الحوالة - لا يمكن التسليم بدون كود الحوالة', fontFamily: 'Arial', fontSize: 9, fontWeight: 'normal', textAlign: 'center', color: '#666666', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+      ];
+      
+      setElements(defaultElements);
+      toast.success('تم تحميل القالب الافتراضي: وصل إرسال حوالة');
+      
+    } else if (type === 'receive_transfer') {
+      setTemplateName('وصل تسليم حوالة - افتراضي');
+      setTemplateType('receive_transfer');
+      setPageSize('A5_landscape');
+      
+      // عناصر وصل التسليم (مشابه مع تعديلات)
+      const defaultElements = [
+        // العنوان
+        { id: '1', type: ELEMENT_TYPES.STATIC_TEXT, x: 300, y: 20, width: 200, height: 40, text: 'وصل تسليم حوالة', fontFamily: 'Arial', fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // إطار خارجي
+        { id: '2', type: ELEMENT_TYPES.RECTANGLE, x: 20, y: 10, width: 754, height: 520, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 2, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // خط فاصل
+        { id: '3', type: ELEMENT_TYPES.LINE, x: 30, y: 70, width: 734, height: 2, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: '#000000', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // رقم الحوالة
+        { id: '4', type: ELEMENT_TYPES.STATIC_TEXT, x: 650, y: 85, width: 100, height: 25, text: 'رقم الحوالة:', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '5', type: ELEMENT_TYPES.TEXT_FIELD, field: 'tracking_number', x: 520, y: 85, width: 120, height: 25, text: '', fontFamily: 'Arial', fontSize: 12, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // الحالة
+        { id: '6', type: ELEMENT_TYPES.STATIC_TEXT, x: 400, y: 85, width: 80, height: 25, text: 'الحالة:', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'right', color: '#059669', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '7', type: ELEMENT_TYPES.STATIC_TEXT, x: 300, y: 85, width: 90, height: 25, text: '✓ مكتملة', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'center', color: '#059669', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // تاريخ التسليم
+        { id: '8', type: ELEMENT_TYPES.STATIC_TEXT, x: 180, y: 85, width: 100, height: 25, text: 'تاريخ التسليم:', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '9', type: ELEMENT_TYPES.TEXT_FIELD, field: 'created_date', x: 50, y: 85, width: 120, height: 25, text: '', fontFamily: 'Arial', fontSize: 12, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // بيانات المرسل
+        { id: '10', type: ELEMENT_TYPES.STATIC_TEXT, x: 600, y: 130, width: 150, height: 30, text: 'بيانات المرسل', fontFamily: 'Arial', fontSize: 14, fontWeight: 'bold', textAlign: 'center', color: '#ffffff', backgroundColor: '#333333', borderWidth: 1, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '11', type: ELEMENT_TYPES.STATIC_TEXT, x: 690, y: 170, width: 60, height: 25, text: 'الاسم:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '12', type: ELEMENT_TYPES.TEXT_FIELD, field: 'sender_name', x: 520, y: 170, width: 160, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // بيانات المستلم
+        { id: '17', type: ELEMENT_TYPES.STATIC_TEXT, x: 50, y: 130, width: 150, height: 30, text: 'بيانات المستلم', fontFamily: 'Arial', fontSize: 14, fontWeight: 'bold', textAlign: 'center', color: '#ffffff', backgroundColor: '#333333', borderWidth: 1, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '18', type: ELEMENT_TYPES.STATIC_TEXT, x: 360, y: 170, width: 60, height: 25, text: 'الاسم:', fontFamily: 'Arial', fontSize: 11, fontWeight: 'bold', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '19', type: ELEMENT_TYPES.TEXT_FIELD, field: 'receiver_name', x: 190, y: 170, width: 160, height: 25, text: '', fontFamily: 'Arial', fontSize: 11, fontWeight: 'normal', textAlign: 'right', color: '#000000', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // المبلغ المستلم
+        { id: '20', type: ELEMENT_TYPES.RECTANGLE, x: 250, y: 240, width: 290, height: 100, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'center', color: '#000000', backgroundColor: '#f0fdf4', borderWidth: 2, borderColor: '#059669', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '21', type: ELEMENT_TYPES.STATIC_TEXT, x: 260, y: 250, width: 270, height: 25, text: 'المبلغ المستلم', fontFamily: 'Arial', fontSize: 14, fontWeight: 'bold', textAlign: 'center', color: '#059669', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '22', type: ELEMENT_TYPES.TEXT_FIELD, field: 'amount', x: 260, y: 285, width: 270, height: 40, text: '', fontFamily: 'Arial', fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: '#059669', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '2', opacity: 1, rotation: 0 },
+        
+        // توقيع المستلم
+        { id: '23', type: ELEMENT_TYPES.RECTANGLE, x: 50, y: 370, width: 300, height: 80, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'center', color: '#000000', backgroundColor: 'transparent', borderWidth: 1, borderColor: '#000000', borderStyle: 'dashed', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '24', type: ELEMENT_TYPES.STATIC_TEXT, x: 60, y: 380, width: 280, height: 25, text: 'توقيع المستلم', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'center', color: '#666666', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // ختم الوكيل
+        { id: '25', type: ELEMENT_TYPES.RECTANGLE, x: 450, y: 370, width: 300, height: 80, text: '', fontFamily: 'Arial', fontSize: 14, fontWeight: 'normal', textAlign: 'center', color: '#000000', backgroundColor: 'transparent', borderWidth: 1, borderColor: '#000000', borderStyle: 'dashed', letterSpacing: '0', opacity: 1, rotation: 0 },
+        { id: '26', type: ELEMENT_TYPES.STATIC_TEXT, x: 460, y: 380, width: 280, height: 25, text: 'ختم الوكيل', fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold', textAlign: 'center', color: '#666666', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+        
+        // ملاحظة
+        { id: '27', type: ELEMENT_TYPES.STATIC_TEXT, x: 50, y: 490, width: 700, height: 20, text: 'تم استلام المبلغ كاملاً - شكراً لتعاملكم معنا', fontFamily: 'Arial', fontSize: 9, fontWeight: 'normal', textAlign: 'center', color: '#666666', backgroundColor: 'transparent', borderWidth: 0, borderColor: '#000000', borderStyle: 'solid', letterSpacing: '0', opacity: 1, rotation: 0 },
+      ];
+      
+      setElements(defaultElements);
+      toast.success('تم تحميل القالب الافتراضي: وصل تسليم حوالة');
+    }
+  };
+
   const handlePreview = () => {
     const previewWindow = window.open('', '_blank');
     if (!previewWindow) {
