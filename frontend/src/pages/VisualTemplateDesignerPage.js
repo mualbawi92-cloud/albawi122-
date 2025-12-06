@@ -210,6 +210,30 @@ const VisualTemplateDesignerPage = () => {
     setSelectedElement(null);
   };
 
+  // تحميل التصميم النشط عند تغيير نوع الوصل
+  const loadActiveTemplate = async (type) => {
+    try {
+      const response = await axios.get(`${API}/visual-templates/active/${type}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      
+      if (response.data) {
+        handleLoad(response.data);
+        toast.success(`✅ تم تحميل التصميم النشط: ${response.data.name}`);
+      }
+    } catch (error) {
+      // لا يوجد تصميم نشط - استخدم القالب الافتراضي
+      console.log('No active template, using default');
+    }
+  };
+
+  // عند تغيير نوع الوصل، جلب التصميم النشط
+  useEffect(() => {
+    if (templateType) {
+      loadActiveTemplate(templateType);
+    }
+  }, [templateType]);
+
   const loadDefaultTemplate = (type) => {
     handleNew();
     
