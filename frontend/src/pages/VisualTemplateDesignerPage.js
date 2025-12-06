@@ -86,13 +86,30 @@ const VisualTemplateDesignerPage = () => {
   };
 
   const addElement = (type, field = null) => {
+    let width = 150;
+    let height = 30;
+    
+    if (type === ELEMENT_TYPES.LINE) {
+      width = 200;
+      height = 2;
+    } else if (type === ELEMENT_TYPES.VERTICAL_LINE) {
+      width = 2;
+      height = 100;
+    } else if (type === ELEMENT_TYPES.CIRCLE) {
+      width = 80;
+      height = 80;
+    } else if (type === ELEMENT_TYPES.IMAGE) {
+      width = 100;
+      height = 100;
+    }
+    
     const newElement = {
       id: Date.now().toString(),
       type,
       x: 50,
       y: 50,
-      width: type === ELEMENT_TYPES.LINE ? 200 : 150,
-      height: type === ELEMENT_TYPES.LINE ? 2 : 30,
+      width,
+      height,
       field: field,
       text: type === ELEMENT_TYPES.STATIC_TEXT ? 'نص جديد' : '',
       fontSize: 14,
@@ -100,8 +117,11 @@ const VisualTemplateDesignerPage = () => {
       textAlign: 'right',
       color: '#000000',
       backgroundColor: 'transparent',
-      borderWidth: type === ELEMENT_TYPES.RECTANGLE ? 1 : 0,
+      borderWidth: (type === ELEMENT_TYPES.RECTANGLE || type === ELEMENT_TYPES.CIRCLE) ? 1 : 0,
       borderColor: '#000000',
+      borderStyle: 'solid',
+      imageUrl: '',
+      rotation: 0,
     };
     setElements([...elements, newElement]);
     setSelectedElement(newElement.id);
