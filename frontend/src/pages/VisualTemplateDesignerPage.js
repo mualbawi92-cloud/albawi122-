@@ -660,15 +660,38 @@ const VisualTemplateDesignerPage = () => {
                   <h3 className="font-bold mb-3">التصاميم المحفوظة</h3>
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {templates.map((template) => (
-                      <div key={template.id} className="flex gap-2 items-center">
+                      <div key={template.id} className="flex gap-1 items-center">
                         <Button
                           onClick={() => handleLoad(template)}
                           variant="outline"
                           className="flex-1 text-sm justify-start"
                           size="sm"
                         >
+                          {template.is_active && <span className="text-green-600">✓ </span>}
                           <FolderOpen className="ml-2 h-3 w-3" /> {template.name}
                         </Button>
+                        {!template.is_active && (
+                          <Button
+                            onClick={async () => {
+                              try {
+                                await axios.put(`${API}/visual-templates/${template.id}`, 
+                                  { is_active: true },
+                                  { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+                                );
+                                toast.success('✅ تم تطبيق التصميم');
+                                fetchTemplates();
+                              } catch (error) {
+                                toast.error('خطأ في التطبيق');
+                              }
+                            }}
+                            variant="outline"
+                            className="text-xs px-2"
+                            size="sm"
+                            title="تطبيق"
+                          >
+                            ⭐
+                          </Button>
+                        )}
                         <Button
                           onClick={() => handleDelete(template.id)}
                           variant="destructive"
