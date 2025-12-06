@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
 import { formatAmountInWords } from '../utils/arabicNumbers';
+import { generateHTMLFromVisualTemplate } from '../utils/printUtils';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
