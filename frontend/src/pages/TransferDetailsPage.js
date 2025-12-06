@@ -467,36 +467,52 @@ const TransferDetailsPage = () => {
               </div>
             )}
 
-            {transfer.status === 'pending' && !showReceive && user && transfer.from_agent_id !== user.id && (
-              <div className="flex gap-4 pt-4">
+            {/* Bottom Buttons */}
+            <div className="flex gap-4 pt-6 border-t-2 border-gray-200 mt-6">
+              {transfer.status === 'pending' && !showReceive && user && transfer.from_agent_id !== user.id && (
                 <Button
                   onClick={() => setShowReceive(true)}
-                  className="flex-1 bg-secondary hover:bg-secondary/90 text-primary text-lg font-bold py-6"
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white text-lg font-bold py-6"
                   data-testid="receive-transfer-btn"
                 >
-                  ✅ استلام الحوالة
+                  ✅ تسليم الحوالة
                 </Button>
+              )}
+              
+              {transfer.status === 'completed' && (
                 <Button
-                  onClick={() => navigate('/transfers')}
-                  variant="outline"
-                  className="border-2 text-lg font-bold py-6"
-                  data-testid="back-to-list-btn"
+                  onClick={async () => {
+                    // Get PIN if not available
+                    let transferWithPin = {...transfer};
+                    if (!transfer.decrypted_pin) {
+                      try {
+                        const response = await axios.get(`${API}/transfers/${transfer.id}/pin`, {
+                          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                        });
+                        transferWithPin.decrypted_pin = response.data.pin;
+                      } catch (error) {
+                        console.error('Error fetching PIN:', error);
+                      }
+                    }
+                    const { generateVoucherHTML } = await import('../utils/printUtils');
+                    const html = generateVoucherHTML(transferWithPin);
+                    printDocument(html, `وصل حوالة ${transfer.transfer_number || transfer.transfer_code}`);
+                  }}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-6"
                 >
-                  عودة
+                  🖨️ طباعة الوصل
                 </Button>
-              </div>
-            )}
-
-            {transfer.status !== 'pending' && (
+              )}
+              
               <Button
                 onClick={() => navigate('/transfers')}
                 variant="outline"
-                className="w-full border-2 text-lg font-bold py-6"
+                className="flex-1 border-2 text-lg font-bold py-6"
                 data-testid="back-to-list-btn"
               >
-                عودة للقائمة
+                ⬅️ عودة
               </Button>
-            )}
+            </div>
 
             {/* Edit Form */}
             {showEdit && transfer.status === 'pending' && (
