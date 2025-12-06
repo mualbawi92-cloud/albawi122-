@@ -2163,6 +2163,99 @@ async def verify_transfer_pin(
     
     return {'valid': True}
 
+@api_router.post("/transfers/verify-id-name")
+async def verify_id_name(
+    id_image: UploadFile = File(...),
+    receiver_name: str = Form(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Extract name from ID image and compare with receiver name using AI"""
+    try:
+        # Read image
+        contents = await id_image.read()
+        
+        # Convert to base64
+        import base64
+        image_base64 = base64.b64encode(contents).decode('utf-8')
+        
+        # Use AI to extract name from ID
+        from emergentintegrations import EasyAI
+        ai = EasyAI()
+        
+        prompt = f"""
+أنت خبير في استخراج البيانات من بطاقات الهوية العراقية.
+يرجى استخراج الاسم الكامل من هذه الصورة.
+أعد الاسم فقط بدون أي كلام إضافي.
+إذا كان الاسم ثلاثي، أعده كما هو.
+إذا كان الاسم رباعي، أعده كاملاً.
+"""
+        
+        response = ai.messages(
+            messages=[{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{image_base64}"
+                        }
+                    }
+                ]
+            }]
+        ).with_model("openai", "gpt-4o").run()
+        
+        extracted_name = response.get("content", "").strip()
+        
+        # Compare names
+        def normalize_name(name):
+            """Normalize name for comparison"""
+            return name.strip().replace('  ', ' ').lower()
+        
+        extracted_normalized = normalize_name(extracted_name)
+        receiver_normalized = normalize_name(receiver_name)
+        
+        # Split names into parts
+        extracted_parts = extracted_normalized.split()
+        receiver_parts = receiver_normalized.split()
+        
+        # Determine match status
+        if extracted_normalized == receiver_normalized:
+            match_status = "exact_match"
+        elif len(extracted_parts) == 3 and len(receiver_parts) == 4:
+            # Extracted is 3 names, receiver is 4 names
+            # Check if first 3 parts match
+            if extracted_parts == receiver_parts[:3]:
+                match_status = "partial_match"
+            else:
+                match_status = "no_match"
+        elif len(extracted_parts) == 3 and len(receiver_parts) == 3:
+            # Both are 3 names - should match exactly
+            if extracted_parts == receiver_parts:
+                match_status = "exact_match"
+            else:
+                match_status = "no_match"
+        elif all(part in receiver_parts for part in extracted_parts[:2]):
+            # At least first 2 names match
+            match_status = "partial_match"
+        else:
+            match_status = "no_match"
+        
+        return {
+            "extracted_name": extracted_name,
+            "receiver_name": receiver_name,
+            "match_status": match_status,
+            "message": {
+                "exact_match": "الاسم مطابق بشكل كامل",
+                "partial_match": "الاسم مطابق جزئياً - يرجى التحقق",
+                "no_match": "الاسم غير مطابق"
+            }[match_status]
+        }
+        
+    except Exception as e:
+        logging.error(f"Error verifying ID name: {e}")
+        raise HTTPException(status_code=500, detail=f"خطأ في التحقق من الاسم: {str(e)}")
+
 @api_router.post("/transfers/{transfer_id}/receive-simple")
 async def receive_transfer_simple(
     transfer_id: str,
