@@ -604,30 +604,14 @@ const TransfersListPage = () => {
                     </div>
                   </div>
                   
-                  {/* Right side - Currency filter next to search button */}
-                  <div className="flex-1 flex gap-3 items-end">
-                    <div className="space-y-2 flex-1">
-                      <Label className="text-xs text-gray-600">العملة</Label>
-                      <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                        <SelectTrigger className="h-9">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">كل العملات</SelectItem>
-                          <SelectItem value="IQD">IQD</SelectItem>
-                          <SelectItem value="USD">USD</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
-                      <Button 
-                        onClick={handleSearch} 
-                        className="h-9 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8"
-                      >
-                        🔍 بحث
-                      </Button>
-                    </div>
+                  {/* Right side - Search button only */}
+                  <div className="flex items-end">
+                    <Button 
+                      onClick={handleSearch} 
+                      className="h-9 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8"
+                    >
+                      🔍 بحث
+                    </Button>
                   </div>
                 </div>
               </div>
