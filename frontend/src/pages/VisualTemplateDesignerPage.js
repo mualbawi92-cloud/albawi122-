@@ -262,11 +262,13 @@ const VisualTemplateDesignerPage = () => {
         content = sampleData[el.field] || el.field;
       } else if (el.type === ELEMENT_TYPES.STATIC_TEXT) {
         content = el.text;
-      } else if (el.type === ELEMENT_TYPES.LINE) {
-        content = '';
-      } else if (el.type === ELEMENT_TYPES.RECTANGLE) {
-        content = '';
+      } else if (el.type === ELEMENT_TYPES.IMAGE && el.imageUrl) {
+        content = `<img src="${el.imageUrl}" alt="صورة" style="width:100%;height:100%;object-fit:contain;" />`;
       }
+
+      const borderRadius = el.type === ELEMENT_TYPES.CIRCLE ? '50%' : '0';
+      const borderStyle = el.borderStyle || 'solid';
+      const padding = (el.type === ELEMENT_TYPES.LINE || el.type === ELEMENT_TYPES.VERTICAL_LINE) ? '0' : '5px';
 
       html += `
     <div class="element" style="
@@ -279,11 +281,13 @@ const VisualTemplateDesignerPage = () => {
       text-align: ${el.textAlign};
       color: ${el.color};
       background-color: ${el.backgroundColor};
-      border: ${el.borderWidth}px solid ${el.borderColor};
+      border: ${el.borderWidth}px ${borderStyle} ${el.borderColor};
+      border-radius: ${borderRadius};
       display: flex;
       align-items: center;
       justify-content: ${el.textAlign === 'right' ? 'flex-end' : el.textAlign === 'center' ? 'center' : 'flex-start'};
-      padding: 5px;
+      padding: ${padding};
+      overflow: hidden;
     ">${content}</div>
 `;
     });
