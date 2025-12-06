@@ -39,6 +39,7 @@ import CommissionsUnifiedPage from './pages/CommissionsUnifiedPage';
 import CurrencyRevaluationPage from './pages/CurrencyRevaluationPage';
 import BackupManagementPage from './pages/BackupManagementPage';
 import TemplateDesignerPage from './pages/TemplateDesignerPage';
+import VisualTemplateDesignerPage from './pages/VisualTemplateDesignerPage';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
