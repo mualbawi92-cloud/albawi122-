@@ -447,8 +447,10 @@ const TransfersListPage = () => {
                         <div className="space-y-3">
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className="text-xs text-gray-500">رمز الحوالة</p>
-                              <p className="font-mono font-bold">{transfer.transfer_code}</p>
+                              <p className="text-xs text-gray-500">رقم الحوالة</p>
+                              <p className="font-mono font-bold text-blue-600">
+                                {transfer.tracking_number || transfer.transfer_code}
+                              </p>
                             </div>
                             {getStatusBadge(transfer.status)}
                           </div>
@@ -476,12 +478,30 @@ const TransfersListPage = () => {
                             <p className="text-sm">{new Date(transfer.created_at).toLocaleDateString('ar-IQ')}</p>
                           </div>
                           
-                          <Button
-                            onClick={() => navigate(`/transfers/${transfer.id}`)}
-                            className="w-full bg-blue-600 hover:bg-blue-700"
-                          >
-                            عرض التفاصيل
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => navigate(`/transfers/${transfer.id}`)}
+                              className="flex-1 bg-blue-600 hover:bg-blue-700"
+                            >
+                              عرض
+                            </Button>
+                            {activeTab === 'inquiry' && (
+                              <>
+                                <Button
+                                  onClick={() => handlePrintTransfer(transfer)}
+                                  className="flex-1 bg-green-600 hover:bg-green-700"
+                                >
+                                  طباعة
+                                </Button>
+                                <Button
+                                  onClick={() => handleCopyTransferInfo(transfer)}
+                                  className="flex-1 bg-purple-600 hover:bg-purple-700"
+                                >
+                                  نسخ
+                                </Button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
