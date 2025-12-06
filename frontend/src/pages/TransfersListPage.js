@@ -468,6 +468,11 @@ const TransfersListPage = () => {
                             </div>
                           </div>
                           
+                          <div>
+                            <p className="text-xs text-gray-500">مدينة الإرسال</p>
+                            <p className="text-sm font-semibold">{transfer.sending_city || '-'}</p>
+                          </div>
+                          
                           <div className="bg-blue-50 rounded p-3">
                             <p className="text-xs text-gray-500">المبلغ</p>
                             <p className="text-xl font-bold text-blue-600">
