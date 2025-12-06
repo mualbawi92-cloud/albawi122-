@@ -659,7 +659,20 @@ const VisualTemplateDesignerPage = () => {
                         />
                       </div>
 
-                      {selectedElementData.type === ELEMENT_TYPES.RECTANGLE && (
+                      {selectedElementData.type === ELEMENT_TYPES.IMAGE && (
+                        <div>
+                          <Label className="text-sm">رابط الصورة</Label>
+                          <Input
+                            value={selectedElementData.imageUrl || ''}
+                            onChange={(e) => updateElement(selectedElement, { imageUrl: e.target.value })}
+                            placeholder="https://example.com/logo.png"
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">أدخل رابط الصورة أو اللوجو</p>
+                        </div>
+                      )}
+
+                      {(selectedElementData.type === ELEMENT_TYPES.RECTANGLE || selectedElementData.type === ELEMENT_TYPES.CIRCLE) && (
                         <>
                           <div>
                             <Label className="text-sm">عرض الحدود</Label>
@@ -678,6 +691,23 @@ const VisualTemplateDesignerPage = () => {
                               onChange={(e) => updateElement(selectedElement, { borderColor: e.target.value })}
                               className="mt-1 h-10"
                             />
+                          </div>
+                          <div>
+                            <Label className="text-sm">نمط الحدود</Label>
+                            <Select
+                              value={selectedElementData.borderStyle || 'solid'}
+                              onValueChange={(value) => updateElement(selectedElement, { borderStyle: value })}
+                            >
+                              <SelectTrigger className="mt-1">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="solid">متصل</SelectItem>
+                                <SelectItem value="dashed">متقطع</SelectItem>
+                                <SelectItem value="dotted">منقط</SelectItem>
+                                <SelectItem value="double">مزدوج</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
                         </>
                       )}
