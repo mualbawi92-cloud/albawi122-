@@ -274,6 +274,40 @@ const VisualTemplateDesignerPage = () => {
     }
   }, [templateType]);
 
+  // دالة رفع الصورة وتحليلها بالذكاء الاصطناعي
+  const handleAIImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAiLoading(true);
+    try {
+      // تحويل الصورة إلى base64
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result;
+
+        // إرسال للـ backend للتحليل
+        const response = await axios.post(
+          `${API}/analyze-receipt-design`,
+          { image: base64Image, page_size: pageSize },
+          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        );
+
+        if (response.data.elements) {
+          setElements(response.data.elements);
+          setTemplateName(response.data.suggested_name || 'تصميم من الذكاء الاصطناعي');
+          toast.success('🎉 تم تصميم الوصل تلقائياً! عدّل عليه كما تريد');
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('AI Analysis Error:', error);
+      toast.error(error.response?.data?.detail || 'خطأ في تحليل الصورة');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const loadDefaultTemplate = (type) => {
     handleNew();
     
