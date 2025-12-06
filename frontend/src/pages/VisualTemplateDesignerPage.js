@@ -817,6 +817,32 @@ const VisualTemplateDesignerPage = () => {
                           />
                         </div>
                       </div>
+
+                      <div>
+                        <Label className="text-sm">الشفافية ({Math.round((selectedElementData.opacity || 1) * 100)}%)</Label>
+                        <Input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.1"
+                          value={selectedElementData.opacity || 1}
+                          onChange={(e) => updateElement(selectedElement, { opacity: parseFloat(e.target.value) })}
+                          className="mt-1"
+                        />
+                      </div>
+
+                      <div>
+                        <Label className="text-sm">الدوران ({selectedElementData.rotation || 0}°)</Label>
+                        <Input
+                          type="range"
+                          min="0"
+                          max="360"
+                          step="5"
+                          value={selectedElementData.rotation || 0}
+                          onChange={(e) => updateElement(selectedElement, { rotation: parseInt(e.target.value) })}
+                          className="mt-1"
+                        />
+                      </div>
                     </div>
                   ) : (
                     <p className="text-sm text-gray-500 text-center py-8">
