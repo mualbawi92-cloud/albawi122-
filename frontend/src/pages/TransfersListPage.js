@@ -34,6 +34,12 @@ const TransfersListPage = () => {
   const [searchCode, setSearchCode] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('all');
   
+  // New inquiry filters
+  const [searchTrackingNumber, setSearchTrackingNumber] = useState('');
+  const [searchSenderName, setSearchSenderName] = useState('');
+  const [searchReceiverName, setSearchReceiverName] = useState('');
+  const [searchAmount, setSearchAmount] = useState('');
+  
   // Inquiry-specific filters (multiple status selection)
   const [statusFilters, setStatusFilters] = useState({
     pending: false,
