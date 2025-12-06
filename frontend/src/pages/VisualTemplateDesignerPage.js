@@ -487,8 +487,11 @@ const VisualTemplateDesignerPage = () => {
                 <Button onClick={handleNew} variant="outline" size="sm">
                   <Plus className="ml-2 h-4 w-4" /> جديد
                 </Button>
-                <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700" size="sm">
+                <Button onClick={() => handleSave(false)} className="bg-green-600 hover:bg-green-700" size="sm">
                   <Save className="ml-2 h-4 w-4" /> حفظ
+                </Button>
+                <Button onClick={() => handleSave(true)} className="bg-purple-600 hover:bg-purple-700" size="sm">
+                  ⭐ حفظ وتطبيق
                 </Button>
                 <Button onClick={handlePreview} className="bg-blue-600 hover:bg-blue-700" size="sm">
                   <Eye className="ml-2 h-4 w-4" /> معاينة
