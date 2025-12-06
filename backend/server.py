@@ -6896,6 +6896,13 @@ async def update_visual_template(
         if not template:
             raise HTTPException(status_code=404, detail="التصميم غير موجود")
         
+        # إذا تم تفعيل هذا القالب، قم بإلغاء تفعيل الآخرين من نفس النوع
+        if template_data.is_active:
+            await db.visual_templates.update_many(
+                {"template_type": template.get("template_type"), "id": {"$ne": template_id}},
+                {"$set": {"is_active": False}}
+            )
+        
         update_data = {k: v for k, v in template_data.model_dump().items() if v is not None}
         update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
         
