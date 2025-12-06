@@ -408,6 +408,19 @@ const Navbar = () => {
             >
               📋 الحوالات
             </Button>
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => {
+                  navigate('/template-designer');
+                  setMobileMenuOpen(false);
+                }}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/10 font-bold justify-start"
+                data-testid="mobile-nav-templates"
+              >
+                🎨 التصاميم
+              </Button>
+            )}
             {user?.role === 'agent' && (
               <Button
                 onClick={() => {
