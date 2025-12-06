@@ -707,6 +707,118 @@ const VisualTemplateDesignerPage = () => {
 
               {/* منطقة التصميم */}
               <div className="col-span-8">
+                {/* شريط الأدوات السريع */}
+                {selectedElementData && (
+                  <div className="border rounded-lg p-3 mb-3 bg-white">
+                    <div className="flex gap-3 items-center flex-wrap">
+                      <span className="font-bold text-sm">أدوات سريعة:</span>
+                      
+                      {/* المحاذاة */}
+                      {(selectedElementData.type === ELEMENT_TYPES.TEXT_FIELD || selectedElementData.type === ELEMENT_TYPES.STATIC_TEXT) && (
+                        <>
+                          <div className="flex gap-1 border-r pr-3">
+                            <Button
+                              onClick={() => updateElement(selectedElement, { textAlign: 'right' })}
+                              variant={selectedElementData.textAlign === 'right' ? 'default' : 'outline'}
+                              size="sm"
+                              className="px-3"
+                            >
+                              ⬅️ يمين
+                            </Button>
+                            <Button
+                              onClick={() => updateElement(selectedElement, { textAlign: 'center' })}
+                              variant={selectedElementData.textAlign === 'center' ? 'default' : 'outline'}
+                              size="sm"
+                              className="px-3"
+                            >
+                              ↔️ وسط
+                            </Button>
+                            <Button
+                              onClick={() => updateElement(selectedElement, { textAlign: 'left' })}
+                              variant={selectedElementData.textAlign === 'left' ? 'default' : 'outline'}
+                              size="sm"
+                              className="px-3"
+                            >
+                              ➡️ يسار
+                            </Button>
+                          </div>
+                          
+                          {/* لون الخط */}
+                          <div className="flex gap-2 items-center border-r pr-3">
+                            <span className="text-sm">لون الخط:</span>
+                            <Input
+                              type="color"
+                              value={selectedElementData.color}
+                              onChange={(e) => updateElement(selectedElement, { color: e.target.value })}
+                              className="w-16 h-8"
+                            />
+                          </div>
+                          
+                          {/* حجم الخط */}
+                          <div className="flex gap-2 items-center border-r pr-3">
+                            <Button
+                              onClick={() => updateElement(selectedElement, { fontSize: Math.max(8, selectedElementData.fontSize - 2) })}
+                              variant="outline"
+                              size="sm"
+                              className="px-2"
+                            >
+                              A-
+                            </Button>
+                            <span className="text-sm w-8 text-center">{selectedElementData.fontSize}</span>
+                            <Button
+                              onClick={() => updateElement(selectedElement, { fontSize: selectedElementData.fontSize + 2 })}
+                              variant="outline"
+                              size="sm"
+                              className="px-2"
+                            >
+                              A+
+                            </Button>
+                          </div>
+                          
+                          {/* عريض */}
+                          <Button
+                            onClick={() => updateElement(selectedElement, { fontWeight: selectedElementData.fontWeight === 'bold' ? 'normal' : 'bold' })}
+                            variant={selectedElementData.fontWeight === 'bold' ? 'default' : 'outline'}
+                            size="sm"
+                            className="px-3 font-bold"
+                          >
+                            B
+                          </Button>
+                        </>
+                      )}
+                      
+                      {/* لون الخلفية */}
+                      <div className="flex gap-2 items-center border-r pr-3">
+                        <span className="text-sm">خلفية:</span>
+                        <Input
+                          type="color"
+                          value={selectedElementData.backgroundColor === 'transparent' ? '#ffffff' : selectedElementData.backgroundColor}
+                          onChange={(e) => updateElement(selectedElement, { backgroundColor: e.target.value })}
+                          className="w-16 h-8"
+                        />
+                        <Button
+                          onClick={() => updateElement(selectedElement, { backgroundColor: 'transparent' })}
+                          variant="outline"
+                          size="sm"
+                          className="px-2 text-xs"
+                        >
+                          شفاف
+                        </Button>
+                      </div>
+                      
+                      {/* حذف */}
+                      <Button
+                        onClick={() => deleteElement(selectedElement)}
+                        variant="destructive"
+                        size="sm"
+                        className="mr-auto"
+                      >
+                        <Trash2 className="h-4 w-4 ml-1" /> حذف
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="border rounded-lg p-4 bg-gray-100 overflow-auto" style={{ height: '700px', maxHeight: '700px' }}>
                   <div className="flex justify-center">
                     <div
