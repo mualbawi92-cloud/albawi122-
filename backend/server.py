@@ -6856,6 +6856,7 @@ async def create_visual_template(template_data: VisualTemplateCreate, current_us
         new_template = {
             "id": template_id,
             "name": template_data.name,
+            "template_type": template_data.template_type,
             "page_size": template_data.page_size,
             "elements": template_data.elements,
             "created_at": now,
