@@ -195,6 +195,7 @@ const VisualTemplateDesignerPage = () => {
   const handleNew = () => {
     setCurrentTemplate(null);
     setTemplateName('');
+    setTemplateType('send_transfer');
     setPageSize('A5_landscape');
     setElements([]);
     setSelectedElement(null);
