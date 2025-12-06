@@ -346,78 +346,91 @@ const QuickReceiveTransferPage = () => {
 
             {/* Step 3: Show Details & Confirm */}
             {step === 3 && transfer && (
-              <div className="space-y-6">
-                <div className="bg-green-50 rounded-xl p-6 border-2 border-green-300">
-                  <h3 className="text-2xl font-bold text-green-800 mb-6 text-center">✅ تفاصيل الحوالة</h3>
-                  
-                  <div className="space-y-4">
-                    {/* Transfer Number and Code */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-white p-4 rounded-lg border">
-                        <span className="text-sm text-gray-600">رقم الحوالة</span>
-                        <p className="font-bold text-lg">{transfer.tracking_number || transfer.transfer_number}</p>
-                      </div>
-                      <div className="bg-white p-4 rounded-lg border">
-                        <span className="text-sm text-gray-600">كود الحوالة</span>
-                        <p className="font-bold text-lg">{transfer.transfer_code}</p>
-                      </div>
+              <div className="space-y-4">
+                {/* Header: رقم الحوالة وكود الحوالة */}
+                <div className="flex justify-between items-center pb-3 border-b-2 border-gray-200">
+                  <div>
+                    <Label className="text-xs text-muted-foreground">رقم الحوالة</Label>
+                    <p className="text-base font-bold text-blue-600">{transfer.tracking_number || transfer.transfer_number}</p>
+                  </div>
+                  <div className="text-left">
+                    <Label className="text-xs text-muted-foreground">كود الحوالة</Label>
+                    <p className="text-base font-bold text-secondary">{transfer.transfer_code}</p>
+                  </div>
+                </div>
+
+                {/* السطر الأول: معلومات المرسل والمستفيد */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-2">
+                  {/* معلومات المرسل - 6 أعمدة */}
+                  <div className="col-span-1 md:col-span-2 space-y-1">
+                    <Label className="text-xs font-bold">اسم المرسل</Label>
+                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                      <p className="text-xs font-bold">{transfer.sender_name}</p>
                     </div>
-                    
-                    {/* Sender Information - Row 1 */}
-                    <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-300">
-                      <p className="text-sm font-semibold text-blue-800 mb-3">معلومات المرسل</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-white p-3 rounded-lg border">
-                          <span className="text-xs text-gray-600">الاسم</span>
-                          <p className="font-bold text-base">{transfer.sender_name}</p>
-                        </div>
-                        <div className="bg-white p-3 rounded-lg border">
-                          <span className="text-xs text-gray-600">رقم الهاتف</span>
-                          <p className="font-bold text-base" dir="ltr">{transfer.sender_phone || '-'}</p>
-                        </div>
-                        <div className="bg-white p-3 rounded-lg border">
-                          <span className="text-xs text-gray-600">مدينة الإرسال</span>
-                          <p className="font-bold text-base">{transfer.sending_city || '-'}</p>
-                        </div>
-                      </div>
+                  </div>
+
+                  <div className="col-span-1 md:col-span-2 space-y-1">
+                    <Label className="text-xs font-bold">رقم هاتف المرسل</Label>
+                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                      <p className="text-xs font-bold" dir="ltr">{transfer.sender_phone || '-'}</p>
                     </div>
-                    
-                    {/* Receiver Information - Row 2 */}
-                    <div className="bg-green-50 p-4 rounded-lg border-2 border-green-300">
-                      <p className="text-sm font-semibold text-green-800 mb-3">معلومات المستفيد</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-white p-3 rounded-lg border">
-                          <span className="text-xs text-gray-600">الاسم</span>
-                          <p className="font-bold text-base">{transfer.receiver_name}</p>
-                        </div>
-                        <div className="bg-white p-3 rounded-lg border">
-                          <Label className="text-xs text-gray-600">رقم الهاتف (قابل للتعديل)</Label>
-                          <Input
-                            type="tel"
-                            value={receiverPhone}
-                            onChange={(e) => setReceiverPhone(e.target.value)}
-                            className="h-9 font-bold text-base mt-1"
-                            dir="ltr"
-                            placeholder="07XXXXXXXXX"
-                          />
-                        </div>
-                        <div className="bg-white p-3 rounded-lg border">
-                          <span className="text-xs text-gray-600">مدينة الاستلام</span>
-                          <p className="font-bold text-base">{transfer.receiving_city || '-'}</p>
-                        </div>
-                      </div>
+                  </div>
+
+                  <div className="col-span-1 md:col-span-2 space-y-1">
+                    <Label className="text-xs font-bold">مدينة الإرسال</Label>
+                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                      <p className="text-xs font-bold">{transfer.sending_city || '-'}</p>
                     </div>
-                    
-                    {/* Amount and Commission */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-white p-4 rounded-lg border">
-                        <span className="text-sm text-gray-600">المبلغ</span>
-                        <p className="font-bold text-2xl text-green-700">{transfer.amount.toLocaleString()} {transfer.currency}</p>
-                      </div>
-                      <div className="bg-white p-4 rounded-lg border">
-                        <span className="text-sm text-gray-600">العمولة</span>
-                        <p className="font-bold text-lg">{transfer.incoming_commission?.toLocaleString() || 0} {transfer.currency}</p>
-                      </div>
+                  </div>
+
+                  {/* معلومات المستفيد - 6 أعمدة */}
+                  <div className="col-span-1 md:col-span-2 space-y-1">
+                    <Label className="text-xs font-bold">اسم المستفيد</Label>
+                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                      <p className="text-xs font-bold">{transfer.receiver_name}</p>
+                    </div>
+                  </div>
+
+                  <div className="col-span-1 md:col-span-2 space-y-1">
+                    <Label className="text-xs font-bold">رقم هاتف المستفيد *</Label>
+                    <Input
+                      type="tel"
+                      value={receiverPhone}
+                      onChange={(e) => setReceiverPhone(e.target.value)}
+                      className="h-9 text-xs font-bold"
+                      dir="ltr"
+                      placeholder="07XXXXXXXXX"
+                    />
+                  </div>
+
+                  <div className="col-span-1 md:col-span-2 space-y-1">
+                    <Label className="text-xs font-bold">مدينة الاستلام</Label>
+                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                      <p className="text-xs font-bold">{transfer.receiving_city || '-'}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* السطر الثاني: المبلغ والعملة والعمولة */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-2">
+                  <div className="col-span-1 md:col-span-3 space-y-1">
+                    <Label className="text-xs font-bold">المبلغ</Label>
+                    <div className="h-9 flex items-center px-2 bg-green-50 border-2 border-green-300 rounded-md">
+                      <p className="text-base font-bold text-green-700">{transfer.amount.toLocaleString()}</p>
+                    </div>
+                  </div>
+
+                  <div className="col-span-1 md:col-span-1 space-y-1">
+                    <Label className="text-xs font-bold">العملة</Label>
+                    <div className="h-9 flex items-center px-2 bg-gray-50 border rounded-md">
+                      <p className="text-xs font-bold">{transfer.currency}</p>
+                    </div>
+                  </div>
+
+                  <div className="col-span-1 md:col-span-2 space-y-1">
+                    <Label className="text-xs font-bold">العمولة</Label>
+                    <div className="h-9 flex items-center px-2 bg-blue-50 border border-blue-300 rounded-md">
+                      <p className="text-xs font-bold text-blue-700">{transfer.incoming_commission?.toLocaleString() || 0}</p>
                     </div>
                   </div>
                 </div>
