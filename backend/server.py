@@ -6951,6 +6951,108 @@ async def get_active_template(template_type: str, current_user: dict = Depends(g
         raise HTTPException(status_code=500, detail=f"خطأ في جلب التصميم النشط: {str(e)}")
 
 
+@api_router.post("/analyze-receipt-design")
+async def analyze_receipt_design(
+    request: dict,
+    current_user: dict = Depends(require_admin)
+):
+    """Analyze receipt image and generate design elements using AI"""
+    try:
+        image_data = request.get('image', '')
+        page_size = request.get('page_size', 'A5_landscape')
+        
+        if not image_data:
+            raise HTTPException(status_code=400, detail="لم يتم إرفاق صورة")
+        
+        # تحديد أبعاد الصفحة
+        page_sizes = {
+            'A4_portrait': {'width': 794, 'height': 1123},
+            'A4_landscape': {'width': 1123, 'height': 794},
+            'A5_portrait': {'width': 559, 'height': 794},
+            'A5_landscape': {'width': 794, 'height': 559},
+            'thermal_80mm': {'width': 302, 'height': 600},
+        }
+        page_config = page_sizes.get(page_size, page_sizes['A5_landscape'])
+        
+        # استخدام OpenAI Vision لتحليل الصورة
+        from emergentintegrations import openai_gpt
+        
+        prompt = f"""
+أنت خبير في تحليل تصميم الوثائق. حلل هذه الصورة لوصل/فاتورة وأعطني تصميمه بالتفصيل.
+
+أبعاد الصفحة المستهدفة: {page_config['width']}px × {page_config['height']}px
+
+يرجى تحليل العناصر التالية وإعطاء موقعها التقريبي:
+1. العنوان الرئيسي (النص، الموقع X,Y، الحجم، اللون)
+2. الحقول والبيانات (اسم الحقل، موقعه، نوع الخط)
+3. الإطارات والحدود
+4. الخطوط الفاصلة
+5. الألوان المستخدمة
+
+أعطني النتيجة بصيغة JSON بهذا الشكل:
+{{
+  "suggested_name": "اسم مقترح للتصميم",
+  "elements": [
+    {{
+      "id": "1",
+      "type": "static_text",
+      "x": 100,
+      "y": 20,
+      "width": 200,
+      "height": 30,
+      "text": "النص هنا",
+      "fontSize": 18,
+      "fontWeight": "bold",
+      "color": "#000000",
+      "textAlign": "center"
+    }},
+    {{
+      "id": "2",
+      "type": "rectangle",
+      "x": 50,
+      "y": 50,
+      "width": 300,
+      "height": 200,
+      "borderWidth": 2,
+      "borderColor": "#000000"
+    }}
+  ]
+}}
+
+ملاحظات:
+- الأنواع المتاحة: static_text, text_field, rectangle, circle, line, vertical_line
+- للحقول المتغيرة استخدم type: "text_field" مع field: "اسم_الحقل"
+- احرص على التناسب مع أبعاد الصفحة المذكورة
+"""
+        
+        response = openai_gpt(
+            prompt=prompt,
+            images=[image_data],
+            model="gpt-4o",
+            response_format="json"
+        )
+        
+        import json
+        result = json.loads(response)
+        
+        # إضافة خصائص افتراضية للعناصر
+        for element in result.get('elements', []):
+            element.setdefault('fontFamily', 'Arial')
+            element.setdefault('backgroundColor', 'transparent')
+            element.setdefault('borderStyle', 'solid')
+            element.setdefault('letterSpacing', '0')
+            element.setdefault('opacity', 1)
+            element.setdefault('rotation', 0)
+            element.setdefault('borderWidth', 0)
+            element.setdefault('borderColor', '#000000')
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Error analyzing receipt: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في تحليل الصورة: {str(e)}")
+
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
