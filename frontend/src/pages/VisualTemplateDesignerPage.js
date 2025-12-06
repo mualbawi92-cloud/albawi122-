@@ -831,6 +831,95 @@ const VisualTemplateDesignerPage = () => {
                         </Button>
                       </div>
                       
+                      {/* أدوات الترتيب */}
+                      <div className="flex gap-1 border-r pr-3">
+                        <Button
+                          onClick={() => {
+                            const sorted = [...elements];
+                            const idx = sorted.findIndex(e => e.id === selectedElement);
+                            if (idx > 0) {
+                              [sorted[idx], sorted[idx-1]] = [sorted[idx-1], sorted[idx]];
+                              setElements(sorted);
+                              toast.success('تم التقديم');
+                            }
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="px-2"
+                          title="تقديم للأمام"
+                        >
+                          ⬆️
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            const sorted = [...elements];
+                            const idx = sorted.findIndex(e => e.id === selectedElement);
+                            if (idx < sorted.length - 1) {
+                              [sorted[idx], sorted[idx+1]] = [sorted[idx+1], sorted[idx]];
+                              setElements(sorted);
+                              toast.success('تم التأخير');
+                            }
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="px-2"
+                          title="تأخير للخلف"
+                        >
+                          ⬇️
+                        </Button>
+                      </div>
+                      
+                      {/* نسخ ولصق */}
+                      <div className="flex gap-1 border-r pr-3">
+                        <Button
+                          onClick={() => {
+                            const el = elements.find(e => e.id === selectedElement);
+                            if (el) {
+                              const newEl = { ...el, id: Date.now().toString(), x: el.x + 20, y: el.y + 20 };
+                              setElements([...elements, newEl]);
+                              setSelectedElement(newEl.id);
+                              toast.success('تم النسخ');
+                            }
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="px-2"
+                          title="نسخ"
+                        >
+                          📋
+                        </Button>
+                      </div>
+                      
+                      {/* محاذاة للصفحة */}
+                      <div className="flex gap-1 border-r pr-3">
+                        <Button
+                          onClick={() => {
+                            const el = selectedElementData;
+                            updateElement(selectedElement, { x: (pageConfig.width - el.width) / 2 });
+                            toast.success('تم التوسيط');
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="px-2"
+                          title="توسيط أفقي"
+                        >
+                          ↔
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            const el = selectedElementData;
+                            updateElement(selectedElement, { y: (pageConfig.height - el.height) / 2 });
+                            toast.success('تم التوسيط');
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="px-2"
+                          title="توسيط عمودي"
+                        >
+                          ↕
+                        </Button>
+                      </div>
+                      
                       {/* حذف */}
                       <Button
                         onClick={() => deleteElement(selectedElement)}
