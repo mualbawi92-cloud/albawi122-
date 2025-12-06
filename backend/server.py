@@ -2261,6 +2261,7 @@ async def receive_transfer_with_id(
     transfer_id: str,
     pin: str = Form(...),
     id_image: UploadFile = File(...),
+    receiver_phone: str = Form(...),
     name_verification: str = Form(...),
     request: Request = None,
     current_user: dict = Depends(get_current_user)
