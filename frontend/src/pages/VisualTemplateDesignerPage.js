@@ -719,6 +719,32 @@ const VisualTemplateDesignerPage = () => {
                   </div>
                 </div>
 
+                {/* ذكاء اصطناعي */}
+                <div className="border rounded-lg p-3 bg-gradient-to-r from-purple-50 to-pink-50">
+                  <h3 className="font-bold mb-3">🤖 تصميم ذكي</h3>
+                  <p className="text-xs text-gray-600 mb-2">ارفع صورة وصل، والذكاء الاصطناعي يصممه لك!</p>
+                  <input
+                    type="file"
+                    id="aiImageUpload"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAIImageUpload}
+                  />
+                  <Button
+                    onClick={() => document.getElementById('aiImageUpload').click()}
+                    variant="outline"
+                    className="w-full text-sm justify-start bg-white border-2 border-purple-300 hover:bg-purple-50"
+                    size="sm"
+                    disabled={aiLoading}
+                  >
+                    {aiLoading ? (
+                      <>⏳ جاري التحليل...</>
+                    ) : (
+                      <>🤖 ارفع صورة وصممه بالذكاء</>
+                    )}
+                  </Button>
+                </div>
+
                 {/* التصاميم المحفوظة */}
                 <div className="border rounded-lg p-3">
                   <h3 className="font-bold mb-3">التصاميم المحفوظة</h3>
