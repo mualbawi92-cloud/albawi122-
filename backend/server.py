@@ -6968,6 +6968,27 @@ async def import_from_excel(
         workbook = load_workbook(io.BytesIO(contents))
         sheet = workbook.active
         
+        # تحديد حجم الصفحة من Excel
+        excel_page_size = page_size
+        excel_orientation = 'landscape'
+        
+        # محاولة قراءة إعدادات الصفحة من Excel
+        if sheet.page_setup:
+            if sheet.page_setup.paperSize == 9:  # A4
+                excel_page_size = 'A4'
+            elif sheet.page_setup.paperSize == 11:  # A5
+                excel_page_size = 'A5'
+            
+            if sheet.page_setup.orientation == 'portrait':
+                excel_orientation = 'portrait'
+            else:
+                excel_orientation = 'landscape'
+        
+        # دمج حجم واتجاه الصفحة
+        final_page_size = f"{excel_page_size}_{excel_orientation}"
+        if final_page_size not in ['A4_portrait', 'A4_landscape', 'A5_portrait', 'A5_landscape']:
+            final_page_size = page_size
+        
         page_sizes = {
             'A4_portrait': {'width': 794, 'height': 1123},
             'A4_landscape': {'width': 1123, 'height': 794},
