@@ -7013,6 +7013,31 @@ async def import_from_excel(
         # قراءة جميع الخلايا
         for row in sheet.iter_rows():
             for cell in row:
+                # التحقق من الخلايا المدمجة أولاً (قبل فحص القيمة!)
+                is_merged = False
+                should_skip = False
+                
+                for merged_range in merged_ranges:
+                    if cell.coordinate in merged_range:
+                        is_merged = True
+                        # حساب حجم المنطقة المدمجة
+                        min_col, min_row, max_col, max_row = merged_range.min_col, merged_range.min_row, merged_range.max_col, merged_range.max_row
+                        
+                        # فقط معالجة الخلية الأولى (أعلى-يسار) في المنطقة المدمجة
+                        if cell.column == min_col and cell.row == min_row:
+                            # هذه هي الخلية الرئيسية - نستمر في معالجتها
+                            pass
+                        else:
+                            # هذه خلية ثانوية في منطقة مدمجة - نتجاهلها تماماً
+                            should_skip = True
+                            break
+                        break
+                
+                # تجاهل الخلايا الثانوية في المناطق المدمجة
+                if should_skip:
+                    continue
+                
+                # الآن نتحقق من القيمة
                 if cell.value is None:
                     continue
                 
@@ -7028,21 +7053,14 @@ async def import_from_excel(
                 cell_width = (sheet.column_dimensions[get_column_letter(cell.column)].width or 8.43) * col_to_px
                 cell_height = (sheet.row_dimensions[cell.row].height or 15) * row_to_px
                 
-                # التحقق من الخلايا المدمجة
-                is_merged = False
-                for merged_range in merged_ranges:
-                    if cell.coordinate in merged_range:
-                        is_merged = True
-                        # حساب حجم المنطقة المدمجة
-                        min_col, min_row, max_col, max_row = merged_range.min_col, merged_range.min_row, merged_range.max_col, merged_range.max_row
-                        if cell.column == min_col and cell.row == min_row:
-                            # الخلية الأولى في المنطقة المدمجة
+                # إذا كانت جزء من منطقة مدمجة، نحسب الحجم الكامل
+                if is_merged:
+                    for merged_range in merged_ranges:
+                        if cell.coordinate in merged_range:
+                            min_col, min_row, max_col, max_row = merged_range.min_col, merged_range.min_row, merged_range.max_col, merged_range.max_row
                             cell_width = sum(sheet.column_dimensions[get_column_letter(i)].width or 8.43 for i in range(min_col, max_col + 1)) * col_to_px
                             cell_height = sum(sheet.row_dimensions[i].height or 15 for i in range(min_row, max_row + 1)) * row_to_px
-                        else:
-                            # تجاهل الخلايا الأخرى في المنطقة المدمجة
-                            continue
-                        break
+                            break
                 
                 # استخراج التنسيق
                 font_size = 11
