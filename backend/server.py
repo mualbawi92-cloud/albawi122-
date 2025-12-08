@@ -6996,86 +6996,139 @@ async def import_from_excel(
             'A5_landscape': {'width': 794, 'height': 559},
             'thermal_80mm': {'width': 302, 'height': 600},
         }
-        page_config = page_sizes.get(page_size, page_sizes['A5_landscape'])
+        page_config = page_sizes.get(final_page_size, page_sizes['A5_landscape'])
         
-        # الحصول على المفتاح
-        llm_key = os.environ.get('EMERGENT_LLM_KEY')
-        if not llm_key:
-            raise HTTPException(status_code=500, detail="مفتاح الذكاء الاصطناعي غير متوفر")
+        # معامل التحويل من Excel لبكسل
+        # Excel column width: 1 unit = ~7 pixels
+        # Excel row height: 1 unit = ~1.33 pixels
+        col_to_px = 7
+        row_to_px = 1.33
         
-        # إزالة بادئة data:image إذا موجودة
-        if image_data.startswith('data:'):
-            image_data = image_data.split(',')[1]
+        elements = []
+        element_id = 1
         
-        # إنشاء chat instance
-        chat = LlmChat(
-            api_key=llm_key,
-            session_id=f"design_analysis_{current_user.get('id')}",
-            system_message="أنت خبير في تحليل تصميم الوثائق والوصولات. مهمتك تحليل الصور واستخراج التصميم بالتفصيل."
-        ).with_model("openai", "gpt-4o")
+        # قراءة كل الخلايا المدمجة
+        merged_ranges = list(sheet.merged_cells.ranges)
         
-        prompt = f"""أنت خبير في استخراج التصميم من الصور. حلل هذه الصورة بدقة شديدة واستخرج كل التصميم.
-
-أبعاد الصفحة المستهدفة: {page_config['width']}px عرض × {page_config['height']}px ارتفاع
-
-⚠️ مهم جداً:
-1. استخرج **كل نص** تشوفه في الصورة (حتى النصوص الصغيرة)
-2. استخرج **كل إطار ومستطيل وخط**
-3. للعناوين والتسميات (مثل "اسم المرسل:" "المبلغ:") استخدم type: "static_text" وحط النص كامل
-4. للبيانات المتغيرة (الأرقام، الأسماء، التواريخ) حط type: "text_field" واترك text فارغ وحط field: "field_name"
-5. حدد المواقع بدقة (X,Y نسبة لأبعاد الصفحة المذكورة)
-6. حدد الحجم (width, height) لكل عنصر
-7. لاحظ حجم الخط والألوان
-8. انتبه للمحاذاة (يمين/وسط/يسار)
-
-أنواع العناصر:
-- static_text: للنصوص الثابتة (عناوين، تسميات، ملاحظات)
-- text_field: للحقول المتغيرة فقط (أرقام، أسماء، تواريخ)
-- rectangle: للإطارات والمربعات
-- line: للخطوط الأفقية
-- vertical_line: للخطوط العمودية
-
-مثال:
-إذا شفت "اسم المرسل: أحمد محمد"
-→ عنصر 1: type: "static_text", text: "اسم المرسل:", x: موقعه
-→ عنصر 2: type: "text_field", field: "sender_name", text: "", x: موقعه بجانب العنوان
-
-أعطني JSON فقط:
-{{
-  "suggested_name": "اسم للتصميم",
-  "elements": [
-    {{ "id": "1", "type": "rectangle", "x": 10, "y": 10, "width": 774, "height": 539, "borderWidth": 2, "borderColor": "#000000" }},
-    {{ "id": "2", "type": "static_text", "x": 300, "y": 30, "width": 200, "height": 40, "text": "وصل إرسال حوالة", "fontSize": 24, "fontWeight": "bold", "color": "#000000", "textAlign": "center" }},
-    {{ "id": "3", "type": "static_text", "x": 650, "y": 100, "width": 100, "height": 25, "text": "رقم الحوالة:", "fontSize": 12, "fontWeight": "bold", "textAlign": "right" }},
-    {{ "id": "4", "type": "text_field", "field": "tracking_number", "x": 500, "y": 100, "width": 140, "height": 25, "fontSize": 12, "textAlign": "right" }}
-  ]
-}}
-
-استخرج كل شيء بالتفصيل! لا تختصر!"""
-
-        # إنشاء محتوى الصورة
-        image_content = ImageContent(image_base64=image_data)
+        # قراءة جميع الخلايا
+        for row in sheet.iter_rows():
+            for cell in row:
+                if cell.value is None:
+                    continue
+                
+                # حساب الموقع
+                col_idx = cell.column - 1
+                row_idx = cell.row - 1
+                
+                # حساب العرض الإجمالي للأعمدة السابقة
+                x = sum(sheet.column_dimensions[get_column_letter(i+1)].width or 8.43 for i in range(col_idx)) * col_to_px
+                y = sum(sheet.row_dimensions[i+1].height or 15 for i in range(row_idx)) * row_to_px
+                
+                # حجم الخلية
+                cell_width = (sheet.column_dimensions[get_column_letter(cell.column)].width or 8.43) * col_to_px
+                cell_height = (sheet.row_dimensions[cell.row].height or 15) * row_to_px
+                
+                # التحقق من الخلايا المدمجة
+                is_merged = False
+                for merged_range in merged_ranges:
+                    if cell.coordinate in merged_range:
+                        is_merged = True
+                        # حساب حجم المنطقة المدمجة
+                        min_col, min_row, max_col, max_row = merged_range.min_col, merged_range.min_row, merged_range.max_col, merged_range.max_row
+                        if cell.column == min_col and cell.row == min_row:
+                            # الخلية الأولى في المنطقة المدمجة
+                            cell_width = sum(sheet.column_dimensions[get_column_letter(i)].width or 8.43 for i in range(min_col, max_col + 1)) * col_to_px
+                            cell_height = sum(sheet.row_dimensions[i].height or 15 for i in range(min_row, max_row + 1)) * row_to_px
+                        else:
+                            # تجاهل الخلايا الأخرى في المنطقة المدمجة
+                            continue
+                        break
+                
+                # استخراج التنسيق
+                font_size = 11
+                font_weight = 'normal'
+                text_color = '#000000'
+                bg_color = 'transparent'
+                text_align = 'right'
+                border_width = 0
+                border_color = '#000000'
+                
+                if cell.font:
+                    if cell.font.size:
+                        font_size = int(cell.font.size)
+                    if cell.font.bold:
+                        font_weight = 'bold'
+                    if cell.font.color and cell.font.color.rgb:
+                        try:
+                            rgb = cell.font.color.rgb
+                            if len(rgb) == 8:  # ARGB
+                                rgb = rgb[2:]
+                            text_color = f'#{rgb}'
+                        except:
+                            pass
+                
+                if cell.fill and cell.fill.start_color and cell.fill.start_color.rgb:
+                    try:
+                        rgb = cell.fill.start_color.rgb
+                        if len(rgb) == 8 and rgb[:2] != '00':  # ARGB وليس شفاف
+                            rgb = rgb[2:]
+                            bg_color = f'#{rgb}'
+                    except:
+                        pass
+                
+                if cell.alignment:
+                    if cell.alignment.horizontal == 'center':
+                        text_align = 'center'
+                    elif cell.alignment.horizontal == 'left':
+                        text_align = 'left'
+                
+                if cell.border:
+                    if cell.border.top and cell.border.top.style:
+                        border_width = 1
+                        if cell.border.top.color and cell.border.top.color.rgb:
+                            try:
+                                rgb = cell.border.top.color.rgb
+                                if len(rgb) == 8:
+                                    rgb = rgb[2:]
+                                border_color = f'#{rgb}'
+                            except:
+                                pass
+                
+                # تحديد نوع العنصر
+                element_type = 'static_text'
+                cell_text = str(cell.value).strip()
+                
+                # إنشاء العنصر
+                element = {
+                    'id': str(element_id),
+                    'type': element_type,
+                    'x': int(x),
+                    'y': int(y),
+                    'width': int(cell_width),
+                    'height': int(cell_height),
+                    'text': cell_text,
+                    'fontSize': font_size,
+                    'fontWeight': font_weight,
+                    'color': text_color,
+                    'backgroundColor': bg_color,
+                    'textAlign': text_align,
+                    'borderWidth': border_width,
+                    'borderColor': border_color,
+                    'fontFamily': 'Arial',
+                    'borderStyle': 'solid',
+                    'letterSpacing': '0',
+                    'opacity': 1,
+                    'rotation': 0
+                }
+                
+                elements.append(element)
+                element_id += 1
         
-        # إرسال الرسالة
-        user_message = UserMessage(
-            text=prompt,
-            file_contents=[image_content]
-        )
-        
-        response = await chat.send_message(user_message)
-        
-        # تنظيف الاستجابة
-        response_text = response.strip()
-        if response_text.startswith('```json'):
-            response_text = response_text[7:]
-        if response_text.startswith('```'):
-            response_text = response_text[3:]
-        if response_text.endswith('```'):
-            response_text = response_text[:-3]
-        response_text = response_text.strip()
-        
-        # تحويل إلى JSON
-        result = json_lib.loads(response_text)
+        result = {
+            'suggested_name': file.filename.replace('.xlsx', '').replace('.xls', ''),
+            'elements': elements,
+            'page_size': final_page_size
+        }
         
         # إضافة الخصائص الافتراضية
         for element in result.get('elements', []):
