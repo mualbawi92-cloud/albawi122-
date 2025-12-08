@@ -7082,17 +7082,31 @@ async def import_from_excel(
                     elif cell.alignment.horizontal == 'left':
                         text_align = 'left'
                 
+                # استخراج الحدود بشكل أفضل
+                has_top_border = False
+                has_bottom_border = False
+                has_left_border = False
+                has_right_border = False
+                
                 if cell.border:
                     if cell.border.top and cell.border.top.style:
-                        border_width = 1
-                        if cell.border.top.color and cell.border.top.color.rgb:
-                            try:
-                                rgb = cell.border.top.color.rgb
-                                if len(rgb) == 8:
-                                    rgb = rgb[2:]
-                                border_color = f'#{rgb}'
-                            except:
-                                pass
+                        has_top_border = True
+                        border_width = 2 if cell.border.top.style == 'thick' else 1
+                    if cell.border.bottom and cell.border.bottom.style:
+                        has_bottom_border = True
+                    if cell.border.left and cell.border.left.style:
+                        has_left_border = True
+                    if cell.border.right and cell.border.right.style:
+                        has_right_border = True
+                    
+                    if cell.border.top and cell.border.top.color and cell.border.top.color.rgb:
+                        try:
+                            rgb = cell.border.top.color.rgb
+                            if len(rgb) == 8:
+                                rgb = rgb[2:]
+                            border_color = f'#{rgb}'
+                        except:
+                            pass
                 
                 # تحديد نوع العنصر
                 element_type = 'static_text'
