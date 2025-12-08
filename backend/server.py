@@ -7113,36 +7113,11 @@ async def import_from_excel(
                         except:
                             pass
                 
-                # إذا كانت الخلية تحتوي على حدود كاملة، ننشئ مستطيل أولاً
+                # إذا كانت الخلية تحتوي على حدود كاملة، نبقي الحدود على عنصر النص نفسه
+                # بدلاً من إنشاء مستطيل منفصل لتجنب مشاكل الطبقات (z-index)
                 if has_top_border and has_bottom_border and has_left_border and has_right_border:
-                    # إنشاء عنصر مستطيل للحدود
-                    rectangle_element = {
-                        'id': str(element_id),
-                        'type': 'rectangle',
-                        'x': int(x),
-                        'y': int(y),
-                        'width': int(cell_width),
-                        'height': int(cell_height),
-                        'text': '',
-                        'fontSize': 14,
-                        'fontWeight': 'normal',
-                        'color': '#000000',
-                        'backgroundColor': bg_color,
-                        'textAlign': 'right',
-                        'borderWidth': border_width,
-                        'borderColor': border_color,
-                        'fontFamily': 'Arial',
-                        'borderStyle': 'solid',
-                        'letterSpacing': '0',
-                        'opacity': 1,
-                        'rotation': 0
-                    }
-                    elements.append(rectangle_element)
-                    element_id += 1
-                    
-                    # الآن نجعل خلفية النص شفافة حتى يظهر المستطيل خلفه
-                    bg_color = 'transparent'
-                    border_width = 0  # إزالة الحدود من النص لأننا أضفناها للمستطيل
+                    # نبقي border_width و bg_color كما هي على عنصر النص
+                    pass  # الحدود والخلفية ستُطبق على عنصر النص مباشرة
                 
                 # إنشاء خطوط فردية للحدود المفردة
                 elif has_any_border:
