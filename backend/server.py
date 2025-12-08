@@ -6966,9 +6966,7 @@ async def import_from_excel(
         # قراءة الملف
         contents = await file.read()
         workbook = load_workbook(io.BytesIO(contents))
-        
-        if not image_data:
-            raise HTTPException(status_code=400, detail="لم يتم إرفاق صورة")
+        sheet = workbook.active
         
         page_sizes = {
             'A4_portrait': {'width': 794, 'height': 1123},
