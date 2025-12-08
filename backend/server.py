@@ -6951,7 +6951,7 @@ async def get_active_template(template_type: str, current_user: dict = Depends(g
         raise HTTPException(status_code=500, detail=f"خطأ في جلب التصميم النشط: {str(e)}")
 
 
-@api_router.post("/analyze-receipt-design")
+@api_router.post("/import-from-excel")
 async def analyze_receipt_design(
     request: dict,
     current_user: dict = Depends(require_admin)
