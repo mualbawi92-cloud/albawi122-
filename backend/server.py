@@ -7067,21 +7067,25 @@ async def import_from_excel(
                         except:
                             pass
                 
-                # استخراج لون الخلفية
-                if cell.fill and hasattr(cell.fill, 'fgColor') and cell.fill.fgColor and cell.fill.fgColor.rgb:
-                    try:
-                        rgb = cell.fill.fgColor.rgb
-                        if len(rgb) == 8:  # ARGB format
-                            # تجاهل alpha channel واستخرج RGB فقط
-                            rgb_part = rgb[2:]
-                            # تحقق من أن اللون ليس أبيض افتراضي
-                            if rgb_part and rgb_part.lower() != 'ffffff':
-                                bg_color = f'#{rgb_part}'
-                        elif len(rgb) == 6:  # RGB format
-                            if rgb.lower() != 'ffffff':
-                                bg_color = f'#{rgb}'
-                    except:
-                        pass
+                # استخراج لون الخلفية (فقط إذا كان fill_type موجود وليس None)
+                if cell.fill and cell.fill.fill_type and cell.fill.fill_type != 'none':
+                    if hasattr(cell.fill, 'fgColor') and cell.fill.fgColor and cell.fill.fgColor.rgb:
+                        try:
+                            rgb = cell.fill.fgColor.rgb
+                            if len(rgb) == 8:  # ARGB format
+                                # تجاهل alpha channel واستخرج RGB فقط
+                                rgb_part = rgb[2:]
+                                # تحقق من أن اللون ليس أبيض أو أسود افتراضي
+                                if rgb_part and rgb_part.lower() not in ['ffffff', '000000']:
+                                    bg_color = f'#{rgb_part}'
+                                elif rgb_part and rgb_part.lower() == '333333':
+                                    # رمادي غامق (مثل العنوان)
+                                    bg_color = f'#{rgb_part}'
+                            elif len(rgb) == 6:  # RGB format
+                                if rgb.lower() not in ['ffffff', '000000']:
+                                    bg_color = f'#{rgb}'
+                        except:
+                            pass
                 
                 if cell.alignment:
                     if cell.alignment.horizontal == 'center':
