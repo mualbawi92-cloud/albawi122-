@@ -6952,18 +6952,20 @@ async def get_active_template(template_type: str, current_user: dict = Depends(g
 
 
 @api_router.post("/import-from-excel")
-async def analyze_receipt_design(
-    request: dict,
+async def import_from_excel(
+    file: UploadFile,
+    page_size: str = Form('A5_landscape'),
     current_user: dict = Depends(require_admin)
 ):
-    """Analyze receipt image and generate design elements using AI"""
+    """Import design from Excel file"""
     try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
-        import os
-        import json as json_lib
+        from openpyxl import load_workbook
+        from openpyxl.utils import get_column_letter
+        import io
         
-        image_data = request.get('image', '')
-        page_size = request.get('page_size', 'A5_landscape')
+        # قراءة الملف
+        contents = await file.read()
+        workbook = load_workbook(io.BytesIO(contents))
         
         if not image_data:
             raise HTTPException(status_code=400, detail="لم يتم إرفاق صورة")
