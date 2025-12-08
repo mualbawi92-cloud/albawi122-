@@ -7130,27 +7130,11 @@ async def import_from_excel(
             'page_size': final_page_size
         }
         
-        # إضافة الخصائص الافتراضية
-        for element in result.get('elements', []):
-            element.setdefault('id', str(len(element)))
-            element.setdefault('fontFamily', 'Arial')
-            element.setdefault('backgroundColor', 'transparent')
-            element.setdefault('borderStyle', 'solid')
-            element.setdefault('letterSpacing', '0')
-            element.setdefault('opacity', 1)
-            element.setdefault('rotation', 0)
-            element.setdefault('borderWidth', 0)
-            element.setdefault('borderColor', '#000000')
-            element.setdefault('textAlign', 'right')
-            element.setdefault('fontSize', 14)
-            element.setdefault('fontWeight', 'normal')
-            element.setdefault('color', '#000000')
-        
         return result
         
     except Exception as e:
-        logging.error(f"Error analyzing receipt: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"خطأ في تحليل الصورة: {str(e)}")
+        logging.error(f"Error importing from Excel: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في استيراد ملف Excel: {str(e)}")
 
 
 # Mount Socket.IO
