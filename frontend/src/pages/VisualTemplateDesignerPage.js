@@ -274,37 +274,40 @@ const VisualTemplateDesignerPage = () => {
     }
   }, [templateType]);
 
-  // دالة رفع الصورة وتحليلها بالذكاء الاصطناعي
-  const handleAIImageUpload = async (e) => {
+  // دالة رفع ملف Excel واستيراد التصميم
+  const handleExcelUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setAiLoading(true);
     try {
-      // تحويل الصورة إلى base64
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64Image = reader.result;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('page_size', pageSize);
 
-        // إرسال للـ backend للتحليل
-        const response = await axios.post(
-          `${API}/analyze-receipt-design`,
-          { image: base64Image, page_size: pageSize },
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-        );
-
-        if (response.data.elements) {
-          setElements(response.data.elements);
-          setTemplateName(response.data.suggested_name || 'تصميم من الذكاء الاصطناعي');
-          toast.success('🎉 تم تصميم الوصل تلقائياً! عدّل عليه كما تريد');
+      const response = await axios.post(
+        `${API}/import-from-excel`,
+        formData,
+        { 
+          headers: { 
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data'
+          } 
         }
-      };
-      reader.readAsDataURL(file);
+      );
+
+      if (response.data.elements) {
+        setElements(response.data.elements);
+        setTemplateName(response.data.suggested_name || 'تصميم من Excel');
+        setPageSize(response.data.page_size || pageSize);
+        toast.success(`🎉 تم استيراد ${response.data.elements.length} عنصر من Excel!`);
+      }
     } catch (error) {
-      console.error('AI Analysis Error:', error);
-      toast.error(error.response?.data?.detail || 'خطأ في تحليل الصورة');
+      console.error('Excel Import Error:', error);
+      toast.error(error.response?.data?.detail || 'خطأ في استيراد ملف Excel');
     } finally {
       setAiLoading(false);
+      e.target.value = ''; // Reset input
     }
   };
 
