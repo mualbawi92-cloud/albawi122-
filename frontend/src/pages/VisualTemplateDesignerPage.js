@@ -1079,7 +1079,7 @@ const VisualTemplateDesignerPage = () => {
                             letterSpacing: `${el.letterSpacing || 0}px`,
                             color: el.color,
                             backgroundColor: el.backgroundColor,
-                            borderWidth: (el.type === ELEMENT_TYPES.RECTANGLE || el.type === ELEMENT_TYPES.CIRCLE) ? `${el.borderWidth}px` : '0',
+                            borderWidth: (el.type === ELEMENT_TYPES.RECTANGLE || el.type === ELEMENT_TYPES.CIRCLE || (el.borderWidth && el.borderWidth > 0)) ? `${el.borderWidth}px` : '0',
                             borderColor: el.borderColor,
                             borderStyle: el.borderStyle || 'solid',
                             borderRadius: el.type === ELEMENT_TYPES.CIRCLE ? '50%' : '0',
