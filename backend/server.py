@@ -7087,17 +7087,22 @@ async def import_from_excel(
                 has_bottom_border = False
                 has_left_border = False
                 has_right_border = False
+                has_any_border = False
                 
                 if cell.border:
                     if cell.border.top and cell.border.top.style:
                         has_top_border = True
+                        has_any_border = True
                         border_width = 2 if cell.border.top.style == 'thick' else 1
                     if cell.border.bottom and cell.border.bottom.style:
                         has_bottom_border = True
+                        has_any_border = True
                     if cell.border.left and cell.border.left.style:
                         has_left_border = True
+                        has_any_border = True
                     if cell.border.right and cell.border.right.style:
                         has_right_border = True
+                        has_any_border = True
                     
                     if cell.border.top and cell.border.top.color and cell.border.top.color.rgb:
                         try:
@@ -7108,11 +7113,146 @@ async def import_from_excel(
                         except:
                             pass
                 
+                # إذا كانت الخلية تحتوي على حدود كاملة، ننشئ مستطيل أولاً
+                if has_top_border and has_bottom_border and has_left_border and has_right_border:
+                    # إنشاء عنصر مستطيل للحدود
+                    rectangle_element = {
+                        'id': str(element_id),
+                        'type': 'rectangle',
+                        'x': int(x),
+                        'y': int(y),
+                        'width': int(cell_width),
+                        'height': int(cell_height),
+                        'text': '',
+                        'fontSize': 14,
+                        'fontWeight': 'normal',
+                        'color': '#000000',
+                        'backgroundColor': bg_color,
+                        'textAlign': 'right',
+                        'borderWidth': border_width,
+                        'borderColor': border_color,
+                        'fontFamily': 'Arial',
+                        'borderStyle': 'solid',
+                        'letterSpacing': '0',
+                        'opacity': 1,
+                        'rotation': 0
+                    }
+                    elements.append(rectangle_element)
+                    element_id += 1
+                    
+                    # الآن نجعل خلفية النص شفافة حتى يظهر المستطيل خلفه
+                    bg_color = 'transparent'
+                    border_width = 0  # إزالة الحدود من النص لأننا أضفناها للمستطيل
+                
+                # إنشاء خطوط فردية للحدود المفردة
+                elif has_any_border:
+                    if has_top_border:
+                        line_element = {
+                            'id': str(element_id),
+                            'type': 'line',
+                            'x': int(x),
+                            'y': int(y),
+                            'width': int(cell_width),
+                            'height': 2,
+                            'text': '',
+                            'fontSize': 14,
+                            'fontWeight': 'normal',
+                            'color': '#000000',
+                            'backgroundColor': border_color,
+                            'textAlign': 'right',
+                            'borderWidth': 0,
+                            'borderColor': border_color,
+                            'fontFamily': 'Arial',
+                            'borderStyle': 'solid',
+                            'letterSpacing': '0',
+                            'opacity': 1,
+                            'rotation': 0
+                        }
+                        elements.append(line_element)
+                        element_id += 1
+                    
+                    if has_bottom_border:
+                        line_element = {
+                            'id': str(element_id),
+                            'type': 'line',
+                            'x': int(x),
+                            'y': int(y + cell_height - 2),
+                            'width': int(cell_width),
+                            'height': 2,
+                            'text': '',
+                            'fontSize': 14,
+                            'fontWeight': 'normal',
+                            'color': '#000000',
+                            'backgroundColor': border_color,
+                            'textAlign': 'right',
+                            'borderWidth': 0,
+                            'borderColor': border_color,
+                            'fontFamily': 'Arial',
+                            'borderStyle': 'solid',
+                            'letterSpacing': '0',
+                            'opacity': 1,
+                            'rotation': 0
+                        }
+                        elements.append(line_element)
+                        element_id += 1
+                    
+                    if has_left_border:
+                        line_element = {
+                            'id': str(element_id),
+                            'type': 'vertical_line',
+                            'x': int(x),
+                            'y': int(y),
+                            'width': 2,
+                            'height': int(cell_height),
+                            'text': '',
+                            'fontSize': 14,
+                            'fontWeight': 'normal',
+                            'color': '#000000',
+                            'backgroundColor': border_color,
+                            'textAlign': 'right',
+                            'borderWidth': 0,
+                            'borderColor': border_color,
+                            'fontFamily': 'Arial',
+                            'borderStyle': 'solid',
+                            'letterSpacing': '0',
+                            'opacity': 1,
+                            'rotation': 0
+                        }
+                        elements.append(line_element)
+                        element_id += 1
+                    
+                    if has_right_border:
+                        line_element = {
+                            'id': str(element_id),
+                            'type': 'vertical_line',
+                            'x': int(x + cell_width - 2),
+                            'y': int(y),
+                            'width': 2,
+                            'height': int(cell_height),
+                            'text': '',
+                            'fontSize': 14,
+                            'fontWeight': 'normal',
+                            'color': '#000000',
+                            'backgroundColor': border_color,
+                            'textAlign': 'right',
+                            'borderWidth': 0,
+                            'borderColor': border_color,
+                            'fontFamily': 'Arial',
+                            'borderStyle': 'solid',
+                            'letterSpacing': '0',
+                            'opacity': 1,
+                            'rotation': 0
+                        }
+                        elements.append(line_element)
+                        element_id += 1
+                    
+                    border_width = 0  # إزالة الحدود من النص
+                
                 # تحديد نوع العنصر
                 element_type = 'static_text'
                 cell_text = str(cell.value).strip()
                 
-                # إنشاء العنصر
+                # إنشاء عنصر النص
                 element = {
                     'id': str(element_id),
                     'type': element_type,
@@ -7126,7 +7266,7 @@ async def import_from_excel(
                     'color': text_color,
                     'backgroundColor': bg_color,
                     'textAlign': text_align,
-                    'borderWidth': border_width,
+                    'borderWidth': 0,  # الحدود موجودة في العناصر المنفصلة
                     'borderColor': border_color,
                     'fontFamily': 'Arial',
                     'borderStyle': 'solid',
