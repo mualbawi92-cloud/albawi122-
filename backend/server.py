@@ -7227,6 +7227,7 @@ async def import_from_excel(
                 cell_text = str(cell.value).strip()
                 
                 # إنشاء عنصر النص
+                # border_width يكون > 0 فقط عندما تكون هناك حدود كاملة، وإلا سيكون 0
                 element = {
                     'id': str(element_id),
                     'type': element_type,
@@ -7240,7 +7241,7 @@ async def import_from_excel(
                     'color': text_color,
                     'backgroundColor': bg_color,
                     'textAlign': text_align,
-                    'borderWidth': 0,  # الحدود موجودة في العناصر المنفصلة
+                    'borderWidth': border_width,  # يحتفظ بقيمته للحدود الكاملة
                     'borderColor': border_color,
                     'fontFamily': 'Arial',
                     'borderStyle': 'solid',
