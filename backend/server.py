@@ -7067,12 +7067,19 @@ async def import_from_excel(
                         except:
                             pass
                 
-                if cell.fill and cell.fill.start_color and cell.fill.start_color.rgb:
+                # استخراج لون الخلفية
+                if cell.fill and hasattr(cell.fill, 'fgColor') and cell.fill.fgColor and cell.fill.fgColor.rgb:
                     try:
-                        rgb = cell.fill.start_color.rgb
-                        if len(rgb) == 8 and rgb[:2] != '00':  # ARGB وليس شفاف
-                            rgb = rgb[2:]
-                            bg_color = f'#{rgb}'
+                        rgb = cell.fill.fgColor.rgb
+                        if len(rgb) == 8:  # ARGB format
+                            # تجاهل alpha channel واستخرج RGB فقط
+                            rgb_part = rgb[2:]
+                            # تحقق من أن اللون ليس أبيض افتراضي
+                            if rgb_part and rgb_part.lower() != 'ffffff':
+                                bg_color = f'#{rgb_part}'
+                        elif len(rgb) == 6:  # RGB format
+                            if rgb.lower() != 'ffffff':
+                                bg_color = f'#{rgb}'
                     except:
                         pass
                 
