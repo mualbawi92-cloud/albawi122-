@@ -754,30 +754,31 @@ const VisualTemplateDesignerPage = () => {
                   </div>
                 </div>
 
-                {/* ذكاء اصطناعي */}
-                <div className="border rounded-lg p-3 bg-gradient-to-r from-purple-50 to-pink-50">
-                  <h3 className="font-bold mb-3">🤖 تصميم ذكي</h3>
-                  <p className="text-xs text-gray-600 mb-2">ارفع صورة وصل، والذكاء الاصطناعي يصممه لك!</p>
+                {/* استيراد من Excel */}
+                <div className="border rounded-lg p-3 bg-gradient-to-r from-green-50 to-blue-50">
+                  <h3 className="font-bold mb-3">📊 استيراد من Excel</h3>
+                  <p className="text-xs text-gray-600 mb-2">صمم الوصل في Excel وارفعه، نحوله تلقائياً!</p>
                   <input
                     type="file"
-                    id="aiImageUpload"
-                    accept="image/*"
+                    id="excelUpload"
+                    accept=".xlsx,.xls"
                     className="hidden"
-                    onChange={handleAIImageUpload}
+                    onChange={handleExcelUpload}
                   />
                   <Button
-                    onClick={() => document.getElementById('aiImageUpload').click()}
+                    onClick={() => document.getElementById('excelUpload').click()}
                     variant="outline"
-                    className="w-full text-sm justify-start bg-white border-2 border-purple-300 hover:bg-purple-50"
+                    className="w-full text-sm justify-start bg-white border-2 border-green-400 hover:bg-green-50"
                     size="sm"
                     disabled={aiLoading}
                   >
                     {aiLoading ? (
-                      <>⏳ جاري التحليل...</>
+                      <>⏳ جاري الاستيراد...</>
                     ) : (
-                      <>🤖 ارفع صورة وصممه بالذكاء</>
+                      <>📊 ارفع ملف Excel</>
                     )}
                   </Button>
+                  <p className="text-xs text-gray-500 mt-2">✓ يدعم .xlsx و .xls</p>
                 </div>
 
                 {/* التصاميم المحفوظة */}
