@@ -155,6 +155,13 @@ const CreateTransferPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate for admin: exchange company must be selected
+    if (user?.role === 'admin' && (!formData.exchange_company_account || formData.exchange_company_account === 'none')) {
+      toast.error('يجب اختيار شركة صرافة لإنشاء الحوالة');
+      return;
+    }
+    
     // Show confirmation modal instead of submitting directly
     setShowConfirmModal(true);
   };
