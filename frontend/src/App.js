@@ -60,10 +60,9 @@ const ProtectedRoute = ({ children }) => {
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
 
-  // Determine redirect based on user role
+  // Determine redirect based on user role - always go to dashboard
   const getRedirectPath = () => {
-    if (!user) return '/dashboard';
-    return user.role === 'admin' ? '/admin/dashboard' : '/dashboard';
+    return '/dashboard';
   };
 
   return (
