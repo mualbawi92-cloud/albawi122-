@@ -48,9 +48,11 @@ const CreateTransferPage = () => {
     currency: 'IQD',
     to_governorate: '',
     to_agent_id: '',
-    note: ''
+    note: '',
+    exchange_company_account: '' // للمدير فقط
   });
   const [agents, setAgents] = useState([]);
+  const [exchangeCompanies, setExchangeCompanies] = useState([]); // حسابات شركات الصرافة
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
