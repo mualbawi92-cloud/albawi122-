@@ -549,8 +549,8 @@ const ChartOfAccountsPage = () => {
           )}
         </div>
 
-        {/* حذف باقي التبويبات (accounts, income-statement, balance-sheet) */}
-        {false && (
+        {/* Add Account Dialog - تم إزالة الـ Dialogs القديمة المكررة */}
+        {false && "removed old code" && (
           <>
         <Card>
           <CardContent className="pt-6">
