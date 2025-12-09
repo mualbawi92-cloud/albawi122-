@@ -28,8 +28,8 @@ const CURRENCIES = ['IQD', 'USD'];
 
 const ChartOfAccountsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
-  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [filteredAccounts, setFilteredAccounts] = useState([]);
