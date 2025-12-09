@@ -316,6 +316,7 @@ const Sidebar = () => {
               submenu={item.submenu}
               subOpen={item.subOpen}
               onSubToggle={item.onSubToggle}
+              items={item.items}
             />
           );
         })}
