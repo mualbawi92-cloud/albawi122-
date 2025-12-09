@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Label } from '../components/ui/label';
-import Navbar from '../components/Navbar';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -46,7 +45,7 @@ const TransitAccountPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+        
         <div className="container mx-auto p-6 flex justify-center items-center">
           <div className="text-lg">جاري التحميل...</div>
         </div>
@@ -56,7 +55,7 @@ const TransitAccountPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      
       <div className="container mx-auto p-6 max-w-7xl">
         {/* Header */}
         <div className="mb-6">

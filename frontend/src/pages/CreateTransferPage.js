@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 import { formatAmountInWords } from '../utils/arabicNumbers';
 import { generateHTMLFromVisualTemplate } from '../utils/printUtils';
 
@@ -510,7 +509,7 @@ const CreateTransferPage = () => {
   if (result) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+        
         <div className="container mx-auto p-6 max-w-2xl">
           <Card className="shadow-2xl border-2 border-secondary" data-testid="transfer-success-card">
             <CardHeader className="bg-gradient-to-l from-secondary/20 to-secondary/10">
@@ -604,7 +603,7 @@ const CreateTransferPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      
       <div className="container mx-auto p-3 sm:p-6 max-w-7xl">
         <Card className="shadow-xl" data-testid="create-transfer-form">
           <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5 p-4 sm:p-6">

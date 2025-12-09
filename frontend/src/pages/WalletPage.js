@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 import { printDocument, generateWalletDepositReceiptHTML } from '../utils/printUtils';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -82,7 +81,7 @@ const WalletPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+        
         <div className="container mx-auto p-6 flex items-center justify-center min-h-[50vh]">
           <div className="text-2xl text-primary">جاري التحميل...</div>
         </div>
@@ -92,7 +91,7 @@ const WalletPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="wallet-page">
-      <Navbar />
+      
       <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
         {/* Header */}
         <Card className="bg-gradient-to-l from-primary to-primary/80 text-white shadow-xl">

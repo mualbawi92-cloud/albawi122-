@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 import { printDocument, generateWalletDepositReceiptHTML } from '../utils/printUtils';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -138,7 +137,7 @@ const WalletManagementPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="wallet-management-page">
-      <Navbar />
+      
       <div className="container mx-auto p-3 sm:p-6">
         <Card className="shadow-xl max-w-2xl mx-auto">
           <CardHeader className="p-4 sm:p-6 bg-gradient-to-l from-primary to-primary/80 text-white rounded-t-lg">

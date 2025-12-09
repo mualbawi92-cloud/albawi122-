@@ -8,7 +8,6 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -340,7 +339,7 @@ const ChartOfAccountsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
-      <Navbar />
+      
       
       <div className="container mx-auto px-4 py-6">
         <Card>

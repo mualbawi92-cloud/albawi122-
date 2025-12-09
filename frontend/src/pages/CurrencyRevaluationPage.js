@@ -5,7 +5,6 @@ import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 
 const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
@@ -212,7 +211,7 @@ const CurrencyRevaluationPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      
       <div className="container mx-auto p-4 sm:p-6">
         <div className="mb-6">
           <div className="flex justify-between items-center">

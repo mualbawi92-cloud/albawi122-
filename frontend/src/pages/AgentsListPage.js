@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -141,7 +140,7 @@ const AgentsListPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="agents-list-page">
-      <Navbar />
+      
       <div className="container mx-auto p-6">
         <Card className="shadow-xl">
           <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5">

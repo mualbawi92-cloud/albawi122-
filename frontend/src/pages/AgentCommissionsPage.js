@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../co
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import Navbar from '../components/Navbar';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -92,7 +91,7 @@ const AgentCommissionsPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="agent-commissions-page">
-      <Navbar />
+      
       <div className="container mx-auto p-6">
         <Card className="shadow-xl mb-6">
           <CardHeader className="bg-gradient-to-l from-green-50 to-green-100 border-b-4 border-green-500">

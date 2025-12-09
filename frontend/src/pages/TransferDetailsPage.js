@@ -9,7 +9,6 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 import { formatAmountInWords } from '../utils/arabicNumbers';
 import { printDocument, generateTransferReceiptHTML, generateVoucherHTML, generateHTMLFromVisualTemplate } from '../utils/printUtils';
 
@@ -238,7 +237,7 @@ const TransferDetailsPage = () => {
   if (loading || !transfer) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+        
         <div className="container mx-auto p-6 flex items-center justify-center min-h-[50vh]">
           <div className="text-2xl text-primary">جاري التحميل...</div>
         </div>
@@ -248,7 +247,7 @@ const TransferDetailsPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="transfer-details-page">
-      <Navbar />
+      
       <div className="container mx-auto p-6 max-w-4xl">
         <Card className="shadow-2xl">
           <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5 py-6">

@@ -8,7 +8,6 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -105,7 +104,7 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="settings-page">
-      <Navbar />
+      
       <div className="container mx-auto p-3 sm:p-6 max-w-2xl">
         <Card className="shadow-2xl">
           <CardHeader className="bg-gradient-to-l from-primary/10 to-primary/5 p-4 sm:p-6">

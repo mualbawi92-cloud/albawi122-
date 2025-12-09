@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 import { formatAmountInWords } from '../utils/arabicNumbers';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -94,7 +93,7 @@ const AgentStatementPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8F9FB]">
-        <Navbar />
+        
         <div className="container mx-auto p-6 flex items-center justify-center min-h-[50vh]">
           <div className="text-2xl text-primary">جاري التحميل...</div>
         </div>
@@ -112,7 +111,7 @@ const AgentStatementPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F8F9FB]" data-testid="agent-statement-page">
-      <Navbar />
+      
       <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
         
         {/* Header Section */}

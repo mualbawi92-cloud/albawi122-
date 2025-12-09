@@ -5,7 +5,6 @@ import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -43,7 +42,7 @@ const CommissionsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+        
         <div className="container mx-auto p-6 flex items-center justify-center min-h-[50vh]">
           <div className="text-2xl text-primary">جاري التحميل...</div>
         </div>
@@ -53,7 +52,7 @@ const CommissionsPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="commissions-page">
-      <Navbar />
+      
       <div className="container mx-auto p-3 sm:p-6">
         <Card className="shadow-xl mb-6">
           <CardHeader className="bg-gradient-to-l from-secondary/20 to-secondary/10 p-4 sm:p-6">

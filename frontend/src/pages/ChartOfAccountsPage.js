@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../co
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -431,7 +430,7 @@ const ChartOfAccountsPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F5F7FA]">
-      <Navbar />
+      
       <div className="container mx-auto p-4 sm:p-6 space-y-6">
         {/* Header */}
         <Card className="border-0 shadow-lg">

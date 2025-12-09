@@ -7,7 +7,6 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
-import Navbar from '../components/Navbar';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -231,7 +230,7 @@ const QuickReceiveTransferPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="quick-receive-page">
-      <Navbar />
+      
       <div className="container mx-auto p-4 sm:p-6 max-w-4xl">
         <Card className="shadow-xl">
           <CardHeader className="bg-gradient-to-l from-green-50 to-green-100 border-b-4 border-green-500">

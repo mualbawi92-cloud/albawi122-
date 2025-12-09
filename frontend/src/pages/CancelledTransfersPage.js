@@ -6,7 +6,6 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -57,7 +56,7 @@ const CancelledTransfersPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F5F7FA]">
-        <Navbar />
+        
         <div className="container mx-auto p-6 flex items-center justify-center min-h-[50vh]">
           <div className="text-2xl text-primary">جاري التحميل...</div>
         </div>
@@ -67,7 +66,7 @@ const CancelledTransfersPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F5F7FA]" data-testid="cancelled-transfers-page">
-      <Navbar />
+      
       <div className="container mx-auto p-4 sm:p-6 space-y-6">
         
         {/* Header */}

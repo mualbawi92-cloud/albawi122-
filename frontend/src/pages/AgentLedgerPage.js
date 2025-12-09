@@ -6,7 +6,6 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import Navbar from '../components/Navbar';
 import { toast } from 'sonner';
 import { printDocument, generateAccountingReportHTML } from '../utils/printUtils';
 
@@ -139,7 +138,7 @@ const AgentLedgerPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="agent-ledger-page">
-      <Navbar />
+      
       <div className="container mx-auto p-6">
         <Card className="shadow-xl">
           <CardHeader className="bg-gradient-to-l from-blue-50 to-blue-100 border-b-4 border-blue-500">

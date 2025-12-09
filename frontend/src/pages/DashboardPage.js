@@ -6,7 +6,6 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -56,7 +55,7 @@ const DashboardPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+        
         <div className="container mx-auto p-6 flex items-center justify-center min-h-[50vh]">
           <div className="text-2xl text-primary">جاري التحميل...</div>
         </div>
@@ -66,7 +65,7 @@ const DashboardPage = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="dashboard-page">
-      <Navbar />
+      
       <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-8">
         {/* Welcome Section */}
         <div className="bg-gradient-to-l from-primary to-primary/80 rounded-xl sm:rounded-2xl p-4 sm:p-8 text-white shadow-xl">

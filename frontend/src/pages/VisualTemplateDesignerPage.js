@@ -7,7 +7,6 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 import axios from 'axios';
 import { Rnd } from 'react-rnd';
 import { Trash2, Plus, Save, Eye, FolderOpen, Grid, Type, Square, Minus } from 'lucide-react';
@@ -579,7 +578,7 @@ const VisualTemplateDesignerPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      
       <div className="container-fluid mx-auto p-4">
         <Card>
           <CardHeader>

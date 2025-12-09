@@ -8,7 +8,6 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -78,7 +77,7 @@ const JournalPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F5F7FA]">
-      <Navbar />
+      
       <div className="container mx-auto p-4 sm:p-6 space-y-6">
         {/* Header */}
         <Card className="border-0 shadow-lg">
