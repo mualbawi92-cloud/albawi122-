@@ -202,6 +202,12 @@ const Sidebar = ({ onCollapsedChange }) => {
       badge: unreadCount
     },
     {
+      icon: Scale,
+      label: 'ميزان المراجعة',
+      path: '/trial-balance?tab=trial-balance',
+      show: user?.role === 'admin'
+    },
+    {
       icon: Calculator,
       label: 'المحاسبة',
       show: user?.role === 'admin',
@@ -230,14 +236,6 @@ const Sidebar = ({ onCollapsedChange }) => {
           path: '/journal',
           onClick: () => {
             navigate('/journal');
-            setMobileOpen(false);
-          }
-        },
-        {
-          label: 'ميزان المراجعة',
-          path: '/chart-of-accounts?tab=trial-balance',
-          onClick: () => {
-            navigate('/chart-of-accounts?tab=trial-balance');
             setMobileOpen(false);
           }
         },
