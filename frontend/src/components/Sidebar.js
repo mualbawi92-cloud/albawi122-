@@ -59,7 +59,7 @@ const Sidebar = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  const MenuItem = ({ icon: Icon, label, onClick, active, badge, submenu, subOpen, onSubToggle }) => (
+  const MenuItem = ({ icon: Icon, label, onClick, active, badge, submenu, subOpen, onSubToggle, items }) => (
     <div>
       <button
         onClick={submenu ? onSubToggle : onClick}
@@ -84,9 +84,9 @@ const Sidebar = () => {
           </>
         )}
       </button>
-      {submenu && subOpen && !collapsed && (
+      {submenu && subOpen && !collapsed && items && (
         <div className="bg-gray-50">
-          {submenu.map((item, idx) => (
+          {items.map((item, idx) => (
             <button
               key={idx}
               onClick={item.onClick}
