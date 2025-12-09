@@ -1288,9 +1288,13 @@ async def get_agent_statement(agent_id: str, current_user: dict = Depends(get_cu
 @api_router.post("/transfers", response_model=TransferWithPin)
 async def create_transfer(transfer_data: TransferCreate, current_user: dict = Depends(get_current_user)):
     """Create new transfer"""
-    # Both agents and their users can create transfers
-    if current_user['role'] not in ['agent', 'user']:
+    # Agents, users, and admin (with exchange_company_account) can create transfers
+    if current_user['role'] not in ['agent', 'user', 'admin']:
         raise HTTPException(status_code=403, detail="غير مصرح لك بإنشاء حوالات")
+    
+    # Admin can only create transfers if they specify exchange_company_account
+    if current_user['role'] == 'admin' and not transfer_data.exchange_company_account:
+        raise HTTPException(status_code=400, detail="المدير يجب أن يختار حساب شركة صرافة لإنشاء حوالة")
     
     # Validate input
     if not transfer_data.sender_name or len(transfer_data.sender_name) < 3:
