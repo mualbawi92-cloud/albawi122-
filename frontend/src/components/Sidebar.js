@@ -171,7 +171,7 @@ const Sidebar = () => {
     },
     {
       icon: Home,
-      label: 'لوحة المدير',
+      label: 'إدارة الوكلاء',
       path: '/admin/dashboard',
       show: user?.role === 'admin'
     },
