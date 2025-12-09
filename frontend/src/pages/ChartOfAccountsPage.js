@@ -72,6 +72,14 @@ const ChartOfAccountsPage = () => {
     filterAccounts();
   }, [accounts, searchTerm, selectedCategory]);
 
+  // Update active tab when URL changes
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab');
+    if (tabFromUrl) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [searchParams]);
+
   const fetchAccounts = async () => {
     setLoading(true);
     try {
