@@ -836,7 +836,7 @@ const CreateTransferPage = () => {
                         <SelectValue placeholder="اختر شركة الصرافة" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">بدون شركة</SelectItem>
+                        <SelectItem value="none">بدون شركة</SelectItem>
                         {exchangeCompanies.map(company => (
                           <SelectItem key={company.code} value={company.code}>
                             {company.name_ar}
