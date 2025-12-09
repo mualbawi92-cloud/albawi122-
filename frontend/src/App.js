@@ -40,6 +40,7 @@ import CurrencyRevaluationPage from './pages/CurrencyRevaluationPage';
 import BackupManagementPage from './pages/BackupManagementPage';
 import TemplateDesignerPage from './pages/TemplateDesignerPage';
 import VisualTemplateDesignerPage from './pages/VisualTemplateDesignerPage';
+import Layout from './components/Layout';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
