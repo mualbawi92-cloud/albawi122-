@@ -73,16 +73,14 @@ const ChartOfAccountsPage = () => {
 
   // Update active tab when URL changes or component mounts
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
     const tabFromUrl = searchParams.get('tab');
-    console.log('Tab from URL:', tabFromUrl);
     if (tabFromUrl && ['accounts', 'trial-balance', 'income-statement', 'balance-sheet'].includes(tabFromUrl)) {
-      console.log('Setting active tab to:', tabFromUrl);
       setActiveTab(tabFromUrl);
     } else {
-      console.log('Setting active tab to: accounts (default)');
       setActiveTab('accounts');
     }
-  }, [searchParams]);
+  }, [location.search]);
 
   const fetchAccounts = async () => {
     setLoading(true);
