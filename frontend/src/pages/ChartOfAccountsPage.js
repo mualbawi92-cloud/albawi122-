@@ -441,8 +441,7 @@ const ChartOfAccountsPage = () => {
   const hierarchy = buildHierarchy(filteredAccounts);
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
-      
+    <div className="bg-[#F5F7FA]">
       <div className="container mx-auto p-4 sm:p-6 space-y-6">
         {/* Header */}
         <Card className="border-0 shadow-lg">
