@@ -1437,6 +1437,8 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
         'pin_encrypted': encrypt_pin(pin),  # Store encrypted PIN for later retrieval
         'status': 'pending',
         'note': transfer_data.note,
+        'exchange_company_account': transfer_data.exchange_company_account if is_admin_incoming else None,  # حساب شركة الصرافة للحوالات الواردة
+        'is_admin_incoming': is_admin_incoming,  # علامة أن الحوالة واردة من المدير
         'created_at': datetime.now(timezone.utc).isoformat(),
         'updated_at': datetime.now(timezone.utc).isoformat()
     }
