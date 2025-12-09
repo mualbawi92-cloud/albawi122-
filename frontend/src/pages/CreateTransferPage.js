@@ -167,6 +167,7 @@ const CreateTransferPage = () => {
       const submitData = {
         sender_name: formData.sender_name,
         sender_phone: formData.sender_phone || null,
+        exchange_company_account: formData.exchange_company_account || null, // للمدير
         receiver_name: formData.receiver_name,
         amount: parseFloat(formData.amount),
         currency: formData.currency,
