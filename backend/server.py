@@ -1838,7 +1838,8 @@ async def get_transfers(
     elif direction == 'incoming':
         query['$or'] = [
             {'to_agent_id': effective_agent_id},
-            {'to_governorate': current_user.get('governorate'), 'to_agent_id': None}
+            {'to_governorate': current_user.get('governorate'), 'to_agent_id': None},
+            {'is_admin_incoming': True, 'to_governorate': current_user.get('governorate')}  # حوالات واردة من المدير
         ]
     elif direction == 'outgoing':
         query['from_agent_id'] = effective_agent_id
