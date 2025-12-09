@@ -71,11 +71,13 @@ const ChartOfAccountsPage = () => {
     filterAccounts();
   }, [accounts, searchTerm, selectedCategory]);
 
-  // Update active tab when URL changes
+  // Update active tab when URL changes or component mounts
   useEffect(() => {
     const tabFromUrl = searchParams.get('tab');
-    if (tabFromUrl) {
+    if (tabFromUrl && ['accounts', 'trial-balance', 'income-statement', 'balance-sheet'].includes(tabFromUrl)) {
       setActiveTab(tabFromUrl);
+    } else {
+      setActiveTab('accounts');
     }
   }, [searchParams]);
 
