@@ -715,8 +715,8 @@ const ChartOfAccountsPage = () => {
           </div>
         )}
 
-        {/* Income Statement Tab */}
-        {activeTab === 'income-statement' && (
+        {/* تم حذف Income Statement و Balance Sheet - نعرض فقط ميزان المراجعة */}
+        {false && (
           <div className="space-y-4">
             <Card>
               <CardContent className="pt-6">
