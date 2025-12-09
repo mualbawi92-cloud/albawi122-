@@ -1320,10 +1320,16 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
     # Determine the actual agent for this transfer
     # If current user is a regular user, use their linked agent
     # If current user is an agent, use them directly
+    # If current user is admin with exchange_company_account, it's an incoming transfer
     actual_agent_id = current_user['id']
     actual_agent_name = current_user['display_name']
+    is_admin_incoming = False
     
-    if current_user['role'] == 'user':
+    if current_user['role'] == 'admin' and transfer_data.exchange_company_account:
+        # Admin creating incoming transfer from exchange company
+        is_admin_incoming = True
+        actual_agent_name = f"حوالة واردة - {transfer_data.exchange_company_account}"
+    elif current_user['role'] == 'user':
         # User is creating transfer on behalf of their agent
         if not current_user.get('agent_id'):
             raise HTTPException(status_code=400, detail="المستخدم غير مربوط بصراف")
