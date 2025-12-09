@@ -1528,6 +1528,10 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             elif agent_user and agent_user.get('account_code'):
                 sender_account_code = agent_user['account_code']
         
+        # For admin incoming transfers, use exchange company account
+        if is_admin_incoming:
+            sender_account_code = transfer_data.exchange_company_account
+        
         if not sender_account_code:
             logger.error(f"❌ Agent {current_user['id']} ({current_user.get('display_name')}) has no linked account in chart_of_accounts!")
             logger.error("Journal entry will NOT be created - agent must be linked to an account first")
