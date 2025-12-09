@@ -25,7 +25,7 @@ import TransitAccountPage from './pages/TransitAccountPage';
 import AllCommissionsViewPage from './pages/AllCommissionsViewPage';
 import NotificationsPage from './pages/NotificationsPage';
 import ReportsPage from './pages/ReportsPage';
-import ChartOfAccountsPage from './pages/ChartOfAccountsPage';
+import ChartOfAccountsPage from './pages/ChartOfAccountsPageNew';
 import ManualJournalEntryPage from './pages/ManualJournalEntryPage';
 import JournalPage from './pages/JournalPage';
 import LedgerPage from './pages/LedgerPage';
