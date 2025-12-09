@@ -827,7 +827,7 @@ const CreateTransferPage = () => {
                 {/* شركة الصرافة (للمدير فقط) */}
                 {user?.role === 'admin' && (
                   <div className="space-y-1">
-                    <Label htmlFor="exchange_company" className="text-xs font-bold">شركة الصرافة (اختياري)</Label>
+                    <Label htmlFor="exchange_company" className="text-xs font-bold">شركة الصرافة <span className="text-red-500">*</span></Label>
                     <Select
                       value={formData.exchange_company_account}
                       onValueChange={(value) => setFormData({ ...formData, exchange_company_account: value })}
