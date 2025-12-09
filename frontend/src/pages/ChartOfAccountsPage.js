@@ -29,6 +29,7 @@ const CURRENCIES = ['IQD', 'USD'];
 const ChartOfAccountsPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [filteredAccounts, setFilteredAccounts] = useState([]);
@@ -47,8 +48,9 @@ const ChartOfAccountsPage = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState(null);
   
-  // Tab state for reports
-  const [activeTab, setActiveTab] = useState('accounts'); // accounts, trial-balance, income-statement, balance-sheet
+  // Tab state for reports - read from URL query parameter
+  const tabFromUrl = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(tabFromUrl || 'accounts'); // accounts, trial-balance, income-statement, balance-sheet
   
   // Reports state
   const [reportStartDate, setReportStartDate] = useState('');
