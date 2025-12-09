@@ -64,6 +64,23 @@ const CreateTransferPage = () => {
     loading: false
   });
 
+  // Fetch exchange companies for admin
+  useEffect(() => {
+    const fetchExchangeCompanies = async () => {
+      if (user?.role === 'admin') {
+        try {
+          const response = await axios.get(`${API}/accounting/accounts`);
+          // Filter only exchange company accounts (category = شركات الصرافة)
+          const companies = response.data.accounts?.filter(acc => acc.category === 'شركات الصرافة') || [];
+          setExchangeCompanies(companies);
+        } catch (error) {
+          console.error('Error fetching exchange companies:', error);
+        }
+      }
+    };
+    fetchExchangeCompanies();
+  }, [user]);
+
   // Calculate commission when amount, currency, or governorate changes
   useEffect(() => {
     const calculateCommission = async () => {
