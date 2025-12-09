@@ -760,6 +760,7 @@ class TransferCreate(BaseModel):
     to_governorate: str
     to_agent_id: Optional[str] = None
     note: Optional[str] = None
+    exchange_company_account: Optional[str] = None  # للمدير: حساب شركة الصرافة (حوالة واردة)
 
 class TransferUpdate(BaseModel):
     sender_name: Optional[str] = None
