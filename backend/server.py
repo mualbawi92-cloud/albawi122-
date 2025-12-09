@@ -1566,11 +1566,14 @@ async def create_transfer(transfer_data: TransferCreate, current_user: dict = De
             
             # قيد 1: مبلغ الحوالة فقط
             # عند إصدار الحوالة: الوكيل المُرسل استلم المبلغ من الزبون (مدين)، والحوالة في ذمته (دائن)
+            # إذا كانت حوالة واردة من المدير، الوصف يختلف
+            description = f'حوالة واردة من {sender_account_code} - {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {transfer_code}' if is_admin_incoming else f'حوالة من {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {transfer_code}'
+            
             journal_entry_transfer = {
                 'id': str(uuid.uuid4()),
                 'entry_number': f"TR-{transfer_code}",
                 'date': datetime.now(timezone.utc).isoformat(),
-                'description': f'حوالة من {transfer_data.sender_name} إلى {transfer_data.receiver_name} - {transfer_code}',
+                'description': description,
                 'lines': [
                     {
                         'account_code': sender_account_code,  # Sender Account (مدين) - استلم المبلغ من الزبون
