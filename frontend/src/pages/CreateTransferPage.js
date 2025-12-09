@@ -821,17 +821,43 @@ const CreateTransferPage = () => {
                 </div>
               </div>
 
-              {/* ملاحظات */}
-              <div className="space-y-1">
-                <Label htmlFor="note" className="text-xs font-bold">ملاحظات (اختياري)</Label>
-                <Input
-                  id="note"
-                  data-testid="note-input"
-                  value={formData.note}
-                  onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                  className="text-sm h-10 md:h-9"
-                  placeholder="ملاحظات إضافية"
-                />
+              {/* حقل شركة الصرافة والملاحظات - جنب بعض */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* شركة الصرافة (للمدير فقط) */}
+                {user?.role === 'admin' && (
+                  <div className="space-y-1">
+                    <Label htmlFor="exchange_company" className="text-xs font-bold">شركة الصرافة (اختياري)</Label>
+                    <Select
+                      value={formData.exchange_company_account}
+                      onValueChange={(value) => setFormData({ ...formData, exchange_company_account: value })}
+                    >
+                      <SelectTrigger className="h-10 md:h-9 text-sm" id="exchange_company">
+                        <SelectValue placeholder="اختر شركة الصرافة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">بدون شركة</SelectItem>
+                        {exchangeCompanies.map(company => (
+                          <SelectItem key={company.code} value={company.code}>
+                            {company.name_ar}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* ملاحظات */}
+                <div className="space-y-1">
+                  <Label htmlFor="note" className="text-xs font-bold">ملاحظات (اختياري)</Label>
+                  <Input
+                    id="note"
+                    data-testid="note-input"
+                    value={formData.note}
+                    onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                    className="text-sm h-10 md:h-9"
+                    placeholder="ملاحظات إضافية"
+                  />
+                </div>
               </div>
 
               {/* الأزرار */}
