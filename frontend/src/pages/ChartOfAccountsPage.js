@@ -823,8 +823,7 @@ const ChartOfAccountsPage = () => {
           </div>
         )}
 
-        {/* Balance Sheet Tab */}
-        {activeTab === 'balance-sheet' && (
+        {false && (
           <div className="space-y-4">
             <Card>
               <CardContent className="pt-6">
