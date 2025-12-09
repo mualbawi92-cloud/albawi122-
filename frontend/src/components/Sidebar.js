@@ -28,7 +28,7 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Sidebar = () => {
+const Sidebar = ({ onCollapsedChange }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -37,6 +37,13 @@ const Sidebar = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [accountingOpen, setAccountingOpen] = useState(false);
   const [commissionsOpen, setCommissionsOpen] = useState(false);
+
+  // Notify parent when collapsed state changes
+  useEffect(() => {
+    if (onCollapsedChange) {
+      onCollapsedChange(collapsed);
+    }
+  }, [collapsed, onCollapsedChange]);
 
   useEffect(() => {
     if (user) {
