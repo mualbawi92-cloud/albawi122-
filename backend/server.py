@@ -7397,7 +7397,7 @@ async def update_user(
     if user_data.email is not None:
         update_data['email'] = user_data.email
     if user_data.password:
-        update_data['hashed_password'] = bcrypt.hashpw(user_data.password.encode(), bcrypt.gensalt()).decode()
+        update_data['password_hash'] = bcrypt.hashpw(user_data.password.encode(), bcrypt.gensalt()).decode()
     if user_data.permissions is not None:
         update_data['permissions'] = user_data.permissions
     
