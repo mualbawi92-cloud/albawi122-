@@ -7369,13 +7369,16 @@ async def create_user(
     
     return {'message': 'تم إنشاء المستخدم بنجاح', 'user_id': user_id}
 
+class UpdateUserRequest(BaseModel):
+    display_name: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
+    permissions: Optional[List[str]] = None
+
 @api_router.put("/admin/users/{user_id}")
 async def update_user(
     user_id: str,
-    display_name: Optional[str] = Form(None),
-    email: Optional[str] = Form(None),
-    password: Optional[str] = Form(None),
-    permissions: Optional[str] = Form(None),
+    user_data: UpdateUserRequest,
     current_user: dict = Depends(get_current_user)
 ):
     """Update user info and permissions"""
@@ -7389,18 +7392,14 @@ async def update_user(
     
     # Prepare update
     update_data = {}
-    if display_name:
-        update_data['display_name'] = display_name
-    if email is not None:
-        update_data['email'] = email
-    if password:
-        update_data['hashed_password'] = pwd_context.hash(password)
-    if permissions:
-        import json
-        try:
-            update_data['permissions'] = json.loads(permissions)
-        except:
-            pass
+    if user_data.display_name:
+        update_data['display_name'] = user_data.display_name
+    if user_data.email is not None:
+        update_data['email'] = user_data.email
+    if user_data.password:
+        update_data['hashed_password'] = pwd_context.hash(user_data.password)
+    if user_data.permissions is not None:
+        update_data['permissions'] = user_data.permissions
     
     if update_data:
         update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
