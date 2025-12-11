@@ -7317,6 +7317,120 @@ async def import_from_excel(
         raise HTTPException(status_code=500, detail=f"خطأ في استيراد ملف Excel: {str(e)}")
 
 
+# ==================== إدارة المستخدمين والصلاحيات ====================
+
+@api_router.get("/admin/users")
+async def get_all_users(current_user: dict = Depends(get_current_user)):
+    """Get all users - admin only"""
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="غير مصرح لك بعرض المستخدمين")
+    
+    users = await db.users.find({}, {'_id': 0, 'hashed_password': 0}).to_list(1000)
+    return users
+
+@api_router.post("/admin/users")
+async def create_user(
+    username: str = Form(...),
+    display_name: str = Form(...),
+    password: str = Form(...),
+    email: Optional[str] = Form(None),
+    role: str = Form('admin_user'),
+    permissions: Optional[str] = Form(None),  # JSON string of permissions array
+    current_user: dict = Depends(get_current_user)
+):
+    """Create new admin user with permissions"""
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="غير مصرح لك بإنشاء مستخدمين")
+    
+    # Check if username exists
+    existing = await db.users.find_one({'username': username}, {'_id': 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="اسم المستخدم موجود مسبقاً")
+    
+    # Parse permissions
+    import json
+    perms_list = []
+    if permissions:
+        try:
+            perms_list = json.loads(permissions)
+        except:
+            perms_list = []
+    
+    # Create user
+    user_id = str(uuid.uuid4())
+    hashed_password = pwd_context.hash(password)
+    
+    new_user = {
+        'id': user_id,
+        'username': username,
+        'display_name': display_name,
+        'email': email,
+        'hashed_password': hashed_password,
+        'role': role,
+        'permissions': perms_list,
+        'created_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.users.insert_one(new_user)
+    
+    return {'message': 'تم إنشاء المستخدم بنجاح', 'user_id': user_id}
+
+@api_router.put("/admin/users/{user_id}")
+async def update_user(
+    user_id: str,
+    display_name: Optional[str] = Form(None),
+    email: Optional[str] = Form(None),
+    password: Optional[str] = Form(None),
+    permissions: Optional[str] = Form(None),
+    current_user: dict = Depends(get_current_user)
+):
+    """Update user info and permissions"""
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="غير مصرح لك بتعديل المستخدمين")
+    
+    # Find user
+    user = await db.users.find_one({'id': user_id}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    # Prepare update
+    update_data = {}
+    if display_name:
+        update_data['display_name'] = display_name
+    if email is not None:
+        update_data['email'] = email
+    if password:
+        update_data['hashed_password'] = pwd_context.hash(password)
+    if permissions:
+        import json
+        try:
+            update_data['permissions'] = json.loads(permissions)
+        except:
+            pass
+    
+    if update_data:
+        update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+        await db.users.update_one({'id': user_id}, {'$set': update_data})
+    
+    return {'message': 'تم تحديث المستخدم بنجاح'}
+
+@api_router.delete("/admin/users/{user_id}")
+async def delete_user(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete user - admin only"""
+    if current_user['role'] != 'admin':
+        raise HTTPException(status_code=403, detail="غير مصرح لك بحذف المستخدمين")
+    
+    # Prevent deleting yourself
+    if user_id == current_user['id']:
+        raise HTTPException(status_code=400, detail="لا يمكنك حذف حسابك الخاص")
+    
+    result = await db.users.delete_one({'id': user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="المستخدم غير موجود")
+    
+    return {'message': 'تم حذف المستخدم بنجاح'}
+
+
 # Mount Socket.IO
 socket_app = socketio.ASGIApp(sio, app)
 
