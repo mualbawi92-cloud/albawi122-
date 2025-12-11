@@ -7325,7 +7325,7 @@ async def get_all_users(current_user: dict = Depends(get_current_user)):
     if current_user['role'] != 'admin':
         raise HTTPException(status_code=403, detail="غير مصرح لك بعرض المستخدمين")
     
-    users = await db.users.find({}, {'_id': 0, 'hashed_password': 0}).to_list(1000)
+    users = await db.users.find({}, {'_id': 0, 'password_hash': 0}).to_list(1000)
     return users
 
 class CreateUserRequest(BaseModel):
