@@ -208,6 +208,12 @@ const Sidebar = ({ onCollapsedChange }) => {
       show: user?.role === 'admin'
     },
     {
+      icon: Users,
+      label: 'إدارة المستخدمين',
+      path: '/users-management',
+      show: user?.role === 'admin'
+    },
+    {
       icon: Calculator,
       label: 'المحاسبة',
       show: user?.role === 'admin',
