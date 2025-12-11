@@ -7328,14 +7328,17 @@ async def get_all_users(current_user: dict = Depends(get_current_user)):
     users = await db.users.find({}, {'_id': 0, 'hashed_password': 0}).to_list(1000)
     return users
 
+class CreateUserRequest(BaseModel):
+    username: str
+    display_name: str
+    password: str
+    email: Optional[str] = None
+    role: str = 'admin_user'
+    permissions: List[str] = []
+
 @api_router.post("/admin/users")
 async def create_user(
-    username: str = Form(...),
-    display_name: str = Form(...),
-    password: str = Form(...),
-    email: Optional[str] = Form(None),
-    role: str = Form('admin_user'),
-    permissions: Optional[str] = Form(None),  # JSON string of permissions array
+    user_data: CreateUserRequest,
     current_user: dict = Depends(get_current_user)
 ):
     """Create new admin user with permissions"""
@@ -7343,18 +7346,9 @@ async def create_user(
         raise HTTPException(status_code=403, detail="غير مصرح لك بإنشاء مستخدمين")
     
     # Check if username exists
-    existing = await db.users.find_one({'username': username}, {'_id': 0})
+    existing = await db.users.find_one({'username': user_data.username}, {'_id': 0})
     if existing:
         raise HTTPException(status_code=400, detail="اسم المستخدم موجود مسبقاً")
-    
-    # Parse permissions
-    import json
-    perms_list = []
-    if permissions:
-        try:
-            perms_list = json.loads(permissions)
-        except:
-            perms_list = []
     
     # Create user
     user_id = str(uuid.uuid4())
