@@ -7359,7 +7359,7 @@ async def create_user(
         'username': user_data.username,
         'display_name': user_data.display_name,
         'email': user_data.email,
-        'hashed_password': hashed_password,
+        'password_hash': hashed_password,
         'role': user_data.role,
         'permissions': user_data.permissions,
         'created_at': datetime.now(timezone.utc).isoformat()
