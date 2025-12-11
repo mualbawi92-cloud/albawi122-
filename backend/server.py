@@ -7352,16 +7352,16 @@ async def create_user(
     
     # Create user
     user_id = str(uuid.uuid4())
-    hashed_password = pwd_context.hash(password)
+    hashed_password = pwd_context.hash(user_data.password)
     
     new_user = {
         'id': user_id,
-        'username': username,
-        'display_name': display_name,
-        'email': email,
+        'username': user_data.username,
+        'display_name': user_data.display_name,
+        'email': user_data.email,
         'hashed_password': hashed_password,
-        'role': role,
-        'permissions': perms_list,
+        'role': user_data.role,
+        'permissions': user_data.permissions,
         'created_at': datetime.now(timezone.utc).isoformat()
     }
     
