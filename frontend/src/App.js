@@ -41,6 +41,7 @@ import CurrencyRevaluationPage from './pages/CurrencyRevaluationPage';
 import BackupManagementPage from './pages/BackupManagementPage';
 import TemplateDesignerPage from './pages/TemplateDesignerPage';
 import VisualTemplateDesignerPage from './pages/VisualTemplateDesignerPage';
+import UsersManagementPage from './pages/UsersManagementPage';
 import Layout from './components/Layout';
 import './App.css';
 
