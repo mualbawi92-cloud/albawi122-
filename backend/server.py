@@ -7352,7 +7352,7 @@ async def create_user(
     
     # Create user
     user_id = str(uuid.uuid4())
-    hashed_password = pwd_context.hash(user_data.password)
+    hashed_password = bcrypt.hashpw(user_data.password.encode(), bcrypt.gensalt()).decode()
     
     new_user = {
         'id': user_id,
