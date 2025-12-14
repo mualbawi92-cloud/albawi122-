@@ -195,16 +195,26 @@ const VisualTemplateDesignerPage = () => {
         is_active: applyAsDefault,
       };
 
+      let savedTemplateId = currentTemplate?.id;
+      
       if (currentTemplate) {
         await axios.put(`${API}/visual-templates/${currentTemplate.id}`, payload);
         toast.success('تم تحديث التصميم بنجاح');
       } else {
-        await axios.post(`${API}/visual-templates`, payload);
+        const response = await axios.post(`${API}/visual-templates`, payload);
+        savedTemplateId = response.data.id;
         toast.success('تم حفظ التصميم بنجاح');
       }
 
-      if (applyAsDefault) {
-        toast.success(`✅ تم تطبيق التصميم على: ${templateType === 'send_transfer' ? 'وصولات الإرسال' : 'وصولات التسليم'}`);
+      // تطبيق التصميم كـ active إذا تم تفعيل الخيار
+      if (applyAsDefault && savedTemplateId) {
+        try {
+          await axios.post(`${API}/visual-templates/${savedTemplateId}/set-active`);
+          toast.success(`✅ تم تطبيق التصميم على: ${templateType === 'send_transfer' ? 'وصولات الإرسال' : templateType === 'receive_transfer' ? 'وصولات التسليم' : 'الوصولات'}`);
+        } catch (error) {
+          console.error('Error setting template as active:', error);
+          toast.error('تم الحفظ لكن فشل التطبيق كوصل افتراضي');
+        }
       }
 
       fetchTemplates();
