@@ -6973,6 +6973,32 @@ async def get_active_template(template_type: str, current_user: dict = Depends(g
         raise HTTPException(status_code=500, detail=f"خطأ في جلب التصميم النشط: {str(e)}")
 
 
+@api_router.post("/visual-templates/{template_id}/set-active")
+async def set_template_active(template_id: str, current_user: dict = Depends(require_admin)):
+    """Set a template as the active template for its type (Admin only)"""
+    try:
+        # Get the template first
+        template = await db.visual_templates.find_one({"id": template_id}, {"_id": 0})
+        if not template:
+            raise HTTPException(status_code=404, detail="التصميم غير موجود")
+        
+        template_type = template.get("template_type", "send_transfer")
+        
+        # Deactivate all templates of the same type
+        await db.visual_templates.update_many(
+            {"template_type": template_type},
+            {"$set": {"is_active": False}}
+        )
+        
+        # Activate the selected template
+        await db.visual_templates.update_one(
+            {"id": template_id},
+            {"$set": {"is_active": True}}
+        )
+        
+        return {"message": f"✅ تم تفعيل التصميم '{template.get('name')}' كوصل افتراضي لـ {template_type}"}
+
+
 @api_router.post("/import-from-excel")
 async def import_from_excel(
     file: UploadFile,
