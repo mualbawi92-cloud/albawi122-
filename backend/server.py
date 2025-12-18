@@ -886,7 +886,7 @@ class VisualTemplate(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str
     name: str
-    template_type: str  # send_transfer, receive_transfer, etc.
+    template_type: Optional[str] = "send_transfer"  # send_transfer, receive_transfer, etc.
     page_size: str  # A4_portrait, A5_landscape, etc.
     elements: List[Dict[str, Any]]
     is_active: Optional[bool] = False
