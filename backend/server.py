@@ -6997,6 +6997,11 @@ async def set_template_active(template_id: str, current_user: dict = Depends(req
         )
         
         return {"message": f"✅ تم تفعيل التصميم '{template.get('name')}' كوصل افتراضي لـ {template_type}"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error setting template as active: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"خطأ في تفعيل التصميم: {str(e)}")
 
 
 @api_router.post("/import-from-excel")
