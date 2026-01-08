@@ -1,0 +1,22 @@
+[
+  {
+    "id": "7242c949-1b3a-4be7-be39-6f986be9b3af",
+    "name": "وصل محدّث",
+    "type": "transfer_receipt",
+    "html_content": "<html><body><h1>محدّث: {{tracking_number}}</h1></body></html>",
+    "css_content": "body { font-family: Arial; }",
+    "created_at": "2025-12-06T14:03:12.224072+00:00",
+    "updated_at": "2025-12-06T14:03:21.089910+00:00",
+    "created_by": "5501ee23-d6ed-4e42-befb-1b09c1791d3d"
+  },
+  {
+    "id": "ebe28a36-fc62-47b8-8958-1a46d1e545ba",
+    "name": "وصل اختبار",
+    "type": "transfer_receipt",
+    "html_content": "{{sender_name}}\n<!DOCTYPE html>\n<html dir=\"rtl\" lang=\"ar\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>وصل حوالة</title>\n  <style>\n    \n    * {\n      margin: 0;\n      padding: 0;\n      box-sizing: border-box;\n    }\n    body {\n      font-family: 'Arial', sans-serif;\n      direction: rtl;\n      background: white;\n    }\n    @page {\n      size: A5 landscape;\n      margin: 10mm;\n    }\n    .voucher {\n      border: 2px solid #000;\n      padding: 20px;\n    }\n    .header {\n      display: flex;\n      justify-content: space-between;\n      border-bottom: 2px solid #000;\n      padding-bottom: 10px;\n      margin-bottom: 15px;\n    }\n    .title {\n      font-size: 24px;\n      font-weight: bold;\n    }\n    .info-box {\n      margin: 10px 0;\n      font-size: 14px;\n    }\n    .info-label {\n      font-weight: bold;\n      margin-left: 10px;\n    }\n    \n  </style>\n</head>\n<body>\n  <div class=\"voucher\">\n    <div class=\"header\">\n      <div class=\"title\">وصل حوالة</div>\n      <div>\n        <div class=\"info-box\">\n          <span class=\"info-label\">رقم الحوالة:</span>\n          <span>{{tracking_number}}</span>\n        </div>\n        <div class=\"info-box\">\n          <span class=\"info-label\">كود الحوالة:</span>\n          <span>{{transfer_code}}</span>\n        </div>\n      </div>\n    </div>\n    \n    <div class=\"info-box\">\n      <span class=\"info-label\">المرسل:</span>\n      <span>{{sender_name}}</span>\n    </div>\n    \n    <div class=\"info-box\">\n      <span class=\"info-label\">المستفيد:</span>\n      <span>{{receiver_name}}</span>\n    </div>\n    \n    <div class=\"info-box\">\n      <span class=\"info-label\">المبلغ:</span>\n      <span>{{amount}} {{currency}}</span>\n    </div>\n    \n    <div class=\"info-box\">\n      <span class=\"info-label\">التاريخ:</span>\n      <span>{{created_date}}</span>\n    </div>\n  </div>\n</body>\n</html>\n  ",
+    "css_content": "",
+    "created_at": "2025-12-06T14:07:24.307930+00:00",
+    "updated_at": "2025-12-06T14:07:24.307930+00:00",
+    "created_by": "5501ee23-d6ed-4e42-befb-1b09c1791d3d"
+  }
+]

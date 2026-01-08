@@ -1,0 +1,42 @@
+[
+  {
+    "code": "1",
+    "name_ar": "شركات الصرافة",
+    "name_en": "Exchange Companies",
+    "description": "حسابات الوكلاء والصرافين",
+    "is_active": true,
+    "is_system": false,
+    "created_at": "2025-11-28T16:03:46.680968+00:00",
+    "updated_at": "2025-11-28T16:03:46.680979+00:00"
+  },
+  {
+    "code": "2",
+    "name_ar": "الإيرادات",
+    "name_en": "Revenues",
+    "description": "حسابات الإيرادات والعمولات المحققة",
+    "is_active": true,
+    "is_system": false,
+    "created_at": "2025-11-28T16:03:46.681338+00:00",
+    "updated_at": "2025-11-28T16:03:46.681341+00:00"
+  },
+  {
+    "code": "3",
+    "name_ar": "المصروفات",
+    "name_en": "Expenses",
+    "description": "حسابات المصروفات والعمولات المدفوعة",
+    "is_active": true,
+    "is_system": false,
+    "created_at": "2025-11-28T16:03:46.681577+00:00",
+    "updated_at": "2025-11-28T16:03:46.681580+00:00"
+  },
+  {
+    "code": "4",
+    "name_ar": "حسابات مؤقتة",
+    "name_en": "Temporary Accounts",
+    "description": "الحسابات الانتقالية للحوالات",
+    "is_active": true,
+    "is_system": false,
+    "created_at": "2025-11-28T16:03:46.681812+00:00",
+    "updated_at": "2025-11-28T16:03:46.681814+00:00"
+  }
+]

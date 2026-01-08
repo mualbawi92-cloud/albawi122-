@@ -1,0 +1,822 @@
+[
+  {
+    "id": "f44340ba-ed9b-443b-a5c9-edbf85aed466",
+    "amount": 1111111.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "70498e3f-a1bc-4849-93b7-ae76fe5ea097",
+    "note": "حوالة واردة من صيرفة النجف - T-KR-20251119-000001-6",
+    "created_at": "2025-11-19T10:44:10.190430+00:00"
+  },
+  {
+    "id": "698e163c-4e61-4f0a-8ccf-92b8ce4f061a",
+    "amount": 1111111.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "70498e3f-a1bc-4849-93b7-ae76fe5ea097",
+    "note": "إلغاء حوالة - إرجاع إلى المدير العام - T-KR-20251119-000001-6",
+    "created_at": "2025-11-19T10:48:47.230283+00:00"
+  },
+  {
+    "id": "15c8a1b1-a768-47f9-948a-1d1aa657450d",
+    "amount": 1200000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "09101701-a6c2-4d5a-9369-0f31e4a3a23d",
+    "note": "حوالة واردة من صيرفة النجف - T-KR-20251119-000002-5",
+    "created_at": "2025-11-19T10:49:53.595620+00:00"
+  },
+  {
+    "id": "d8afeeb0-0340-426b-b22b-f04135782f99",
+    "amount": 1111111.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "d7e4f820-7549-4d96-8ef3-6a6b94b62927",
+    "note": "حوالة واردة من صيرفة النور - T-AN-20251130-000003-8",
+    "created_at": "2025-11-30T15:00:24.407937+00:00"
+  },
+  {
+    "id": "46fa8ad4-094a-416f-8719-978e78110b67",
+    "amount": 100000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "a9bc7fe0-515e-4414-9de9-54d24160d71b",
+    "note": "حوالة واردة من مستخدم تجريبي - T-BG-20251203-000004-6",
+    "created_at": "2025-12-03T13:21:15.421141+00:00"
+  },
+  {
+    "id": "3e0fc2e9-04c2-40ee-b030-8de57e1363db",
+    "amount": 200000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "91d00977-96df-4286-8755-30a2918e9378",
+    "note": "حوالة واردة من مستخدم تجريبي - T-NA-20251203-000005-5",
+    "created_at": "2025-12-03T13:25:42.325315+00:00"
+  },
+  {
+    "id": "992df6c8-0ac9-49ba-b2a5-a5bae552847e",
+    "amount": 150000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "13e33419-6dc6-4cce-8bf8-7b37836f1aad",
+    "note": "حوالة واردة من صيرفة الاختبار - T-KR-20251203-000006-4",
+    "created_at": "2025-12-03T13:25:58.675273+00:00"
+  },
+  {
+    "id": "1a858ad9-0547-4027-a789-0ba0b3368632",
+    "amount": 250000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "b8adfe5c-5532-4e8d-9fb0-bd03bd42d12c",
+    "note": "حوالة واردة من مستخدم تجريبي - T-NA-20251203-000007-3",
+    "created_at": "2025-12-03T13:27:46.410584+00:00"
+  },
+  {
+    "id": "901106a3-4913-448f-9aef-3888bd353a34",
+    "amount": 180000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "31cfaa92-beb2-422b-b06a-1f648a93602a",
+    "note": "حوالة واردة من صيرفة الاختبار - T-BA-20251203-000008-2",
+    "created_at": "2025-12-03T13:27:49.667349+00:00"
+  },
+  {
+    "id": "2136aac0-6a0a-4bad-8839-db0dbe351348",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "bc15cbcd-2ade-4d9d-841e-8af53a99a371",
+    "note": "حوالة واردة من صيرفة النور - T-BA-20251203-000009-1",
+    "created_at": "2025-12-03T13:36:46.441811+00:00"
+  },
+  {
+    "id": "f36c2656-b23c-4793-9cc0-610e32213eb5",
+    "amount": 125000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "fe50dae1-7e42-4c0f-a25c-e2486115d88b",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000010-0",
+    "created_at": "2025-12-03T13:40:05.289718+00:00"
+  },
+  {
+    "id": "d44eb276-8f49-48a6-9306-5169c7a731ff",
+    "amount": 125999.98,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "0e4299c1-75da-40bc-b847-e89675f0ae8c",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000011-9",
+    "created_at": "2025-12-03T13:56:58.638040+00:00"
+  },
+  {
+    "id": "f2bfe649-389c-4d5a-82ed-2fc7b68b73b9",
+    "amount": 125999.98,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "0e4299c1-75da-40bc-b847-e89675f0ae8c",
+    "note": "حوالة مُسلَّمة إلى محمد احمد - T-NJ-20251203-000011-9",
+    "created_at": "2025-12-03T13:58:46.625170+00:00"
+  },
+  {
+    "id": "6abe319f-5aa7-4237-991c-24bec3950d01",
+    "amount": 174999.98,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "9668978b-1561-480a-b000-3de65d5accf2",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000012-8",
+    "created_at": "2025-12-03T14:00:46.757467+00:00"
+  },
+  {
+    "id": "1e85b532-35e2-4274-975b-a2fef41196ed",
+    "amount": 174999.98,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "9668978b-1561-480a-b000-3de65d5accf2",
+    "note": "حوالة مُسلَّمة إلى زيد علي - T-NJ-20251203-000012-8",
+    "created_at": "2025-12-03T14:01:18.019041+00:00"
+  },
+  {
+    "id": "17a1e932-0bf3-419f-9537-689b75bb41a3",
+    "amount": 300000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "30eba375-d8c9-48cd-bdab-aeb2866309d0",
+    "note": "حوالة واردة من صيرفة النور - T-WA-20251203-000013-7",
+    "created_at": "2025-12-03T14:06:34.611356+00:00"
+  },
+  {
+    "id": "26b09e30-7967-4581-b841-7716a7d36e2e",
+    "amount": 115000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "68c9ce94-bc85-4a4b-a242-db4c5fc076f2",
+    "note": "حوالة واردة من صيرفة اور - T-KR-20251203-000014-6",
+    "created_at": "2025-12-03T14:08:53.180144+00:00"
+  },
+  {
+    "id": "62d6f11c-6545-47bf-940d-230622d887ba",
+    "amount": 115000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "68c9ce94-bc85-4a4b-a242-db4c5fc076f2",
+    "note": "حوالة مُسلَّمة إلى صيرفة النور - T-KR-20251203-000014-6",
+    "created_at": "2025-12-03T14:09:58.054130+00:00"
+  },
+  {
+    "id": "d8cbc3e2-688d-474c-898a-caff4ac04fcb",
+    "amount": 1222445.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "e69c8b29-22e1-4403-8e67-39a3a5fa7226",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000015-5",
+    "created_at": "2025-12-03T18:23:47.523438+00:00"
+  },
+  {
+    "id": "4fba47f2-5edc-4258-aa81-c1fefb746193",
+    "amount": 1222445.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "e69c8b29-22e1-4403-8e67-39a3a5fa7226",
+    "note": "حوالة مُسلَّمة إلى صيرفة اور - T-NJ-20251203-000015-5",
+    "created_at": "2025-12-03T18:26:17.793910+00:00"
+  },
+  {
+    "id": "178d16ba-2a4f-462e-baeb-8d82c88740ea",
+    "amount": 150000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "126e7dcb-941c-46c9-b292-cd8e96622ff5",
+    "note": "حوالة واردة من صيرفة النور - T-BA-20251203-000016-4",
+    "created_at": "2025-12-03T18:31:12.853370+00:00"
+  },
+  {
+    "id": "fb44270d-c385-42be-9a8c-199fab0ae3f2",
+    "amount": 200000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "0437ff0b-76d7-43f0-b69e-70e348d1c1e7",
+    "note": "حوالة واردة من صيرفة النور - T-BA-20251203-000017-3",
+    "created_at": "2025-12-03T18:34:16.967434+00:00"
+  },
+  {
+    "id": "f9113443-6185-4f10-8c68-9a2025291c6d",
+    "amount": 135000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "234a2787-0e4c-4d6b-b474-ef386a101c44",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000018-2",
+    "created_at": "2025-12-03T18:37:39.744791+00:00"
+  },
+  {
+    "id": "ebb92529-2b26-4fdd-80cc-f66fb83e6665",
+    "amount": 135000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "234a2787-0e4c-4d6b-b474-ef386a101c44",
+    "note": "حوالة مُسلَّمة إلى صيرفة اور - T-NJ-20251203-000018-2",
+    "created_at": "2025-12-03T18:40:01.095570+00:00"
+  },
+  {
+    "id": "326a49ad-b952-44c6-a977-abc04ee50491",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "eb487b06-6bfd-4acf-8289-f7dea67f7bbe",
+    "note": "حوالة واردة من صيرفة النور - T-BA-20251203-000019-1",
+    "created_at": "2025-12-03T19:08:44.459125+00:00"
+  },
+  {
+    "id": "c255d7ad-afe4-4c47-ac6e-41b9b7abc029",
+    "amount": 127000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "795234c5-2d19-45d5-9ce4-33e01d2c7a49",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000020-7",
+    "created_at": "2025-12-03T19:13:24.159124+00:00"
+  },
+  {
+    "id": "0df364c9-de5f-4c13-b050-ff9d11ea5a5e",
+    "amount": 600000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "40eda2f0-84f8-4603-bdde-b719f70f3112",
+    "note": "حوالة واردة من صيرفة النور - T-NA-20251203-000021-6",
+    "created_at": "2025-12-03T19:19:21.110031+00:00"
+  },
+  {
+    "id": "75a1b62a-574c-437d-9721-988433cdb376",
+    "amount": 1500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "d7a657fc-d878-41f8-9a30-69a04542f1bb",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000022-5",
+    "created_at": "2025-12-03T20:01:58.518685+00:00"
+  },
+  {
+    "id": "b892c15a-19ae-46df-a439-0132f2fca05c",
+    "amount": 1500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "d7a657fc-d878-41f8-9a30-69a04542f1bb",
+    "note": "حوالة مُسلَّمة إلى صيرفة اور - T-NJ-20251203-000022-5",
+    "created_at": "2025-12-03T20:03:48.173653+00:00"
+  },
+  {
+    "id": "e20dc1dc-8670-44af-aff0-02bbbb12fc25",
+    "amount": 1600000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "f1d2b738-162a-440e-8246-bdee6f8ed71c",
+    "note": "حوالة واردة من صيرفة النور - T-KR-20251203-000023-4",
+    "created_at": "2025-12-03T20:06:37.982767+00:00"
+  },
+  {
+    "id": "15ecac14-82f5-4a20-9eba-61db597f36be",
+    "amount": 250000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "ba72e582-b82d-49dc-8cad-86181c43b176",
+    "note": "حوالة واردة من صيرفة النور - T-BA-20251203-000024-3",
+    "created_at": "2025-12-03T20:21:24.797243+00:00"
+  },
+  {
+    "id": "633b1e08-63d5-49a0-9ee4-cbe2d5c0df4d",
+    "amount": 1750000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "5cdbfa02-4923-441a-969f-8566142d366a",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000025-2",
+    "created_at": "2025-12-03T20:23:31.800407+00:00"
+  },
+  {
+    "id": "6f2bfdbb-6f25-4562-949c-c9d1e57c5398",
+    "amount": 1750000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "5cdbfa02-4923-441a-969f-8566142d366a",
+    "note": "حوالة مُسلَّمة إلى صيرفة اور - T-NJ-20251203-000025-2",
+    "created_at": "2025-12-03T20:25:15.426817+00:00"
+  },
+  {
+    "id": "a5cf76dd-dcb0-4438-850f-af002457f05b",
+    "amount": 180000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "9afb7336-1e61-465d-9d70-a69b90a8e62b",
+    "note": "حوالة واردة من صيرفة النور - T-KR-20251203-000026-1",
+    "created_at": "2025-12-03T20:29:15.116870+00:00"
+  },
+  {
+    "id": "00ec21d0-bc5b-47c5-b47e-590651fd058c",
+    "amount": 1850000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "89f08f9e-55f8-42e6-9576-98342721c67b",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000027-0",
+    "created_at": "2025-12-03T20:32:38.128152+00:00"
+  },
+  {
+    "id": "0a749ff0-a0fe-4478-a14d-2b7b88bce871",
+    "amount": 1850000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "89f08f9e-55f8-42e6-9576-98342721c67b",
+    "note": "حوالة مُسلَّمة إلى صيرفة اور - T-NJ-20251203-000027-0",
+    "created_at": "2025-12-03T20:34:11.890772+00:00"
+  },
+  {
+    "id": "479fd8e3-553c-477e-8e7c-bfcccd656a72",
+    "amount": 100000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "33c0e499-d429-48cc-8b9e-be9ac9b85197",
+    "note": "حوالة واردة من صيرفة النور - T-WA-20251203-000028-9",
+    "created_at": "2025-12-03T20:36:59.855130+00:00"
+  },
+  {
+    "id": "eebb0c5b-c8ca-42c0-8209-6bcc34f33dba",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "0a7a1f95-8c32-4d37-a793-a6ad6852074c",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000029-8",
+    "created_at": "2025-12-03T20:42:37.263081+00:00"
+  },
+  {
+    "id": "83c39b05-32fc-4dd9-ad45-97bef038742d",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "13eaf579-22f6-48d6-8632-e6ebc622d6bd",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000030-7",
+    "created_at": "2025-12-03T20:43:23.570907+00:00"
+  },
+  {
+    "id": "9bcf2ab2-bbb4-4309-9c85-5bf06a0e4e28",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "9b8022cb-0d63-4829-8c83-9ba85b876cce",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000031-6",
+    "created_at": "2025-12-03T20:44:04.324900+00:00"
+  },
+  {
+    "id": "0950ec6f-7b4e-42a2-849c-f0701396b734",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "9b8022cb-0d63-4829-8c83-9ba85b876cce",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251203-000031-6",
+    "created_at": "2025-12-03T20:44:09.803407+00:00"
+  },
+  {
+    "id": "4fafbfaa-b56f-4881-9165-b9a45296e2d7",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "59106155-14c1-4e02-a393-ec10629e8852",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000032-5",
+    "created_at": "2025-12-03T20:44:34.837367+00:00"
+  },
+  {
+    "id": "4b562697-8631-4759-a2e0-d25c0baf6008",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "59106155-14c1-4e02-a393-ec10629e8852",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251203-000032-5",
+    "created_at": "2025-12-03T20:44:40.102114+00:00"
+  },
+  {
+    "id": "71b26a5d-d9b3-43f1-9974-f3b045d5770f",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "8b92a272-1880-40b2-9c24-22ad32168812",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000033-4",
+    "created_at": "2025-12-03T20:47:18.957398+00:00"
+  },
+  {
+    "id": "5fd85e7e-4c1c-4b11-a30a-898de0c2511f",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "8b92a272-1880-40b2-9c24-22ad32168812",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251203-000033-4",
+    "created_at": "2025-12-03T20:47:23.628141+00:00"
+  },
+  {
+    "id": "0891e4fe-a488-4ea4-907e-bf5392a15698",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "ce0bfde4-000f-4af4-912e-de2b5fd5e4de",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000034-3",
+    "created_at": "2025-12-03T20:48:32.885997+00:00"
+  },
+  {
+    "id": "0987f0d7-be19-418c-b633-79887448a86f",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "ce0bfde4-000f-4af4-912e-de2b5fd5e4de",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251203-000034-3",
+    "created_at": "2025-12-03T20:48:37.401960+00:00"
+  },
+  {
+    "id": "c7c655cc-cbfd-4e8e-af39-abb6d82bb408",
+    "amount": 1800000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "a167a84c-194e-45d7-8d1d-33363d0e62e1",
+    "note": "حوالة واردة من صيرفة اور - T-KR-20251203-000035-2",
+    "created_at": "2025-12-03T20:56:22.145081+00:00"
+  },
+  {
+    "id": "3c4f3349-97a4-4f94-8e71-33512431c9d0",
+    "amount": 1800000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "a167a84c-194e-45d7-8d1d-33363d0e62e1",
+    "note": "حوالة مُسلَّمة إلى صيرفة النور - T-KR-20251203-000035-2",
+    "created_at": "2025-12-03T20:58:24.310989+00:00"
+  },
+  {
+    "id": "b37b479c-8869-49e9-a13d-75387cbefbca",
+    "amount": 250000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "ba5b435c-f7ee-474f-9142-b7731c0e1b39",
+    "note": "حوالة واردة من صيرفة النور - T-KR-20251203-000036-1",
+    "created_at": "2025-12-03T21:07:34.002015+00:00"
+  },
+  {
+    "id": "5f31815e-792f-44d4-8764-ad2afc36118a",
+    "amount": 250000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "c6d1ce3a-a18c-4da5-8579-4ff78e2617f1",
+    "note": "حوالة واردة من صيرفة النور - T-KR-20251203-000037-0",
+    "created_at": "2025-12-03T21:08:26.249132+00:00"
+  },
+  {
+    "id": "2b4b803a-23b2-4612-a13d-b22d8056e846",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "69bc0587-c039-43c2-aff9-2c461c74bf2b",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000038-9",
+    "created_at": "2025-12-03T21:08:42.195015+00:00"
+  },
+  {
+    "id": "db6e4e20-7dab-42f9-9524-0264e857f723",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "69bc0587-c039-43c2-aff9-2c461c74bf2b",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251203-000038-9",
+    "created_at": "2025-12-03T21:08:46.737024+00:00"
+  },
+  {
+    "id": "df01b232-8442-4c36-bf50-3669fe78c36a",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "6b2c4261-8b6a-43e8-8960-4253095e387e",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000039-8",
+    "created_at": "2025-12-03T21:12:25.393496+00:00"
+  },
+  {
+    "id": "0079691c-a8d0-4cf2-a734-ed433c6d1aec",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "6b2c4261-8b6a-43e8-8960-4253095e387e",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251203-000039-8",
+    "created_at": "2025-12-03T21:12:29.753063+00:00"
+  },
+  {
+    "id": "0f01f6e6-56c4-4b39-8be1-fc3db7f52f3f",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "9829f143-86db-4d15-9b9e-d20f7d89aa97",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000040-7",
+    "created_at": "2025-12-03T21:14:06.898984+00:00"
+  },
+  {
+    "id": "980ab319-2c18-4027-9006-3b9f284dd787",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "9829f143-86db-4d15-9b9e-d20f7d89aa97",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251203-000040-7",
+    "created_at": "2025-12-03T21:14:11.944082+00:00"
+  },
+  {
+    "id": "aed08705-cbb2-4aee-a801-b08dce171ece",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "edda36c2-db6f-436e-9166-91a405362183",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251203-000041-6",
+    "created_at": "2025-12-03T21:14:36.318069+00:00"
+  },
+  {
+    "id": "326b8228-2ec0-4e76-906d-18ad8a8659de",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "edda36c2-db6f-436e-9166-91a405362183",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251203-000041-6",
+    "created_at": "2025-12-03T21:14:41.592192+00:00"
+  },
+  {
+    "id": "bb148630-3949-4060-8560-022c65c29523",
+    "amount": 1875000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "407ad8b7-0196-418f-8d40-620704e0714e",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251203-000042-5",
+    "created_at": "2025-12-03T21:46:01.087034+00:00"
+  },
+  {
+    "id": "363c36ee-c557-4e4e-90ed-6101c8a0fe74",
+    "amount": 1875000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "407ad8b7-0196-418f-8d40-620704e0714e",
+    "note": "حوالة مُسلَّمة إلى صيرفة اور - T-NJ-20251203-000042-5",
+    "created_at": "2025-12-03T21:50:25.258093+00:00"
+  },
+  {
+    "id": "0e79c8a0-5df3-41bc-ab6f-8749cf3ac608",
+    "amount": 2000000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "e80d85d6-afb2-4ad1-97a1-dff2e14f4b45",
+    "note": "حوالة واردة من صيرفة النور - T-BG-20251204-000043-7",
+    "created_at": "2025-12-04T13:25:44.174006+00:00"
+  },
+  {
+    "id": "5cb44b0b-b005-45ba-8760-852806465b17",
+    "amount": 157000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "30f859a4-e819-4f86-8438-330b09a04891",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251205-000044-9",
+    "created_at": "2025-12-05T18:40:37.640427+00:00"
+  },
+  {
+    "id": "2882d5ab-eb5e-4de9-9394-9d7d5871b09a",
+    "amount": 157000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "30f859a4-e819-4f86-8438-330b09a04891",
+    "note": "حوالة مُسلَّمة إلى صيرفة اور - T-NJ-20251205-000044-9",
+    "created_at": "2025-12-05T18:44:37.952312+00:00"
+  },
+  {
+    "id": "292ded8c-2bc9-4fa3-9225-16cc84cb6e69",
+    "amount": 2390000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "a6186aae-f1ee-4530-a36e-8878c187817b",
+    "note": "حوالة واردة من صيرفة النور - T-BG-20251205-000045-8",
+    "created_at": "2025-12-05T19:50:58.247420+00:00"
+  },
+  {
+    "id": "c379ea75-5cc5-452f-a32d-9c4c12abb168",
+    "amount": 1000000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "0eba000b-3d49-4c81-aa51-e8f6c2238273",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251205-000046-7",
+    "created_at": "2025-12-05T19:57:10.943416+00:00"
+  },
+  {
+    "id": "f4a5aae7-4c28-49f6-8567-94810874d84e",
+    "amount": 1000500.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "df15790a-0215-44d8-a2da-0832e6f89c04",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251205-000047-6",
+    "created_at": "2025-12-05T20:25:44.276702+00:00"
+  },
+  {
+    "id": "94af5bd4-d9e6-402c-920d-3a1810b0c164",
+    "amount": 135999.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "33c7e096-b27b-4154-ae8b-3064bdf7d70e",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251205-000048-5",
+    "created_at": "2025-12-05T20:35:32.741777+00:00"
+  },
+  {
+    "id": "7866a9d5-7fa6-4458-9469-56effeef6648",
+    "amount": 110000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "b89339b1-d414-41e6-ad92-659f2d0550b2",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251205-000049-4",
+    "created_at": "2025-12-05T20:36:56.692029+00:00"
+  },
+  {
+    "id": "ac1d615a-35bc-4348-9cd4-aab30192667d",
+    "amount": 136000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "c05550c9-a663-4a63-9a8c-9693cb23096f",
+    "note": "حوالة واردة من صيرفة اور - T-NJ-20251205-000050-3",
+    "created_at": "2025-12-05T20:42:17.490616+00:00"
+  },
+  {
+    "id": "4215258c-9c88-4be0-8935-5caa9f822c8f",
+    "amount": 137000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "7753e55a-8376-41fe-b68b-6ca00fd1b690",
+    "note": "حوالة واردة من صيرفة اور - T-NJ-20251205-000051-2",
+    "created_at": "2025-12-05T20:43:52.525970+00:00"
+  },
+  {
+    "id": "bc8a5283-5943-48a6-a09b-cb31f92d0476",
+    "amount": 129000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "e98a6911-fa20-4ab2-9cf0-f62f830fd401",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251205-000052-1",
+    "created_at": "2025-12-05T21:05:04.744878+00:00"
+  },
+  {
+    "id": "c3784dad-ee59-4b62-91b2-f3ff378a7c08",
+    "amount": 1350000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "ca781423-d686-4bec-9a7d-d5749134918d",
+    "note": "حوالة واردة من صيرفة اور - T-KR-20251205-000053-0",
+    "created_at": "2025-12-05T22:08:31.667708+00:00"
+  },
+  {
+    "id": "401feaa8-7710-4192-8111-71071e083550",
+    "amount": 1350000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "ca781423-d686-4bec-9a7d-d5749134918d",
+    "note": "حوالة مُسلَّمة إلى صيرفة النور - T-KR-20251205-000053-0",
+    "created_at": "2025-12-05T22:26:44.740411+00:00"
+  },
+  {
+    "id": "e09ae177-ee09-4aef-b021-a774a64e0ca9",
+    "amount": 148000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "ae56ebce-b271-4535-8950-402aba64f4bd",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251206-000054-9",
+    "created_at": "2025-12-06T11:52:03.637904+00:00"
+  },
+  {
+    "id": "17e1fdc4-a5b4-4710-ac5b-6afd745a54f7",
+    "amount": 1250000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "a9daf41e-2564-4ad2-a912-5c7f95e55cb4",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251206-000055-8",
+    "created_at": "2025-12-06T19:03:34.365136+00:00"
+  },
+  {
+    "id": "268a4dbd-165b-466d-996a-98b5027e8103",
+    "amount": 1000000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "2d2b73d9-faf4-44ab-9da6-f0ac06797266",
+    "note": "حوالة واردة من صيرفة النور - T-NJ-20251208-000056-3",
+    "created_at": "2025-12-08T12:42:29.159276+00:00"
+  },
+  {
+    "id": "ebdc2965-dab9-42e5-9a27-e0ec64651462",
+    "amount": 1000000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "8c0bfa08-a2f4-4b87-aeb8-4eba7e47738e",
+    "note": "حوالة واردة من حوالة واردة - 1001 - T-NJ-20251209-000057-2",
+    "created_at": "2025-12-09T19:35:55.951891+00:00"
+  },
+  {
+    "id": "c1eedf19-040c-4474-86c4-0d0ea8e35c07",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "76d61488-5574-492a-ad42-398479620edc",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251211-000058-7",
+    "created_at": "2025-12-11T21:13:13.232660+00:00"
+  },
+  {
+    "id": "23fe7259-867d-4738-9c94-a4f9291798f8",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "76d61488-5574-492a-ad42-398479620edc",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251211-000058-7",
+    "created_at": "2025-12-11T21:13:20.708848+00:00"
+  },
+  {
+    "id": "8ff50284-c90f-497c-a25f-c4fd0b0047a7",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "add",
+    "balance_after": 0,
+    "reference_id": "aa46a332-e0e5-470b-b400-6ae06fb48495",
+    "note": "حوالة واردة من صيرفة النور - T-WS-20251211-000059-6",
+    "created_at": "2025-12-11T21:14:08.126409+00:00"
+  },
+  {
+    "id": "6605852a-8b2b-4c1a-b346-435166d3cc1c",
+    "amount": 500000.0,
+    "currency": "IQD",
+    "operation": "subtract",
+    "balance_after": 0,
+    "reference_id": "aa46a332-e0e5-470b-b400-6ae06fb48495",
+    "note": "حوالة مُسلَّمة إلى صيرفة أور - واسط - T-WS-20251211-000059-6",
+    "created_at": "2025-12-11T21:14:15.553665+00:00"
+  }
+]

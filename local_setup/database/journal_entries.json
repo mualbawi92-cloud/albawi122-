@@ -1,0 +1,3299 @@
+[
+  {
+    "id": "3c61f4a2-8739-4faa-9c2d-1bb9682b9baa",
+    "entry_number": "TR-T-KR-20251119-000001-6",
+    "date": "2025-11-19T10:44:10.196299+00:00",
+    "description": "حوالة من مصطفى علي إلى حسين علي - T-KR-20251119-000001-6",
+    "lines": [
+      {
+        "account_code": "8001",
+        "debit": 1111111.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "203",
+        "debit": 0,
+        "credit": 1111111.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1111111.0,
+    "total_credit": 1111111.0,
+    "reference_type": "transfer_created",
+    "reference_id": "70498e3f-a1bc-4849-93b7-ae76fe5ea097",
+    "created_by": "d6662114-b717-43a6-a47c-e29bfec54cec",
+    "created_at": "2025-11-19T10:44:10.196305+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "56d79ca7-8900-41aa-a1ed-17d4a11277f3",
+    "entry_number": "TR-T-KR-20251119-000002-5",
+    "date": "2025-11-19T10:49:53.596470+00:00",
+    "description": "حوالة من زيد علي إلى حسين علي - T-KR-20251119-000002-5",
+    "lines": [
+      {
+        "account_code": "8001",
+        "debit": 1200000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "203",
+        "debit": 0,
+        "credit": 1200000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1200000.0,
+    "total_credit": 1200000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "09101701-a6c2-4d5a-9369-0f31e4a3a23d",
+    "created_by": "d6662114-b717-43a6-a47c-e29bfec54cec",
+    "created_at": "2025-11-19T10:49:53.596479+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "2d6fb6ca-86ce-4b7a-8a8b-5daebe7cdc92",
+    "entry_number": "COM-T-KR-20251119-000002-5",
+    "date": "2025-11-19T10:49:53.597816+00:00",
+    "description": "عمولة حوالة من زيد علي إلى حسين علي - T-KR-20251119-000002-5",
+    "lines": [
+      {
+        "account_code": "8001",
+        "debit": 3000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "413",
+        "debit": 0,
+        "credit": 3000.0
+      }
+    ],
+    "total_debit": 3000.0,
+    "total_credit": 3000.0,
+    "reference_type": "commission_earned",
+    "reference_id": "09101701-a6c2-4d5a-9369-0f31e4a3a23d",
+    "created_by": "d6662114-b717-43a6-a47c-e29bfec54cec",
+    "created_at": "2025-11-19T10:49:53.597820+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "95c54241-1d20-4cbd-bf78-3c8a5e739a63",
+    "entry_number": "TR-T-AN-20251130-000003-8",
+    "date": "2025-11-30T15:00:24.415546+00:00",
+    "description": "حوالة من مصطفى علي إلى حسين علي - T-AN-20251130-000003-8",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1111111.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1111111.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1111111.0,
+    "total_credit": 1111111.0,
+    "reference_type": "transfer_created",
+    "reference_id": "d7e4f820-7549-4d96-8ef3-6a6b94b62927",
+    "created_by": "64a7ec98-c85f-4df1-8dac-0bd33e86fd66",
+    "created_at": "2025-11-30T15:00:24.415555+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "045d58b9-e8f9-435b-b141-91339f7fa728",
+    "entry_number": "TR-T-KR-20251203-000006-4",
+    "date": "2025-12-03T13:25:58.676342+00:00",
+    "description": "حوالة من عمر خالد محمود إلى سعد طارق عبدالله - T-KR-20251203-000006-4",
+    "lines": [
+      {
+        "account_code": "501-03",
+        "debit": 150000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 150000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 150000.0,
+    "total_credit": 150000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "13e33419-6dc6-4cce-8bf8-7b37836f1aad",
+    "created_by": "5589a3f1-9f40-49b2-9b19-dd081cd0666e",
+    "created_at": "2025-12-03T13:25:58.676355+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "846d4844-e769-4a49-93d4-155508988a97",
+    "entry_number": "TR-T-BA-20251203-000008-2",
+    "date": "2025-12-03T13:27:49.668536+00:00",
+    "description": "حوالة من فاضل جاسم محمد إلى كريم طارق حسين - T-BA-20251203-000008-2",
+    "lines": [
+      {
+        "account_code": "501-03",
+        "debit": 180000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 180000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 180000.0,
+    "total_credit": 180000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "31cfaa92-beb2-422b-b06a-1f648a93602a",
+    "created_by": "5589a3f1-9f40-49b2-9b19-dd081cd0666e",
+    "created_at": "2025-12-03T13:27:49.668543+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "b3858f62-b0ea-4664-8ca0-b9bad0154d38",
+    "entry_number": "TR-T-BA-20251203-000009-1",
+    "date": "2025-12-03T13:36:46.444069+00:00",
+    "description": "حوالة من أحمد علي محمد إلى حسن جاسم كريم - T-BA-20251203-000009-1",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "bc15cbcd-2ade-4d9d-841e-8af53a99a371",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T13:36:46.444088+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "70f86c5f-f30c-4973-b588-d66014425b2b",
+    "entry_number": "TR-T-NJ-20251203-000010-0",
+    "date": "2025-12-03T13:40:05.290456+00:00",
+    "description": "حوالة من زيد علي إلى علي كاظم - T-NJ-20251203-000010-0",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 125000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 125000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 125000.0,
+    "total_credit": 125000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "fe50dae1-7e42-4c0f-a25c-e2486115d88b",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T13:40:05.290461+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "35d225ec-1ccd-41eb-94ed-ee20b306be27",
+    "entry_number": "TR-T-NJ-20251203-000011-9",
+    "date": "2025-12-03T13:56:58.639311+00:00",
+    "description": "حوالة من مصطفى علي إلى زيد علي - T-NJ-20251203-000011-9",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 125999.98,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 125999.98,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 125999.98,
+    "total_credit": 125999.98,
+    "reference_type": "transfer_created",
+    "reference_id": "0e4299c1-75da-40bc-b847-e89675f0ae8c",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T13:56:58.639319+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "f284429f-8c35-46cb-b0e3-d74b9ad23ae1",
+    "entry_number": "TR-T-NJ-20251203-000012-8",
+    "date": "2025-12-03T14:00:46.758724+00:00",
+    "description": "حوالة من مصطفى علي إلى زيد علي - T-NJ-20251203-000012-8",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 174999.98,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 174999.98,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 174999.98,
+    "total_credit": 174999.98,
+    "reference_type": "transfer_created",
+    "reference_id": "9668978b-1561-480a-b000-3de65d5accf2",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T14:00:46.758737+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "1ebd4928-e2eb-4f31-80e8-1870b859a294",
+    "entry_number": "TR-T-WA-20251203-000013-7",
+    "date": "2025-12-03T14:06:34.612131+00:00",
+    "description": "حوالة من عمر حسن علي إلى كريم محمد جاسم - T-WA-20251203-000013-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 300000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 300000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 300000.0,
+    "total_credit": 300000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "30eba375-d8c9-48cd-bdab-aeb2866309d0",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T14:06:34.612137+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "1f95dd4a-5337-40a9-aa35-e1194afb9234",
+    "entry_number": "TR-T-KR-20251203-000014-6",
+    "date": "2025-12-03T14:08:53.181340+00:00",
+    "description": "حوالة من مصطفى علي إلى حسين علي - T-KR-20251203-000014-6",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 115000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 115000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 115000.0,
+    "total_credit": 115000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "68c9ce94-bc85-4a4b-a242-db4c5fc076f2",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T14:08:53.181354+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "4adc9b28-d8e4-4535-8d38-861db638896f",
+    "entry_number": "TR-RCV-T-KR-20251203-000014-6",
+    "date": "2025-12-03T14:09:58.056080+00:00",
+    "description": "استلام حوالة من مصطفى علي إلى حسين علي - T-KR-20251203-000014-6",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 115000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1001",
+        "debit": 0,
+        "credit": 115000.0
+      }
+    ],
+    "total_debit": 115000.0,
+    "total_credit": 115000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "68c9ce94-bc85-4a4b-a242-db4c5fc076f2",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T14:09:58.056088+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "7a9f5b32-c169-4389-8b3f-81a4436ae2d2",
+    "entry_number": "TR-T-NJ-20251203-000015-5",
+    "date": "2025-12-03T18:23:47.531118+00:00",
+    "description": "حوالة من زيد علي إلى حسين علي - T-NJ-20251203-000015-5",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1222445.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1222445.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1222445.0,
+    "total_credit": 1222445.0,
+    "reference_type": "transfer_created",
+    "reference_id": "e69c8b29-22e1-4403-8e67-39a3a5fa7226",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T18:23:47.531132+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "d463c78b-3ea6-4138-9c7d-96457cc1b19d",
+    "entry_number": "TR-RCV-T-NJ-20251203-000015-5",
+    "date": "2025-12-03T18:26:17.799262+00:00",
+    "description": "استلام حوالة من زيد علي إلى حسين علي - T-NJ-20251203-000015-5",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 1222445.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 1222445.0
+      }
+    ],
+    "total_debit": 1222445.0,
+    "total_credit": 1222445.0,
+    "reference_type": "transfer_received",
+    "reference_id": "e69c8b29-22e1-4403-8e67-39a3a5fa7226",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T18:26:17.799267+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "502d08e1-0932-4022-a68f-5f951028b911",
+    "entry_number": "TR-T-BA-20251203-000016-4",
+    "date": "2025-12-03T18:31:12.854067+00:00",
+    "description": "حوالة من فاضل جاسم محمد إلى كريم طارق حسين - T-BA-20251203-000016-4",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 150000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "1001",
+        "debit": 0,
+        "credit": 150000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 150000.0,
+    "total_credit": 150000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "126e7dcb-941c-46c9-b292-cd8e96622ff5",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T18:31:12.854071+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "f1b171e7-9123-45f8-9c9d-e685cd7c0978",
+    "entry_number": "TR-T-BA-20251203-000017-3",
+    "date": "2025-12-03T18:34:16.968403+00:00",
+    "description": "حوالة من محمد علي حسن إلى حسين جاسم كريم - T-BA-20251203-000017-3",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 200000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 200000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 200000.0,
+    "total_credit": 200000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "0437ff0b-76d7-43f0-b69e-70e348d1c1e7",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T18:34:16.968412+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "aa6cc3af-c840-45a3-839c-d0ea2c6190ae",
+    "entry_number": "TR-T-NJ-20251203-000018-2",
+    "date": "2025-12-03T18:37:39.745587+00:00",
+    "description": "حوالة من حسين كاظم إلى علي كاظم - T-NJ-20251203-000018-2",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 135000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 135000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 135000.0,
+    "total_credit": 135000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "234a2787-0e4c-4d6b-b474-ef386a101c44",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T18:37:39.745591+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "39369835-21f0-45a0-b281-efac8da06f40",
+    "entry_number": "TR-RCV-T-NJ-20251203-000018-2",
+    "date": "2025-12-03T18:40:01.097478+00:00",
+    "description": "استلام حوالة من حسين كاظم إلى علي كاظم - T-NJ-20251203-000018-2",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 135000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 135000.0
+      }
+    ],
+    "total_debit": 135000.0,
+    "total_credit": 135000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "234a2787-0e4c-4d6b-b474-ef386a101c44",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T18:40:01.097484+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "8a39d51d-4995-4977-a6fd-5a6a85ffe11e",
+    "entry_number": "TR-T-BA-20251203-000019-1",
+    "date": "2025-12-03T19:08:44.460118+00:00",
+    "description": "حوالة من اختبار العمولة إلى مستلم الحوالة - T-BA-20251203-000019-1",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "eb487b06-6bfd-4acf-8289-f7dea67f7bbe",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T19:08:44.460128+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "bb649802-0a26-4cf2-97e9-974e9498cb5d",
+    "entry_number": "COM-T-BA-20251203-000019-1",
+    "date": "2025-12-03T19:08:44.461446+00:00",
+    "description": "عمولة حوالة من اختبار العمولة إلى مستلم الحوالة - T-BA-20251203-000019-1",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "eb487b06-6bfd-4acf-8289-f7dea67f7bbe",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T19:08:44.461452+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "8a1dd952-36c5-41c9-b438-e9b4565c267e",
+    "entry_number": "TR-T-NJ-20251203-000020-7",
+    "date": "2025-12-03T19:13:24.160175+00:00",
+    "description": "حوالة من محمد كاظم إلى حسين جعفر - T-NJ-20251203-000020-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 127000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 127000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 127000.0,
+    "total_credit": 127000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "795234c5-2d19-45d5-9ce4-33e01d2c7a49",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T19:13:24.160185+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "d2f1b3ed-9c74-42da-99ed-26168514e66d",
+    "entry_number": "COM-T-NJ-20251203-000020-7",
+    "date": "2025-12-03T19:13:24.161476+00:00",
+    "description": "عمولة حوالة من محمد كاظم إلى حسين جعفر - T-NJ-20251203-000020-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 317.5,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 317.5
+      }
+    ],
+    "total_debit": 317.5,
+    "total_credit": 317.5,
+    "reference_type": "commission_earned",
+    "reference_id": "795234c5-2d19-45d5-9ce4-33e01d2c7a49",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T19:13:24.161486+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "81bb8258-dcdf-4587-8e00-cf81be892215",
+    "entry_number": "TR-T-NA-20251203-000021-6",
+    "date": "2025-12-03T19:19:21.110976+00:00",
+    "description": "حوالة من فحص القيود إلى مستلم الحوالة - T-NA-20251203-000021-6",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 600000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 600000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 600000.0,
+    "total_credit": 600000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "40eda2f0-84f8-4603-bdde-b719f70f3112",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T19:19:21.110980+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "7cbc64ab-77f4-475c-ab2b-de761b97bd02",
+    "entry_number": "COM-T-NA-20251203-000021-6",
+    "date": "2025-12-03T19:19:21.112838+00:00",
+    "description": "عمولة حوالة من فحص القيود إلى مستلم الحوالة - T-NA-20251203-000021-6",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1500.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1500.0
+      }
+    ],
+    "total_debit": 1500.0,
+    "total_credit": 1500.0,
+    "reference_type": "commission_earned",
+    "reference_id": "40eda2f0-84f8-4603-bdde-b719f70f3112",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T19:19:21.112843+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "fc81320c-1029-49cf-b6c6-b58db7afa2ad",
+    "entry_number": "TR-T-NJ-20251203-000022-5",
+    "date": "2025-12-03T20:01:58.519472+00:00",
+    "description": "حوالة من محمد جعفر علي إلى مصطفى علي - T-NJ-20251203-000022-5",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1500000.0,
+    "total_credit": 1500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "d7a657fc-d878-41f8-9a30-69a04542f1bb",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:01:58.519476+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "379eaa91-34e9-4135-94b1-a96cac436af3",
+    "entry_number": "COM-T-NJ-20251203-000022-5",
+    "date": "2025-12-03T20:01:58.520872+00:00",
+    "description": "عمولة حوالة من محمد جعفر علي إلى مصطفى علي - T-NJ-20251203-000022-5",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 3750.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 3750.0
+      }
+    ],
+    "total_debit": 3750.0,
+    "total_credit": 3750.0,
+    "reference_type": "commission_earned",
+    "reference_id": "d7a657fc-d878-41f8-9a30-69a04542f1bb",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T20:01:58.520878+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "a1a0dc8d-1ff0-48fb-8950-ff40b4433449",
+    "entry_number": "TR-RCV-T-NJ-20251203-000022-5",
+    "date": "2025-12-03T20:03:48.177645+00:00",
+    "description": "استلام حوالة من محمد جعفر علي إلى مصطفى علي - T-NJ-20251203-000022-5",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 1500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 1500000.0
+      }
+    ],
+    "total_debit": 1500000.0,
+    "total_credit": 1500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "d7a657fc-d878-41f8-9a30-69a04542f1bb",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T20:03:48.177659+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "c6bcc39d-c073-467b-aa79-a7ec0aa8d79d",
+    "entry_number": "TR-T-KR-20251203-000023-4",
+    "date": "2025-12-03T20:06:37.983510+00:00",
+    "description": "حوالة من مصطفى علي إلى قاسم حسين - T-KR-20251203-000023-4",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1600000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1600000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1600000.0,
+    "total_credit": 1600000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "f1d2b738-162a-440e-8246-bdee6f8ed71c",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:06:37.983516+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "c455f5ab-ac18-43a1-95c3-f3df2b2a62ef",
+    "entry_number": "COM-T-KR-20251203-000023-4",
+    "date": "2025-12-03T20:06:37.984546+00:00",
+    "description": "عمولة حوالة من مصطفى علي إلى قاسم حسين - T-KR-20251203-000023-4",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 4000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 4000.0
+      }
+    ],
+    "total_debit": 4000.0,
+    "total_credit": 4000.0,
+    "reference_type": "commission_earned",
+    "reference_id": "f1d2b738-162a-440e-8246-bdee6f8ed71c",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T20:06:37.984551+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "c91c4253-5c47-4806-a6fd-154525a91e67",
+    "entry_number": "TR-T-BA-20251203-000024-3",
+    "date": "2025-12-03T20:21:24.807864+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد جاسم كريم - T-BA-20251203-000024-3",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 250000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 250000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 250000.0,
+    "total_credit": 250000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "ba72e582-b82d-49dc-8cad-86181c43b176",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:21:24.807874+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "362b3593-c4a1-4fd0-801c-f7ee1e3150d7",
+    "entry_number": "COM-T-BA-20251203-000024-3",
+    "date": "2025-12-03T20:21:24.826863+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد جاسم كريم - T-BA-20251203-000024-3",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 625.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 625.0
+      }
+    ],
+    "total_debit": 625.0,
+    "total_credit": 625.0,
+    "reference_type": "commission_earned",
+    "reference_id": "ba72e582-b82d-49dc-8cad-86181c43b176",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:21:24.826876+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "df1d8c67-db48-4a16-b9c5-6240103a0262",
+    "entry_number": "TR-T-NJ-20251203-000025-2",
+    "date": "2025-12-03T20:23:31.801197+00:00",
+    "description": "حوالة من زيد علي إلى مصطفى علي - T-NJ-20251203-000025-2",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1750000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1750000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1750000.0,
+    "total_credit": 1750000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "5cdbfa02-4923-441a-969f-8566142d366a",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:23:31.801202+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "716919d5-2243-47a3-b2ad-10dd6055f6ce",
+    "entry_number": "COM-T-NJ-20251203-000025-2",
+    "date": "2025-12-03T20:23:31.802290+00:00",
+    "description": "عمولة حوالة من زيد علي إلى مصطفى علي - T-NJ-20251203-000025-2",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 4375.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 4375.0
+      }
+    ],
+    "total_debit": 4375.0,
+    "total_credit": 4375.0,
+    "reference_type": "commission_earned",
+    "reference_id": "5cdbfa02-4923-441a-969f-8566142d366a",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T20:23:31.802293+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "161a0969-ab73-4643-bd26-191e0e87e5f5",
+    "entry_number": "TR-RCV-T-NJ-20251203-000025-2",
+    "date": "2025-12-03T20:25:15.434904+00:00",
+    "description": "استلام حوالة من زيد علي إلى مصطفى علي - T-NJ-20251203-000025-2",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 1750000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 1750000.0
+      }
+    ],
+    "total_debit": 1750000.0,
+    "total_credit": 1750000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "5cdbfa02-4923-441a-969f-8566142d366a",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T20:25:15.434910+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "b0d17959-bd01-4a2f-8f9c-c02fe81b1a32",
+    "entry_number": "COM-PAID-T-NJ-20251203-000025-2",
+    "date": "2025-12-03T20:25:15.436322+00:00",
+    "description": "عمولة مدفوعة على استلام حوالة من زيد علي إلى مصطفى علي - T-NJ-20251203-000025-2",
+    "lines": [
+      {
+        "account_code": "701",
+        "debit": 4375.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 4375.0
+      }
+    ],
+    "total_debit": 4375.0,
+    "total_credit": 4375.0,
+    "reference_type": "commission_paid",
+    "reference_id": "5cdbfa02-4923-441a-969f-8566142d366a",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T20:25:15.436327+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "c167947d-50d7-439c-aaf6-a659cd3a3da6",
+    "entry_number": "TR-T-KR-20251203-000026-1",
+    "date": "2025-12-03T20:29:15.117814+00:00",
+    "description": "حوالة من علي حسن محمد إلى حسين علي جاسم - T-KR-20251203-000026-1",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 180000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 180000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 180000.0,
+    "total_credit": 180000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "9afb7336-1e61-465d-9d70-a69b90a8e62b",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:29:15.117824+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "542cb5fe-b5bc-4882-8186-508f209dd8b0",
+    "entry_number": "COM-T-KR-20251203-000026-1",
+    "date": "2025-12-03T20:29:15.119185+00:00",
+    "description": "عمولة حوالة من علي حسن محمد إلى حسين علي جاسم - T-KR-20251203-000026-1",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 450.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 450.0
+      }
+    ],
+    "total_debit": 450.0,
+    "total_credit": 450.0,
+    "reference_type": "commission_earned",
+    "reference_id": "9afb7336-1e61-465d-9d70-a69b90a8e62b",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:29:15.119194+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "8622fd62-30a4-4c6e-a430-c5fe58934c07",
+    "entry_number": "TR-T-NJ-20251203-000027-0",
+    "date": "2025-12-03T20:32:38.128947+00:00",
+    "description": "حوالة من مصطفى علي إلى علي كاظم - T-NJ-20251203-000027-0",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1850000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1850000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1850000.0,
+    "total_credit": 1850000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "89f08f9e-55f8-42e6-9576-98342721c67b",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:32:38.128951+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "e6c17296-d4ba-40a9-b5f7-c1f9182cd7d1",
+    "entry_number": "COM-T-NJ-20251203-000027-0",
+    "date": "2025-12-03T20:32:38.130428+00:00",
+    "description": "عمولة حوالة من مصطفى علي إلى علي كاظم - T-NJ-20251203-000027-0",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 4625.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 4625.0
+      }
+    ],
+    "total_debit": 4625.0,
+    "total_credit": 4625.0,
+    "reference_type": "commission_earned",
+    "reference_id": "89f08f9e-55f8-42e6-9576-98342721c67b",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T20:32:38.130431+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "77147670-37bf-43f1-b2fb-76fdaad611c4",
+    "entry_number": "TR-RCV-T-NJ-20251203-000027-0",
+    "date": "2025-12-03T20:34:11.893024+00:00",
+    "description": "استلام حوالة من مصطفى علي إلى علي كاظم - T-NJ-20251203-000027-0",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 1850000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 1850000.0
+      }
+    ],
+    "total_debit": 1850000.0,
+    "total_credit": 1850000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "89f08f9e-55f8-42e6-9576-98342721c67b",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T20:34:11.893029+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "4a7c74bf-40a5-4b67-9c20-6ec472d8d75d",
+    "entry_number": "COM-REC-T-NJ-20251203-000027-0",
+    "date": "2025-12-03T20:34:11.894257+00:00",
+    "description": "عمولة محققة على استلام حوالة من مصطفى علي إلى علي كاظم - T-NJ-20251203-000027-0",
+    "lines": [
+      {
+        "account_code": "701",
+        "debit": 4625.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 4625.0
+      }
+    ],
+    "total_debit": 4625.0,
+    "total_credit": 4625.0,
+    "reference_type": "commission_received",
+    "reference_id": "89f08f9e-55f8-42e6-9576-98342721c67b",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-03T20:34:11.894263+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "da767ec6-0108-4823-ba86-99c6efc809e3",
+    "entry_number": "TR-T-WA-20251203-000028-9",
+    "date": "2025-12-03T20:36:59.855925+00:00",
+    "description": "حوالة من خالد أحمد إلى علي حسين - T-WA-20251203-000028-9",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 100000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 100000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 100000.0,
+    "total_credit": 100000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "33c0e499-d429-48cc-8b9e-be9ac9b85197",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:36:59.855931+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "f6142375-7661-4ada-b4f8-5c632530268c",
+    "entry_number": "COM-T-WA-20251203-000028-9",
+    "date": "2025-12-03T20:36:59.857296+00:00",
+    "description": "عمولة حوالة من خالد أحمد إلى علي حسين - T-WA-20251203-000028-9",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 250.0
+      }
+    ],
+    "total_debit": 250.0,
+    "total_credit": 250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "33c0e499-d429-48cc-8b9e-be9ac9b85197",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:36:59.857301+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "598d9c7a-b65d-4270-940a-821e87f6d467",
+    "entry_number": "TR-T-WS-20251203-000029-8",
+    "date": "2025-12-03T20:42:37.263744+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000029-8",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "0a7a1f95-8c32-4d37-a793-a6ad6852074c",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:42:37.263750+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "c16fe487-3917-4422-a67c-8bc22755bda3",
+    "entry_number": "COM-T-WS-20251203-000029-8",
+    "date": "2025-12-03T20:42:37.264748+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000029-8",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "0a7a1f95-8c32-4d37-a793-a6ad6852074c",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:42:37.264753+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "a780c792-b7c2-4dd1-89ae-3943fe6788ee",
+    "entry_number": "TR-T-WS-20251203-000030-7",
+    "date": "2025-12-03T20:43:23.571675+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000030-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "13eaf579-22f6-48d6-8632-e6ebc622d6bd",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:43:23.571680+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "7ee0ca47-a0e2-4013-9255-7400c4df2e29",
+    "entry_number": "COM-T-WS-20251203-000030-7",
+    "date": "2025-12-03T20:43:23.572754+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000030-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "13eaf579-22f6-48d6-8632-e6ebc622d6bd",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:43:23.572762+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "129802e5-60cb-4442-aa13-c08eb1bc1f14",
+    "entry_number": "TR-T-WS-20251203-000031-6",
+    "date": "2025-12-03T20:44:04.325827+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000031-6",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "9b8022cb-0d63-4829-8c83-9ba85b876cce",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:44:04.325832+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "0b6388b4-2505-41f4-8049-bbb27f5cf6de",
+    "entry_number": "COM-T-WS-20251203-000031-6",
+    "date": "2025-12-03T20:44:04.327034+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000031-6",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "9b8022cb-0d63-4829-8c83-9ba85b876cce",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:44:04.327044+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "ff118836-00ef-4a0b-ac5e-2ecd6feb21da",
+    "entry_number": "TR-RCV-T-WS-20251203-000031-6",
+    "date": "2025-12-03T20:44:09.805312+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000031-6",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "9b8022cb-0d63-4829-8c83-9ba85b876cce",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T20:44:09.805318+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "b7cf536c-1d45-4d34-b677-944e7f0e73ac",
+    "entry_number": "TR-T-WS-20251203-000032-5",
+    "date": "2025-12-03T20:44:34.838755+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000032-5",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "59106155-14c1-4e02-a393-ec10629e8852",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:44:34.838765+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "5181996e-da10-4e74-a7c6-a8b76bb2505c",
+    "entry_number": "COM-T-WS-20251203-000032-5",
+    "date": "2025-12-03T20:44:34.841077+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000032-5",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "59106155-14c1-4e02-a393-ec10629e8852",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:44:34.841087+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "f5385ab3-c7ec-4445-a369-1ab97a13d9dd",
+    "entry_number": "TR-RCV-T-WS-20251203-000032-5",
+    "date": "2025-12-03T20:44:40.103980+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000032-5",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "59106155-14c1-4e02-a393-ec10629e8852",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T20:44:40.103986+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "687b64d4-8db7-4ba2-80dc-a8205423b2f3",
+    "entry_number": "TR-T-WS-20251203-000033-4",
+    "date": "2025-12-03T20:47:18.958351+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000033-4",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "8b92a272-1880-40b2-9c24-22ad32168812",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:47:18.958359+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "bfde178f-1b17-493a-a999-19be86cd71c0",
+    "entry_number": "COM-T-WS-20251203-000033-4",
+    "date": "2025-12-03T20:47:18.959742+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000033-4",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "8b92a272-1880-40b2-9c24-22ad32168812",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:47:18.959750+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "94bca389-8b11-466a-8d99-4b11df592f17",
+    "entry_number": "TR-RCV-T-WS-20251203-000033-4",
+    "date": "2025-12-03T20:47:23.631815+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000033-4",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "8b92a272-1880-40b2-9c24-22ad32168812",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T20:47:23.631828+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "eb96cfa8-2c98-43b2-84d3-9cb25de53b7a",
+    "entry_number": "TR-T-WS-20251203-000034-3",
+    "date": "2025-12-03T20:48:32.886803+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000034-3",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "ce0bfde4-000f-4af4-912e-de2b5fd5e4de",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:48:32.886811+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "1bfdcc52-17ea-407f-be13-7ef0500c1943",
+    "entry_number": "COM-T-WS-20251203-000034-3",
+    "date": "2025-12-03T20:48:32.888013+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000034-3",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "ce0bfde4-000f-4af4-912e-de2b5fd5e4de",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T20:48:32.888020+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "d4c69ff7-6c8e-405b-ae3a-22c75e5e379f",
+    "entry_number": "TR-RCV-T-WS-20251203-000034-3",
+    "date": "2025-12-03T20:48:37.403567+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000034-3",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "ce0bfde4-000f-4af4-912e-de2b5fd5e4de",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T20:48:37.403572+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "914d6f85-50d3-42d0-b215-379bfce82033",
+    "entry_number": "TR-T-KR-20251203-000035-2",
+    "date": "2025-12-03T20:56:22.150381+00:00",
+    "description": "حوالة من زيد علي إلى حسين علي - T-KR-20251203-000035-2",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 1800000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1800000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1800000.0,
+    "total_credit": 1800000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "a167a84c-194e-45d7-8d1d-33363d0e62e1",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-03T20:56:22.150387+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "8db19d3e-acdc-44e9-8233-2947efcc10a8",
+    "entry_number": "COM-T-KR-20251203-000035-2",
+    "date": "2025-12-03T20:56:22.170209+00:00",
+    "description": "عمولة حوالة من زيد علي إلى حسين علي - T-KR-20251203-000035-2",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 4500.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 4500.0
+      }
+    ],
+    "total_debit": 4500.0,
+    "total_credit": 4500.0,
+    "reference_type": "commission_earned",
+    "reference_id": "a167a84c-194e-45d7-8d1d-33363d0e62e1",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T20:56:22.170219+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "3182fbef-d4bb-4415-8d0b-21b1cc7ba69c",
+    "entry_number": "TR-RCV-T-KR-20251203-000035-2",
+    "date": "2025-12-03T20:58:24.328372+00:00",
+    "description": "استلام حوالة من زيد علي إلى حسين علي - T-KR-20251203-000035-2",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 1800000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1001",
+        "debit": 0,
+        "credit": 1800000.0
+      }
+    ],
+    "total_debit": 1800000.0,
+    "total_credit": 1800000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "a167a84c-194e-45d7-8d1d-33363d0e62e1",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-03T20:58:24.328378+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "487fc3b0-8e62-4691-bd05-aa735860bb6d",
+    "entry_number": "COM-REC-T-KR-20251203-000035-2",
+    "date": "2025-12-03T20:58:24.329727+00:00",
+    "description": "عمولة محققة على استلام حوالة من زيد علي إلى حسين علي - T-KR-20251203-000035-2",
+    "lines": [
+      {
+        "account_code": "701",
+        "debit": 4500.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 4500.0
+      }
+    ],
+    "total_debit": 4500.0,
+    "total_credit": 4500.0,
+    "reference_type": "commission_received",
+    "reference_id": "a167a84c-194e-45d7-8d1d-33363d0e62e1",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T20:58:24.329732+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "fef3100b-af08-43ec-b393-9f39264425c4",
+    "entry_number": "TR-T-KR-20251203-000036-1",
+    "date": "2025-12-03T21:07:34.003366+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-KR-20251203-000036-1",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 250000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 250000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 250000.0,
+    "total_credit": 250000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "ba5b435c-f7ee-474f-9142-b7731c0e1b39",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T21:07:34.003376+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "d5fb2a32-5d42-45c2-b903-7cc1713b3f06",
+    "entry_number": "COM-T-KR-20251203-000036-1",
+    "date": "2025-12-03T21:07:34.005017+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-KR-20251203-000036-1",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 625.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 625.0
+      }
+    ],
+    "total_debit": 625.0,
+    "total_credit": 625.0,
+    "reference_type": "commission_earned",
+    "reference_id": "ba5b435c-f7ee-474f-9142-b7731c0e1b39",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T21:07:34.005027+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "9d686d84-ee62-4dea-a766-8c56ce3a5f5b",
+    "entry_number": "TR-T-KR-20251203-000037-0",
+    "date": "2025-12-03T21:08:26.250515+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-KR-20251203-000037-0",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 250000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 250000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 250000.0,
+    "total_credit": 250000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "c6d1ce3a-a18c-4da5-8579-4ff78e2617f1",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T21:08:26.250526+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "caef8c87-52e3-4bac-a738-771ac0208619",
+    "entry_number": "COM-T-KR-20251203-000037-0",
+    "date": "2025-12-03T21:08:26.252237+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-KR-20251203-000037-0",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 625.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 625.0
+      }
+    ],
+    "total_debit": 625.0,
+    "total_credit": 625.0,
+    "reference_type": "commission_earned",
+    "reference_id": "c6d1ce3a-a18c-4da5-8579-4ff78e2617f1",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T21:08:26.252247+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "c5a5b25e-9479-4488-92f7-f22348c0eafd",
+    "entry_number": "TR-T-WS-20251203-000038-9",
+    "date": "2025-12-03T21:08:42.196814+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000038-9",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "69bc0587-c039-43c2-aff9-2c461c74bf2b",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T21:08:42.196827+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "11fd2c32-b486-4cb2-a67b-929e277bb3b1",
+    "entry_number": "COM-T-WS-20251203-000038-9",
+    "date": "2025-12-03T21:08:42.203978+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000038-9",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "69bc0587-c039-43c2-aff9-2c461c74bf2b",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T21:08:42.203993+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "c5c26c12-2ec5-4f3f-ac7f-0d3219bedbb3",
+    "entry_number": "TR-RCV-T-WS-20251203-000038-9",
+    "date": "2025-12-03T21:08:46.739634+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000038-9",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "69bc0587-c039-43c2-aff9-2c461c74bf2b",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T21:08:46.739644+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "5a255391-2baf-4b0c-8183-1ba56a8a64a4",
+    "entry_number": "TR-T-WS-20251203-000039-8",
+    "date": "2025-12-03T21:12:25.394156+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000039-8",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "6b2c4261-8b6a-43e8-8960-4253095e387e",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T21:12:25.394161+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "1edc8af0-d14c-4823-9c0a-d46c6d9e2ab6",
+    "entry_number": "COM-T-WS-20251203-000039-8",
+    "date": "2025-12-03T21:12:25.395125+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000039-8",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "6b2c4261-8b6a-43e8-8960-4253095e387e",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T21:12:25.395129+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "419acb99-c254-46ed-9e09-1087dc03b5ef",
+    "entry_number": "TR-RCV-T-WS-20251203-000039-8",
+    "date": "2025-12-03T21:12:29.754778+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000039-8",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "6b2c4261-8b6a-43e8-8960-4253095e387e",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T21:12:29.754784+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "bd45f868-7681-4b97-85df-7d90a9aa73ca",
+    "entry_number": "TR-T-WS-20251203-000040-7",
+    "date": "2025-12-03T21:14:06.899616+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000040-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "9829f143-86db-4d15-9b9e-d20f7d89aa97",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T21:14:06.899620+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "516c508d-760a-4b13-ae9b-c12f0791b06a",
+    "entry_number": "COM-T-WS-20251203-000040-7",
+    "date": "2025-12-03T21:14:06.900513+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000040-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "9829f143-86db-4d15-9b9e-d20f7d89aa97",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T21:14:06.900516+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "480c212c-d988-41d4-bfde-8e4c753490a3",
+    "entry_number": "TR-RCV-T-WS-20251203-000040-7",
+    "date": "2025-12-03T21:14:11.945911+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000040-7",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "9829f143-86db-4d15-9b9e-d20f7d89aa97",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T21:14:11.945916+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "0bc86dda-c121-444b-a17c-7d86a9d3f072",
+    "entry_number": "COM-REC-T-WS-20251203-000040-7",
+    "date": "2025-12-03T21:14:11.946917+00:00",
+    "description": "عمولة مدفوعة من أحمد علي حسن إلى محمد سعد كريم - واسط",
+    "lines": [
+      {
+        "account_code": "701",
+        "debit": 1250.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 1250.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_received",
+    "reference_id": "9829f143-86db-4d15-9b9e-d20f7d89aa97",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T21:14:11.946921+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "09e37d54-3f53-407b-a675-656b92f5b9e8",
+    "entry_number": "TR-T-WS-20251203-000041-6",
+    "date": "2025-12-03T21:14:36.319864+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000041-6",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "edda36c2-db6f-436e-9166-91a405362183",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T21:14:36.319875+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "648985be-c002-4997-8936-023d84267a70",
+    "entry_number": "COM-T-WS-20251203-000041-6",
+    "date": "2025-12-03T21:14:36.320913+00:00",
+    "description": "عمولة حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000041-6",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "edda36c2-db6f-436e-9166-91a405362183",
+    "created_by": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "created_at": "2025-12-03T21:14:36.320918+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "9bbad63a-5184-4002-acc6-3428a54bbcfe",
+    "entry_number": "TR-RCV-T-WS-20251203-000041-6",
+    "date": "2025-12-03T21:14:41.593995+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251203-000041-6",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "edda36c2-db6f-436e-9166-91a405362183",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T21:14:41.594000+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "3e4435eb-cbc5-4dc0-8778-4f094f57e8fd",
+    "entry_number": "COM-REC-T-WS-20251203-000041-6",
+    "date": "2025-12-03T21:14:41.595095+00:00",
+    "description": "عمولة مدفوعة من أحمد علي حسن إلى محمد سعد كريم - واسط",
+    "lines": [
+      {
+        "account_code": "701",
+        "debit": 1250.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 1250.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_received",
+    "reference_id": "edda36c2-db6f-436e-9166-91a405362183",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-03T21:14:41.595100+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "44fe3f33-6396-42bb-9588-2df4c0c59021",
+    "entry_number": "TR-T-NJ-20251203-000042-5",
+    "date": "2025-12-03T21:46:01.087789+00:00",
+    "description": "حوالة من مصطفى علي إلى علي كاظم - T-NJ-20251203-000042-5",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1875000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1875000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1875000.0,
+    "total_credit": 1875000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "407ad8b7-0196-418f-8d40-620704e0714e",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T21:46:01.087794+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "ea287328-4624-40bc-845f-408ad9c21e2d",
+    "entry_number": "COM-PAID-T-NJ-20251203-000042-5",
+    "date": "2025-12-03T21:46:01.093041+00:00",
+    "description": "عمولة مدفوعة من مصطفى علي إلى علي كاظم - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 4687.5,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "4020",
+        "debit": 0,
+        "credit": 4687.5,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 4687.5,
+    "total_credit": 4687.5,
+    "reference_type": "commission_earned",
+    "reference_id": "407ad8b7-0196-418f-8d40-620704e0714e",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-03T21:46:01.093047+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "71219ce6-8841-475d-9205-ddc722ebf943",
+    "entry_number": "TR-RCV-T-NJ-20251203-000042-5",
+    "date": "2025-12-03T21:50:25.260519+00:00",
+    "description": "استلام حوالة من مصطفى علي إلى علي كاظم - T-NJ-20251203-000042-5",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 1875000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 1875000.0
+      }
+    ],
+    "total_debit": 1875000.0,
+    "total_credit": 1875000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "407ad8b7-0196-418f-8d40-620704e0714e",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-03T21:50:25.260526+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "9dc33ccf-497d-490e-88e6-19329df1637e",
+    "entry_number": "COM-EARNED-T-NJ-20251203-000042-5",
+    "date": "2025-12-03T21:50:25.262088+00:00",
+    "description": "عمولة محققة من مصطفى علي إلى علي كاظم - النجف",
+    "lines": [
+      {
+        "account_code": "5110",
+        "debit": 4687.5,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 4687.5,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 4687.5,
+    "total_credit": 4687.5,
+    "reference_type": "commission_received",
+    "reference_id": "407ad8b7-0196-418f-8d40-620704e0714e",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-03T21:50:25.262093+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "047c65f1-d39c-4407-a824-e49d336031b9",
+    "entry_number": "TR-T-BG-20251204-000043-7",
+    "date": "2025-12-04T13:25:44.183918+00:00",
+    "description": "حوالة من ويد عبدالله محمد إلى زيد الدباغ محمد - T-BG-20251204-000043-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 2000000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 2000000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 2000000.0,
+    "total_credit": 2000000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "e80d85d6-afb2-4ad1-97a1-dff2e14f4b45",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-04T13:25:44.183925+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "0051505f-200c-4f61-adab-3e1f42197256",
+    "entry_number": "COM-PAID-T-BG-20251204-000043-7",
+    "date": "2025-12-04T13:25:44.203355+00:00",
+    "description": "عمولة مدفوعة من ويد عبدالله محمد إلى زيد الدباغ محمد - بغداد",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 5000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 5000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 5000.0,
+    "total_credit": 5000.0,
+    "reference_type": "commission_earned",
+    "reference_id": "e80d85d6-afb2-4ad1-97a1-dff2e14f4b45",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-04T13:25:44.203361+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "0133e640-4088-4a5e-9d88-4a6cfbe30aea",
+    "entry_number": "TR-T-NJ-20251205-000044-9",
+    "date": "2025-12-05T18:40:37.651399+00:00",
+    "description": "حوالة من مصطفى علي إلى حسين علي - T-NJ-20251205-000044-9",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 157000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 157000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 157000.0,
+    "total_credit": 157000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "30f859a4-e819-4f86-8438-330b09a04891",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T18:40:37.651406+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "469db3de-9ed5-4d8d-82ec-529a6d523efa",
+    "entry_number": "COM-PAID-T-NJ-20251205-000044-9",
+    "date": "2025-12-05T18:40:37.672302+00:00",
+    "description": "عمولة مدفوعة من مصطفى علي إلى حسين علي - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 392.5,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 392.5,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 392.5,
+    "total_credit": 392.5,
+    "reference_type": "commission_earned",
+    "reference_id": "30f859a4-e819-4f86-8438-330b09a04891",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T18:40:37.672307+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "1acccea3-1824-44ad-bcf4-ac772781aca0",
+    "entry_number": "TR-RCV-T-NJ-20251205-000044-9",
+    "date": "2025-12-05T18:44:37.971000+00:00",
+    "description": "استلام حوالة من مصطفى علي إلى حسين علي - T-NJ-20251205-000044-9",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 157000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 157000.0
+      }
+    ],
+    "total_debit": 157000.0,
+    "total_credit": 157000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "30f859a4-e819-4f86-8438-330b09a04891",
+    "created_by": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "created_at": "2025-12-05T18:44:37.971007+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "9163ed57-7ced-4029-8eb1-d51ab0a65879",
+    "entry_number": "COM-EARNED-T-NJ-20251205-000044-9",
+    "date": "2025-12-05T18:44:37.972264+00:00",
+    "description": "عمولة محققة من مصطفى علي إلى حسين علي - النجف",
+    "lines": [
+      {
+        "account_code": "701",
+        "debit": 392.5,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "1002",
+        "debit": 0,
+        "credit": 392.5,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 392.5,
+    "total_credit": 392.5,
+    "reference_type": "commission_received",
+    "reference_id": "30f859a4-e819-4f86-8438-330b09a04891",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-05T18:44:37.972270+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "3f5c62f0-4b22-4ff3-bbf4-c1a32c1ebbcc",
+    "entry_number": "TR-T-BG-20251205-000045-8",
+    "date": "2025-12-05T19:50:58.261251+00:00",
+    "description": "حوالة من احمد إلى عيحو خهسحب - T-BG-20251205-000045-8",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 2390000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 2390000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 2390000.0,
+    "total_credit": 2390000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "a6186aae-f1ee-4530-a36e-8878c187817b",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T19:50:58.261261+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "a68fa1be-3541-45c0-95a8-a1a3e49655cc",
+    "entry_number": "COM-PAID-T-BG-20251205-000045-8",
+    "date": "2025-12-05T19:50:58.282679+00:00",
+    "description": "عمولة مدفوعة من احمد إلى عيحو خهسحب - بغداد",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 5975.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 5975.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 5975.0,
+    "total_credit": 5975.0,
+    "reference_type": "commission_earned",
+    "reference_id": "a6186aae-f1ee-4530-a36e-8878c187817b",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T19:50:58.282688+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "90aca998-87b8-43ef-ab00-d8a160d88e5a",
+    "entry_number": "TR-T-NJ-20251205-000046-7",
+    "date": "2025-12-05T19:57:10.944373+00:00",
+    "description": "حوالة من محمد جعفر علي إلى كاظم عبد الحسين علي - T-NJ-20251205-000046-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1000000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1000000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1000000.0,
+    "total_credit": 1000000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "0eba000b-3d49-4c81-aa51-e8f6c2238273",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T19:57:10.944380+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "ba51d8bb-3cde-4b8e-af9d-b5f962191569",
+    "entry_number": "COM-PAID-T-NJ-20251205-000046-7",
+    "date": "2025-12-05T19:57:10.945620+00:00",
+    "description": "عمولة مدفوعة من محمد جعفر علي إلى كاظم عبد الحسين علي - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 2500.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 2500.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 2500.0,
+    "total_credit": 2500.0,
+    "reference_type": "commission_earned",
+    "reference_id": "0eba000b-3d49-4c81-aa51-e8f6c2238273",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T19:57:10.945625+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "e77366ae-fa85-4d87-9909-652f42dc0339",
+    "entry_number": "TR-T-NJ-20251205-000047-6",
+    "date": "2025-12-05T20:25:44.287954+00:00",
+    "description": "حوالة من مصطفى علي إلى حسين علي - T-NJ-20251205-000047-6",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1000500.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1000500.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1000500.0,
+    "total_credit": 1000500.0,
+    "reference_type": "transfer_created",
+    "reference_id": "df15790a-0215-44d8-a2da-0832e6f89c04",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T20:25:44.287964+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "c9df88dd-39d3-451b-b2f4-7e98325588a5",
+    "entry_number": "COM-PAID-T-NJ-20251205-000047-6",
+    "date": "2025-12-05T20:25:44.311218+00:00",
+    "description": "عمولة مدفوعة من مصطفى علي إلى حسين علي - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 2501.25,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 2501.25,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 2501.25,
+    "total_credit": 2501.25,
+    "reference_type": "commission_earned",
+    "reference_id": "df15790a-0215-44d8-a2da-0832e6f89c04",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T20:25:44.311233+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "9e9e5808-4b07-4c61-bf13-3317b40edd33",
+    "entry_number": "TR-T-NJ-20251205-000048-5",
+    "date": "2025-12-05T20:35:32.742664+00:00",
+    "description": "حوالة من حسين كام علي إلى جعفر علي كاظم - T-NJ-20251205-000048-5",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 135999.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 135999.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 135999.0,
+    "total_credit": 135999.0,
+    "reference_type": "transfer_created",
+    "reference_id": "33c7e096-b27b-4154-ae8b-3064bdf7d70e",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T20:35:32.742670+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "20c7cd2d-6892-4c7a-9704-ecaffcd4e346",
+    "entry_number": "COM-PAID-T-NJ-20251205-000048-5",
+    "date": "2025-12-05T20:35:32.743880+00:00",
+    "description": "عمولة مدفوعة من حسين كام علي إلى جعفر علي كاظم - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 339.9975,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 339.9975,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 339.9975,
+    "total_credit": 339.9975,
+    "reference_type": "commission_earned",
+    "reference_id": "33c7e096-b27b-4154-ae8b-3064bdf7d70e",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T20:35:32.743885+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "2c121ed9-8c6c-43bc-9f27-9cae6907e5a3",
+    "entry_number": "TR-T-NJ-20251205-000049-4",
+    "date": "2025-12-05T20:36:56.693132+00:00",
+    "description": "حوالة من محمد صادق علي إلى كاظم علي  - T-NJ-20251205-000049-4",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 110000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 110000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 110000.0,
+    "total_credit": 110000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "b89339b1-d414-41e6-ad92-659f2d0550b2",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T20:36:56.693141+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "9035e41e-49cd-45bc-b318-a07e57a7a5df",
+    "entry_number": "COM-PAID-T-NJ-20251205-000049-4",
+    "date": "2025-12-05T20:36:56.694801+00:00",
+    "description": "عمولة مدفوعة من محمد صادق علي إلى كاظم علي  - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 275.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 275.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 275.0,
+    "total_credit": 275.0,
+    "reference_type": "commission_earned",
+    "reference_id": "b89339b1-d414-41e6-ad92-659f2d0550b2",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T20:36:56.694810+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "387d00f3-a1e6-4bfc-a07e-d2d301621328",
+    "entry_number": "TR-T-NJ-20251205-000050-3",
+    "date": "2025-12-05T20:42:17.491382+00:00",
+    "description": "حوالة من محمد جعفر علي إلى علي كاظم - T-NJ-20251205-000050-3",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 136000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 136000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 136000.0,
+    "total_credit": 136000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "c05550c9-a663-4a63-9a8c-9693cb23096f",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-05T20:42:17.491387+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "8147632b-6641-47ad-a616-b795b67fb663",
+    "entry_number": "COM-PAID-T-NJ-20251205-000050-3",
+    "date": "2025-12-05T20:42:17.492470+00:00",
+    "description": "عمولة مدفوعة من محمد جعفر علي إلى علي كاظم - النجف",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 340.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 340.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 340.0,
+    "total_credit": 340.0,
+    "reference_type": "commission_earned",
+    "reference_id": "c05550c9-a663-4a63-9a8c-9693cb23096f",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-05T20:42:17.492475+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "ab3b791a-235b-4934-b610-16a6744c2536",
+    "entry_number": "TR-T-NJ-20251205-000051-2",
+    "date": "2025-12-05T20:43:52.526735+00:00",
+    "description": "حوالة من محمد جعفر علي إلى كاظم عبد الحسين علي - T-NJ-20251205-000051-2",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 137000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 137000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 137000.0,
+    "total_credit": 137000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "7753e55a-8376-41fe-b68b-6ca00fd1b690",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-05T20:43:52.526740+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "4285c296-b448-4b37-8776-3e3847be9c6b",
+    "entry_number": "COM-PAID-T-NJ-20251205-000051-2",
+    "date": "2025-12-05T20:43:52.528203+00:00",
+    "description": "عمولة مدفوعة من محمد جعفر علي إلى كاظم عبد الحسين علي - النجف",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 342.5,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 342.5,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 342.5,
+    "total_credit": 342.5,
+    "reference_type": "commission_earned",
+    "reference_id": "7753e55a-8376-41fe-b68b-6ca00fd1b690",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-05T20:43:52.528214+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "8eecad10-8589-4da4-9b53-0cc37edddbc1",
+    "entry_number": "TR-T-NJ-20251205-000052-1",
+    "date": "2025-12-05T21:05:04.745751+00:00",
+    "description": "حوالة من محمد حسين كاظم  إلى علي جعفر حسين - T-NJ-20251205-000052-1",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 129000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 129000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 129000.0,
+    "total_credit": 129000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "e98a6911-fa20-4ab2-9cf0-f62f830fd401",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T21:05:04.745755+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "eed8cf40-0f14-4eb1-8d52-5667d8095084",
+    "entry_number": "COM-PAID-T-NJ-20251205-000052-1",
+    "date": "2025-12-05T21:05:04.746931+00:00",
+    "description": "عمولة مدفوعة من محمد حسين كاظم  إلى علي جعفر حسين - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 322.5,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 322.5,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 322.5,
+    "total_credit": 322.5,
+    "reference_type": "commission_earned",
+    "reference_id": "e98a6911-fa20-4ab2-9cf0-f62f830fd401",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-05T21:05:04.746934+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "f5c5a09c-218f-40fb-8122-64b6340c1a4e",
+    "entry_number": "TR-T-KR-20251205-000053-0",
+    "date": "2025-12-05T22:08:31.680538+00:00",
+    "description": "حوالة من زيد علي الدباغ إلى مصطفى علي الباوي - T-KR-20251205-000053-0",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 1350000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1350000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1350000.0,
+    "total_credit": 1350000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "ca781423-d686-4bec-9a7d-d5749134918d",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-05T22:08:31.680555+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "2c34f8bf-df15-4caa-8250-333e291557d5",
+    "entry_number": "COM-PAID-T-KR-20251205-000053-0",
+    "date": "2025-12-05T22:08:31.711641+00:00",
+    "description": "عمولة مدفوعة من زيد علي الدباغ إلى مصطفى علي الباوي - كربلاء",
+    "lines": [
+      {
+        "account_code": "1002",
+        "debit": 3375.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 3375.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 3375.0,
+    "total_credit": 3375.0,
+    "reference_type": "commission_earned",
+    "reference_id": "ca781423-d686-4bec-9a7d-d5749134918d",
+    "created_by": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21",
+    "created_at": "2025-12-05T22:08:31.711658+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "92a9ebdc-531c-4720-be19-a74fe1582e70",
+    "date": "2025-12-05T22:26:44.741798+00:00",
+    "account_code": "601",
+    "account_name": "عمولة محققة",
+    "debit": 3375.0,
+    "credit": 0,
+    "currency": "IQD",
+    "description": "عمولة محققة - حوالة واردة T-KR-20251205-000053-0",
+    "reference_type": "transfer_receive",
+    "reference_id": "ca781423-d686-4bec-9a7d-d5749134918d",
+    "created_by": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "created_at": "2025-12-05T22:26:44.741804+00:00"
+  },
+  {
+    "id": "c7542059-e44a-4391-a975-a5992bb25fb7",
+    "entry_number": "TR-T-NJ-20251206-000054-9",
+    "date": "2025-12-06T11:52:03.644291+00:00",
+    "description": "حوالة من حسين جعفر علي إلى محمد صادق حسين - T-NJ-20251206-000054-9",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 148000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 148000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 148000.0,
+    "total_credit": 148000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "ae56ebce-b271-4535-8950-402aba64f4bd",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-06T11:52:03.644296+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "0f67000a-227a-45c0-b566-22efa00dbc93",
+    "entry_number": "COM-PAID-T-NJ-20251206-000054-9",
+    "date": "2025-12-06T11:52:03.658251+00:00",
+    "description": "عمولة مدفوعة من حسين جعفر علي إلى محمد صادق حسين - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 370.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 370.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 370.0,
+    "total_credit": 370.0,
+    "reference_type": "commission_earned",
+    "reference_id": "ae56ebce-b271-4535-8950-402aba64f4bd",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-06T11:52:03.658259+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "3877c48d-a25e-4323-909c-be75be16ef7e",
+    "entry_number": "TR-T-NJ-20251206-000055-8",
+    "date": "2025-12-06T19:03:34.372106+00:00",
+    "description": "حوالة من محمد كاظمم عبد الله إلى نور كاظم علي - T-NJ-20251206-000055-8",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1250000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1250000.0,
+    "total_credit": 1250000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "a9daf41e-2564-4ad2-a912-5c7f95e55cb4",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-06T19:03:34.372114+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "a548aae0-b80e-490d-89c5-86f83c0b282e",
+    "entry_number": "COM-PAID-T-NJ-20251206-000055-8",
+    "date": "2025-12-06T19:03:34.388829+00:00",
+    "description": "عمولة مدفوعة من محمد كاظمم عبد الله إلى نور كاظم علي - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 3125.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 3125.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 3125.0,
+    "total_credit": 3125.0,
+    "reference_type": "commission_earned",
+    "reference_id": "a9daf41e-2564-4ad2-a912-5c7f95e55cb4",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-06T19:03:34.388837+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "3efe4918-f93f-45ed-898b-5f16fde32a68",
+    "entry_number": "TR-T-NJ-20251208-000056-3",
+    "date": "2025-12-08T12:42:29.167178+00:00",
+    "description": "حوالة من حسين كاظم إلى علي حسين كاظم - T-NJ-20251208-000056-3",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1000000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1000000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1000000.0,
+    "total_credit": 1000000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "2d2b73d9-faf4-44ab-9da6-f0ac06797266",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-08T12:42:29.167186+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "a9d6ad4c-54fa-4da4-a342-30709d1a0de0",
+    "entry_number": "COM-PAID-T-NJ-20251208-000056-3",
+    "date": "2025-12-08T12:42:29.180037+00:00",
+    "description": "عمولة مدفوعة من حسين كاظم إلى علي حسين كاظم - النجف",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 2500.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 2500.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 2500.0,
+    "total_credit": 2500.0,
+    "reference_type": "commission_earned",
+    "reference_id": "2d2b73d9-faf4-44ab-9da6-f0ac06797266",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-08T12:42:29.180046+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "16d415bf-c3c2-4bec-8814-99ae91e44545",
+    "entry_number": "TR-T-NJ-20251209-000057-2",
+    "date": "2025-12-09T19:35:55.962850+00:00",
+    "description": "حوالة واردة من 1001 - محمد كاظمم عبد الله إلى نور كاظم علي - T-NJ-20251209-000057-2",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1000000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 1000000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1000000.0,
+    "total_credit": 1000000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "8c0bfa08-a2f4-4b87-aeb8-4eba7e47738e",
+    "created_by": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "created_at": "2025-12-09T19:35:55.962860+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "946d277a-959b-4682-b87e-868dab11274f",
+    "entry_number": "TR-T-WS-20251211-000058-7",
+    "date": "2025-12-11T21:13:13.254383+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251211-000058-7",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "76d61488-5574-492a-ad42-398479620edc",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-11T21:13:13.254396+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "fc3c2a82-6ced-47ae-965b-7badb1e33f07",
+    "entry_number": "COM-PAID-T-WS-20251211-000058-7",
+    "date": "2025-12-11T21:13:13.289407+00:00",
+    "description": "عمولة مدفوعة من أحمد علي حسن إلى محمد سعد كريم - واسط",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "76d61488-5574-492a-ad42-398479620edc",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-11T21:13:13.289420+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "3598e878-0e0e-4aec-bca6-13437cfdd4b5",
+    "entry_number": "TR-RCV-T-WS-20251211-000058-7",
+    "date": "2025-12-11T21:13:20.721108+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251211-000058-7",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "76d61488-5574-492a-ad42-398479620edc",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-11T21:13:20.721115+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "2c5351a1-ba6b-4e78-8e73-757951954de1",
+    "entry_number": "COM-EARNED-T-WS-20251211-000058-7",
+    "date": "2025-12-11T21:13:20.722324+00:00",
+    "description": "عمولة محققة من أحمد علي حسن إلى محمد سعد كريم - واسط",
+    "lines": [
+      {
+        "account_code": "701",
+        "debit": 1250.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 1250.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_received",
+    "reference_id": "76d61488-5574-492a-ad42-398479620edc",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-11T21:13:20.722328+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "d794239e-4308-4779-b08f-63912b8c8828",
+    "entry_number": "TR-T-WS-20251211-000059-6",
+    "date": "2025-12-11T21:14:08.127584+00:00",
+    "description": "حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251211-000059-6",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 500000.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "901",
+        "debit": 0,
+        "credit": 500000.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_created",
+    "reference_id": "aa46a332-e0e5-470b-b400-6ae06fb48495",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-11T21:14:08.127587+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "ced448bf-f070-4521-81aa-64baff813c5c",
+    "entry_number": "COM-PAID-T-WS-20251211-000059-6",
+    "date": "2025-12-11T21:14:08.129220+00:00",
+    "description": "عمولة مدفوعة من أحمد علي حسن إلى محمد سعد كريم - واسط",
+    "lines": [
+      {
+        "account_code": "1001",
+        "debit": 1250.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "601",
+        "debit": 0,
+        "credit": 1250.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_earned",
+    "reference_id": "aa46a332-e0e5-470b-b400-6ae06fb48495",
+    "created_by": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+    "created_at": "2025-12-11T21:14:08.129224+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "2b7e12f9-6eea-466d-8b10-2922503a6069",
+    "entry_number": "TR-RCV-T-WS-20251211-000059-6",
+    "date": "2025-12-11T21:14:15.556621+00:00",
+    "description": "استلام حوالة من أحمد علي حسن إلى محمد سعد كريم - T-WS-20251211-000059-6",
+    "lines": [
+      {
+        "account_code": "901",
+        "debit": 500000.0,
+        "credit": 0
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 500000.0
+      }
+    ],
+    "total_debit": 500000.0,
+    "total_credit": 500000.0,
+    "reference_type": "transfer_received",
+    "reference_id": "aa46a332-e0e5-470b-b400-6ae06fb48495",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-11T21:14:15.556630+00:00",
+    "is_cancelled": false
+  },
+  {
+    "id": "2e6c7631-4bf7-4bfa-9ac4-dd7d32f1fa68",
+    "entry_number": "COM-EARNED-T-WS-20251211-000059-6",
+    "date": "2025-12-11T21:14:15.558246+00:00",
+    "description": "عمولة محققة من أحمد علي حسن إلى محمد سعد كريم - واسط",
+    "lines": [
+      {
+        "account_code": "701",
+        "debit": 1250.0,
+        "credit": 0,
+        "currency": "IQD"
+      },
+      {
+        "account_code": "501-04",
+        "debit": 0,
+        "credit": 1250.0,
+        "currency": "IQD"
+      }
+    ],
+    "total_debit": 1250.0,
+    "total_credit": 1250.0,
+    "reference_type": "commission_received",
+    "reference_id": "aa46a332-e0e5-470b-b400-6ae06fb48495",
+    "created_by": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "created_at": "2025-12-11T21:14:15.558257+00:00",
+    "is_cancelled": false
+  }
+]

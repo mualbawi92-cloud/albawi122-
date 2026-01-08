@@ -1,0 +1,6170 @@
+[
+  {
+    "id": "0b3854ab-1c16-463b-917b-2d33831576c4",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "admin",
+      "ip": "10.64.128.73"
+    },
+    "created_at": "2025-11-19T10:10:08.192038+00:00"
+  },
+  {
+    "id": "6731222a-98f7-4937-a868-a07faf1499a1",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "admin",
+      "ip": "10.64.129.34"
+    },
+    "created_at": "2025-11-19T10:10:10.010668+00:00"
+  },
+  {
+    "id": "29741c13-c5e0-44fe-bf4d-c608f67d7fa1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.34"
+    },
+    "created_at": "2025-11-19T10:11:08.631675+00:00"
+  },
+  {
+    "id": "9d73d2bf-ceca-469a-8835-680499bb607e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.34"
+    },
+    "created_at": "2025-11-19T10:12:17.762424+00:00"
+  },
+  {
+    "id": "23fe1fe6-074b-4f2c-90cc-cec0c4e51c6f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec"
+    },
+    "created_at": "2025-11-19T10:20:41.878982+00:00"
+  },
+  {
+    "id": "40493c59-7228-4da5-a35e-08bb6f9d1a00",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-19T10:42:49.791491+00:00"
+  },
+  {
+    "id": "a990d437-00e2-4487-989f-6889b6e92ebe",
+    "transfer_id": null,
+    "user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.6"
+    },
+    "created_at": "2025-11-19T10:43:04.962845+00:00"
+  },
+  {
+    "id": "c771db11-04b4-4e64-a874-98ab225ae213",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.6"
+    },
+    "created_at": "2025-11-19T10:43:19.332925+00:00"
+  },
+  {
+    "id": "e0bcb4be-ee12-439e-992a-774baf3a4183",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-19T10:43:36.254372+00:00"
+  },
+  {
+    "id": "9aa7a2f1-385a-4872-9989-b176c05c06af",
+    "transfer_id": null,
+    "user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.133.30"
+    },
+    "created_at": "2025-11-19T10:43:52.360600+00:00"
+  },
+  {
+    "id": "19fea8a4-6299-4bde-a7b6-0b2844f4f3b1",
+    "transfer_id": "70498e3f-a1bc-4849-93b7-ae76fe5ea097",
+    "user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251119-000001-6"
+    },
+    "created_at": "2025-11-19T10:44:10.184629+00:00"
+  },
+  {
+    "id": "969988da-5966-4b7f-a8a8-1981e0ee60a3",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.142"
+    },
+    "created_at": "2025-11-19T10:44:25.617614+00:00"
+  },
+  {
+    "id": "161bde67-6b17-4d6c-9c1a-b3ca6c4c530c",
+    "transfer_id": "70498e3f-a1bc-4849-93b7-ae76fe5ea097",
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "transfer_cancelled",
+    "details": {},
+    "created_at": "2025-11-19T10:48:47.231203+00:00"
+  },
+  {
+    "id": "3c103775-ecde-4149-912f-8739198f5e00",
+    "transfer_id": null,
+    "user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.133.30"
+    },
+    "created_at": "2025-11-19T10:49:22.303755+00:00"
+  },
+  {
+    "id": "b06fce83-b6fd-48b6-a0a8-0700bd35518f",
+    "transfer_id": "09101701-a6c2-4d5a-9369-0f31e4a3a23d",
+    "user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251119-000002-5"
+    },
+    "created_at": "2025-11-19T10:49:53.582115+00:00"
+  },
+  {
+    "id": "382ca95b-41c2-49e3-81a8-bd26c0585da9",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.133.30"
+    },
+    "created_at": "2025-11-19T10:50:02.098404+00:00"
+  },
+  {
+    "id": "7191def0-d3fa-4f26-b38e-d2a4d76dea3e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.240"
+    },
+    "created_at": "2025-11-19T11:17:06.658875+00:00"
+  },
+  {
+    "id": "9ee653d4-bc89-4da1-be75-7b7424d9bd8c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.142"
+    },
+    "created_at": "2025-11-19T11:19:55.625373+00:00"
+  },
+  {
+    "id": "219a5214-1857-48a8-b0b3-4913fdad56eb",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.240"
+    },
+    "created_at": "2025-11-19T11:23:45.137918+00:00"
+  },
+  {
+    "id": "21c32855-6df5-4fb5-8b15-f0290b23179e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-19T13:37:13.805103+00:00"
+  },
+  {
+    "id": "ed47f45d-2816-4591-a38c-57bd9ce942e5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.124"
+    },
+    "created_at": "2025-11-25T10:31:16.658007+00:00"
+  },
+  {
+    "id": "aff9709b-cec1-4d37-aa61-ecbab8359688",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-25T10:32:00.285007+00:00"
+  },
+  {
+    "id": "1272bdcb-88da-4b32-9bd9-526e0c511f38",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.137.136"
+    },
+    "created_at": "2025-11-27T18:56:46.644316+00:00"
+  },
+  {
+    "id": "a25796e9-c5e0-4026-8ca3-cb1ccb65a5a2",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_baghdad",
+      "ip": "10.64.129.156"
+    },
+    "created_at": "2025-11-27T19:03:09.929804+00:00"
+  },
+  {
+    "id": "fda2c3c3-eea7-4ec4-9b20-079a4d6f0fa1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.198"
+    },
+    "created_at": "2025-11-28T15:35:10.832933+00:00"
+  },
+  {
+    "id": "b36206d3-0226-4392-9ce2-b42002f38e92",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T17:26:14.756479+00:00"
+  },
+  {
+    "id": "2136287e-a234-4c31-abb8-57eda797c222",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:14:43.319817+00:00"
+  },
+  {
+    "id": "6d45b78f-8777-40e2-81ca-61122e9cb3a0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:15:18.068705+00:00"
+  },
+  {
+    "id": "3ce2777e-3cc0-4641-afe7-cde6c0f5a5d6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:24:07.882103+00:00"
+  },
+  {
+    "id": "d83b610b-16aa-442c-b09d-85c529f1427c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:28:50.661830+00:00"
+  },
+  {
+    "id": "3ab233a1-b0a3-4996-b2ba-3e7ba3174f97",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:29:04.057528+00:00"
+  },
+  {
+    "id": "17f3cbca-02ff-4db3-9711-2a00aa8305a7",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:29:23.277296+00:00"
+  },
+  {
+    "id": "892a1bc9-3001-4d4f-8bf2-413636b17b39",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:30:43.071442+00:00"
+  },
+  {
+    "id": "ec7b8e8f-35bb-4dbf-a774-bc1f3bbb56e0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:40:05.570956+00:00"
+  },
+  {
+    "id": "c6c039d6-caad-4134-8279-257f35e547ff",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-28T21:40:27.510060+00:00"
+  },
+  {
+    "id": "8c556b81-3ea9-466e-a047-1089aa60f0b1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.200"
+    },
+    "created_at": "2025-11-30T14:49:37.174325+00:00"
+  },
+  {
+    "id": "77984a2c-479b-4182-8394-0965ffc3ee6b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-30T14:49:52.550220+00:00"
+  },
+  {
+    "id": "3131acdf-2340-4c16-867a-e6df19d62448",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.136"
+    },
+    "created_at": "2025-11-30T14:54:11.757065+00:00"
+  },
+  {
+    "id": "f29ec972-c9e8-4390-bffd-36e61bc5081d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "1e8b16ec-2d2b-4a61-bd0f-192355ee54a7"
+    },
+    "created_at": "2025-11-30T14:55:45.449878+00:00"
+  },
+  {
+    "id": "83e17ef8-8325-4c23-8ed9-d6a3105479e6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-30T14:57:18.240758+00:00"
+  },
+  {
+    "id": "5b47b498-56cc-43ee-ad73-6ace80ebbe8a",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-11-30T14:57:38.782702+00:00"
+  },
+  {
+    "id": "351565f0-4fe0-4515-af63-73cfb179d95b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "64a7ec98-c85f-4df1-8dac-0bd33e86fd66"
+    },
+    "created_at": "2025-11-30T14:59:34.547302+00:00"
+  },
+  {
+    "id": "f7d362a8-5af0-48ff-8d17-664f103138f7",
+    "transfer_id": null,
+    "user_id": "64a7ec98-c85f-4df1-8dac-0bd33e86fd66",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.220"
+    },
+    "created_at": "2025-11-30T15:00:08.192546+00:00"
+  },
+  {
+    "id": "12e5d95c-d521-4826-a14a-8d55e0d04e98",
+    "transfer_id": "d7e4f820-7549-4d96-8ef3-6a6b94b62927",
+    "user_id": "64a7ec98-c85f-4df1-8dac-0bd33e86fd66",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-AN-20251130-000003-8"
+    },
+    "created_at": "2025-11-30T15:00:24.405886+00:00"
+  },
+  {
+    "id": "e2269a4b-286a-4c97-9dda-f7421ea824f1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.248"
+    },
+    "created_at": "2025-12-01T07:28:49.910227+00:00"
+  },
+  {
+    "id": "461074f5-5cc6-4ecd-8fa0-377efc6c4f6a",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.206"
+    },
+    "created_at": "2025-12-01T07:29:10.192119+00:00"
+  },
+  {
+    "id": "3d01c42f-fca5-4560-bd68-4877179a7881",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.137"
+    },
+    "created_at": "2025-12-01T08:28:15.809467+00:00"
+  },
+  {
+    "id": "a06c722a-2589-475d-92f8-58c2066222c0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.137"
+    },
+    "created_at": "2025-12-01T08:58:44.838829+00:00"
+  },
+  {
+    "id": "25fecc3a-b58b-4fac-bced-a44141aa9b9e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.135"
+    },
+    "created_at": "2025-12-01T09:56:52.508170+00:00"
+  },
+  {
+    "id": "0a8c56a4-c265-46c6-9e99-69e6367ebb6c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.198"
+    },
+    "created_at": "2025-12-01T09:57:11.761527+00:00"
+  },
+  {
+    "id": "de67b38b-2b0c-4e56-bf23-68689c307f13",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.198"
+    },
+    "created_at": "2025-12-01T09:59:34.950817+00:00"
+  },
+  {
+    "id": "0f9270c5-ed34-4baa-8d0e-945d54686f9e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.206"
+    },
+    "created_at": "2025-12-01T10:01:10.383601+00:00"
+  },
+  {
+    "id": "42699347-c3e3-424b-897f-ac2ac06d58f9",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.199"
+    },
+    "created_at": "2025-12-01T10:01:47.943348+00:00"
+  },
+  {
+    "id": "6f35f900-e616-479c-8365-0464a076d80b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.206"
+    },
+    "created_at": "2025-12-01T10:03:36.605730+00:00"
+  },
+  {
+    "id": "3fb2ea52-c133-4907-84f1-2f93adf47574",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.224"
+    },
+    "created_at": "2025-12-01T10:03:56.252848+00:00"
+  },
+  {
+    "id": "9956e375-8a73-4793-981f-7cfc0e03c6cb",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.137"
+    },
+    "created_at": "2025-12-01T10:04:20.851547+00:00"
+  },
+  {
+    "id": "6343708d-fd23-4315-8ff8-761668f862bf",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.248"
+    },
+    "created_at": "2025-12-01T10:08:50.243896+00:00"
+  },
+  {
+    "id": "4793dcbb-f7c8-40b8-934b-fb49a0ac3807",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.224"
+    },
+    "created_at": "2025-12-01T10:10:30.129166+00:00"
+  },
+  {
+    "id": "f08e6759-7bb3-4677-80df-e8e9edeae99e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.135"
+    },
+    "created_at": "2025-12-01T10:12:46.522404+00:00"
+  },
+  {
+    "id": "3b3eaf3d-93ed-4a77-862e-c104b1b08176",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.203"
+    },
+    "created_at": "2025-12-01T10:16:22.622539+00:00"
+  },
+  {
+    "id": "010be948-a124-4253-8fe8-3cf045e81840",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.136"
+    },
+    "created_at": "2025-12-01T10:18:52.392264+00:00"
+  },
+  {
+    "id": "a6c9ec89-cc39-4341-94ce-5bf85e0de747",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.206"
+    },
+    "created_at": "2025-12-01T10:20:05.172555+00:00"
+  },
+  {
+    "id": "ce9fdc06-bcbe-4d0a-9bfd-ee01cf73aa0d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.199"
+    },
+    "created_at": "2025-12-01T10:47:31.722108+00:00"
+  },
+  {
+    "id": "df71dba3-eae7-499b-ac8e-d6fa52b00aec",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.136"
+    },
+    "created_at": "2025-12-01T10:48:55.090383+00:00"
+  },
+  {
+    "id": "9997fcd6-78c4-41ee-a4ee-fd0226e795f4",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.221"
+    },
+    "created_at": "2025-12-01T10:49:31.319007+00:00"
+  },
+  {
+    "id": "701394d5-d565-4ed6-b302-2358c911d79e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.137"
+    },
+    "created_at": "2025-12-01T10:50:26.188019+00:00"
+  },
+  {
+    "id": "20fe8e23-af12-451b-81e2-232c690bdec0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.137"
+    },
+    "created_at": "2025-12-01T10:51:30.029221+00:00"
+  },
+  {
+    "id": "8cbabd30-5baa-4712-9137-416b1b4da5e8",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.203"
+    },
+    "created_at": "2025-12-01T10:52:23.678730+00:00"
+  },
+  {
+    "id": "9bc0b458-4b65-4ef7-abd5-fe18e85e4fd9",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.199"
+    },
+    "created_at": "2025-12-01T10:53:45.585100+00:00"
+  },
+  {
+    "id": "cede7c89-56bb-477a-b9a5-974fe82a00c5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "9739270b-1869-41a8-b18b-4fcc6971f0a7"
+    },
+    "created_at": "2025-12-01T10:53:57.741856+00:00"
+  },
+  {
+    "id": "21a59e41-0461-425d-94c2-b431930c3d19",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "8986a8d7-bee6-43e7-9409-c52ba284231d"
+    },
+    "created_at": "2025-12-01T11:05:32.321133+00:00"
+  },
+  {
+    "id": "ab179d57-5d11-4603-8043-abb508419526",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "64a7ec98-c85f-4df1-8dac-0bd33e86fd66",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-01T11:05:58.803276+00:00"
+  },
+  {
+    "id": "64a46a97-a931-472d-891e-ab54c07a6688",
+    "transfer_id": null,
+    "user_id": "8986a8d7-bee6-43e7-9409-c52ba284231d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.206"
+    },
+    "created_at": "2025-12-01T11:06:32.161896+00:00"
+  },
+  {
+    "id": "e708769a-9e43-4bf5-aeac-5cb4faaa1b55",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "admin@school.com",
+      "ip": "10.64.135.198"
+    },
+    "created_at": "2025-12-01T11:07:57.984080+00:00"
+  },
+  {
+    "id": "534585af-d6d1-4926-a090-6242a0e44b03",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "admin@school.com",
+      "ip": "10.64.135.199"
+    },
+    "created_at": "2025-12-01T11:08:00.418816+00:00"
+  },
+  {
+    "id": "cbf204cc-740f-4c87-86de-9df16f794987",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.203"
+    },
+    "created_at": "2025-12-01T11:08:29.182711+00:00"
+  },
+  {
+    "id": "55ebfc49-4d79-4354-90b0-88da04c128c7",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.203"
+    },
+    "created_at": "2025-12-01T11:13:38.694836+00:00"
+  },
+  {
+    "id": "107ff0fa-58d5-4e56-a59e-b2c68119e300",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.206"
+    },
+    "created_at": "2025-12-01T13:08:01.733634+00:00"
+  },
+  {
+    "id": "d39e7a38-7b48-4315-ac7f-2e6e1b2ea2ae",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.221"
+    },
+    "created_at": "2025-12-01T14:55:21.528318+00:00"
+  },
+  {
+    "id": "f8c35815-dba7-418b-8f9b-074808cdcf52",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.27"
+    },
+    "created_at": "2025-12-02T07:04:34.816065+00:00"
+  },
+  {
+    "id": "bd8eef3f-9d22-4ccf-8bbd-5b2d6bdbc49f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-02T17:23:40.769207+00:00"
+  },
+  {
+    "id": "816d5fa1-165e-4a14-b3dd-410f4d574b43",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.142.139"
+    },
+    "created_at": "2025-12-02T17:24:04.460615+00:00"
+  },
+  {
+    "id": "997156ab-2d62-4fba-b97d-0136e448c334",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.142.138"
+    },
+    "created_at": "2025-12-02T17:24:29.171145+00:00"
+  },
+  {
+    "id": "7dab4332-89d4-415e-8fcc-7d98a71350c5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.142.139"
+    },
+    "created_at": "2025-12-02T17:31:23.539701+00:00"
+  },
+  {
+    "id": "35903a07-71fa-4073-8626-495f4627bf00",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T17:31:32.966723+00:00"
+  },
+  {
+    "id": "e085e0e3-7102-48be-b7a5-b355e92a71bf",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.142.139"
+    },
+    "created_at": "2025-12-02T17:32:31.321543+00:00"
+  },
+  {
+    "id": "bb029a44-82d4-4d22-aa26-0859076889fe",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T17:32:40.639195+00:00"
+  },
+  {
+    "id": "ac0124ea-031f-46b9-a9ef-8e862feec322",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.198"
+    },
+    "created_at": "2025-12-02T17:34:16.693792+00:00"
+  },
+  {
+    "id": "45e1b38c-5e33-4273-89c0-852fff68d657",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T17:34:26.009732+00:00"
+  },
+  {
+    "id": "a6455570-0849-428b-9126-7276d558f8c5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.8"
+    },
+    "created_at": "2025-12-02T17:35:27.372230+00:00"
+  },
+  {
+    "id": "f77c7994-3701-44d1-baf3-8d465cb5472f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.8"
+    },
+    "created_at": "2025-12-02T17:40:04.287173+00:00"
+  },
+  {
+    "id": "2aee8269-319a-41c2-94ce-04b53734d332",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.138.209"
+    },
+    "created_at": "2025-12-02T17:43:15.616547+00:00"
+  },
+  {
+    "id": "393d777b-ddcb-4c04-8bea-274a25657e97",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "8c2b0b6e-bb3e-4b80-8ad0-b6d19e95cfd1"
+    },
+    "created_at": "2025-12-02T17:48:49.875494+00:00"
+  },
+  {
+    "id": "b3296fb2-a199-4048-95ad-fa5f4ca3b812",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "c13645ec-84b6-41a0-a827-ccbbc91a076d"
+    },
+    "created_at": "2025-12-02T17:52:25.242802+00:00"
+  },
+  {
+    "id": "3a4f7405-26e8-43ee-b491-e9d83a73c767",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "e375fb3e-c203-48b5-8f96-d756d85f155a"
+    },
+    "created_at": "2025-12-02T17:54:07.447813+00:00"
+  },
+  {
+    "id": "6ff6a28a-f7da-45f1-8052-d3854fd23892",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.142.139"
+    },
+    "created_at": "2025-12-02T18:02:10.782363+00:00"
+  },
+  {
+    "id": "b31f5dfe-fe8b-4d8d-935c-1b8471360329",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.138.209"
+    },
+    "created_at": "2025-12-02T18:02:35.631436+00:00"
+  },
+  {
+    "id": "3a00ca99-bf9f-45bc-9a6e-6fd713b47f85",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.138.209"
+    },
+    "created_at": "2025-12-02T18:09:34.109963+00:00"
+  },
+  {
+    "id": "a9c1300a-9f14-4c95-9f01-b8a10f297bb4",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.9"
+    },
+    "created_at": "2025-12-02T18:10:28.429090+00:00"
+  },
+  {
+    "id": "b79a0e75-f707-497e-a095-b37771effc5b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.8"
+    },
+    "created_at": "2025-12-02T18:12:12.643619+00:00"
+  },
+  {
+    "id": "a32ffc5a-f4fc-46cb-9489-2314173fd006",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "d6662114-b717-43a6-a47c-e29bfec54cec",
+      "username": "za12"
+    },
+    "created_at": "2025-12-02T18:19:12.730583+00:00"
+  },
+  {
+    "id": "1de08610-5e01-4532-87d0-8bbccac0f67f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "1e8b16ec-2d2b-4a61-bd0f-192355ee54a7",
+      "username": "ad111"
+    },
+    "created_at": "2025-12-02T18:22:54.520304+00:00"
+  },
+  {
+    "id": "59129d78-d896-414c-b991-537fcb36ba1b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "64a7ec98-c85f-4df1-8dac-0bd33e86fd66",
+      "username": "ad22"
+    },
+    "created_at": "2025-12-02T18:23:01.890171+00:00"
+  },
+  {
+    "id": "076b1e65-8c72-4329-850c-72d0ad5e2322",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "9739270b-1869-41a8-b18b-4fcc6971f0a7",
+      "username": "test_agent_new"
+    },
+    "created_at": "2025-12-02T18:23:12.958068+00:00"
+  },
+  {
+    "id": "4ee802c3-9f4a-4834-85fd-f26ec34d3813",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "8986a8d7-bee6-43e7-9409-c52ba284231d",
+      "username": "ad44"
+    },
+    "created_at": "2025-12-02T18:23:18.979155+00:00"
+  },
+  {
+    "id": "dbe92061-90b7-460d-8283-366f8f06468f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "c13645ec-84b6-41a0-a827-ccbbc91a076d",
+      "username": "agent_1764697944869"
+    },
+    "created_at": "2025-12-02T18:23:22.969098+00:00"
+  },
+  {
+    "id": "082b598d-52ce-44d5-81ed-f900ce75db8e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "f9f4fa29-6e2b-4842-96ca-607db94b6699"
+    },
+    "created_at": "2025-12-02T18:24:21.274028+00:00"
+  },
+  {
+    "id": "7b030677-cc36-41a3-b708-33a3f7383349",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "c847288c-4312-49ef-97af-f038b0684eee"
+    },
+    "created_at": "2025-12-02T18:25:26.247864+00:00"
+  },
+  {
+    "id": "91cf0523-9c8c-4f0d-a261-a2f63b44d68d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.138.209"
+    },
+    "created_at": "2025-12-02T18:28:14.695066+00:00"
+  },
+  {
+    "id": "0ef58ad4-6f16-47ec-b25a-e652bbdd3c96",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.26"
+    },
+    "created_at": "2025-12-02T18:31:20.316714+00:00"
+  },
+  {
+    "id": "a2b54aeb-797c-477b-9580-edea57998ab9",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.9"
+    },
+    "created_at": "2025-12-02T18:33:37.235715+00:00"
+  },
+  {
+    "id": "f2fe4692-0adb-4b20-980c-332224830305",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "f89ac79b-fd3b-4c95-9199-b0d1c1b32bb1"
+    },
+    "created_at": "2025-12-02T18:33:48.103535+00:00"
+  },
+  {
+    "id": "d43e8b9f-ef94-4c24-80b3-98464a8a59ab",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "1cb7f2ca-6f44-4e91-b6e6-222196268d61"
+    },
+    "created_at": "2025-12-02T18:39:54.701504+00:00"
+  },
+  {
+    "id": "ef38d3b2-0b4e-4f3c-9f9c-4ee54e7dad20",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.200"
+    },
+    "created_at": "2025-12-02T18:40:03.036716+00:00"
+  },
+  {
+    "id": "bc91f825-62e4-4465-8752-9989876eaf34",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.26"
+    },
+    "created_at": "2025-12-02T18:41:25.817035+00:00"
+  },
+  {
+    "id": "1b9b75b7-b200-4299-b7b7-6a74e34bca6b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.138.209"
+    },
+    "created_at": "2025-12-02T18:45:42.248984+00:00"
+  },
+  {
+    "id": "d0e8436a-f795-425c-9614-78989d83c8a0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-02T18:46:55.737285+00:00"
+  },
+  {
+    "id": "17f492a4-3245-4507-b23c-03c56fecf08f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-02T18:52:08.563653+00:00"
+  },
+  {
+    "id": "62a71a24-f09a-4fb8-98af-eff015a3b3be",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-02T18:52:53.099206+00:00"
+  },
+  {
+    "id": "2f4b25aa-ca43-4232-af7d-7d9d9703ef4e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.200"
+    },
+    "created_at": "2025-12-02T18:54:13.308746+00:00"
+  },
+  {
+    "id": "7a7f9b7d-7454-4c48-bf3b-275aeb4e40fa",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.142.138"
+    },
+    "created_at": "2025-12-02T18:58:40.337633+00:00"
+  },
+  {
+    "id": "30abe323-7f02-486f-9cbc-f57df9d9b1d8",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "9e49f20c-02a5-40ca-80dd-66a3fcecb8b6"
+    },
+    "created_at": "2025-12-02T19:00:11.386879+00:00"
+  },
+  {
+    "id": "95110147-8e80-438c-8dc9-18a1bf1b3885",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-02T19:36:20.354173+00:00"
+  },
+  {
+    "id": "0d637dc5-a411-44a4-bef7-c68bf28b5275",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.85"
+    },
+    "created_at": "2025-12-02T19:58:08.712241+00:00"
+  },
+  {
+    "id": "5b25695b-7c42-4724-a143-4cb36729c5f5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_status_changed",
+    "details": {
+      "target_user_id": "f89ac79b-fd3b-4c95-9199-b0d1c1b32bb1",
+      "new_status": "inactive"
+    },
+    "created_at": "2025-12-02T19:59:24.011142+00:00"
+  },
+  {
+    "id": "ebca16f6-6ae5-4532-bf87-23930d8e4d2d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "f9f4fa29-6e2b-4842-96ca-607db94b6699",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T20:00:08.601021+00:00"
+  },
+  {
+    "id": "4180497a-bd9b-4188-a37d-60c5b3284008",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.8"
+    },
+    "created_at": "2025-12-02T20:02:46.868938+00:00"
+  },
+  {
+    "id": "0bf66ce3-98eb-4f8f-b0cc-6041938e93a0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "f9f4fa29-6e2b-4842-96ca-607db94b6699",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T20:06:15.654358+00:00"
+  },
+  {
+    "id": "d7295541-42f5-457b-bb3d-49b694ed6772",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.212"
+    },
+    "created_at": "2025-12-02T20:06:20.848475+00:00"
+  },
+  {
+    "id": "4f929461-48f0-4610-a61a-5faa5a4de59c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.198"
+    },
+    "created_at": "2025-12-02T20:07:49.130404+00:00"
+  },
+  {
+    "id": "dd1ef60b-026b-4119-9961-005e6c8f2dee",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.9"
+    },
+    "created_at": "2025-12-02T20:09:16.378171+00:00"
+  },
+  {
+    "id": "1705a6ce-3dc3-4a1d-b6c3-69ed7d3c9c50",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "f9f4fa29-6e2b-4842-96ca-607db94b6699",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T20:09:30.657725+00:00"
+  },
+  {
+    "id": "166665c6-288e-4a31-8419-8c8ae1d5dd3f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.212"
+    },
+    "created_at": "2025-12-02T20:13:27.458458+00:00"
+  },
+  {
+    "id": "3afe1fd4-f169-407c-9b67-68101a1379e5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "f9f4fa29-6e2b-4842-96ca-607db94b6699",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T20:14:55.836804+00:00"
+  },
+  {
+    "id": "8a211bb6-8ad4-44dc-804d-5eff5470bb97",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "f9f4fa29-6e2b-4842-96ca-607db94b6699",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T20:18:07.250324+00:00"
+  },
+  {
+    "id": "513f7d2b-7117-4032-883a-7c32234ea294",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-02T20:19:00.589614+00:00"
+  },
+  {
+    "id": "6b31be4f-616f-4c6c-921e-223496f8f140",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.138.209"
+    },
+    "created_at": "2025-12-02T20:20:26.073719+00:00"
+  },
+  {
+    "id": "59835a07-a0db-4a3e-b628-b9e1c8cf6309",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "a8e3611c-2a6b-4c09-9185-05865b3072ee"
+    },
+    "created_at": "2025-12-02T20:20:32.471833+00:00"
+  },
+  {
+    "id": "ab4535a1-8d18-4695-9c9c-fde6c927b096",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "f9f4fa29-6e2b-4842-96ca-607db94b6699",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T20:27:00.745084+00:00"
+  },
+  {
+    "id": "bd717a3b-97d9-49f7-8378-5c2fdc0fbbd6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "a8e3611c-2a6b-4c09-9185-05865b3072ee",
+      "username": "agent_1764706832137"
+    },
+    "created_at": "2025-12-02T20:27:39.189070+00:00"
+  },
+  {
+    "id": "bad5ae24-b54c-43b7-9066-d295e2d4c469",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "f9f4fa29-6e2b-4842-96ca-607db94b6699",
+      "username": "agent_1764699860906"
+    },
+    "created_at": "2025-12-02T20:27:43.866072+00:00"
+  },
+  {
+    "id": "64717755-4fb0-435b-957b-bf8767b0e57d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "1b187655-81cd-4e0d-958a-68110d9b5a3f"
+    },
+    "created_at": "2025-12-02T20:28:23.516832+00:00"
+  },
+  {
+    "id": "caa99597-cd4d-435d-a139-b5558060b26e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.200"
+    },
+    "created_at": "2025-12-02T20:31:49.140158+00:00"
+  },
+  {
+    "id": "826ecc00-1b91-44ad-95e5-586437ee7c71",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80"
+    },
+    "created_at": "2025-12-02T21:26:56.175813+00:00"
+  },
+  {
+    "id": "cb99c7fc-8f0a-4ad0-b303-c773bc781022",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "ab6d9e7a-aafb-4710-bfbb-e1feb0883124"
+    },
+    "created_at": "2025-12-02T21:27:26.985310+00:00"
+  },
+  {
+    "id": "a80d88a8-8129-4039-b2c3-94602507f240",
+    "transfer_id": null,
+    "user_id": "ab6d9e7a-aafb-4710-bfbb-e1feb0883124",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.138.209"
+    },
+    "created_at": "2025-12-02T21:27:56.992290+00:00"
+  },
+  {
+    "id": "17932c0b-a190-43d6-8a7c-d6eb005eba5d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.200"
+    },
+    "created_at": "2025-12-02T21:30:32.662230+00:00"
+  },
+  {
+    "id": "3e515b73-8238-4137-8715-3d527ab32b2e",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T21:30:56.248984+00:00"
+  },
+  {
+    "id": "38944bec-fa6c-4b7a-ab86-8b93b188efe5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T21:31:12.435443+00:00"
+  },
+  {
+    "id": "699fcf96-4a57-4553-95b3-70f0aa81948c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-02T21:32:16.476529+00:00"
+  },
+  {
+    "id": "66230695-be86-4863-b538-f9e4333cf128",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.89"
+    },
+    "created_at": "2025-12-03T06:25:18.556680+00:00"
+  },
+  {
+    "id": "470704fe-a433-4ead-b296-b37c8edfdf56",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-03T06:26:07.308076+00:00"
+  },
+  {
+    "id": "4b54059f-bb3c-4471-af2f-0ca91d5856b6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+      "fields": [
+        "display_name",
+        "phone",
+        "password_hash"
+      ]
+    },
+    "created_at": "2025-12-03T06:29:48.968344+00:00"
+  },
+  {
+    "id": "b53d4ffd-fd10-4888-9799-6e6582846167",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+      "fields": [
+        "display_name",
+        "phone",
+        "password_hash"
+      ]
+    },
+    "created_at": "2025-12-03T06:40:21.618710+00:00"
+  },
+  {
+    "id": "0c9d044a-cb56-4621-b885-16dcca5a7220",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-03T06:40:42.994054+00:00"
+  },
+  {
+    "id": "19f6ef34-54d8-4be4-b766-74d1cacaa575",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "aas",
+      "ip": "10.64.135.197"
+    },
+    "created_at": "2025-12-03T06:42:12.774401+00:00"
+  },
+  {
+    "id": "9b994ca6-8fdb-45b1-a925-959aa086ec01",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "aas",
+      "ip": "10.64.130.89"
+    },
+    "created_at": "2025-12-03T06:42:19.622582+00:00"
+  },
+  {
+    "id": "1ea5aa9b-61fe-4510-b2af-faeeb45094c1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.198"
+    },
+    "created_at": "2025-12-03T11:16:45.829491+00:00"
+  },
+  {
+    "id": "6dffcb53-2ab2-42a9-915d-9412c40255f5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.72"
+    },
+    "created_at": "2025-12-03T11:18:50.750047+00:00"
+  },
+  {
+    "id": "ee91a848-8586-4b27-9d29-07b759098a3a",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-03T11:19:07.137682+00:00"
+  },
+  {
+    "id": "d649ac93-6d2b-422c-acdc-58000b6d67b6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T11:20:20.427751+00:00"
+  },
+  {
+    "id": "72d6df14-f835-42dd-81b5-8fc842b7f91c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "1b187655-81cd-4e0d-958a-68110d9b5a3f",
+      "fields": [
+        "display_name",
+        "phone",
+        "governorate",
+        "address",
+        "account_id"
+      ]
+    },
+    "created_at": "2025-12-03T11:45:25.865952+00:00"
+  },
+  {
+    "id": "3b97335b-d138-4a62-8807-49d6659a5239",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T11:46:01.730864+00:00"
+  },
+  {
+    "id": "503b6194-448d-4c46-8a5b-e8e5101b859c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "073766a6-e1b4-4826-9ef8-6ce6f5372b6c"
+    },
+    "created_at": "2025-12-03T11:46:02.082452+00:00"
+  },
+  {
+    "id": "8316e8b6-d517-4f73-9525-fcd99607c212",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T11:46:56.472801+00:00"
+  },
+  {
+    "id": "d57343df-bee8-4287-90fd-f07b63142fe6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T11:47:34.346898+00:00"
+  },
+  {
+    "id": "9a110402-cab4-4fe0-a8c9-c024db48ad99",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "8127848d-0c71-4a64-99e4-ef9faca74674"
+    },
+    "created_at": "2025-12-03T11:47:34.723403+00:00"
+  },
+  {
+    "id": "44f9ab6d-226d-4e2c-9c8c-c75ceddf1606",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "8127848d-0c71-4a64-99e4-ef9faca74674",
+      "username": "test_agent_1764762454"
+    },
+    "created_at": "2025-12-03T11:49:37.634308+00:00"
+  },
+  {
+    "id": "469cb5a8-26e2-43f2-b388-cf4b8bf93d20",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_deleted",
+    "details": {
+      "target_user_id": "073766a6-e1b4-4826-9ef8-6ce6f5372b6c",
+      "username": "test_agent_1764762361"
+    },
+    "created_at": "2025-12-03T11:49:40.681025+00:00"
+  },
+  {
+    "id": "68176040-f33d-4f95-b066-501297a6849d",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "aas",
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T11:49:55.372684+00:00"
+  },
+  {
+    "id": "56bdca7b-03fb-40b0-822c-f1f49636a4f8",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T11:50:01.371686+00:00"
+  },
+  {
+    "id": "e0760eaf-58e7-45b1-a832-3bd727395d22",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T11:53:53.711770+00:00"
+  },
+  {
+    "id": "7499b517-e49b-485d-a088-8699b02f65e6",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "Asd123",
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-03T11:59:05.201827+00:00"
+  },
+  {
+    "id": "8f936cfe-f319-4d7b-a256-bc3b90af0b72",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T11:59:55.502998+00:00"
+  },
+  {
+    "id": "bd21671f-ae8b-43b9-a8d4-9d6f1abe0200",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "8c2b0b6e-bb3e-4b80-8ad0-b6d19e95cfd1",
+      "fields": [
+        "display_name",
+        "phone",
+        "password_hash"
+      ]
+    },
+    "created_at": "2025-12-03T12:00:34.938512+00:00"
+  },
+  {
+    "id": "8ab2900e-7fc0-4e21-bb07-8d2170e7fe8c",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ASD1234",
+      "ip": "10.64.136.73"
+    },
+    "created_at": "2025-12-03T12:01:25.671886+00:00"
+  },
+  {
+    "id": "df243c81-e0b5-413d-908f-e5aaad924555",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_updated_by_admin",
+    "details": {
+      "target_user_id": "8c2b0b6e-bb3e-4b80-8ad0-b6d19e95cfd1",
+      "fields": [
+        "display_name",
+        "phone",
+        "password_hash"
+      ]
+    },
+    "created_at": "2025-12-03T12:01:44.933990+00:00"
+  },
+  {
+    "id": "aee55d25-8c46-46c9-95de-6902ab52051d",
+    "transfer_id": null,
+    "user_id": "8c2b0b6e-bb3e-4b80-8ad0-b6d19e95cfd1",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-03T12:01:51.852394+00:00"
+  },
+  {
+    "id": "7f69516a-d147-406b-99a1-2ee814a9a6c4",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ada12345",
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T12:06:55.341908+00:00"
+  },
+  {
+    "id": "47e723be-d19b-4ab3-a00e-cc4fe62bbe16",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ada12345",
+      "ip": "10.64.134.198"
+    },
+    "created_at": "2025-12-03T12:06:59.600547+00:00"
+  },
+  {
+    "id": "b4e9e935-92fe-425e-9b09-fa16736ace1d",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ada12345",
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T12:07:03.893214+00:00"
+  },
+  {
+    "id": "2debce67-0bae-4fb5-ad09-9ffa2cc8da04",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ada123",
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T12:07:08.184278+00:00"
+  },
+  {
+    "id": "f5b8aea5-6848-45a1-9d97-fa1c37fa423d",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ada123",
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T12:07:12.405183+00:00"
+  },
+  {
+    "id": "2754bab2-8d72-4538-854c-f187dc3b3920",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ada123",
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T12:07:16.619397+00:00"
+  },
+  {
+    "id": "a387526d-77d3-4edc-90dd-d1de7520fbe8",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "Asd123",
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-03T12:07:20.885381+00:00"
+  },
+  {
+    "id": "2f98a0ae-dc18-4849-87e1-cc6937c5c946",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "Asd123",
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T12:07:25.226160+00:00"
+  },
+  {
+    "id": "831bb6f2-4ebf-4b2f-a688-0fa15d8005e5",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "Asd123",
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T12:07:29.397165+00:00"
+  },
+  {
+    "id": "1ff263a4-ae62-40d4-92e7-4c9e50954fc4",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "user",
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T12:08:05.354591+00:00"
+  },
+  {
+    "id": "21bd53c1-4510-4f63-8177-8ad8e9ff6fa8",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "user",
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T12:08:09.643542+00:00"
+  },
+  {
+    "id": "afcfb41b-81b4-4702-81b0-1c3a92b76c34",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "test",
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T12:08:13.940716+00:00"
+  },
+  {
+    "id": "7931766e-5705-49a3-82b1-22fd052207dd",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "test",
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T12:08:18.174266+00:00"
+  },
+  {
+    "id": "ccab0d5c-29ca-4a96-ac9b-7354d9fbc755",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent",
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T12:08:22.441282+00:00"
+  },
+  {
+    "id": "11403481-77f4-44b6-90e3-a23ddca85e9b",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent",
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T12:08:26.658202+00:00"
+  },
+  {
+    "id": "11ef6cb2-c7c5-4962-bf08-6907bc1c4e72",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "user1",
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T12:08:52.240615+00:00"
+  },
+  {
+    "id": "8386df3a-9a8c-4a1c-a3e0-654f19599eaa",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "admin",
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T12:09:05.291735+00:00"
+  },
+  {
+    "id": "abf7ae4a-350f-4802-920c-d5534d1a29f7",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.73"
+    },
+    "created_at": "2025-12-03T12:44:57.797509+00:00"
+  },
+  {
+    "id": "2dfe5c20-de2b-4704-94f4-c9523298c226",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.200"
+    },
+    "created_at": "2025-12-03T12:45:36.547383+00:00"
+  },
+  {
+    "id": "9da2930c-a8fc-4c06-89d4-136cdae39d47",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.73"
+    },
+    "created_at": "2025-12-03T12:45:45.337845+00:00"
+  },
+  {
+    "id": "5935cac0-3b3d-4925-a132-6d29ec72c687",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.200"
+    },
+    "created_at": "2025-12-03T12:46:28.362857+00:00"
+  },
+  {
+    "id": "11b8075c-e324-4cd0-8aff-45c4517d0cb9",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "Asd123",
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T13:20:36.130232+00:00"
+  },
+  {
+    "id": "8a856587-7bf5-4ac6-974b-e9ab02bd20ca",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T13:20:58.374977+00:00"
+  },
+  {
+    "id": "5f9662e9-f9e5-43ea-b018-764459cd02fa",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.200"
+    },
+    "created_at": "2025-12-03T13:21:07.353294+00:00"
+  },
+  {
+    "id": "fec23329-7ba7-4178-82a1-5f9403a08452",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18"
+    },
+    "created_at": "2025-12-03T13:21:07.637741+00:00"
+  },
+  {
+    "id": "430ad41a-313b-492a-8fd1-6b497ca37b73",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.201"
+    },
+    "created_at": "2025-12-03T13:21:15.099642+00:00"
+  },
+  {
+    "id": "f6ce44d7-be78-462f-8bfe-f10be00efc51",
+    "transfer_id": "a9bc7fe0-515e-4414-9de9-54d24160d71b",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BG-20251203-000004-6"
+    },
+    "created_at": "2025-12-03T13:21:15.414612+00:00"
+  },
+  {
+    "id": "844f1a8c-4d1e-40fa-b8c7-57a3b8962cbe",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.133.71"
+    },
+    "created_at": "2025-12-03T13:23:06.675626+00:00"
+  },
+  {
+    "id": "934b8fd1-ffb2-4824-b92d-dcac8f4191c5",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T13:25:42.043369+00:00"
+  },
+  {
+    "id": "946a368a-4b73-45e2-b093-03d196bdb304",
+    "transfer_id": "91d00977-96df-4286-8755-30a2918e9378",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NA-20251203-000005-5"
+    },
+    "created_at": "2025-12-03T13:25:42.323607+00:00"
+  },
+  {
+    "id": "349909f1-4ead-4ffb-b5e8-9e16d10ce966",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.198"
+    },
+    "created_at": "2025-12-03T13:25:57.814919+00:00"
+  },
+  {
+    "id": "55c97160-f5f7-4058-8313-23ed288dd2ad",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "5589a3f1-9f40-49b2-9b19-dd081cd0666e"
+    },
+    "created_at": "2025-12-03T13:25:58.094900+00:00"
+  },
+  {
+    "id": "9d6a5f4c-3b8e-451c-92cb-48caebe102a2",
+    "transfer_id": null,
+    "user_id": "5589a3f1-9f40-49b2-9b19-dd081cd0666e",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.198"
+    },
+    "created_at": "2025-12-03T13:25:58.393007+00:00"
+  },
+  {
+    "id": "38fd58c8-970c-44c0-963e-fa16535a0cae",
+    "transfer_id": "13e33419-6dc6-4cce-8bf8-7b37836f1aad",
+    "user_id": "5589a3f1-9f40-49b2-9b19-dd081cd0666e",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251203-000006-4"
+    },
+    "created_at": "2025-12-03T13:25:58.672814+00:00"
+  },
+  {
+    "id": "581cc4f4-587a-46de-8502-b25aef103487",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T13:26:52.617819+00:00"
+  },
+  {
+    "id": "9077ce2a-f334-4581-b3c9-ab7423a320da",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T13:27:46.132413+00:00"
+  },
+  {
+    "id": "467684df-9535-476a-844c-22c59247b5e9",
+    "transfer_id": "b8adfe5c-5532-4e8d-9fb0-bd03bd42d12c",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NA-20251203-000007-3"
+    },
+    "created_at": "2025-12-03T13:27:46.408183+00:00"
+  },
+  {
+    "id": "58269cca-8a2b-4865-a471-d92847099159",
+    "transfer_id": null,
+    "user_id": "5589a3f1-9f40-49b2-9b19-dd081cd0666e",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T13:27:49.381452+00:00"
+  },
+  {
+    "id": "c5ba992f-97d5-4834-9e0e-df26c924af4a",
+    "transfer_id": "31cfaa92-beb2-422b-b06a-1f648a93602a",
+    "user_id": "5589a3f1-9f40-49b2-9b19-dd081cd0666e",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BA-20251203-000008-2"
+    },
+    "created_at": "2025-12-03T13:27:49.665212+00:00"
+  },
+  {
+    "id": "a33956d7-4b99-43d9-b94b-0c55396d4eb9",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T13:28:05.875566+00:00"
+  },
+  {
+    "id": "d8cd2ee3-12a2-46b0-9f78-a0d77c675749",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.74"
+    },
+    "created_at": "2025-12-03T13:28:57.980037+00:00"
+  },
+  {
+    "id": "2111ebac-0eca-40d4-8bb2-ed4e6f8a7da5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.71"
+    },
+    "created_at": "2025-12-03T13:29:45.065337+00:00"
+  },
+  {
+    "id": "24d713bf-6d59-4c44-ae98-599152d0e6d8",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T13:30:21.667823+00:00"
+  },
+  {
+    "id": "81cf71a3-bb09-4a93-9016-acf56cd8a752",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.71"
+    },
+    "created_at": "2025-12-03T13:30:52.935081+00:00"
+  },
+  {
+    "id": "cc0b09b8-4717-4c36-829d-6739fcad3fe6",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T13:31:13.279249+00:00"
+  },
+  {
+    "id": "b419a797-f887-4eef-9cdd-4c74957cb21b",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.73"
+    },
+    "created_at": "2025-12-03T13:36:46.151132+00:00"
+  },
+  {
+    "id": "053b6897-c023-4fba-a043-fb77d02c6214",
+    "transfer_id": "bc15cbcd-2ade-4d9d-841e-8af53a99a371",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BA-20251203-000009-1"
+    },
+    "created_at": "2025-12-03T13:36:46.438163+00:00"
+  },
+  {
+    "id": "ba92706f-0cfc-4de6-9641-f247441e0f2a",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T13:39:10.254450+00:00"
+  },
+  {
+    "id": "a585278d-3a91-440a-a858-9fe298bdd2c4",
+    "transfer_id": "fe50dae1-7e42-4c0f-a25c-e2486115d88b",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000010-0"
+    },
+    "created_at": "2025-12-03T13:40:05.287568+00:00"
+  },
+  {
+    "id": "8c72606f-e8d5-4ea8-947d-c642f2d36bff",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.74"
+    },
+    "created_at": "2025-12-03T13:41:57.952991+00:00"
+  },
+  {
+    "id": "2e36e8ff-3773-4c5d-8a91-50198b6165c7",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "0e3cf87d-5c6f-4515-9ab2-d911e4537f21"
+    },
+    "created_at": "2025-12-03T13:45:41.832596+00:00"
+  },
+  {
+    "id": "3c708b52-3996-4808-8b6b-728c91afdd66",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4"
+    },
+    "created_at": "2025-12-03T13:47:03.972725+00:00"
+  },
+  {
+    "id": "ae5b16d3-5dbb-4f4e-b4b0-2113d502d443",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T13:47:50.796183+00:00"
+  },
+  {
+    "id": "e3a0e3a6-89cd-4c84-9676-c7a24314bfdf",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T13:49:26.086992+00:00"
+  },
+  {
+    "id": "b28d09c0-e2c7-4a74-ba4d-8cbf83daa3bd",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T13:53:37.411271+00:00"
+  },
+  {
+    "id": "4d31fb21-1b32-4a58-b99f-7c0a63dfe9ff",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T13:53:53.760317+00:00"
+  },
+  {
+    "id": "f48ae618-a5bc-4ceb-baef-8b9b700a34ea",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.71"
+    },
+    "created_at": "2025-12-03T13:54:45.077613+00:00"
+  },
+  {
+    "id": "4add77a4-3daa-45b1-a435-e43c553bbec5",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.71"
+    },
+    "created_at": "2025-12-03T13:56:13.875620+00:00"
+  },
+  {
+    "id": "1f368c85-adaf-47c1-92be-80ac466bba3c",
+    "transfer_id": "0e4299c1-75da-40bc-b847-e89675f0ae8c",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000011-9"
+    },
+    "created_at": "2025-12-03T13:56:58.630098+00:00"
+  },
+  {
+    "id": "bbb28cea-e033-4642-8bae-3862d48c41e6",
+    "transfer_id": null,
+    "user_id": "ab6d9e7a-aafb-4710-bfbb-e1feb0883124",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.71"
+    },
+    "created_at": "2025-12-03T13:57:09.266016+00:00"
+  },
+  {
+    "id": "fefc9c2b-abed-44b0-b73b-57ad8af92c08",
+    "transfer_id": "0e4299c1-75da-40bc-b847-e89675f0ae8c",
+    "user_id": "ab6d9e7a-aafb-4710-bfbb-e1feb0883124",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "زيد علي",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764770324/money_transfer/id_images/eqcvgn7qanrftuf8khhe.jpg"
+    },
+    "created_at": "2025-12-03T13:58:46.632539+00:00"
+  },
+  {
+    "id": "3b044bbd-86eb-4d26-b8ab-090a71d69ee6",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.74"
+    },
+    "created_at": "2025-12-03T13:59:17.898701+00:00"
+  },
+  {
+    "id": "722583b6-eefe-474f-b930-35ff16c5ffe1",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.73"
+    },
+    "created_at": "2025-12-03T13:59:44.786503+00:00"
+  },
+  {
+    "id": "d96bde23-f583-4ef4-ab1f-f343a156e57e",
+    "transfer_id": "9668978b-1561-480a-b000-3de65d5accf2",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000012-8"
+    },
+    "created_at": "2025-12-03T14:00:46.754676+00:00"
+  },
+  {
+    "id": "3089167a-e3b6-4221-8051-50934df9da4f",
+    "transfer_id": "9668978b-1561-480a-b000-3de65d5accf2",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "زيد علي",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764770475/money_transfer/id_images/kbpprhlhg8ro42z65oje.jpg"
+    },
+    "created_at": "2025-12-03T14:01:18.020511+00:00"
+  },
+  {
+    "id": "b27a0f4f-dd83-4932-8773-69446bdfa233",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.71"
+    },
+    "created_at": "2025-12-03T14:02:02.972968+00:00"
+  },
+  {
+    "id": "be085403-407e-435a-9cb3-e284be07a00b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T14:06:33.203609+00:00"
+  },
+  {
+    "id": "91585527-16e4-463e-b704-bdb1f5ba13f1",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.133.71"
+    },
+    "created_at": "2025-12-03T14:06:34.329188+00:00"
+  },
+  {
+    "id": "9313fcbd-3e12-4cc2-98ba-ed274cc9792b",
+    "transfer_id": "30eba375-d8c9-48cd-bdab-aeb2866309d0",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WA-20251203-000013-7"
+    },
+    "created_at": "2025-12-03T14:06:34.609232+00:00"
+  },
+  {
+    "id": "67625409-f21e-4d27-b684-8da3b646245d",
+    "transfer_id": "68c9ce94-bc85-4a4b-a242-db4c5fc076f2",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251203-000014-6"
+    },
+    "created_at": "2025-12-03T14:08:53.177404+00:00"
+  },
+  {
+    "id": "daddc0b5-26be-4562-b15c-bea908a9744c",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T14:09:06.996633+00:00"
+  },
+  {
+    "id": "747d680f-4ff0-4644-875e-528135c7db68",
+    "transfer_id": "68c9ce94-bc85-4a4b-a242-db4c5fc076f2",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "حسين علي",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764770986/money_transfer/id_images/gkz56xgx9r0bu1qkawln.jpg"
+    },
+    "created_at": "2025-12-03T14:09:58.055278+00:00"
+  },
+  {
+    "id": "b7d76960-ead7-4508-8a45-a084a9cfa79e",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T17:57:41.548179+00:00"
+  },
+  {
+    "id": "cfd1a354-508f-4209-84ff-a38058c8471e",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T18:00:39.788342+00:00"
+  },
+  {
+    "id": "2a0d5710-21ae-4379-b190-127dabc3061d",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T18:01:14.137076+00:00"
+  },
+  {
+    "id": "39355ed9-8bab-4177-918e-863235f92c0b",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T18:01:14.412763+00:00"
+  },
+  {
+    "id": "c085cc53-1e16-442d-848a-71d89b14a14b",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T18:01:14.716505+00:00"
+  },
+  {
+    "id": "712de7e6-7fa8-447d-a23c-c2af1ede7880",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T18:08:46.202526+00:00"
+  },
+  {
+    "id": "1a856b0b-01ba-411a-9df1-bbaf4963944e",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T18:11:46.061894+00:00"
+  },
+  {
+    "id": "e3124b22-c6b4-4c76-a14d-4b04b7bcb5a5",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T18:12:06.972183+00:00"
+  },
+  {
+    "id": "912db614-e54f-4e87-91db-627c50434d11",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T18:12:58.694008+00:00"
+  },
+  {
+    "id": "1cbd2178-9559-4f61-8b9d-523d30405164",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T18:13:46.049750+00:00"
+  },
+  {
+    "id": "7c3f52c0-c513-4bf5-a3db-dde7243008d5",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T18:14:18.798222+00:00"
+  },
+  {
+    "id": "d5653ee0-886d-4f16-9091-b38a8ef7eabd",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T18:16:04.074226+00:00"
+  },
+  {
+    "id": "e4703f11-f0b0-458c-acd6-21dff5c3d397",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T18:18:01.640310+00:00"
+  },
+  {
+    "id": "53bd5c81-9f25-48f9-839e-a191a184b07e",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T18:19:25.697447+00:00"
+  },
+  {
+    "id": "3e793b77-7f8e-4636-a4bd-687971024e3e",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T18:19:40.555452+00:00"
+  },
+  {
+    "id": "8775603a-328d-4407-ba39-09157ddbed03",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T18:20:15.097150+00:00"
+  },
+  {
+    "id": "4cb57a9c-0d9d-4203-8064-5b3f6365037b",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T18:21:37.442143+00:00"
+  },
+  {
+    "id": "7d01a864-a94a-461a-b95a-f2e39c53d6b3",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T18:22:02.795105+00:00"
+  },
+  {
+    "id": "8c0f8aff-91ec-4499-91c0-4263afe35e5a",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T18:23:01.792364+00:00"
+  },
+  {
+    "id": "aeca02fa-362a-4897-88c5-ff1fff08524b",
+    "transfer_id": "e69c8b29-22e1-4403-8e67-39a3a5fa7226",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000015-5"
+    },
+    "created_at": "2025-12-03T18:23:47.517168+00:00"
+  },
+  {
+    "id": "2585a393-0291-4d06-9f61-06d670372ba0",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T18:24:13.890960+00:00"
+  },
+  {
+    "id": "c150b9eb-21f1-4d16-a874-dc6130491a14",
+    "transfer_id": "e69c8b29-22e1-4403-8e67-39a3a5fa7226",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "حسين علي",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764786374/money_transfer/id_images/imnlqj9fe5zbhuvldfuk.jpg"
+    },
+    "created_at": "2025-12-03T18:26:17.798114+00:00"
+  },
+  {
+    "id": "13b2f038-f8d1-4ddb-b45f-6d137a3e1e1e",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T18:31:12.574252+00:00"
+  },
+  {
+    "id": "ca1e09cc-224c-49c7-98c1-d5dc8c13e899",
+    "transfer_id": "126e7dcb-941c-46c9-b292-cd8e96622ff5",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BA-20251203-000016-4"
+    },
+    "created_at": "2025-12-03T18:31:12.851237+00:00"
+  },
+  {
+    "id": "d7067776-825c-4065-9928-68a952ec4cd1",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T18:34:16.689331+00:00"
+  },
+  {
+    "id": "3f8dc657-0d0d-4038-bd31-e1cfd6c3b459",
+    "transfer_id": "0437ff0b-76d7-43f0-b69e-70e348d1c1e7",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BA-20251203-000017-3"
+    },
+    "created_at": "2025-12-03T18:34:16.965286+00:00"
+  },
+  {
+    "id": "63305639-80c5-48e1-b132-780fbac1a6af",
+    "transfer_id": "234a2787-0e4c-4d6b-b474-ef386a101c44",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000018-2"
+    },
+    "created_at": "2025-12-03T18:37:39.742795+00:00"
+  },
+  {
+    "id": "fc676141-8606-4e74-9a54-7484c8c13b0e",
+    "transfer_id": "234a2787-0e4c-4d6b-b474-ef386a101c44",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "علي حسين",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764787197/money_transfer/id_images/m5cpidrwwtr8xzptk0gk.jpg"
+    },
+    "created_at": "2025-12-03T18:40:01.096691+00:00"
+  },
+  {
+    "id": "bf5a3f40-38a2-43c0-bda8-c6719dcdce62",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T18:42:11.217739+00:00"
+  },
+  {
+    "id": "19de6b30-9772-4063-9adf-a86f3f05b9c7",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T18:42:48.712687+00:00"
+  },
+  {
+    "id": "88f135a2-7807-49d9-8ff7-e876e0457c27",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T18:46:06.141123+00:00"
+  },
+  {
+    "id": "0b93d43d-afab-4432-a53a-5c60c5227817",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T18:48:03.828452+00:00"
+  },
+  {
+    "id": "4f687370-2762-4f76-b703-3f71c65545d9",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T18:49:08.190788+00:00"
+  },
+  {
+    "id": "4f99ea2e-5cee-4beb-86c7-976528a9c688",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T19:03:45.228880+00:00"
+  },
+  {
+    "id": "03125748-ff3d-4c79-9777-0c5e557635db",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T19:04:25.500490+00:00"
+  },
+  {
+    "id": "ca15139a-1ff0-47c8-8749-f5e1095f58ff",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T19:05:24.873585+00:00"
+  },
+  {
+    "id": "6fd99d69-dfe5-4294-8372-589b165e89b2",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T19:08:44.169895+00:00"
+  },
+  {
+    "id": "969b23b1-ed8f-432b-b130-f305c0c686c1",
+    "transfer_id": "eb487b06-6bfd-4acf-8289-f7dea67f7bbe",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BA-20251203-000019-1"
+    },
+    "created_at": "2025-12-03T19:08:44.445539+00:00"
+  },
+  {
+    "id": "64450616-b48f-4793-a01c-352d597cc0d7",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T19:09:42.946794+00:00"
+  },
+  {
+    "id": "a14b7227-c9fa-46fe-b510-ea5f80bdd90f",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T19:09:59.838309+00:00"
+  },
+  {
+    "id": "3d845d70-95d4-420d-bac7-1e9f792244fb",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T19:12:02.772637+00:00"
+  },
+  {
+    "id": "3c7a5be8-cc4d-4a83-81d9-0b89f1a98a97",
+    "transfer_id": "795234c5-2d19-45d5-9ce4-33e01d2c7a49",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000020-7"
+    },
+    "created_at": "2025-12-03T19:13:24.156250+00:00"
+  },
+  {
+    "id": "4065a6d7-18cf-42f9-ae9b-4356a7e8c8dc",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T19:19:20.831394+00:00"
+  },
+  {
+    "id": "64333ae5-5473-413e-8bb3-5e513f0bc2a0",
+    "transfer_id": "40eda2f0-84f8-4603-bdde-b719f70f3112",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NA-20251203-000021-6"
+    },
+    "created_at": "2025-12-03T19:19:21.107395+00:00"
+  },
+  {
+    "id": "cf7fcd9f-cb92-4430-b51c-8a34b735dc05",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T19:24:55.854565+00:00"
+  },
+  {
+    "id": "47b7266d-9db9-4230-b664-c5897d02e3d5",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T19:29:04.715551+00:00"
+  },
+  {
+    "id": "d374405b-c558-4cb9-b200-2751c12ad796",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T19:36:32.255459+00:00"
+  },
+  {
+    "id": "10ab95d1-f5ce-4f4c-85db-9dcf8685a1fe",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T19:39:23.209353+00:00"
+  },
+  {
+    "id": "8c0c1033-0100-43df-8bda-9deb1b8b0376",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T19:42:04.184237+00:00"
+  },
+  {
+    "id": "f6a00ca9-aa23-466a-8866-bf2c24f5d1ba",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T20:00:58.315478+00:00"
+  },
+  {
+    "id": "371f751b-8fe0-42d8-b95e-9c8681a8af68",
+    "transfer_id": "d7a657fc-d878-41f8-9a30-69a04542f1bb",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000022-5"
+    },
+    "created_at": "2025-12-03T20:01:58.516425+00:00"
+  },
+  {
+    "id": "418bf882-9bdd-474f-a190-c7a07000967b",
+    "transfer_id": null,
+    "user_id": "ab6d9e7a-aafb-4710-bfbb-e1feb0883124",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T20:02:35.076037+00:00"
+  },
+  {
+    "id": "174ab4cd-f6e8-4d46-ac6b-4931f9bc53fc",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T20:02:55.567808+00:00"
+  },
+  {
+    "id": "d5f89acf-5154-4b44-bbdf-92ebd5092f14",
+    "transfer_id": "d7a657fc-d878-41f8-9a30-69a04542f1bb",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "مصطفى علي",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764792225/money_transfer/id_images/cwzsqrkuowtrmvpo3cfz.jpg"
+    },
+    "created_at": "2025-12-03T20:03:48.176006+00:00"
+  },
+  {
+    "id": "9e6b4560-c910-4e76-9024-25655ce8abab",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T20:04:12.062752+00:00"
+  },
+  {
+    "id": "46b40697-3fd0-4d49-81e0-7ced7c88e456",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T20:05:48.565863+00:00"
+  },
+  {
+    "id": "6122d07b-1c6d-447e-be55-44f998bb063d",
+    "transfer_id": "f1d2b738-162a-440e-8246-bdee6f8ed71c",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251203-000023-4"
+    },
+    "created_at": "2025-12-03T20:06:37.980280+00:00"
+  },
+  {
+    "id": "473969e4-8aec-4028-8470-e38ade4fecae",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T20:07:04.252275+00:00"
+  },
+  {
+    "id": "b50cbec6-6013-401b-afa7-a50f68c15b2a",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.144"
+    },
+    "created_at": "2025-12-03T20:07:56.462423+00:00"
+  },
+  {
+    "id": "ec5373f6-8bbf-4948-9980-a662adc9f43a",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T20:09:22.152356+00:00"
+  },
+  {
+    "id": "aa1fa71e-a948-4e4c-9959-45c7f41ca6f9",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T20:21:24.471908+00:00"
+  },
+  {
+    "id": "4421f862-3bff-4577-be09-8e742a00ecdf",
+    "transfer_id": "ba72e582-b82d-49dc-8cad-86181c43b176",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BA-20251203-000024-3"
+    },
+    "created_at": "2025-12-03T20:21:24.778365+00:00"
+  },
+  {
+    "id": "6e7f2ce9-5baa-41c7-a204-5e83b6c68614",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T20:21:47.445867+00:00"
+  },
+  {
+    "id": "0392c797-22ad-4110-b401-1a94d6acdb68",
+    "transfer_id": "5cdbfa02-4923-441a-969f-8566142d366a",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000025-2"
+    },
+    "created_at": "2025-12-03T20:23:31.798344+00:00"
+  },
+  {
+    "id": "3872090c-73e7-472f-a64d-5d92fcc0a395",
+    "transfer_id": "5cdbfa02-4923-441a-969f-8566142d366a",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "مصطفى علي",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764793513/money_transfer/id_images/wnsckknjzjlfqj7cthvz.jpg"
+    },
+    "created_at": "2025-12-03T20:25:15.433799+00:00"
+  },
+  {
+    "id": "07ecff82-3656-47ae-8960-1192502dc030",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T20:29:14.826071+00:00"
+  },
+  {
+    "id": "6fbe9ce5-edce-4482-a936-cb8e82427656",
+    "transfer_id": "9afb7336-1e61-465d-9d70-a69b90a8e62b",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251203-000026-1"
+    },
+    "created_at": "2025-12-03T20:29:15.114263+00:00"
+  },
+  {
+    "id": "f7b18d15-363f-4a80-b2c0-a9c0fb1487d7",
+    "transfer_id": "89f08f9e-55f8-42e6-9576-98342721c67b",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000027-0"
+    },
+    "created_at": "2025-12-03T20:32:38.126052+00:00"
+  },
+  {
+    "id": "e536a84d-59b4-4d91-94a7-609e808fc821",
+    "transfer_id": "89f08f9e-55f8-42e6-9576-98342721c67b",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "علي كاظم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764794049/money_transfer/id_images/zwezkriy18tr1kbtihcx.jpg"
+    },
+    "created_at": "2025-12-03T20:34:11.892212+00:00"
+  },
+  {
+    "id": "ac2acf5e-b258-4c2b-9a58-dedd26bea6ec",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T20:36:39.010170+00:00"
+  },
+  {
+    "id": "fdbc9475-80ad-4f0e-87d0-a8e18e4f45b0",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T20:36:59.575907+00:00"
+  },
+  {
+    "id": "0c7a640b-b759-4e77-90c1-4bf75dc57699",
+    "transfer_id": "33c0e499-d429-48cc-8b9e-be9ac9b85197",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WA-20251203-000028-9"
+    },
+    "created_at": "2025-12-03T20:36:59.853146+00:00"
+  },
+  {
+    "id": "1494a53a-be7c-480b-840f-79a17dcb7328",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_ur",
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T20:37:02.926601+00:00"
+  },
+  {
+    "id": "ad08367b-26af-4e35-8d5d-babbd2bfc224",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T20:37:03.210725+00:00"
+  },
+  {
+    "id": "324c0948-b734-4c02-8d36-aca226d7a455",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T20:42:36.729972+00:00"
+  },
+  {
+    "id": "4c4677be-1c12-4b1e-abab-7ed96dcc7188",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T20:42:36.989906+00:00"
+  },
+  {
+    "id": "99556a08-9e24-45d5-a726-3926e5e4f3f6",
+    "transfer_id": "0a7a1f95-8c32-4d37-a793-a6ad6852074c",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000029-8"
+    },
+    "created_at": "2025-12-03T20:42:37.261270+00:00"
+  },
+  {
+    "id": "9f694219-71d7-4fd3-ac8b-346b887c96fd",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_created",
+    "details": {
+      "new_user_id": "5f68906a-5609-43bd-9186-72ab4b402559"
+    },
+    "created_at": "2025-12-03T20:42:40.507676+00:00"
+  },
+  {
+    "id": "02aa16ac-d736-4000-ba51-02c8e80eb1ad",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T20:42:40.769402+00:00"
+  },
+  {
+    "id": "dc93338f-a6e3-4a8b-9488-7ef847071783",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T20:43:23.036731+00:00"
+  },
+  {
+    "id": "4a90dd03-0ff8-4288-9222-9649cdde0ed8",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.144"
+    },
+    "created_at": "2025-12-03T20:43:23.300969+00:00"
+  },
+  {
+    "id": "e7058f1a-f265-452a-a7e0-3c1914dde5c9",
+    "transfer_id": "13eaf579-22f6-48d6-8632-e6ebc622d6bd",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000030-7"
+    },
+    "created_at": "2025-12-03T20:43:23.568235+00:00"
+  },
+  {
+    "id": "d5fab391-614a-4838-9e93-fdbfa99da4c3",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T20:43:27.599651+00:00"
+  },
+  {
+    "id": "898c2077-dcd4-4933-873c-c914ee863f70",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T20:44:03.788251+00:00"
+  },
+  {
+    "id": "b471e1b8-efd8-497a-ae72-7991b64de7b7",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T20:44:04.052209+00:00"
+  },
+  {
+    "id": "9bdfc5e5-6f1f-4ed7-adeb-7aa9afac59e3",
+    "transfer_id": "9b8022cb-0d63-4829-8c83-9ba85b876cce",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000031-6"
+    },
+    "created_at": "2025-12-03T20:44:04.321741+00:00"
+  },
+  {
+    "id": "a7f7719a-9962-4a40-966c-54b2f09a164b",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T20:44:06.169353+00:00"
+  },
+  {
+    "id": "9ee32765-0a48-484e-85f6-e4b93bda4fe5",
+    "transfer_id": "9b8022cb-0d63-4829-8c83-9ba85b876cce",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764794646/money_transfer/id_images/rlcoupppspgnmya4o1jg.jpg"
+    },
+    "created_at": "2025-12-03T20:44:09.804506+00:00"
+  },
+  {
+    "id": "0c8d7ec8-a898-42b3-91b2-3e1aaca2472b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T20:44:34.300348+00:00"
+  },
+  {
+    "id": "f3c29e00-8eef-4554-af5e-f851e079396b",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T20:44:34.566215+00:00"
+  },
+  {
+    "id": "2a95091c-3416-46ae-832c-8a525dd8a31a",
+    "transfer_id": "59106155-14c1-4e02-a393-ec10629e8852",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000032-5"
+    },
+    "created_at": "2025-12-03T20:44:34.833172+00:00"
+  },
+  {
+    "id": "cc138da2-725b-48fc-8396-0a4267957944",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T20:44:37.541136+00:00"
+  },
+  {
+    "id": "2527cfe6-4d12-42b1-94dc-be72554cacee",
+    "transfer_id": "59106155-14c1-4e02-a393-ec10629e8852",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764794678/money_transfer/id_images/lxdruf52or9zvocxlql8.jpg"
+    },
+    "created_at": "2025-12-03T20:44:40.103246+00:00"
+  },
+  {
+    "id": "d8304eb1-dd28-4cdc-9bdd-e463810b75da",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.144"
+    },
+    "created_at": "2025-12-03T20:47:18.423047+00:00"
+  },
+  {
+    "id": "38967062-0742-4543-ba9e-876811b9aadd",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T20:47:18.691077+00:00"
+  },
+  {
+    "id": "9cb6b8d8-7b9a-463e-96a1-815f884d0527",
+    "transfer_id": "8b92a272-1880-40b2-9c24-22ad32168812",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000033-4"
+    },
+    "created_at": "2025-12-03T20:47:18.954017+00:00"
+  },
+  {
+    "id": "008cc97b-fa1a-421a-bc09-5edc1579955b",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T20:47:21.034377+00:00"
+  },
+  {
+    "id": "724f8a1b-dca7-4a10-b89c-eee66543ce9c",
+    "transfer_id": "8b92a272-1880-40b2-9c24-22ad32168812",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764794841/money_transfer/id_images/nthz9rpswrqbtzkiqhcf.jpg"
+    },
+    "created_at": "2025-12-03T20:47:23.630312+00:00"
+  },
+  {
+    "id": "f7664e48-fa09-4799-9396-1d8e856f86ac",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T20:48:32.151301+00:00"
+  },
+  {
+    "id": "d17b09ee-5c9f-4031-b1b9-03cb2c188b25",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T20:48:32.413085+00:00"
+  },
+  {
+    "id": "630d8219-0172-4336-b2a1-35178703a98b",
+    "transfer_id": "ce0bfde4-000f-4af4-912e-de2b5fd5e4de",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000034-3"
+    },
+    "created_at": "2025-12-03T20:48:32.882121+00:00"
+  },
+  {
+    "id": "0b7711d9-9620-466e-aa0a-f9f6c0537de4",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T20:48:35.194258+00:00"
+  },
+  {
+    "id": "942b41d2-96fc-461e-9484-0c217012db5c",
+    "transfer_id": "ce0bfde4-000f-4af4-912e-de2b5fd5e4de",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764794915/money_transfer/id_images/nuw6rubmmcue04kjfpsi.jpg"
+    },
+    "created_at": "2025-12-03T20:48:37.402894+00:00"
+  },
+  {
+    "id": "4567d73c-34b8-40a2-836d-f717882ce9ce",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T20:55:17.168522+00:00"
+  },
+  {
+    "id": "756414e8-645d-41e7-91ab-20f5f0e215cf",
+    "transfer_id": "a167a84c-194e-45d7-8d1d-33363d0e62e1",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251203-000035-2"
+    },
+    "created_at": "2025-12-03T20:56:22.127659+00:00"
+  },
+  {
+    "id": "ba90a7d1-68b5-4b0d-b1ed-0946eac74a4d",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T20:57:22.262643+00:00"
+  },
+  {
+    "id": "20695b8e-85a8-43c9-a088-b5332ebff1bf",
+    "transfer_id": "a167a84c-194e-45d7-8d1d-33363d0e62e1",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "حسين علي",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764795501/money_transfer/id_images/tzb8qlypril58r5tgrhv.jpg"
+    },
+    "created_at": "2025-12-03T20:58:24.327195+00:00"
+  },
+  {
+    "id": "2b1c3730-9e3f-4042-ad6d-bd9af555457b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.205"
+    },
+    "created_at": "2025-12-03T21:07:11.949670+00:00"
+  },
+  {
+    "id": "79d1fe30-258a-4144-9d3f-58d9731de1f6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T21:07:33.196927+00:00"
+  },
+  {
+    "id": "323beb87-5785-41ab-8a08-56bc4e8af8df",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "testuser123",
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T21:07:33.460908+00:00"
+  },
+  {
+    "id": "334e1415-faba-4635-bad6-df10da8c8a41",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.144"
+    },
+    "created_at": "2025-12-03T21:07:33.723156+00:00"
+  },
+  {
+    "id": "3c758c99-aa7e-4ebb-89cb-a2df38338ba3",
+    "transfer_id": "ba5b435c-f7ee-474f-9142-b7731c0e1b39",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251203-000036-1"
+    },
+    "created_at": "2025-12-03T21:07:33.996552+00:00"
+  },
+  {
+    "id": "7d9423f3-5e32-4914-b237-84fb7d68d4d6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T21:08:25.447116+00:00"
+  },
+  {
+    "id": "03dce048-a832-47d1-a7bf-32041173d818",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "testuser123",
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T21:08:25.713990+00:00"
+  },
+  {
+    "id": "10f84a1d-ddd9-4d6b-a7f0-831bfeeb9d45",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.144"
+    },
+    "created_at": "2025-12-03T21:08:25.972829+00:00"
+  },
+  {
+    "id": "11749072-065e-4908-83a8-2772548e2f8a",
+    "transfer_id": "c6d1ce3a-a18c-4da5-8579-4ff78e2617f1",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251203-000037-0"
+    },
+    "created_at": "2025-12-03T21:08:26.244824+00:00"
+  },
+  {
+    "id": "03da65b7-fc03-4988-912c-cb3f5b11240b",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T21:08:32.366101+00:00"
+  },
+  {
+    "id": "d32e0698-e035-4c81-9e89-4010d8dbd044",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T21:08:32.630105+00:00"
+  },
+  {
+    "id": "83a9b4a4-de54-4d00-804c-87796d1c1e70",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.128.144"
+    },
+    "created_at": "2025-12-03T21:08:32.891580+00:00"
+  },
+  {
+    "id": "e5a6afeb-d2a9-401e-98db-f9ade16ea829",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T21:08:33.155918+00:00"
+  },
+  {
+    "id": "4b85fc97-5e6c-41e1-b41f-14bcb4b22adc",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.128.21"
+    },
+    "created_at": "2025-12-03T21:08:33.416716+00:00"
+  },
+  {
+    "id": "8f56eefd-6e65-4622-9b96-a2bbf2ad8e39",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "agent_1764707303776",
+      "ip": "10.64.139.145"
+    },
+    "created_at": "2025-12-03T21:08:33.682961+00:00"
+  },
+  {
+    "id": "1d2c3ffe-3f26-4f1a-8195-6e97f80b802a",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T21:08:41.648859+00:00"
+  },
+  {
+    "id": "6baded4c-49f3-405c-9631-fee2d5ac8fe5",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T21:08:41.912840+00:00"
+  },
+  {
+    "id": "65f2c0de-398d-4737-b438-19f6de5a2bdb",
+    "transfer_id": "69bc0587-c039-43c2-aff9-2c461c74bf2b",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000038-9"
+    },
+    "created_at": "2025-12-03T21:08:42.189424+00:00"
+  },
+  {
+    "id": "82b58f3c-f819-488f-a85d-fa7a83ec9536",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T21:08:44.516516+00:00"
+  },
+  {
+    "id": "98a4c3ec-87ba-4b67-b387-b882179d524d",
+    "transfer_id": "69bc0587-c039-43c2-aff9-2c461c74bf2b",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764796125/money_transfer/id_images/ihwyqnopqzfzosmk6nfe.jpg"
+    },
+    "created_at": "2025-12-03T21:08:46.738542+00:00"
+  },
+  {
+    "id": "a1e86c6e-eb4c-488f-84bf-d8c388486ced",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T21:12:24.860753+00:00"
+  },
+  {
+    "id": "48f0b7d1-8a4b-4597-91f6-9da4dd1eb628",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T21:12:25.122161+00:00"
+  },
+  {
+    "id": "2766bfc1-f59b-488f-a7f3-b6ea15020997",
+    "transfer_id": "6b2c4261-8b6a-43e8-8960-4253095e387e",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000039-8"
+    },
+    "created_at": "2025-12-03T21:12:25.391060+00:00"
+  },
+  {
+    "id": "397c155e-ff23-4983-bdd8-f717aed9dcab",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.144"
+    },
+    "created_at": "2025-12-03T21:12:27.999681+00:00"
+  },
+  {
+    "id": "330536d2-1e2a-4d0a-aed0-102dd8c73d8e",
+    "transfer_id": "6b2c4261-8b6a-43e8-8960-4253095e387e",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764796348/money_transfer/id_images/debdtyisztyxygxc7m42.jpg"
+    },
+    "created_at": "2025-12-03T21:12:29.753971+00:00"
+  },
+  {
+    "id": "4fe3a04b-46f4-40f0-82a3-0e5305fc0ae3",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T21:13:13.055560+00:00"
+  },
+  {
+    "id": "7edaa69c-a06b-4774-ba94-7bb463e9ee0b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T21:13:29.347540+00:00"
+  },
+  {
+    "id": "84f4c6fe-22d8-4ab6-9b76-5480c80c66da",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.140"
+    },
+    "created_at": "2025-12-03T21:13:48.625468+00:00"
+  },
+  {
+    "id": "51df8919-9d16-4ac0-a3bd-4cc48963adc1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.146"
+    },
+    "created_at": "2025-12-03T21:14:01.277277+00:00"
+  },
+  {
+    "id": "e75bacc1-f1e2-49d5-bc0b-4428cd7704a4",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T21:14:06.365089+00:00"
+  },
+  {
+    "id": "2b5aefc2-652d-41db-9224-93d2d1444372",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T21:14:06.631454+00:00"
+  },
+  {
+    "id": "ed7851fe-8aea-4bc7-a3f8-58c406a11dfb",
+    "transfer_id": "9829f143-86db-4d15-9b9e-d20f7d89aa97",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000040-7"
+    },
+    "created_at": "2025-12-03T21:14:06.896491+00:00"
+  },
+  {
+    "id": "3338f38d-960a-488d-8d00-5fd3ce740fae",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.144"
+    },
+    "created_at": "2025-12-03T21:14:09.733239+00:00"
+  },
+  {
+    "id": "6a8416bb-243b-4688-aae8-6e475d8fe97d",
+    "transfer_id": "9829f143-86db-4d15-9b9e-d20f7d89aa97",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764796450/money_transfer/id_images/yybxzns40rlumqtmxv0i.jpg"
+    },
+    "created_at": "2025-12-03T21:14:11.945226+00:00"
+  },
+  {
+    "id": "db1ec1cd-11ba-4c30-ba64-df41c12361ea",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.138"
+    },
+    "created_at": "2025-12-03T21:14:35.780260+00:00"
+  },
+  {
+    "id": "eddf2add-4a45-47fa-9222-3d67290ebfa9",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T21:14:36.047417+00:00"
+  },
+  {
+    "id": "15a5f91f-5494-4846-89ce-251f390148a1",
+    "transfer_id": "edda36c2-db6f-436e-9166-91a405362183",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251203-000041-6"
+    },
+    "created_at": "2025-12-03T21:14:36.315195+00:00"
+  },
+  {
+    "id": "2f767b76-016f-4144-8dda-7597820b0690",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.9"
+    },
+    "created_at": "2025-12-03T21:14:38.736994+00:00"
+  },
+  {
+    "id": "d1001a4e-ac4a-4dba-a133-fd030e5ff9eb",
+    "transfer_id": "edda36c2-db6f-436e-9166-91a405362183",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764796479/money_transfer/id_images/kevqbkye9effaafq5co7.jpg"
+    },
+    "created_at": "2025-12-03T21:14:41.593329+00:00"
+  },
+  {
+    "id": "3a4eb285-7acc-40a7-abee-83cac7664082",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T21:17:32.069036+00:00"
+  },
+  {
+    "id": "084d5407-026b-498c-9e58-9875e34522d2",
+    "transfer_id": "407ad8b7-0196-418f-8d40-620704e0714e",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251203-000042-5"
+    },
+    "created_at": "2025-12-03T21:46:01.084982+00:00"
+  },
+  {
+    "id": "835713ee-5ed3-4f82-91bc-db28b8853b9e",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.136.8"
+    },
+    "created_at": "2025-12-03T21:46:29.841795+00:00"
+  },
+  {
+    "id": "bf6ecb2f-f233-4c75-be5e-811c6b28c1cc",
+    "transfer_id": "407ad8b7-0196-418f-8d40-620704e0714e",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "علي كاظم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764798622/money_transfer/id_images/rvtf2huhl6fskywhvtut.jpg"
+    },
+    "created_at": "2025-12-03T21:50:25.259695+00:00"
+  },
+  {
+    "id": "ffd8be4f-1c7e-4933-b57d-6faefd7c9085",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-03T22:17:25.278292+00:00"
+  },
+  {
+    "id": "7cb00dc6-1047-4a80-a87a-4c153c005d8c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.154"
+    },
+    "created_at": "2025-12-04T07:54:24.409683+00:00"
+  },
+  {
+    "id": "6483bc3e-9ad7-4641-af1c-ad70f01dcd5d",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.200"
+    },
+    "created_at": "2025-12-04T13:24:40.281552+00:00"
+  },
+  {
+    "id": "8c406fa0-9e12-45df-b272-769c162686a2",
+    "transfer_id": "e80d85d6-afb2-4ad1-97a1-dff2e14f4b45",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BG-20251204-000043-7"
+    },
+    "created_at": "2025-12-04T13:25:44.157743+00:00"
+  },
+  {
+    "id": "e3dc42e3-fcd4-4251-b1f4-ddb5370962a0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-05T13:42:59.315114+00:00"
+  },
+  {
+    "id": "984c7650-bf4c-4827-ba48-47f54830cc23",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.218"
+    },
+    "created_at": "2025-12-05T18:23:49.238586+00:00"
+  },
+  {
+    "id": "e2e0ae50-e5e4-41a7-b922-e001ad292807",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.122"
+    },
+    "created_at": "2025-12-05T18:28:33.965046+00:00"
+  },
+  {
+    "id": "36626032-a857-4a0f-bfbc-25be6ff3d0fd",
+    "transfer_id": "30f859a4-e819-4f86-8438-330b09a04891",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251205-000044-9"
+    },
+    "created_at": "2025-12-05T18:40:37.597107+00:00"
+  },
+  {
+    "id": "a368c813-0b8d-44a0-81cc-d4b233d9612c",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.218"
+    },
+    "created_at": "2025-12-05T18:43:30.687800+00:00"
+  },
+  {
+    "id": "d0918318-fba7-4aa7-bcbd-98e09d5ef1d0",
+    "transfer_id": "30f859a4-e819-4f86-8438-330b09a04891",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "حسين علي",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1764960274/money_transfer/id_images/wwmprwslzthudalt9cis.jpg"
+    },
+    "created_at": "2025-12-05T18:44:37.969923+00:00"
+  },
+  {
+    "id": "7f6d3b39-25e4-4c4c-b2c8-42a7827f9b3f",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "testuser123",
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-05T19:13:48.302455+00:00"
+  },
+  {
+    "id": "560f6655-6c2d-481f-8b7c-3907e7fd6945",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.203"
+    },
+    "created_at": "2025-12-05T19:42:58.311889+00:00"
+  },
+  {
+    "id": "86c96377-25f7-4315-b960-2ee546309a31",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.137.19"
+    },
+    "created_at": "2025-12-05T19:48:44.622191+00:00"
+  },
+  {
+    "id": "551f7f3b-c58d-4c26-87d4-0b6af436e700",
+    "transfer_id": "a6186aae-f1ee-4530-a36e-8878c187817b",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-BG-20251205-000045-8"
+    },
+    "created_at": "2025-12-05T19:50:58.200962+00:00"
+  },
+  {
+    "id": "79899c04-df8e-4f01-86f5-5aef32b69929",
+    "transfer_id": "0eba000b-3d49-4c81-aa51-e8f6c2238273",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251205-000046-7"
+    },
+    "created_at": "2025-12-05T19:57:10.940956+00:00"
+  },
+  {
+    "id": "c0f28377-9e56-4284-a444-261e62010fad",
+    "transfer_id": "df15790a-0215-44d8-a2da-0832e6f89c04",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251205-000047-6"
+    },
+    "created_at": "2025-12-05T20:25:44.222586+00:00"
+  },
+  {
+    "id": "79b221ed-7897-49ec-b83b-f32f3b0e7005",
+    "transfer_id": "33c7e096-b27b-4154-ae8b-3064bdf7d70e",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251205-000048-5"
+    },
+    "created_at": "2025-12-05T20:35:32.739302+00:00"
+  },
+  {
+    "id": "74bbb2b0-fa3a-4cd8-a37a-a6291b767d4c",
+    "transfer_id": "b89339b1-d414-41e6-ad92-659f2d0550b2",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251205-000049-4"
+    },
+    "created_at": "2025-12-05T20:36:56.689276+00:00"
+  },
+  {
+    "id": "32ea6e57-8164-44f4-b609-7d779f12d70e",
+    "transfer_id": "c05550c9-a663-4a63-9a8c-9693cb23096f",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251205-000050-3"
+    },
+    "created_at": "2025-12-05T20:42:17.488661+00:00"
+  },
+  {
+    "id": "bd5e05c4-ce38-41fb-909a-eb62472af4c1",
+    "transfer_id": "7753e55a-8376-41fe-b68b-6ca00fd1b690",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251205-000051-2"
+    },
+    "created_at": "2025-12-05T20:43:52.523987+00:00"
+  },
+  {
+    "id": "ae38c912-2e81-4749-be17-474e8da34104",
+    "transfer_id": "e98a6911-fa20-4ab2-9cf0-f62f830fd401",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251205-000052-1"
+    },
+    "created_at": "2025-12-05T21:05:04.742885+00:00"
+  },
+  {
+    "id": "621186d2-f083-4496-b80b-56865bfc9c65",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.218"
+    },
+    "created_at": "2025-12-05T22:03:14.497103+00:00"
+  },
+  {
+    "id": "2ab4d1f3-a722-45a0-a59e-bba02af1b748",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.203"
+    },
+    "created_at": "2025-12-05T22:06:12.288674+00:00"
+  },
+  {
+    "id": "38dd65d5-804f-4196-9adb-6ead21ca1827",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.121"
+    },
+    "created_at": "2025-12-05T22:07:24.041860+00:00"
+  },
+  {
+    "id": "2b6f970f-6adb-44f9-b0d0-70052098e64e",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.218"
+    },
+    "created_at": "2025-12-05T22:07:45.424367+00:00"
+  },
+  {
+    "id": "a0e62e6e-ebdf-493c-9cf9-6b9cc04fa5f4",
+    "transfer_id": "ca781423-d686-4bec-9a7d-d5749134918d",
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-KR-20251205-000053-0"
+    },
+    "created_at": "2025-12-05T22:08:31.624345+00:00"
+  },
+  {
+    "id": "88401b53-0b15-4902-990e-7c163c134f03",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.137.19"
+    },
+    "created_at": "2025-12-05T22:12:17.490232+00:00"
+  },
+  {
+    "id": "7d585fa7-b6bc-4d42-8a86-02a59f329059",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.140"
+    },
+    "created_at": "2025-12-05T22:16:02.732536+00:00"
+  },
+  {
+    "id": "dc35b00b-4f11-4604-85f2-9497d3c86fd0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.202"
+    },
+    "created_at": "2025-12-05T22:17:41.491978+00:00"
+  },
+  {
+    "id": "d2919077-c7fa-4de2-a938-2a4b392e9b7f",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-05T22:20:40.168370+00:00"
+  },
+  {
+    "id": "392637a2-e184-4177-9616-5cd8435a26bd",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.140.149"
+    },
+    "created_at": "2025-12-05T22:21:43.539664+00:00"
+  },
+  {
+    "id": "4143f354-b8d5-4a38-a6bd-5b307905c3e2",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-06T06:30:06.017584+00:00"
+  },
+  {
+    "id": "137c8bf7-f3ea-429c-aaf2-d20f512f153d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.105"
+    },
+    "created_at": "2025-12-06T06:43:47.219282+00:00"
+  },
+  {
+    "id": "11425488-6013-4289-aee8-52337c0d5b23",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.168"
+    },
+    "created_at": "2025-12-06T10:59:07.706516+00:00"
+  },
+  {
+    "id": "5cd41586-7a82-4d12-8fba-646d3cc0a935",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.104"
+    },
+    "created_at": "2025-12-06T11:11:26.764955+00:00"
+  },
+  {
+    "id": "9ae80a74-75d2-47f2-98a1-55c6a71a1ad9",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.104"
+    },
+    "created_at": "2025-12-06T11:23:07.361867+00:00"
+  },
+  {
+    "id": "d8c2bbc1-169b-4035-9a96-0a7cc0bde78b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.168"
+    },
+    "created_at": "2025-12-06T11:24:14.293644+00:00"
+  },
+  {
+    "id": "6f35c7d2-0ec1-413d-885f-d1f2736390d1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-06T11:25:20.569505+00:00"
+  },
+  {
+    "id": "b04c7981-5493-4cee-8968-e40420655efa",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-06T11:34:44.772093+00:00"
+  },
+  {
+    "id": "5d71a589-51d2-415a-bcc4-90dde2a4a912",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.170"
+    },
+    "created_at": "2025-12-06T11:40:54.849898+00:00"
+  },
+  {
+    "id": "b9cced1d-b960-4732-bacb-cb8f2e8f3969",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-06T11:45:43.060940+00:00"
+  },
+  {
+    "id": "768c2d20-fccb-4c73-9ce0-64e8324d3b8c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.169"
+    },
+    "created_at": "2025-12-06T11:47:45.943088+00:00"
+  },
+  {
+    "id": "c8fbb2cd-151f-43dd-909f-4a8f9c95d81d",
+    "transfer_id": "ae56ebce-b271-4535-8950-402aba64f4bd",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251206-000054-9"
+    },
+    "created_at": "2025-12-06T11:52:03.623197+00:00"
+  },
+  {
+    "id": "9a669d8f-8fde-4332-a181-4c3b78f6f8ab",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-06T11:54:08.803461+00:00"
+  },
+  {
+    "id": "02e458b9-78aa-4ca0-94a2-d18893224a6b",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-06T11:54:22.994909+00:00"
+  },
+  {
+    "id": "d66d8f86-957f-45c5-a1ef-98266beb4db5",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.148"
+    },
+    "created_at": "2025-12-06T12:04:14.202058+00:00"
+  },
+  {
+    "id": "afb642da-129a-4c1f-8b2f-7c9ac87092fa",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.148"
+    },
+    "created_at": "2025-12-06T12:38:39.845608+00:00"
+  },
+  {
+    "id": "23c1c8ef-277e-4927-95f8-8d21419aa8fb",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.104"
+    },
+    "created_at": "2025-12-06T12:47:33.871759+00:00"
+  },
+  {
+    "id": "11412087-3a99-4b8c-ac1c-cb1f298b1986",
+    "transfer_id": null,
+    "user_id": "7260a616-d6b8-4520-84bc-75e38730a1e4",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.170"
+    },
+    "created_at": "2025-12-06T12:48:02.065193+00:00"
+  },
+  {
+    "id": "103d67a8-449e-41ee-a895-803e0a1c1da5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.168"
+    },
+    "created_at": "2025-12-06T13:00:20.133865+00:00"
+  },
+  {
+    "id": "e3ccd763-53c1-408f-a2fb-c73a1559b433",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-06T13:07:44.172957+00:00"
+  },
+  {
+    "id": "ddfb272a-1dc2-4d90-93c7-dab5ac226f48",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-06T13:13:26.299963+00:00"
+  },
+  {
+    "id": "129f5c5a-f8b9-4781-b495-ba7f75a43726",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.169"
+    },
+    "created_at": "2025-12-06T13:16:22.180128+00:00"
+  },
+  {
+    "id": "7c192675-f00e-4f06-9594-90977c01f098",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-06T13:17:16.848610+00:00"
+  },
+  {
+    "id": "f792d483-1b91-4cb9-8ec0-922f515843f4",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.154"
+    },
+    "created_at": "2025-12-06T13:24:37.430246+00:00"
+  },
+  {
+    "id": "bb993a41-e80b-4d49-b5db-75e46cfffce7",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-06T13:25:27.969148+00:00"
+  },
+  {
+    "id": "fccb1d57-22ca-4ec8-9878-a559113f8f34",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.169"
+    },
+    "created_at": "2025-12-06T13:47:19.342249+00:00"
+  },
+  {
+    "id": "3ca6d456-de9e-4077-b6f4-b07050e5bd28",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.170"
+    },
+    "created_at": "2025-12-06T13:56:56.328351+00:00"
+  },
+  {
+    "id": "789a496e-c706-4161-a8d4-8bdec0c51666",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-06T14:00:26.406012+00:00"
+  },
+  {
+    "id": "2339b991-005e-48ed-8bb1-98ac6b06b115",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-06T14:02:28.916645+00:00"
+  },
+  {
+    "id": "a57e80e7-f1c9-4d33-b021-e67b83b62340",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.104"
+    },
+    "created_at": "2025-12-06T14:02:37.470967+00:00"
+  },
+  {
+    "id": "0dd88430-ac2a-4324-88b8-7a9273d8b974",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.170"
+    },
+    "created_at": "2025-12-06T14:03:12.174754+00:00"
+  },
+  {
+    "id": "6fb868df-19c6-4bf8-a493-648207586de8",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-06T14:03:20.975596+00:00"
+  },
+  {
+    "id": "72f4aef9-dd65-4794-9675-01c78d8f3c97",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-06T14:07:18.481150+00:00"
+  },
+  {
+    "id": "4f472168-1395-4c75-b78b-98ea4d0ac532",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.170"
+    },
+    "created_at": "2025-12-06T14:24:30.382393+00:00"
+  },
+  {
+    "id": "27365fd2-7bde-4bc3-b70c-27bd9a527e4f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-06T14:29:06.850590+00:00"
+  },
+  {
+    "id": "5764f881-fb12-4ace-a707-d455983ec3e9",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-06T14:30:52.634643+00:00"
+  },
+  {
+    "id": "77819f05-b8ad-47e4-b561-ef3f87e961e1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-06T14:32:01.510783+00:00"
+  },
+  {
+    "id": "d9725911-b595-4892-9116-2a0574791d82",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.169"
+    },
+    "created_at": "2025-12-06T14:46:29.269834+00:00"
+  },
+  {
+    "id": "e9f34a48-6f29-4728-a671-c18c0374d0ec",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.148"
+    },
+    "created_at": "2025-12-06T16:47:10.846489+00:00"
+  },
+  {
+    "id": "e54dc720-965c-4127-9d8e-5d0b836c73de",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.148"
+    },
+    "created_at": "2025-12-06T17:13:16.108777+00:00"
+  },
+  {
+    "id": "af179b61-f591-43a3-bd8b-6d9329d14998",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-06T18:44:57.990708+00:00"
+  },
+  {
+    "id": "88b2241d-6dea-45e3-9d05-236b128d3755",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.169"
+    },
+    "created_at": "2025-12-06T19:02:22.710139+00:00"
+  },
+  {
+    "id": "8d1bb500-0c48-44f0-96ed-d705bf797fad",
+    "transfer_id": "a9daf41e-2564-4ad2-a912-5c7f95e55cb4",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251206-000055-8"
+    },
+    "created_at": "2025-12-06T19:03:34.345013+00:00"
+  },
+  {
+    "id": "8fbc2bf9-67f7-495a-a0b7-327e959c897d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.148"
+    },
+    "created_at": "2025-12-06T19:40:44.183962+00:00"
+  },
+  {
+    "id": "8baa249d-8127-4fb7-afed-38b0eda9802f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.169"
+    },
+    "created_at": "2025-12-06T20:04:47.195497+00:00"
+  },
+  {
+    "id": "ab24fa73-4d8a-40d2-971b-eb36b4c543e0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.170"
+    },
+    "created_at": "2025-12-06T20:06:01.110613+00:00"
+  },
+  {
+    "id": "6ddd3b9c-01e3-488d-b67f-33fa136d71f4",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-08T06:23:41.408711+00:00"
+  },
+  {
+    "id": "821aa429-a5eb-47d7-b01a-17a6f6c1cc50",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-08T06:47:18.774303+00:00"
+  },
+  {
+    "id": "dd601ac8-381f-439c-b2d2-41927cc30d56",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.168"
+    },
+    "created_at": "2025-12-08T06:47:38.115759+00:00"
+  },
+  {
+    "id": "de425a31-58a9-4db3-bff8-17b59c4cb6ba",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-08T06:48:11.509614+00:00"
+  },
+  {
+    "id": "2e7e2c91-afc8-4e4e-8338-b6101bfd92e0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.105"
+    },
+    "created_at": "2025-12-08T06:48:32.894370+00:00"
+  },
+  {
+    "id": "ffd20b93-e94f-4144-8b29-a0e1047eca8f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.168"
+    },
+    "created_at": "2025-12-08T06:49:04.066130+00:00"
+  },
+  {
+    "id": "019cb159-5597-40a8-8461-17481c5fa580",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.103"
+    },
+    "created_at": "2025-12-08T06:50:11.149822+00:00"
+  },
+  {
+    "id": "46672149-3a2b-43e4-8751-1d96ec5de655",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.105"
+    },
+    "created_at": "2025-12-08T06:51:18.176775+00:00"
+  },
+  {
+    "id": "f030378f-f97d-4876-91cf-80d6ed0339e5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.170"
+    },
+    "created_at": "2025-12-08T06:56:49.508494+00:00"
+  },
+  {
+    "id": "7ff8f885-7961-42c7-961f-48586fa8da75",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.73"
+    },
+    "created_at": "2025-12-08T06:57:18.864602+00:00"
+  },
+  {
+    "id": "2cfebed7-3303-4413-8cac-f0fafe21d010",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.151"
+    },
+    "created_at": "2025-12-08T06:57:31.319875+00:00"
+  },
+  {
+    "id": "ca51bf30-71c8-407e-8d47-c6af949ee845",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-08T06:57:46.906151+00:00"
+  },
+  {
+    "id": "6ed62a67-d7d4-4f74-b965-c5d91b29e9c2",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.143.170"
+    },
+    "created_at": "2025-12-08T06:58:15.752158+00:00"
+  },
+  {
+    "id": "84afd491-af50-453b-8c90-133f943549ba",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.139"
+    },
+    "created_at": "2025-12-08T06:58:54.317706+00:00"
+  },
+  {
+    "id": "c226ca92-9a85-4253-8aec-1905f7cd91d7",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.73"
+    },
+    "created_at": "2025-12-08T06:59:49.541955+00:00"
+  },
+  {
+    "id": "e3de6a5f-2e5d-411a-8bb9-695330bc136f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.105"
+    },
+    "created_at": "2025-12-08T07:00:12.151695+00:00"
+  },
+  {
+    "id": "9d62d227-8f64-43ba-9527-c0ee9d612205",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.104"
+    },
+    "created_at": "2025-12-08T07:06:06.817002+00:00"
+  },
+  {
+    "id": "eb25c9a9-58bf-40e1-913b-c30ee17d42bf",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.73"
+    },
+    "created_at": "2025-12-08T07:06:29.847347+00:00"
+  },
+  {
+    "id": "599fa4ed-f04a-41bc-a650-aacf44616d3a",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.5"
+    },
+    "created_at": "2025-12-08T12:41:05.989718+00:00"
+  },
+  {
+    "id": "064e54ba-3a3b-4714-b8fc-58316a7ff066",
+    "transfer_id": "2d2b73d9-faf4-44ab-9da6-f0ac06797266",
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251208-000056-3"
+    },
+    "created_at": "2025-12-08T12:42:29.144194+00:00"
+  },
+  {
+    "id": "cdc4a11a-9451-46cc-b276-d84a0848d0cb",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.5"
+    },
+    "created_at": "2025-12-08T12:43:02.124252+00:00"
+  },
+  {
+    "id": "c4de9788-e342-4a6f-ba4a-e2519bc34d77",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.147"
+    },
+    "created_at": "2025-12-09T14:04:25.839662+00:00"
+  },
+  {
+    "id": "f0c0e699-c121-4da3-a375-8f9027e88e7a",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.5"
+    },
+    "created_at": "2025-12-09T14:05:29.723244+00:00"
+  },
+  {
+    "id": "d4c42712-cc42-458c-bad6-543a1b0a204c",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.77"
+    },
+    "created_at": "2025-12-09T14:05:53.941515+00:00"
+  },
+  {
+    "id": "dfad9c87-6961-4552-87ff-235124d059d6",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.145"
+    },
+    "created_at": "2025-12-09T14:06:19.342466+00:00"
+  },
+  {
+    "id": "81a6c786-aac6-4822-af3c-2020abd46ae3",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.5"
+    },
+    "created_at": "2025-12-09T14:08:41.286725+00:00"
+  },
+  {
+    "id": "61bee307-7ddd-4982-9432-d98e1123fdea",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.62"
+    },
+    "created_at": "2025-12-09T14:26:37.975306+00:00"
+  },
+  {
+    "id": "44b2a63e-3284-4da9-8dba-bf4e473b5928",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.106"
+    },
+    "created_at": "2025-12-09T14:27:08.783358+00:00"
+  },
+  {
+    "id": "d79666f6-e5e9-49c7-8de0-d14d4235364f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.79"
+    },
+    "created_at": "2025-12-09T14:31:02.127674+00:00"
+  },
+  {
+    "id": "f392f605-81cd-48e2-859f-496bd19d8c78",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.5"
+    },
+    "created_at": "2025-12-09T14:33:38.909503+00:00"
+  },
+  {
+    "id": "66c2bc8b-a0b6-4c89-9945-28febbe86806",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.77"
+    },
+    "created_at": "2025-12-09T14:34:59.395556+00:00"
+  },
+  {
+    "id": "75787b6f-2a9a-4817-a7ad-d3d5126ac5b4",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.5"
+    },
+    "created_at": "2025-12-09T14:36:41.351151+00:00"
+  },
+  {
+    "id": "c5ac70ff-0069-4fad-9c60-84b721c8a34b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.79"
+    },
+    "created_at": "2025-12-09T14:37:15.969298+00:00"
+  },
+  {
+    "id": "3728c9e5-e30c-4b01-9ad3-a13fe668ff47",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.178"
+    },
+    "created_at": "2025-12-09T14:38:45.538068+00:00"
+  },
+  {
+    "id": "2c23e2c2-acea-4c1c-8a02-26d5bab685a7",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-09T14:40:39.675634+00:00"
+  },
+  {
+    "id": "eab9b0c5-7822-41a9-8202-d0b44147daee",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.147"
+    },
+    "created_at": "2025-12-09T14:41:36.722846+00:00"
+  },
+  {
+    "id": "f881f301-186e-4e7c-9641-5e29ae93c482",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.178"
+    },
+    "created_at": "2025-12-09T14:43:53.399481+00:00"
+  },
+  {
+    "id": "e4f6b31d-311f-4a5a-bce5-31b7039159ab",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.77"
+    },
+    "created_at": "2025-12-09T14:46:34.926806+00:00"
+  },
+  {
+    "id": "57de6bbb-bd14-4585-8952-4bbe639a5630",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.145"
+    },
+    "created_at": "2025-12-09T14:48:46.839633+00:00"
+  },
+  {
+    "id": "0cce0b14-b851-46aa-a428-7fff4c40ba54",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.5"
+    },
+    "created_at": "2025-12-09T14:54:38.648224+00:00"
+  },
+  {
+    "id": "a10dc0ea-d250-4e84-8186-a01774beffb1",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.77"
+    },
+    "created_at": "2025-12-09T14:58:27.391486+00:00"
+  },
+  {
+    "id": "9c34d772-10c6-42a7-916a-0f7684cdce25",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.62"
+    },
+    "created_at": "2025-12-09T14:58:50.000254+00:00"
+  },
+  {
+    "id": "64872dbc-f690-4583-a2a8-7152ee700b6f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.145"
+    },
+    "created_at": "2025-12-09T14:59:23.871082+00:00"
+  },
+  {
+    "id": "e9844d8e-0b17-485e-8d66-ef5f5b9902c5",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.145"
+    },
+    "created_at": "2025-12-09T15:39:07.164511+00:00"
+  },
+  {
+    "id": "5fc51244-9bf0-48d0-89c9-0a0a96563115",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.62"
+    },
+    "created_at": "2025-12-09T19:11:25.296975+00:00"
+  },
+  {
+    "id": "44a6d541-d99d-407f-b327-d8eda62bd675",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.77"
+    },
+    "created_at": "2025-12-09T19:22:49.476513+00:00"
+  },
+  {
+    "id": "98c427a7-befa-468e-8cf6-a54ce0178330",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-09T19:23:29.755453+00:00"
+  },
+  {
+    "id": "70e2595f-b677-4a1a-99bf-7c5751593fd4",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.145"
+    },
+    "created_at": "2025-12-09T19:24:58.479134+00:00"
+  },
+  {
+    "id": "179a2b7c-22d9-4a0e-8c90-e1cc350217e0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.106"
+    },
+    "created_at": "2025-12-09T19:25:23.844109+00:00"
+  },
+  {
+    "id": "b3783129-b5e0-4075-8476-bb8da1d9907c",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.145"
+    },
+    "created_at": "2025-12-09T19:29:28.060187+00:00"
+  },
+  {
+    "id": "a3b73982-964a-4a94-9d58-7b1c33c35433",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.147"
+    },
+    "created_at": "2025-12-09T19:29:48.364226+00:00"
+  },
+  {
+    "id": "088508de-1b8d-4672-b297-f5e448caec1f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-09T19:32:52.905789+00:00"
+  },
+  {
+    "id": "ce38e971-052c-49fa-8406-693b149b702f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.79"
+    },
+    "created_at": "2025-12-09T19:33:47.398876+00:00"
+  },
+  {
+    "id": "f5200911-1576-453d-b57c-d4fa08c99b11",
+    "transfer_id": "8c0bfa08-a2f4-4b87-aeb8-4eba7e47738e",
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-NJ-20251209-000057-2"
+    },
+    "created_at": "2025-12-09T19:35:55.945970+00:00"
+  },
+  {
+    "id": "647c990b-8c2c-4c65-9440-64a2ab8b1c17",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.79"
+    },
+    "created_at": "2025-12-09T19:45:44.729015+00:00"
+  },
+  {
+    "id": "248ffc9e-d7b6-466c-b416-c17269b852de",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.178"
+    },
+    "created_at": "2025-12-09T19:50:28.219763+00:00"
+  },
+  {
+    "id": "bf593b02-7a44-4f88-a131-356e9b8229eb",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.106"
+    },
+    "created_at": "2025-12-09T19:54:11.645589+00:00"
+  },
+  {
+    "id": "9511ca46-8050-494f-8ac3-e2ceb481285d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-09T19:54:38.602933+00:00"
+  },
+  {
+    "id": "a040d3a0-dcd3-42b6-b191-e25704d4da1b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-10T07:01:40.880981+00:00"
+  },
+  {
+    "id": "5877b47d-7765-4dc8-b8b6-5eb86d2f1f09",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.128.9"
+    },
+    "created_at": "2025-12-10T17:19:57.681984+00:00"
+  },
+  {
+    "id": "c1b454bd-0167-40d5-92fa-c2f8b4b0686d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.160.23"
+    },
+    "created_at": "2025-12-10T19:12:11.268237+00:00"
+  },
+  {
+    "id": "30fd0cc4-06bc-4b5a-935a-049b1ce87ffb",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.19"
+    },
+    "created_at": "2025-12-10T19:14:37.809396+00:00"
+  },
+  {
+    "id": "7465cb5d-98c8-45d5-8ae9-192afe984c12",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.187"
+    },
+    "created_at": "2025-12-11T08:31:21.290173+00:00"
+  },
+  {
+    "id": "08d3ef54-0185-4dd7-b0b7-a29147b2981a",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.79"
+    },
+    "created_at": "2025-12-11T08:39:47.114316+00:00"
+  },
+  {
+    "id": "20f35d39-d602-46be-9751-a330e4550b13",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.19"
+    },
+    "created_at": "2025-12-11T08:40:16.101730+00:00"
+  },
+  {
+    "id": "68cc242a-37a8-4baa-8554-f6b5bccbe345",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.178"
+    },
+    "created_at": "2025-12-11T09:23:11.613904+00:00"
+  },
+  {
+    "id": "9dd2b12e-353f-4ad3-b072-d044b1cf4ed3",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.187"
+    },
+    "created_at": "2025-12-11T09:23:25.122508+00:00"
+  },
+  {
+    "id": "32f11bf9-d0bf-442b-b138-d208a72d7c31",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.214"
+    },
+    "created_at": "2025-12-11T09:23:51.492403+00:00"
+  },
+  {
+    "id": "7883551b-5836-4dbb-a17a-a81533112dfc",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ZAID",
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-11T09:41:11.318319+00:00"
+  },
+  {
+    "id": "2890f41f-dcef-4e93-bfcc-57ec90f1bfc7",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.19"
+    },
+    "created_at": "2025-12-11T09:41:18.705286+00:00"
+  },
+  {
+    "id": "e30c336e-77a7-49d9-a87c-7e2962e070e0",
+    "transfer_id": null,
+    "user_id": null,
+    "action": "login_failed",
+    "details": {
+      "username": "ZAID",
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-11T09:41:36.907475+00:00"
+  },
+  {
+    "id": "e4abd96e-55e3-4ca0-ba01-b48573b35a08",
+    "transfer_id": null,
+    "user_id": "bac26f94-e4aa-4377-afd9-67fc45bd668f",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.19"
+    },
+    "created_at": "2025-12-11T09:41:56.366800+00:00"
+  },
+  {
+    "id": "d4ab0765-4394-4c8b-ba7e-9d1cef4edc3b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-11T09:43:24.766304+00:00"
+  },
+  {
+    "id": "6cb805a8-fac2-42c8-ad8e-811ace2ce858",
+    "transfer_id": null,
+    "user_id": "bac26f94-e4aa-4377-afd9-67fc45bd668f",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.178"
+    },
+    "created_at": "2025-12-11T09:43:27.166991+00:00"
+  },
+  {
+    "id": "43934041-d4ca-4361-bb62-360e45e885f0",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.214"
+    },
+    "created_at": "2025-12-11T12:42:21.865339+00:00"
+  },
+  {
+    "id": "8ea345d7-8d71-453a-96de-5a3d0c075743",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.53"
+    },
+    "created_at": "2025-12-11T20:04:51.042913+00:00"
+  },
+  {
+    "id": "278699bf-ff22-483b-ba4b-4f8a14f7b68f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.106"
+    },
+    "created_at": "2025-12-11T20:04:57.266605+00:00"
+  },
+  {
+    "id": "01dbc445-0abc-4258-8fc4-278ba99668dd",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "user_status_changed",
+    "details": {
+      "target_user_id": "8c2b0b6e-bb3e-4b80-8ad0-b6d19e95cfd1",
+      "new_status": "inactive"
+    },
+    "created_at": "2025-12-11T20:16:12.431092+00:00"
+  },
+  {
+    "id": "6e7c1aa1-2760-422e-bd7b-b576f655a1b5",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.36"
+    },
+    "created_at": "2025-12-11T20:58:06.730898+00:00"
+  },
+  {
+    "id": "bff04768-42c6-43fd-8280-8a800adecc8f",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.53"
+    },
+    "created_at": "2025-12-11T21:04:38.515139+00:00"
+  },
+  {
+    "id": "525c047b-b68d-4035-ae36-7c5750d76a13",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.79"
+    },
+    "created_at": "2025-12-11T21:13:11.226269+00:00"
+  },
+  {
+    "id": "c61ff339-f92c-4f57-a7a0-74b88c797261",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.94"
+    },
+    "created_at": "2025-12-11T21:13:11.976053+00:00"
+  },
+  {
+    "id": "eb97f7c0-64fd-4079-9678-40513d1be3ae",
+    "transfer_id": "76d61488-5574-492a-ad42-398479620edc",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251211-000058-7"
+    },
+    "created_at": "2025-12-11T21:13:13.187273+00:00"
+  },
+  {
+    "id": "e3c70141-85e7-4808-9c3f-461b63ebe3c1",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.178"
+    },
+    "created_at": "2025-12-11T21:13:17.312880+00:00"
+  },
+  {
+    "id": "bf1cdbac-5d5e-4356-b836-9d78272da5a5",
+    "transfer_id": "76d61488-5574-492a-ad42-398479620edc",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1765487598/money_transfer/id_images/z1owygfex1lrpxt6ljqk.jpg"
+    },
+    "created_at": "2025-12-11T21:13:20.720036+00:00"
+  },
+  {
+    "id": "730a9221-8de0-413c-a8a3-18f9f916133a",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.36"
+    },
+    "created_at": "2025-12-11T21:14:06.517345+00:00"
+  },
+  {
+    "id": "e1737d6c-84a6-409a-b814-309259071304",
+    "transfer_id": null,
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.19"
+    },
+    "created_at": "2025-12-11T21:14:07.282761+00:00"
+  },
+  {
+    "id": "25881d41-5c53-460e-950b-956760b5f4f9",
+    "transfer_id": "aa46a332-e0e5-470b-b400-6ae06fb48495",
+    "user_id": "65ab6f7c-1ed2-4f34-bcdd-9582ba50ca18",
+    "action": "transfer_created",
+    "details": {
+      "transfer_code": "T-WS-20251211-000059-6"
+    },
+    "created_at": "2025-12-11T21:14:08.122663+00:00"
+  },
+  {
+    "id": "152a662d-77cf-426b-9aa6-1600f71dec58",
+    "transfer_id": null,
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.19"
+    },
+    "created_at": "2025-12-11T21:14:12.355330+00:00"
+  },
+  {
+    "id": "971849f4-1a55-4b59-8529-b7f2de899891",
+    "transfer_id": "aa46a332-e0e5-470b-b400-6ae06fb48495",
+    "user_id": "5f68906a-5609-43bd-9186-72ab4b402559",
+    "action": "transfer_completed",
+    "details": {
+      "receiver_fullname": "محمد سعد كريم",
+      "id_image_url": "https://res.cloudinary.com/derpualp3/image/upload/v1765487653/money_transfer/id_images/eftwirdlmlbrqptg0vyh.jpg"
+    },
+    "created_at": "2025-12-11T21:14:15.555545+00:00"
+  },
+  {
+    "id": "23c47dc6-29e6-4b76-ac9f-3d93dd83158b",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.201.214"
+    },
+    "created_at": "2025-12-13T07:08:49.328542+00:00"
+  },
+  {
+    "id": "000ae305-7b7e-4450-8cfd-c3f85ae0d7ab",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.79"
+    },
+    "created_at": "2025-12-13T12:03:31.229641+00:00"
+  },
+  {
+    "id": "c4300426-de7e-4142-a926-5e4f1f288c52",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.19"
+    },
+    "created_at": "2025-12-14T08:48:03.105345+00:00"
+  },
+  {
+    "id": "5cd01385-9bb2-49b0-9838-fe5eae9ad011",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.52"
+    },
+    "created_at": "2025-12-18T09:35:45.114842+00:00"
+  },
+  {
+    "id": "8778a811-749f-43fb-8492-0735794303f4",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.139.17"
+    },
+    "created_at": "2025-12-18T09:39:38.830280+00:00"
+  },
+  {
+    "id": "d6546f35-47bb-4234-b169-67e2796615fc",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.69"
+    },
+    "created_at": "2025-12-18T09:40:16.379937+00:00"
+  },
+  {
+    "id": "25abff92-2511-46d7-b07b-ee946820e80f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.162.198"
+    },
+    "created_at": "2025-12-18T09:40:38.719547+00:00"
+  },
+  {
+    "id": "67a78561-6a09-4b96-ab97-5f6ec586e543",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.52"
+    },
+    "created_at": "2025-12-18T09:40:46.810755+00:00"
+  },
+  {
+    "id": "a32a6a23-aec5-4fe7-9024-80a8ca79d0da",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.134.200"
+    },
+    "created_at": "2025-12-18T09:41:45.102275+00:00"
+  },
+  {
+    "id": "869eb1ca-4cc1-4500-8d7b-dc2da2105127",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.52"
+    },
+    "created_at": "2025-12-18T09:41:59.614059+00:00"
+  },
+  {
+    "id": "1fe85061-8c39-4e32-9c0d-82bb6cb6ef6d",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.69"
+    },
+    "created_at": "2025-12-18T09:48:51.422748+00:00"
+  },
+  {
+    "id": "4f3a7d0f-1e0e-4546-8421-9214155a8959",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.52"
+    },
+    "created_at": "2025-12-18T09:49:11.366043+00:00"
+  },
+  {
+    "id": "19773deb-c33a-49c4-ad9d-5e2490428473",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.129.52"
+    },
+    "created_at": "2025-12-18T09:49:26.214478+00:00"
+  },
+  {
+    "id": "e84eafa2-9dc9-4870-a3fc-12d4ad2eed1f",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.156.126"
+    },
+    "created_at": "2025-12-18T09:51:43.026386+00:00"
+  },
+  {
+    "id": "2ad10ba9-975d-4e08-ab67-f83a7f2f3792",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.131.207"
+    },
+    "created_at": "2025-12-28T16:59:38.322042+00:00"
+  },
+  {
+    "id": "ab3bf8fd-7571-4313-8c94-b0123051b376",
+    "transfer_id": null,
+    "user_id": "c66aa599-e4db-481b-8566-3b9cfde53d80",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.135.148"
+    },
+    "created_at": "2025-12-28T17:02:41.885228+00:00"
+  },
+  {
+    "id": "90b853ec-d877-4597-8cf6-110eea78be01",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.141.11"
+    },
+    "created_at": "2025-12-28T19:29:33.423212+00:00"
+  },
+  {
+    "id": "90ef5c47-76aa-4cef-a54a-44e54ae0a6ec",
+    "transfer_id": null,
+    "user_id": "5501ee23-d6ed-4e42-befb-1b09c1791d3d",
+    "action": "login_success",
+    "details": {
+      "ip": "10.64.130.9"
+    },
+    "created_at": "2025-12-29T14:48:03.542843+00:00"
+  }
+]
