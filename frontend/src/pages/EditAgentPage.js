@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const IRAQI_GOVERNORATES = [
   { code: 'BG', name: 'بغداد' },
@@ -87,7 +85,7 @@ const EditAgentPage = () => {
       
       // إضافة Authorization header
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/accounting/accounts`, {
+      const response = await api.get('/accounting/accounts', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -143,8 +141,8 @@ const EditAgentPage = () => {
       if (currentAccountId && !exchangeAccounts.find(acc => acc.code === currentAccountId)) {
         console.log('⚠️ Current account not in list, fetching it:', currentAccountId);
         try {
-          const currentAccountResponse = await axios.get(
-            `${API}/accounting/accounts/${currentAccountId}`,
+          const currentAccountResponse = await api.get(
+            '/accounting/accounts/${currentAccountId}',
             { headers: { Authorization: `Bearer ${token}` } }
           );
           if (currentAccountResponse.data) {
@@ -183,7 +181,7 @@ const EditAgentPage = () => {
       console.log('🔑 Token:', token ? 'present' : 'missing');
       
       // استخدام endpoint مباشر للحصول على بيانات الوكيل المحددة
-      const response = await axios.get(`${API}/users/${id}`, {
+      const response = await api.get('/users/${id}', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -261,7 +259,7 @@ const EditAgentPage = () => {
       console.log('📤 Sending update request:', updateData);
       console.log('🔑 With token:', token ? 'present' : 'missing');
       
-      const response = await axios.put(`${API}/users/${id}`, updateData, {
+      const response = await api.put('/users/${id}', updateData, {
         headers: {
           Authorization: `Bearer ${token}`
         }

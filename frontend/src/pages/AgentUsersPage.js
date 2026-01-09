@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const AgentUsersPage = () => {
   const { user } = useAuth();
@@ -48,7 +46,7 @@ const AgentUsersPage = () => {
       const token = localStorage.getItem('token');
       
       // Fetch agent details
-      const agentResponse = await axios.get(`${API}/agents/${agentId}`, {
+      const agentResponse = await api.get('/agents/${agentId}', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const agentData = agentResponse.data;
@@ -57,7 +55,7 @@ const AgentUsersPage = () => {
       // Fetch linked account if agent has account_id
       if (agentData.account_id) {
         try {
-          const accountsResponse = await axios.get(`${API}/accounting/accounts`, {
+          const accountsResponse = await api.get('/accounting/accounts', {
             headers: { Authorization: `Bearer ${token}` }
           });
           const accountsData = accountsResponse.data.accounts || accountsResponse.data || [];
@@ -72,7 +70,7 @@ const AgentUsersPage = () => {
       }
       
       // Fetch users for this agent
-      const usersResponse = await axios.get(`${API}/users`, {
+      const usersResponse = await api.get('/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -122,7 +120,7 @@ const AgentUsersPage = () => {
         updateData.new_password = editFormData.password;
       }
 
-      await axios.put(`${API}/users/${selectedUser.id}`, updateData, {
+      await api.put('/users/${selectedUser.id}', updateData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -151,7 +149,7 @@ const AgentUsersPage = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`${API}/users/${userId}/status`, 
+      await api.put('/users/${userId}/status', 
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );

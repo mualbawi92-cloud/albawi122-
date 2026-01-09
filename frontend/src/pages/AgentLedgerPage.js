@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import { printDocument, generateAccountingReportHTML } from '../utils/printUtils';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const AgentLedgerPage = () => {
   const navigate = useNavigate();
@@ -43,7 +41,7 @@ const AgentLedgerPage = () => {
         
         // If user is an agent, use their own account
         if (user?.role === 'agent') {
-          const response = await axios.get(`${API}/agents`);
+          const response = await api.get('/agents');
           const agents = response.data;
           const currentAgent = agents.find(a => a.id === user?.id);
           accountId = currentAgent?.account_id;
@@ -51,7 +49,7 @@ const AgentLedgerPage = () => {
         // If user is a regular user, get their agent's account
         else if (user?.role === 'user' && user?.agent_id) {
           try {
-            const agentResponse = await axios.get(`${API}/agents/${user.agent_id}`, {
+            const agentResponse = await api.get('/agents/${user.agent_id}', {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             accountId = agentResponse.data?.account_id;
@@ -61,7 +59,7 @@ const AgentLedgerPage = () => {
         }
         
         if (accountId) {
-          const accountResponse = await axios.get(`${API}/accounting/accounts/${accountId}`);
+          const accountResponse = await api.get('/accounting/accounts/${accountId}');
           const currencies = accountResponse.data.currencies || ['IQD', 'USD'];
           setEnabledCurrencies(currencies);
           setSelectedCurrency(currencies[0]); // Set first currency as default
@@ -103,7 +101,7 @@ const AgentLedgerPage = () => {
         params.agent_id = user.agent_id;
       }
       
-      const response = await axios.get(`${API}/agent-ledger`, {
+      const response = await api.get('/agent-ledger', {
         params: params
       });
       setLedgerData(response.data);

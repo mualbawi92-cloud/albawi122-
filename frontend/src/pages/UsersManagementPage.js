@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -10,9 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../co
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Checkbox } from '../components/ui/checkbox';
 import { Pencil, Trash2, Plus, Shield } from 'lucide-react';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 // قائمة الصلاحيات المتاحة
 const AVAILABLE_PERMISSIONS = [
@@ -64,7 +62,7 @@ const UsersManagementPage = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/admin/users`);
+      const response = await api.get('/admin/users');
       // Filter only admin users (not agents or regular users)
       const adminUsers = response.data.filter(u => u.role === 'admin' || u.role === 'admin_user');
       setUsers(adminUsers);
@@ -83,7 +81,7 @@ const UsersManagementPage = () => {
 
     setLoading(true);
     try {
-      await axios.post(`${API}/admin/users`, {
+      await api.post('/admin/users', {
         username: formData.username,
         display_name: formData.display_name,
         email: formData.email || null,
@@ -107,7 +105,7 @@ const UsersManagementPage = () => {
 
     setLoading(true);
     try {
-      await axios.put(`${API}/admin/users/${selectedUser.id}`, {
+      await api.put('/admin/users/${selectedUser.id}', {
         display_name: formData.display_name,
         email: formData.email || null,
         permissions: formData.permissions,
@@ -130,7 +128,7 @@ const UsersManagementPage = () => {
 
     setLoading(true);
     try {
-      await axios.delete(`${API}/admin/users/${selectedUser.id}`);
+      await api.delete('/admin/users/${selectedUser.id}');
       toast.success('تم حذف المستخدم بنجاح');
       setShowDeleteDialog(false);
       setSelectedUser(null);

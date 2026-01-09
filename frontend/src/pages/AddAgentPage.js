@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 // المحافظات العراقية الكاملة
 const IRAQI_GOVERNORATES = [
@@ -59,7 +57,7 @@ const AddAgentPage = () => {
 
   const fetchAvailableAccounts = async () => {
     try {
-      const response = await axios.get(`${API}/agents/available-accounts`);
+      const response = await api.get('/agents/available-accounts');
       setAccounts(response.data.accounts || []);
     } catch (error) {
       console.error('Error fetching accounts:', error);
@@ -98,7 +96,7 @@ const AddAgentPage = () => {
         wallet_limit_usd: parseFloat(formData.wallet_limit_usd) || 0
       };
 
-      await axios.post(`${API}/register`, submitData);
+      await api.post('/register', submitData);
       
       toast.success('تم إضافة الصراف بنجاح!', {
         description: `تم إنشاء حساب ${formData.display_name}`

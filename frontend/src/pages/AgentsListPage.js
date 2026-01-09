@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -8,9 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const IRAQI_GOVERNORATES = [
   { code: 'BG', name: 'بغداد' },
@@ -52,7 +50,7 @@ const AgentsListPage = () => {
       const params = new URLSearchParams();
       if (governorateFilter) params.append('governorate', governorateFilter);
 
-      const response = await axios.get(`${API}/agents?${params}`);
+      const response = await api.get('/agents?${params}');
       setAgents(response.data);
       setLoading(false);
     } catch (error) {
@@ -77,7 +75,7 @@ const AgentsListPage = () => {
 
   const handleToggleStatus = async (agentId, currentStatus) => {
     try {
-      await axios.patch(`${API}/users/${agentId}/status`, null, {
+      await api.patch('/users/${agentId}/status', null, {
         params: { is_active: !currentStatus }
       });
       

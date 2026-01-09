@@ -7,10 +7,8 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import axios from 'axios';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const TemplateDesignerPage = () => {
   const navigate = useNavigate();
@@ -144,7 +142,7 @@ const TemplateDesignerPage = () => {
 
   const fetchTemplates = async () => {
     try {
-      const response = await axios.get(`${API}/templates`);
+      const response = await api.get('/templates');
       setTemplates(response.data || []);
     } catch (error) {
       console.error('Error fetching templates:', error);
@@ -166,10 +164,10 @@ const TemplateDesignerPage = () => {
       };
 
       if (selectedTemplate) {
-        await axios.put(`${API}/templates/${selectedTemplate.id}`, payload);
+        await api.put('/templates/${selectedTemplate.id}', payload);
         toast.success('تم تحديث التصميم بنجاح');
       } else {
-        await axios.post(`${API}/templates`, payload);
+        await api.post('/templates', payload);
         toast.success('تم حفظ التصميم بنجاح');
       }
 
@@ -193,7 +191,7 @@ const TemplateDesignerPage = () => {
     if (!window.confirm('هل أنت متأكد من حذف هذا التصميم?')) return;
 
     try {
-      await axios.delete(`${API}/templates/${id}`);
+      await api.delete('/templates/${id}');
       toast.success('تم حذف التصميم بنجاح');
       fetchTemplates();
       if (selectedTemplate?.id === id) {

@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const ChartOfAccountsPage = () => {
   const navigate = useNavigate();
@@ -59,7 +57,7 @@ const ChartOfAccountsPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${API}/accounting/categories`);
+      const response = await api.get('/accounting/categories');
       const cats = response.data.categories || [];
       setCategories(cats);
       // Expand all categories by default
@@ -73,7 +71,7 @@ const ChartOfAccountsPage = () => {
   const fetchAccounts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/accounting/accounts`);
+      const response = await api.get('/accounting/accounts');
       setAccounts(response.data.accounts || []);
     } catch (error) {
       console.error('Error fetching accounts:', error);
@@ -131,7 +129,7 @@ const ChartOfAccountsPage = () => {
       const newCode = (parseInt(codePrefix) * 1000) + nextSeq;
       
       // Create account
-      await axios.post(`${API}/accounting/accounts`, {
+      await api.post('/accounting/accounts', {
         code: String(newCode),
         name: newAccount.name,
         name_ar: newAccount.name,
@@ -176,7 +174,7 @@ const ChartOfAccountsPage = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await axios.post(`${API}/accounting/categories`, {
+      const response = await api.post('/accounting/categories', {
         name_ar: newCategory.name_ar,
         name_en: newCategory.name_en,
         description: newCategory.description,
@@ -223,8 +221,8 @@ const ChartOfAccountsPage = () => {
       
       if (removedCurrencies.length > 0) {
         // التحقق من وجود قيود بهذه العملات
-        const ledgerResponse = await axios.get(
-          `${API}/accounting/ledger/${editingAccount.code}`,
+        const ledgerResponse = await api.get(
+          '/accounting/ledger/${editingAccount.code}',
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
@@ -244,7 +242,7 @@ const ChartOfAccountsPage = () => {
         }
       }
       
-      await axios.patch(`${API}/accounting/accounts/${editingAccount.code}`, {
+      await api.patch('/accounting/accounts/${editingAccount.code}', {
         name: editingAccount.name,
         name_ar: editingAccount.name,
         name_en: editingAccount.name,
@@ -276,14 +274,14 @@ const ChartOfAccountsPage = () => {
       const token = localStorage.getItem('token');
       
       if (deleteType === 'account') {
-        await axios.delete(`${API}/accounting/accounts/${itemToDelete.code}`, {
+        await api.delete('/accounting/accounts/${itemToDelete.code}', {
           headers: { Authorization: `Bearer ${token}` }
         });
         toast.success('تم حذف الحساب بنجاح');
         fetchAccounts();
         fetchCategories();
       } else if (deleteType === 'category') {
-        await axios.delete(`${API}/accounting/categories/${itemToDelete.id}`, {
+        await api.delete('/accounting/categories/${itemToDelete.id}', {
           headers: { Authorization: `Bearer ${token}` }
         });
         toast.success('تم حذف القسم بنجاح');

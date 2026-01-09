@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const NotificationsPage = () => {
   const navigate = useNavigate();
@@ -23,7 +21,7 @@ const NotificationsPage = () => {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/notifications`, {
+      const response = await api.get('/notifications', {
         params: { unread_only: filter === 'unread' }
       });
       setNotifications(response.data.notifications || []);
@@ -36,7 +34,7 @@ const NotificationsPage = () => {
 
   const markAsRead = async (notificationId) => {
     try {
-      await axios.patch(`${API}/notifications/${notificationId}/mark-read`);
+      await api.patch('/notifications/${notificationId}/mark-read');
       fetchNotifications();
     } catch (error) {
       console.error('Error marking as read:', error);
@@ -190,7 +188,7 @@ const NotificationsPage = () => {
                         size="sm"
                         variant="link"
                         className="h-auto p-0"
-                        onClick={() => navigate(`/transfers/${notification.related_transfer_id}`)}
+                        onClick={() => navigate('/transfers/${notification.related_transfer_id}')}
                       >
                         🔗 عرض الحوالة
                       </Button>

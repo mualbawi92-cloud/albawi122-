@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -9,9 +8,8 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const IRAQI_GOVERNORATES = [
   { code: 'BG', name: 'بغداد' },
@@ -78,7 +76,7 @@ const DashboardPageNew = () => {
       const token = localStorage.getItem('token');
       
       // Fetch agents (users with role=agent)
-      const agentsResponse = await axios.get(`${API}/users`, {
+      const agentsResponse = await api.get('/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -86,7 +84,7 @@ const DashboardPageNew = () => {
       const agentUsers = agentsResponse.data.filter(u => u.role === 'agent');
       
       // Fetch chart of accounts
-      const accountsResponse = await axios.get(`${API}/accounting/accounts`, {
+      const accountsResponse = await api.get('/accounting/accounts', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -158,7 +156,7 @@ const DashboardPageNew = () => {
         account_id: modalFormData.account_id
       };
 
-      await axios.put(`${API}/users/${selectedAgent.id}`, updateData, {
+      await api.put('/users/${selectedAgent.id}', updateData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

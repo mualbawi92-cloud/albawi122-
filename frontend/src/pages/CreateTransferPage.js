@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -11,9 +10,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from 'sonner';
 import { formatAmountInWords } from '../utils/arabicNumbers';
 import { generateHTMLFromVisualTemplate } from '../utils/printUtils';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const IRAQI_GOVERNORATES = [
   { code: 'BG', name: 'بغداد' },
@@ -69,7 +67,7 @@ const CreateTransferPage = () => {
     const fetchExchangeCompanies = async () => {
       if (user?.role === 'admin') {
         try {
-          const response = await axios.get(`${API}/accounting/accounts`);
+          const response = await api.get('/accounting/accounts');
           // Filter only exchange company accounts (category = شركات الصرافة)
           const companies = response.data.accounts?.filter(acc => acc.category === 'شركات الصرافة') || [];
           setExchangeCompanies(companies);
@@ -93,7 +91,7 @@ const CreateTransferPage = () => {
       setCommissionData(prev => ({ ...prev, loading: true }));
 
       try {
-        const response = await axios.get(`${API}/commission/calculate-preview`, {
+        const response = await api.get('/commission/calculate-preview', {
           params: {
             amount: parseFloat(formData.amount),
             currency: formData.currency,
@@ -122,7 +120,7 @@ const CreateTransferPage = () => {
     
     // Fetch agents for selected governorate
     try {
-      const response = await axios.get(`${API}/agents?governorate=${value}`);
+      const response = await api.get('/agents?governorate=${value}');
       setAgents(response.data);
     } catch (error) {
       console.error('Error fetching agents:', error);
@@ -183,7 +181,7 @@ const CreateTransferPage = () => {
         note: formData.note || null
       };
 
-      const response = await axios.post(`${API}/transfers`, submitData);
+      const response = await api.post('/transfers', submitData);
       setResult(response.data);
       
       toast.success('تم إنشاء الحوالة بنجاح!');
@@ -201,7 +199,7 @@ const CreateTransferPage = () => {
     // محاولة جلب التصميم المخصص
     let printContent;
     try {
-      const response = await axios.get(`${API}/visual-templates/active/send_transfer`, {
+      const response = await api.get('/visual-templates/active/send_transfer', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       

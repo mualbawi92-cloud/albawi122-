@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -24,8 +22,8 @@ const DashboardPage = () => {
   const fetchDashboardData = async () => {
     try {
       const [statsRes, transfersRes] = await Promise.all([
-        axios.get(`${API}/dashboard/stats`),
-        axios.get(`${API}/transfers`)
+        api.get('/dashboard/stats'),
+        api.get('/transfers')
       ]);
       
       setStats(statsRes.data);
@@ -175,7 +173,7 @@ const DashboardPage = () => {
                     key={transfer.id}
                     data-testid={`transfer-${transfer.transfer_code}`}
                     className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 bg-muted/30 rounded-lg hover:shadow-md transition-all cursor-pointer gap-2 sm:gap-0"
-                    onClick={() => navigate(`/transfers/${transfer.id}`)}
+                    onClick={() => navigate('/transfers/${transfer.id}')}
                   >
                     <div className="space-y-1 w-full sm:w-auto">
                       <p className="font-bold text-base sm:text-lg text-primary">{transfer.transfer_code}</p>

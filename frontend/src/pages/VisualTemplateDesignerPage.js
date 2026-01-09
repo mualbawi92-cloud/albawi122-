@@ -7,12 +7,10 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import axios from 'axios';
 import { Rnd } from 'react-rnd';
 import { Trash2, Plus, Save, Eye, FolderOpen, Grid, Type, Square, Minus } from 'lucide-react';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 // أحجام الصفحات بالبكسل (1mm = 3.78px)
 const PAGE_SIZES = {
@@ -119,7 +117,7 @@ const VisualTemplateDesignerPage = () => {
 
   const fetchTemplates = async () => {
     try {
-      const response = await axios.get(`${API}/visual-templates`);
+      const response = await api.get('/visual-templates');
       setTemplates(response.data || []);
     } catch (error) {
       console.error('Error fetching templates:', error);
@@ -198,10 +196,10 @@ const VisualTemplateDesignerPage = () => {
       let savedTemplateId = currentTemplate?.id;
       
       if (currentTemplate) {
-        await axios.put(`${API}/visual-templates/${currentTemplate.id}`, payload);
+        await api.put('/visual-templates/${currentTemplate.id}', payload);
         toast.success('تم تحديث التصميم بنجاح');
       } else {
-        const response = await axios.post(`${API}/visual-templates`, payload);
+        const response = await api.post('/visual-templates', payload);
         savedTemplateId = response.data.id;
         toast.success('تم حفظ التصميم بنجاح');
       }
@@ -209,7 +207,7 @@ const VisualTemplateDesignerPage = () => {
       // تطبيق التصميم كـ active إذا تم تفعيل الخيار
       if (applyAsDefault && savedTemplateId) {
         try {
-          await axios.post(`${API}/visual-templates/${savedTemplateId}/set-active`);
+          await api.post('/visual-templates/${savedTemplateId}/set-active');
           toast.success(`✅ تم تطبيق التصميم على: ${templateType === 'send_transfer' ? 'وصولات الإرسال' : templateType === 'receive_transfer' ? 'وصولات التسليم' : 'الوصولات'}`);
         } catch (error) {
           console.error('Error setting template as active:', error);
@@ -238,7 +236,7 @@ const VisualTemplateDesignerPage = () => {
     if (!window.confirm('هل أنت متأكد من حذف هذا التصميم؟')) return;
 
     try {
-      await axios.delete(`${API}/visual-templates/${id}`);
+      await api.delete('/visual-templates/${id}');
       toast.success('تم حذف التصميم بنجاح');
       fetchTemplates();
       if (currentTemplate?.id === id) {
@@ -262,7 +260,7 @@ const VisualTemplateDesignerPage = () => {
   // تحميل التصميم النشط عند تغيير نوع الوصل
   const loadActiveTemplate = async (type) => {
     try {
-      const response = await axios.get(`${API}/visual-templates/active/${type}`, {
+      const response = await api.get('/visual-templates/active/${type}', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       
@@ -294,8 +292,8 @@ const VisualTemplateDesignerPage = () => {
       formData.append('file', file);
       formData.append('page_size', pageSize);
 
-      const response = await axios.post(
-        `${API}/import-from-excel`,
+      const response = await api.post(
+        '/import-from-excel',
         formData,
         { 
           headers: { 
@@ -812,7 +810,7 @@ const VisualTemplateDesignerPage = () => {
                           <Button
                             onClick={async () => {
                               try {
-                                await axios.put(`${API}/visual-templates/${template.id}`, 
+                                await api.put('/visual-templates/${template.id}', 
                                   { is_active: true },
                                   { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
                                 );

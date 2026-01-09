@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const QuickReceiveTransferPage = () => {
   const navigate = useNavigate();
@@ -34,7 +32,7 @@ const QuickReceiveTransferPage = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/transfers/search/${transferNumber}`);
+      const response = await api.get('/transfers/search/${transferNumber}');
       
       if (response.data && response.data.status === 'pending') {
         setTransfer(response.data);
@@ -61,7 +59,7 @@ const QuickReceiveTransferPage = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/transfers/${transfer.id}/verify-pin`, {
+      const response = await api.post('/transfers/${transfer.id}/verify-pin', {
         pin: pin
       });
 
@@ -138,7 +136,7 @@ const QuickReceiveTransferPage = () => {
       formData.append('id_image', imageFile);
       formData.append('receiver_name', transfer.receiver_name);
 
-      const response = await axios.post(`${API}/transfers/verify-id-name`, formData, {
+      const response = await api.post('/transfers/verify-id-name', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -190,7 +188,7 @@ const QuickReceiveTransferPage = () => {
       formData.append('receiver_phone', receiverPhone);
       formData.append('name_verification', JSON.stringify(nameVerification));
 
-      await axios.post(`${API}/transfers/${transfer.id}/receive-with-id`, formData, {
+      await api.post('/transfers/${transfer.id}/receive-with-id', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

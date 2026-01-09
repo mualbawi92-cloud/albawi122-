@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -10,9 +9,8 @@ import { Label } from '../components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { toast } from 'sonner';
 import { printDocument, generateWalletDepositReceiptHTML } from '../utils/printUtils';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const WalletManagementPage = () => {
   const { user } = useAuth();
@@ -39,7 +37,7 @@ const WalletManagementPage = () => {
 
   const fetchAgents = async () => {
     try {
-      const response = await axios.get(`${API}/agents`);
+      const response = await api.get('/agents');
       setAgents(response.data);
     } catch (error) {
       console.error('Error fetching agents:', error);
@@ -63,7 +61,7 @@ const WalletManagementPage = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/wallet/deposit`, {
+      const response = await api.post('/wallet/deposit', {
         user_id: formData.user_id,
         amount: parseFloat(formData.amount),
         currency: formData.currency,

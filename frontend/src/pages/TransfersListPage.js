@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -10,9 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Badge } from '../components/ui/badge';
 import { Checkbox } from '../components/ui/checkbox';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const TransfersListPage = () => {
   const navigate = useNavigate();
@@ -74,7 +72,7 @@ const TransfersListPage = () => {
         params.append('status', 'pending');
       }
 
-      const response = await axios.get(`${API}/transfers?${params}`);
+      const response = await api.get('/transfers?${params}');
       let fetchedTransfers = response.data;
       
       // For inquiry tab, apply status filters
@@ -789,7 +787,7 @@ const TransfersListPage = () => {
                             <div className="flex gap-2 justify-center flex-wrap">
                               <Button
                                 size="sm"
-                                onClick={() => navigate(`/transfers/${transfer.id}`)}
+                                onClick={() => navigate('/transfers/${transfer.id}')}
                                 className="bg-blue-600 hover:bg-blue-700 text-xs"
                               >
                                 عرض
@@ -866,7 +864,7 @@ const TransfersListPage = () => {
                           
                           <div className="flex gap-2">
                             <Button
-                              onClick={() => navigate(`/transfers/${transfer.id}`)}
+                              onClick={() => navigate('/transfers/${transfer.id}')}
                               className="flex-1 bg-blue-600 hover:bg-blue-700"
                             >
                               عرض

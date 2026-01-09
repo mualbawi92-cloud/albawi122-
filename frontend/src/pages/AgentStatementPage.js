@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import { formatAmountInWords } from '../utils/arabicNumbers';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const AgentStatementPage = () => {
   const { agentId } = useParams();
@@ -29,7 +27,7 @@ const AgentStatementPage = () => {
   const fetchStatement = async () => {
     try {
       const id = agentId || user.id;
-      const response = await axios.get(`${API}/agents/${id}/statement`);
+      const response = await api.get('/agents/${id}/statement');
       setStatement(response.data);
       setLoading(false);
     } catch (error) {
@@ -291,7 +289,7 @@ const AgentStatementPage = () => {
                         <tr 
                           key={`${transfer.id}-${isReversal ? 'reversal' : 'normal'}`}
                           className={`border-b cursor-pointer transition-colors ${bgColor}`}
-                          onClick={() => navigate(`/transfers/${transfer.id}`)}
+                          onClick={() => navigate('/transfers/${transfer.id}')}
                         >
                           <td className="p-3 text-sm">
                             <div className="font-semibold text-gray-900">

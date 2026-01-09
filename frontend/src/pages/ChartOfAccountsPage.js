@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -9,9 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../co
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const CATEGORIES = [
   { value: 'شركات الصرافة', label: 'شركات الصرافة', codePrefix: '2' },
@@ -85,7 +83,7 @@ const ChartOfAccountsPage = () => {
   const fetchAccounts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/accounting/accounts`);
+      const response = await api.get('/accounting/accounts');
       setAccounts(response.data.accounts || []);
       toast.success('تم تحميل الحسابات بنجاح');
     } catch (error) {
@@ -102,7 +100,7 @@ const ChartOfAccountsPage = () => {
       if (reportStartDate) params.start_date = reportStartDate;
       if (reportEndDate) params.end_date = reportEndDate;
       
-      const response = await axios.get(`${API}/accounting/reports/trial-balance`, { params });
+      const response = await api.get('/accounting/reports/trial-balance', { params });
       setTrialBalance(response.data);
       toast.success('تم تحميل ميزان المراجعة بنجاح');
     } catch (error) {
@@ -119,7 +117,7 @@ const ChartOfAccountsPage = () => {
       if (reportStartDate) params.start_date = reportStartDate;
       if (reportEndDate) params.end_date = reportEndDate;
       
-      const response = await axios.get(`${API}/accounting/reports/income-statement`, { params });
+      const response = await api.get('/accounting/reports/income-statement', { params });
       setIncomeStatement(response.data);
       toast.success('تم تحميل قائمة الدخل بنجاح');
     } catch (error) {
@@ -135,7 +133,7 @@ const ChartOfAccountsPage = () => {
       const params = {};
       if (reportEndDate) params.end_date = reportEndDate;
       
-      const response = await axios.get(`${API}/accounting/reports/balance-sheet`, { params });
+      const response = await api.get('/accounting/reports/balance-sheet', { params });
       setBalanceSheet(response.data);
       toast.success('تم تحميل الميزانية العمومية بنجاح');
     } catch (error) {
@@ -224,7 +222,7 @@ const ChartOfAccountsPage = () => {
       const newCode = (parseInt(codePrefix) * 1000) + nextSeq;
       
       // Create account
-      const response = await axios.post(`${API}/accounting/accounts`, {
+      const response = await api.post('/accounting/accounts', {
         code: String(newCode),
         name: newAccount.name,
         name_ar: newAccount.name,
@@ -273,7 +271,7 @@ const ChartOfAccountsPage = () => {
     if (!accountToDelete) return;
 
     try {
-      await axios.delete(`${API}/accounting/accounts/${accountToDelete.code}`);
+      await api.delete('/accounting/accounts/${accountToDelete.code}');
       toast.success('تم حذف الحساب بنجاح');
       setShowDeleteDialog(false);
       setAccountToDelete(null);

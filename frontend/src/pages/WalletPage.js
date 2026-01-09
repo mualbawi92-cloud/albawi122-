@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import { printDocument, generateWalletDepositReceiptHTML } from '../utils/printUtils';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const WalletPage = () => {
   const { user } = useAuth();
@@ -23,8 +21,8 @@ const WalletPage = () => {
   const fetchWalletData = async () => {
     try {
       const [balanceRes, transactionsRes] = await Promise.all([
-        axios.get(`${API}/wallet/balance`),
-        axios.get(`${API}/wallet/transactions?limit=50`)
+        api.get('/wallet/balance'),
+        api.get('/wallet/transactions?limit=50')
       ]);
       
       setBalance(balanceRes.data);

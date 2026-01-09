@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const PaidCommissionsPage = () => {
   const navigate = useNavigate();
@@ -42,7 +40,7 @@ const PaidCommissionsPage = () => {
         dateParam = selectedDate.substring(0, 4); // YYYY
       }
 
-      const response = await axios.get(`${API}/reports/commissions`, {
+      const response = await api.get('/reports/commissions', {
         params: {
           report_type: reportType,
           date: dateParam
@@ -196,7 +194,7 @@ const PaidCommissionsPage = () => {
                                 </td>
                                 <td className="p-3 font-bold text-primary">
                                   <button
-                                    onClick={() => navigate(`/transfers/${comm.transfer_id}`)}
+                                    onClick={() => navigate('/transfers/${comm.transfer_id}')}
                                     className="hover:underline"
                                   >
                                     {comm.transfer_code}

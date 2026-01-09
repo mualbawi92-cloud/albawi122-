@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const AllCommissionsViewPage = () => {
   const navigate = useNavigate();
@@ -29,7 +27,7 @@ const AllCommissionsViewPage = () => {
   const fetchAllCommissionRates = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/commission-rates`);
+      const response = await api.get('/commission-rates');
       setAllRates(response.data);
     } catch (error) {
       console.error('Error fetching commission rates:', error);

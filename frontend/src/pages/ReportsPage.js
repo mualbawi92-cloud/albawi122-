@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const ReportsPage = () => {
   const navigate = useNavigate();
@@ -48,13 +46,13 @@ const ReportsPage = () => {
       }
       
       // Fetch commissions report
-      const commissionsRes = await axios.get(`${API}/reports/commissions`, {
+      const commissionsRes = await api.get('/reports/commissions', {
         params: { report_type: reportType, date: dateParam }
       });
       setCommissionsReport(commissionsRes.data);
       
       // Fetch agents profit report
-      const agentsRes = await axios.get(`${API}/reports/agents-profit`, {
+      const agentsRes = await api.get('/reports/agents-profit', {
         params: { report_type: reportType, date: dateParam }
       });
       setAgentsReport(agentsRes.data);

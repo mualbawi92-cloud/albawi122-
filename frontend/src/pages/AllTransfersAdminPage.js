@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const AllTransfersAdminPage = () => {
   const navigate = useNavigate();
@@ -33,7 +31,7 @@ const AllTransfersAdminPage = () => {
   const fetchAllTransfers = async () => {
     try {
       // Get all transfers without filters
-      const response = await axios.get(`${API}/transfers`);
+      const response = await api.get('/transfers');
       setTransfers(response.data);
       setLoading(false);
     } catch (error) {
@@ -132,7 +130,7 @@ const AllTransfersAdminPage = () => {
                     key={transfer.id}
                     data-testid={`transfer-${transfer.transfer_code}`}
                     className="hover:shadow-lg transition-all cursor-pointer border-r-4 border-r-secondary"
-                    onClick={() => navigate(`/transfers/${transfer.id}`)}
+                    onClick={() => navigate('/transfers/${transfer.id}')}
                   >
                     <CardContent className="p-4 sm:p-6">
                       <div className="space-y-4">
@@ -240,7 +238,7 @@ const AllTransfersAdminPage = () => {
                             size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate(`/transfers/${transfer.id}`);
+                              navigate('/transfers/${transfer.id}');
                             }}
                             className="text-primary border-primary hover:bg-primary hover:text-white"
                           >

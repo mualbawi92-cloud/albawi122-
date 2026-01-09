@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import Webcam from 'react-webcam';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -11,9 +10,8 @@ import { Badge } from '../components/ui/badge';
 import { toast } from 'sonner';
 import { formatAmountInWords } from '../utils/arabicNumbers';
 import { printDocument, generateTransferReceiptHTML, generateVoucherHTML, generateHTMLFromVisualTemplate } from '../utils/printUtils';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const TransferDetailsPage = () => {
   const { id } = useParams();
@@ -65,7 +63,7 @@ const TransferDetailsPage = () => {
   const fetchExpectedCommission = async () => {
     setLoadingCommission(true);
     try {
-      const response = await axios.get(`${API}/commission/calculate-preview`, {
+      const response = await api.get('/commission/calculate-preview', {
         params: {
           amount: transfer.amount,
           currency: transfer.currency,
@@ -83,7 +81,7 @@ const TransferDetailsPage = () => {
 
   const fetchTransfer = async () => {
     try {
-      const response = await axios.get(`${API}/transfers/${id}`);
+      const response = await api.get('/transfers/${id}');
       setTransfer(response.data);
       setLoading(false);
     } catch (error) {
@@ -96,7 +94,7 @@ const TransferDetailsPage = () => {
   const fetchPin = async () => {
     setLoadingPin(true);
     try {
-      const response = await axios.get(`${API}/transfers/${id}/pin`);
+      const response = await api.get('/transfers/${id}/pin');
       setPinData(response.data);
       setShowPin(true);
       toast.success('تم عرض الرقم السري');
@@ -115,7 +113,7 @@ const TransferDetailsPage = () => {
 
     setLoadingCancel(true);
     try {
-      await axios.patch(`${API}/transfers/${id}/cancel`);
+      await api.patch('/transfers/${id}/cancel');
       toast.success('تم إلغاء الحوالة بنجاح. المبلغ تم إرجاعه للمحفظة.');
       fetchTransfer(); // Refresh transfer data
     } catch (error) {
@@ -137,7 +135,7 @@ const TransferDetailsPage = () => {
       if (editData.amount) updateData.amount = parseFloat(editData.amount);
       if (editData.note) updateData.note = editData.note;
 
-      await axios.patch(`${API}/transfers/${id}/update`, updateData);
+      await api.patch('/transfers/${id}/update', updateData);
       toast.success('تم تعديل الحوالة بنجاح');
       setShowEdit(false);
       fetchTransfer(); // Refresh transfer data
@@ -208,7 +206,7 @@ const TransferDetailsPage = () => {
         formData.append('id_image', uploadedFile);
       }
 
-      await axios.post(`${API}/transfers/${id}/receive`, formData, {
+      await api.post('/transfers/${id}/receive', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -485,7 +483,7 @@ const TransferDetailsPage = () => {
                     let transferWithPin = {...transfer};
                     if (!transfer.decrypted_pin) {
                       try {
-                        const response = await axios.get(`${API}/transfers/${transfer.id}/pin`, {
+                        const response = await api.get('/transfers/${transfer.id}/pin', {
                           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
                         });
                         transferWithPin.decrypted_pin = response.data.pin;
@@ -497,7 +495,7 @@ const TransferDetailsPage = () => {
                     let html;
                     try {
                       const templateType = transfer.status === 'completed' ? 'receive_transfer' : 'send_transfer';
-                      const templateResponse = await axios.get(`${API}/visual-templates/active/${templateType}`, {
+                      const templateResponse = await api.get('/visual-templates/active/${templateType}', {
                         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
                       });
                       

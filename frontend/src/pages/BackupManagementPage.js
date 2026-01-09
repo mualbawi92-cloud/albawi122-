@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 const AUTO_BACKUP_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 const BackupManagementPage = () => {
@@ -68,7 +66,7 @@ const BackupManagementPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/admin/backup/export-all`, {
+      const response = await api.get('/admin/backup/export-all', {
         headers: { Authorization: `Bearer ${token}` }
       });
 

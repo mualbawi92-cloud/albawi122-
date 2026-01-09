@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -9,9 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../co
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
 import QuickDateFilter from '../components/QuickDateFilter';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const CommissionsUnifiedPage = () => {
   const navigate = useNavigate();
@@ -50,7 +48,7 @@ const CommissionsUnifiedPage = () => {
 
   const fetchAgents = async () => {
     try {
-      const response = await axios.get(`${API}/agents`);
+      const response = await api.get('/agents');
       setAgents(response.data || []);
     } catch (error) {
       console.error('Error fetching agents:', error);
@@ -80,14 +78,14 @@ const CommissionsUnifiedPage = () => {
       console.log('Fetching commissions with params:', params);
       
       // Fetch paid commissions
-      const paidResponse = await axios.get(`${API}/admin-commissions`, {
+      const paidResponse = await api.get('/admin-commissions', {
         params: { ...params, type: 'paid' }
       });
       
       console.log('Paid commissions received:', paidResponse.data.commissions?.length || 0);
       
       // Fetch earned commissions
-      const earnedResponse = await axios.get(`${API}/admin-commissions`, {
+      const earnedResponse = await api.get('/admin-commissions', {
         params: { ...params, type: 'earned' }
       });
       

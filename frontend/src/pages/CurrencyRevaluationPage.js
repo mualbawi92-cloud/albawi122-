@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import api from '../services/api';
 
 const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -46,7 +46,7 @@ const CurrencyRevaluationPage = () => {
       const token = localStorage.getItem('token');
       
       // Fetch from chart of accounts (same as used in journal/ledger)
-      const response = await axios.get(`${API}/api/accounting/accounts`, {
+      const response = await api.get('/api/accounting/accounts', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -77,7 +77,7 @@ const CurrencyRevaluationPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${API}/api/sync-agents-to-chart`, {}, {
+      const response = await api.post('/api/sync-agents-to-chart', {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -96,7 +96,7 @@ const CurrencyRevaluationPage = () => {
   const fetchCurrentRate = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/api/exchange-rates/current`, {
+      const response = await api.get('/api/exchange-rates/current', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCurrentRate(response.data.rate);
@@ -109,7 +109,7 @@ const CurrencyRevaluationPage = () => {
   const fetchRevaluations = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/api/currency-revaluations?limit=50`, {
+      const response = await api.get('/api/currency-revaluations?limit=50', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRevaluations(response.data);
@@ -165,7 +165,7 @@ const CurrencyRevaluationPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/api/currency-revaluation`, {
+      await api.post('/api/currency-revaluation', {
         account_code: formData.account_code,
         amount: parseFloat(formData.amount),
         currency: formData.currency,

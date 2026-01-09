@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -9,9 +8,8 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const IRAQI_GOVERNORATES = [
   { code: 'BG', name: 'بغداد' },
@@ -99,7 +97,7 @@ const DashboardPageNew = () => {
       const token = localStorage.getItem('token');
       
       // Fetch agents (users with role=agent)
-      const agentsResponse = await axios.get(`${API}/users`, {
+      const agentsResponse = await api.get('/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -107,7 +105,7 @@ const DashboardPageNew = () => {
       const agentUsers = agentsResponse.data.filter(u => u.role === 'agent');
       
       // Fetch chart of accounts
-      const accountsResponse = await axios.get(`${API}/accounting/accounts`, {
+      const accountsResponse = await api.get('/accounting/accounts', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -217,7 +215,7 @@ const DashboardPageNew = () => {
       console.log('Update Data:', updateData);
       console.log('Account ID being sent:', editFormData.account_id);
 
-      const response = await axios.put(`${API}/users/${selectedAgent.id}`, updateData, {
+      const response = await api.put('/users/${selectedAgent.id}', updateData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -277,7 +275,7 @@ const DashboardPageNew = () => {
       console.log('account_code being sent:', newAgentData.account_code);
       console.log('Token exists:', !!token);
 
-      const response = await axios.post(`${API}/register`, newAgentData, {
+      const response = await api.post('/register', newAgentData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -335,7 +333,7 @@ const DashboardPageNew = () => {
         agent_id: addUserFormData.agent_id
       };
 
-      await axios.post(`${API}/register`, newUserData, {
+      await api.post('/register', newUserData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -408,7 +406,7 @@ const DashboardPageNew = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${API}/users/${agentId}`, {
+      await api.delete('/users/${agentId}', {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -423,7 +421,7 @@ const DashboardPageNew = () => {
   };
 
   const handleViewAgentUsers = (agentId) => {
-    navigate(`/admin/agent-users/${agentId}`);
+    navigate('/admin/agent-users/${agentId}');
   };
 
   if (loading) {

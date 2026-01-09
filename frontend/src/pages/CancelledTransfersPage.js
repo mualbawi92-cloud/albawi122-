@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const CancelledTransfersPage = () => {
   const navigate = useNavigate();
@@ -29,11 +27,11 @@ const CancelledTransfersPage = () => {
   const fetchData = async () => {
     try {
       // Get all cancelled transfers
-      const response = await axios.get(`${API}/transfers?status=cancelled`);
+      const response = await api.get('/transfers?status=cancelled');
       setTransfers(response.data);
 
       // Get audit logs for cancelled/updated transfers
-      const logsResponse = await axios.get(`${API}/audit-logs?action=transfer_cancelled,transfer_updated&limit=1000`);
+      const logsResponse = await api.get('/audit-logs?action=transfer_cancelled,transfer_updated&limit=1000');
       
       // Group logs by transfer_id
       const logsMap = {};
@@ -239,7 +237,7 @@ const CancelledTransfersPage = () => {
                         {/* Actions */}
                         <div>
                           <Button
-                            onClick={() => navigate(`/transfers/${transfer.id}`)}
+                            onClick={() => navigate('/transfers/${transfer.id}')}
                             variant="outline"
                             size="sm"
                             className="w-full md:w-auto"

@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const AgentCommissionsPage = () => {
   const navigate = useNavigate();
@@ -43,7 +41,7 @@ const AgentCommissionsPage = () => {
         dateParam = selectedDate.substring(0, 4); // YYYY
       }
 
-      const response = await axios.get(`${API}/agent-commissions-report`, {
+      const response = await api.get('/agent-commissions-report', {
         params: {
           report_type: reportType,
           date: dateParam
@@ -329,7 +327,7 @@ const AgentCommissionsPage = () => {
                                     <td className="p-3 text-sm">{formatDate(comm.created_at)}</td>
                                     <td className="p-3 font-bold text-primary">
                                       <button
-                                        onClick={() => navigate(`/transfers/${comm.transfer_id}`)}
+                                        onClick={() => navigate('/transfers/${comm.transfer_id}')}
                                         className="hover:underline"
                                       >
                                         {comm.transfer_code}
@@ -411,7 +409,7 @@ const AgentCommissionsPage = () => {
                                     <td className="p-3 text-sm">{formatDate(comm.created_at)}</td>
                                     <td className="p-3 font-bold text-primary">
                                       <button
-                                        onClick={() => navigate(`/transfers/${comm.transfer_id}`)}
+                                        onClick={() => navigate('/transfers/${comm.transfer_id}')}
                                         className="hover:underline"
                                       >
                                         {comm.transfer_code}

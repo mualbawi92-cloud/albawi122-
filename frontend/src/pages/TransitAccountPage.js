@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const TransitAccountPage = () => {
   const navigate = useNavigate();
@@ -25,15 +23,15 @@ const TransitAccountPage = () => {
     setLoading(true);
     try {
       // Fetch balance
-      const balanceResponse = await axios.get(`${API}/transit-account/balance`);
+      const balanceResponse = await api.get('/transit-account/balance');
       setTransitData(balanceResponse.data);
 
       // Fetch pending transfers
-      const pendingResponse = await axios.get(`${API}/transit-account/pending-transfers`);
+      const pendingResponse = await api.get('/transit-account/pending-transfers');
       setPendingTransfers(pendingResponse.data.pending_transfers || []);
 
       // Fetch transactions
-      const transactionsResponse = await axios.get(`${API}/transit-account/transactions?limit=50`);
+      const transactionsResponse = await api.get('/transit-account/transactions?limit=50');
       setTransactions(transactionsResponse.data || []);
     } catch (error) {
       console.error('Error fetching transit data:', error);
@@ -195,7 +193,7 @@ const TransitAccountPage = () => {
                     <div
                       key={transfer.id}
                       className="p-4 border rounded-lg hover:bg-accent cursor-pointer"
-                      onClick={() => navigate(`/transfers/${transfer.id}`)}
+                      onClick={() => navigate('/transfers/${transfer.id}')}
                     >
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>

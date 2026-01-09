@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
 import { toast } from 'sonner';
 import { formatWalletRequired } from '../utils/arabicNumbers';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
@@ -52,7 +50,7 @@ const AdminDashboardPage = () => {
   const fetchData = async () => {
     try {
       // Get all agents
-      const agentsRes = await axios.get(`${API}/agents`);
+      const agentsRes = await api.get('/agents');
       const agentsData = agentsRes.data;
       setAgents(agentsData);
 
@@ -61,14 +59,14 @@ const AdminDashboardPage = () => {
       if (startDate) params.append('start_date', startDate);
       if (endDate) params.append('end_date', endDate);
       
-      const transfersRes = await axios.get(`${API}/transfers?${params}`);
+      const transfersRes = await api.get('/transfers?${params}');
       setAllTransfers(transfersRes.data);
 
       // Get statement for each agent
       const statementsData = {};
       for (const agent of agentsData) {
         try {
-          const statementRes = await axios.get(`${API}/agents/${agent.id}/statement`);
+          const statementRes = await api.get('/agents/${agent.id}/statement');
           statementsData[agent.id] = statementRes.data;
         } catch (error) {
           console.error(`Error fetching statement for ${agent.id}:`, error);
@@ -83,7 +81,7 @@ const AdminDashboardPage = () => {
       
       // Get transit account data
       try {
-        const transitRes = await axios.get(`${API}/transit-account/balance`);
+        const transitRes = await api.get('/transit-account/balance');
         setTransitData(transitRes.data);
       } catch (error) {
         console.error('Error fetching transit data:', error);
@@ -246,7 +244,7 @@ const AdminDashboardPage = () => {
           {/* Completed Transfers (Delivered) */}
           <Card 
             className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 rounded-xl cursor-pointer hover:shadow-xl transition-shadow"
-            onClick={() => navigate(`/transfers?status=completed&start_date=${startDate}&end_date=${endDate}`)}
+            onClick={() => navigate('/transfers?status=completed&start_date=${startDate}&end_date=${endDate}')}
           >
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -283,7 +281,7 @@ const AdminDashboardPage = () => {
           {/* Pending Transfers (Ready to Deliver) */}
           <Card 
             className="border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl cursor-pointer hover:shadow-xl transition-shadow"
-            onClick={() => navigate(`/transfers?status=pending&start_date=${startDate}&end_date=${endDate}`)}
+            onClick={() => navigate('/transfers?status=pending&start_date=${startDate}&end_date=${endDate}')}
           >
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -482,7 +480,7 @@ const AdminDashboardPage = () => {
                         </td>
                         <td className="p-4 text-center">
                           <Button
-                            onClick={() => navigate(`/statement/${agent.id}`)}
+                            onClick={() => navigate('/statement/${agent.id}')}
                             className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6"
                             style={{ borderRadius: '12px' }}
                           >

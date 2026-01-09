@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const ExchangeOperationsPage = () => {
   const navigate = useNavigate();
@@ -52,7 +50,7 @@ const ExchangeOperationsPage = () => {
 
   const fetchRates = async () => {
     try {
-      const response = await axios.get(`${API}/exchange-rates`);
+      const response = await api.get('/exchange-rates');
       setRates(response.data);
       setExchangeRate(response.data.buy_rate.toString());
     } catch (error) {
@@ -75,7 +73,7 @@ const ExchangeOperationsPage = () => {
     }
     
     try {
-      await axios.post(`${API}/exchange-rates`, {
+      await api.post('/exchange-rates', {
         buy_rate: buy,
         sell_rate: sell
       });
@@ -105,7 +103,7 @@ const ExchangeOperationsPage = () => {
     setLoading(true);
     try {
       const endpoint = operationType === 'buy' ? '/exchange/buy' : '/exchange/sell';
-      await axios.post(`${API}${endpoint}`, {
+      await api.post('${endpoint}`, {
         operation_type: operationType,
         amount_usd: amount,
         exchange_rate: rate,
@@ -133,7 +131,7 @@ const ExchangeOperationsPage = () => {
       if (historyStartDate) params.start_date = historyStartDate;
       if (historyEndDate) params.end_date = historyEndDate;
       
-      const response = await axios.get(`${API}/exchange/operations`, { params });
+      const response = await api.get('/exchange/operations', { params });
       setOperations(response.data.operations || []);
     } catch (error) {
       console.error('Error fetching operations:', error);
@@ -150,7 +148,7 @@ const ExchangeOperationsPage = () => {
         dateParam = reportDate.substring(0, 4);
       }
       
-      const response = await axios.get(`${API}/exchange/profit-report`, {
+      const response = await api.get('/exchange/profit-report', {
         params: { report_type: reportType, date: dateParam }
       });
       setReportData(response.data);

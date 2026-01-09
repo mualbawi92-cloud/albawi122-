@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
+import api from '../services/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const IRAQI_GOVERNORATES = [
   { code: 'BG', name: 'بغداد' },
@@ -97,7 +95,7 @@ const CommissionsManagementPage = () => {
 
   const fetchAgents = async () => {
     try {
-      const response = await axios.get(`${API}/agents`);
+      const response = await api.get('/agents');
       setAgents(response.data);
     } catch (error) {
       console.error('Error fetching agents:', error);
@@ -107,7 +105,7 @@ const CommissionsManagementPage = () => {
 
   const fetchAgentCommissionRates = async (agentId) => {
     try {
-      const response = await axios.get(`${API}/commission-rates/agent/${agentId}`);
+      const response = await api.get('/commission-rates/agent/${agentId}');
       setAgentCommissionRates(response.data);
     } catch (error) {
       console.error('Error fetching commission rates:', error);
@@ -164,7 +162,7 @@ const CommissionsManagementPage = () => {
         }))
       };
 
-      await axios.post(`${API}/commission-rates`, submitData);
+      await api.post('/commission-rates', submitData);
       toast.success('تم حفظ نشرة الأسعار بنجاح!');
       
       // Reset form
