@@ -20,7 +20,18 @@ from collections import defaultdict
 import asyncio
 import base64
 from cryptography.fernet import Fernet
-from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+
+# emergentintegrations - اختيارية (خاصة بمنصة Emergent)
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+    EMERGENT_AI_AVAILABLE = True
+except ImportError:
+    EMERGENT_AI_AVAILABLE = False
+    LlmChat = None
+    UserMessage = None
+    ImageContent = None
+    print("⚠️ emergentintegrations غير متوفرة - ميزات AI معطلة")
+
 import httpx
 
 ROOT_DIR = Path(__file__).parent
