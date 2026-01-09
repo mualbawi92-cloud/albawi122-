@@ -198,6 +198,13 @@ async def read_id_card_with_ai(image_url: str) -> dict:
     Use OpenAI Vision to read name from ID card image
     Returns dict with extracted_name and confidence
     """
+    # تحقق من توفر مكتبة AI
+    if not EMERGENT_AI_AVAILABLE:
+        return {
+            'success': False, 
+            'error': 'AI features not available - emergentintegrations not installed'
+        }
+    
     try:
         # Download image and convert to base64
         async with httpx.AsyncClient() as client:
