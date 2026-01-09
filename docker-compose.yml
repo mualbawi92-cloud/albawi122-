@@ -1,0 +1,61 @@
+# Docker Compose - نظام الحوالات المالية
+# تشغيل: docker-compose up -d
+
+version: '3.8'
+
+services:
+  # قاعدة البيانات MongoDB
+  mongodb:
+    image: mongo:6.0
+    container_name: money_transfer_db
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app_network
+
+  # الخادم الخلفي (Backend)
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: money_transfer_backend
+    restart: always
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/money_transfer_db
+      - DB_NAME=money_transfer_db
+      - SECRET_KEY=your-secret-key-change-in-production
+    ports:
+      - "8001:8001"
+    depends_on:
+      - mongodb
+    networks:
+      - app_network
+
+  # الواجهة الأمامية (Frontend)
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+      args:
+        - REACT_APP_BACKEND_URL=http://localhost:8001
+    container_name: money_transfer_frontend
+    restart: always
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:8001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge
