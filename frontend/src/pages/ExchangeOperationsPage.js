@@ -103,7 +103,7 @@ const ExchangeOperationsPage = () => {
     setLoading(true);
     try {
       const endpoint = operationType === 'buy' ? '/exchange/buy' : '/exchange/sell';
-      await api.post('${endpoint}`, {
+      await api.post(endpoint, {
         operation_type: operationType,
         amount_usd: amount,
         exchange_rate: rate,
