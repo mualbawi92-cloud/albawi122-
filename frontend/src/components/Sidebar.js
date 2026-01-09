@@ -23,10 +23,7 @@ import {
   TrendingUp,
   TrendingDown
 } from 'lucide-react';
-import axios from 'axios';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import api from '../services/api';
 
 const Sidebar = ({ onCollapsedChange }) => {
   const navigate = useNavigate();
