@@ -3,10 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { useWebSocket } from '../contexts/WebSocketContext';
-import axios from 'axios';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import api from '../services/api';
 
 const Navbar = () => {
   const navigate = useNavigate();
