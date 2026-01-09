@@ -5,7 +5,8 @@ import { toast } from 'sonner';
 
 const WebSocketContext = createContext(null);
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+// WebSocket يحتاج URL بدون /api
+const WS_URL = process.env.REACT_APP_BACKEND_URL;
 
 export const WebSocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
@@ -14,7 +15,7 @@ export const WebSocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      const newSocket = io(BACKEND_URL, {
+      const newSocket = io(WS_URL, {
         transports: ['websocket', 'polling']
       });
 
