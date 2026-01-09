@@ -1,5 +1,5 @@
 # Frontend Dockerfile
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -12,11 +12,22 @@ RUN yarn install --frozen-lockfile
 # Copy frontend code
 COPY frontend/ .
 
+# Set environment variable for build
+ENV REACT_APP_BACKEND_URL=http://localhost:8001
+
 # Build for production
 RUN yarn build
 
-# Install serve for production
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install serve
 RUN yarn global add serve
+
+# Copy built files
+COPY --from=builder /app/build ./build
 
 # Expose port
 EXPOSE 3000
