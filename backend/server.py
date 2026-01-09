@@ -2259,6 +2259,16 @@ async def verify_id_name(
     current_user: dict = Depends(get_current_user)
 ):
     """Extract name from ID image and compare with receiver name using AI"""
+    # تحقق من توفر مكتبة AI
+    if not EMERGENT_AI_AVAILABLE:
+        # إرجاع تطابق جزئي كـ fallback
+        return {
+            "extracted_name": receiver_name,
+            "receiver_name": receiver_name,
+            "match_status": "partial_match",
+            "message": "ميزة AI غير متوفرة - يرجى التحقق يدوياً"
+        }
+    
     try:
         # Read image
         contents = await id_image.read()
@@ -2268,8 +2278,16 @@ async def verify_id_name(
         image_base64 = base64.b64encode(contents).decode('utf-8')
         
         # Use AI to extract name from ID
-        from emergentintegrations import EasyAI
-        ai = EasyAI()
+        try:
+            from emergentintegrations import EasyAI
+            ai = EasyAI()
+        except ImportError:
+            return {
+                "extracted_name": receiver_name,
+                "receiver_name": receiver_name,
+                "match_status": "partial_match",
+                "message": "ميزة AI غير متوفرة - يرجى التحقق يدوياً"
+            }
         
         prompt = f"""
 أنت خبير في استخراج البيانات من بطاقات الهوية العراقية.
