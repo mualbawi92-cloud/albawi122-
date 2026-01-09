@@ -1,11 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const AuthContext = createContext(null);
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -14,26 +10,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      // Add response interceptor to handle token expiration
-      const interceptor = axios.interceptors.response.use(
-        (response) => response,
-        (error) => {
-          if (error.response?.status === 401) {
-            // Token expired or invalid
-            logout();
-            window.location.href = '/login';
-          }
-          return Promise.reject(error);
-        }
-      );
-
       setLoading(false);
-
-      return () => {
-        axios.interceptors.response.eject(interceptor);
-      };
     } else {
       setLoading(false);
     }
@@ -41,14 +18,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post(`${API}/login`, { username, password });
+      const response = await api.post('/login', { username, password });
       const { access_token, user: userData } = response.data;
       
       localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(userData));
       setToken(access_token);
       setUser(userData);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
       
       return { success: true, user: userData };
     } catch (error) {
