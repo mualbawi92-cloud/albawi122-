@@ -27,7 +27,7 @@ const Navbar = () => {
 
   const fetchUnreadCount = async () => {
     try {
-      const response = await axios.get(`${API}/notifications`, {
+      const response = await api.get('notifications`, {
         params: { unread_only: true }
       });
       setUnreadCount(response.data.unread_count || 0);
