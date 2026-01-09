@@ -4145,13 +4145,28 @@ async def analyze_transfer_with_ai(transfer_data: dict) -> dict:
     """
     Analyze transfer using AI to detect suspicious patterns
     """
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    # تحقق من توفر مكتبة AI
+    if not EMERGENT_AI_AVAILABLE:
+        return {
+            "is_suspicious": False,
+            "risk_level": "low",
+            "reason": "ميزة AI غير متوفرة",
+            "recommendations": "يرجى المراجعة اليدوية"
+        }
+    
     from dotenv import load_dotenv
     import os
     
     load_dotenv()
     
     api_key = os.getenv('EMERGENT_LLM_KEY')
+    if not api_key:
+        return {
+            "is_suspicious": False,
+            "risk_level": "low",
+            "reason": "مفتاح API غير متوفر",
+            "recommendations": "يرجى المراجعة اليدوية"
+        }
     
     # Prepare transfer details for AI analysis
     analysis_prompt = f"""
